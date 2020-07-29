@@ -10,7 +10,7 @@ import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.atom.engine.graphics.gles2d.GLObject;
+import com.axiom.atom.engine.graphics.gles2d.GLESObject;
 import com.axiom.atom.engine.graphics.renderers.Rectangle;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.graphics.renderers.Batcher;
@@ -35,36 +35,48 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
     //-------------------------------------------------------------------------------------
     // Список объектов которые должны быть инициализированы в потоке/контексте OpenGL
     //-------------------------------------------------------------------------------------
-    public static Camera camera;
-    public static ArrayBlockingQueue<GLObject> glTasksQueue;  // Список "ленивой" загрузки
-    public static GraphicsRender render;
+    public static final int LAZY_LOAD_QUEUE_LENGTH = 1024;     // Максимальная длина очереди
+    protected static ArrayBlockingQueue<GLESObject> loadQueue; // Очередь "ленивой" загрузки
 
-    protected GameView gameView;
-    protected SceneManager sceneManager;
+    //-------------------------------------------------------------------------------------
+    // Основные объекты графического рендера
+    //-------------------------------------------------------------------------------------
+    protected static GraphicsRender render;            // Наш единственный рендер
+    protected static Camera camera;                    // Единственная камера игровго мира
+    protected GameView gameView;                       // Наш View на котором делаем рендер
+    protected SceneManager sceneManager;               // Менеджер игровых сцен
+    //-------------------------------------------------------------------------------------
+    private Text textRender;                           // Рендер текста
+    private Rectangle rectangleRender;                 // Рендер прямоугольников
+    //-------------------------------------------------------------------------------------
+    private int framesCounter = 0;                     // Счётчик отрисованных кадров
+    private int fps = 0;                               // Количество кадров в секунду (FPS)
+    private long totalRenderTime = 0;                  // Общее время рендеринга в секунду
+    private long averageRenderTime;                    // Среднее время рендеринга одного кадра
+    private long fpsLastEvaluationTime = 0;            // Последнее время расчёта FPS (нс)
 
-    private int frames = 0, fps;
-    private long totalRenderTime;
-    private long lasttime = 0;
 
-    private Text textRender;
-    private Rectangle rectangleRender;
-
+    /**
+     * Конструктор графического рендера
+     * @param gameView где рисуем и откуда забираем ввод
+     * @param sceneManager менеджер сцен
+     */
     public GraphicsRender(GameView gameView, SceneManager sceneManager) {
         super();
         this.gameView = gameView;
         this.sceneManager = sceneManager;
-        // FIXME Не знаю какой длины должна быть очередь между UITHread, GameLoop, GLThread
-        glTasksQueue = new ArrayBlockingQueue<GLObject>(1000);
+        // Инициализируем статические переменные
+        loadQueue = new ArrayBlockingQueue<>(LAZY_LOAD_QUEUE_LENGTH);
         camera = new Camera();
-        // FIXME статическая переменная инициализируется в конструкторе - не хорошо
         render = this;
     }
+
 
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         textRender = new Text(new Sprite(gameView.getResources(), R.drawable.font, 15,8), 0.75f);
         rectangleRender = new Rectangle();
-        Log.d("INFO:", "OpenGLES renderer thread created");
     }
+
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
@@ -72,38 +84,63 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0, 0, 0, 1.0f);
     }
 
+    //------------------------------------------------------------------------------------------
+    // Методы для отложеной загрузки программ, шейдеров и текстур
+    //------------------------------------------------------------------------------------------
+
     /**
-     * Отрисовка кадра
-     * @param gl
+     * Добавляет объекты в очередь загрузки в GPU из других потоков
+     * @param obj программа, шейдер или текстура
      */
-    public void onDrawFrame(GL10 gl) {
-        if (glTasksQueue.size()>0) lazyloader();
-        renderSceneObjects();
+    public static void addToLoadQueue(GLESObject obj) {
+        GraphicsRender.loadQueue.add(obj);
     }
 
     /**
-     * Отложенная загрузка шейдеров, программ и текстур
-     * TODO Можно реализовать лучше, чтобы не зависала отрисовка
+     * Отложенная загрузка программ, шейдеров и текстур в GPU
      */
-    protected void lazyloader() {
-        GLObject task;
+    protected void performLazyLoad() {
+        GLESObject task;
         long startTime = System.currentTimeMillis();
-        int tasksAmount = glTasksQueue.size();
-        while (glTasksQueue.size() > 0) {
-               task = glTasksQueue.poll();
-               Log.i("LAZY TASK", task.toString());
-               if (task!=null) task.initializeOnGLThread();
+        int tasksAmount = loadQueue.size();
+
+        while (loadQueue.size() > 0) {
+            task = loadQueue.poll();
+            if (task!=null) {
+                task.loadObjectToGPU();
+                Log.i("LAZY TASK", task.toString());
+            }
         }
+
         Log.i ("SCENE LAZY LOADER", tasksAmount + " tasks done by " +
                 (System.currentTimeMillis() - startTime) + "ms");
+    }
+
+
+
+
+
+    //------------------------------------------------------------------------------------------
+    // Методы отрисовки кадра сцены
+    //------------------------------------------------------------------------------------------
+    /**
+     * Отрисовка кадра сцены
+     * @param gl контекст (не используется)
+     */
+    public void onDrawFrame(GL10 gl) {
+        // Если есть очередь "отложенных" загрузок, выполняем
+        if (loadQueue.size() > 0) performLazyLoad();
+        // Отрисовываем активную сцену
+        renderScene();
     }
 
     /**
      * Вызывает метод отрисовки всех объектов сцены
      * @return
      */
-    protected void renderSceneObjects() {
-        long renderStartTime = System.nanoTime();
+    protected void renderScene() {
+
+        long renderStartTime = System.nanoTime(); // Время начала рендеринга
 
         //-------------------------------------------------------------------------------
         GameScene scene = sceneManager.getActiveScene();
@@ -117,11 +154,11 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
 
             // Вызывается до отрисовки сцены
             scene.preRender(camera);
+
             // Отрисовка сцены
-            ArrayList<GameObject> objects = scene.getSceneObjects();  // Берём объекты игровой сцены
+            // Берём объекты игровой сцены
+            ArrayList<GameObject> objects = scene.getSceneObjects();
             GameObject obj;
-
-
             for (int i=0; i < objects.size(); i++) {
                 obj = objects.get(i);
                 if (obj.active) {
@@ -138,39 +175,60 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
         }
 
         //-------------------------------------------------------------------------------
-        frames++;
+        framesCounter++;
         long now = System.nanoTime();
         float renderTime = (now - renderStartTime) / 1000000.0f;
         totalRenderTime += renderTime;
 
         //-------------------------------------------------------------------------------
+        // При 60 FPS время рендеринга должно быть до 16.6 мс/кадр
+        // Если ренедеринг был выполнен быстрее 10 мс (оставляем запас на смену буфера),
+        // то даём время отработать другим потокам и не тратить зря время CPU и батарею.
+        //-------------------------------------------------------------------------------
         try {
-             long sleepTime = (long) (10 - renderTime);
-             if (sleepTime <=0) sleepTime = 1;
-             Thread.sleep(sleepTime);
+            if (renderTime < 10)
+                Thread.sleep(10 - (long)renderTime);
+            else
+                Thread.sleep(1);
         } catch (InterruptedException e) {
              e.printStackTrace();
         }
 
-
-        if (now - lasttime > 1000000000) {
-            lasttime = now;
-            fps = frames;
-            frames = 0;
-            totalRenderTime /= fps;
+        if (now - fpsLastEvaluationTime > 1000000000) {
+            fpsLastEvaluationTime = now;
+            fps = framesCounter;
+            framesCounter = 0;
+            averageRenderTime = totalRenderTime / fps;
             totalRenderTime = 0;
         }
 
     }
 
+    /**
+     * Возвращает среднее время отрисовки кадра в миллесекундах
+     * @return среднее время отрисовки кадра в миллесекундах
+     */
+    public static int getRenderTime() {
+        if (render==null) return 0;
+        return (int) render.averageRenderTime;
+    }
+
+    /**
+     * Возвращает фактическое количество отрисованных кадров в секунду
+     * @return фактическое количество отрисованных кадров в секунду
+     */
     public static int getFPS() {
         if (render==null) return 0;
         return render.fps;
     }
 
     //-------------------------------------------------------------------------------------
-    // Методы для рендеринга текста и прямоугольников
+    // Методы для упрощенной отрисовки текста и прямоугольников
     //-------------------------------------------------------------------------------------
+
+    public static Camera getCamera() {
+        return camera;
+    }
 
     public static void clear() {
         GLES20.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);

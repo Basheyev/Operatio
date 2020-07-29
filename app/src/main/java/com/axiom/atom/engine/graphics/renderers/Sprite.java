@@ -22,32 +22,33 @@ import java.util.HashMap;
  */
 public class Sprite {
 
+    // Список всех загруженных текстур, для исключения повторной загрузки одной текстуры
     protected static HashMap<Integer, Texture> loadedTextures = new HashMap<>();
 
-    public static Program program = null;
-    protected Texture texture;
-    public int zOrder = 0;
+    public static Program program = null;          // Программа со скомпилированными шейдерами
+    protected Texture texture;                     // Текстура спрайта
+    public int zOrder = 0;                         // Порядок сортировки при отрисовке спрайта
 
-    protected int activeFrame = -1;
-    protected int columns, rows;
-    protected float spriteWidth;
-    protected float spriteHeight;
-    protected boolean horizontalFlip = false;
-    protected boolean verticalFlip = false;
+    protected int activeFrame = -1;                // Текущий активный кадр
+    protected int columns, rows;                   // Количество столбцов и строк в листе спрайтов
+    protected float spriteWidth;                   // Ширина спрайта в текстурных координатах (0-1)
+    protected float spriteHeight;                  // Высота спрайта в текстурных координатах (0-1)
+    protected boolean horizontalFlip = false;      // Горизонтальное отражение спрайта
+    protected boolean verticalFlip = false;        // Вертикальное отражение спрайта
 
-    protected ArrayList<Animation> animations = null;
-    protected int activeAnimation = -1;
-    protected int timesPlayed = 0;
-    protected long lastFrameTime = 0;
+    protected ArrayList<Animation> animations = null;  // Список анимаций спрайта
+    protected int activeAnimation = -1;            // Текущая активная анимация
+    protected int timesPlayed = 0;                 // Сколько раз проиграна текущая анимация
+    protected long lastFrameTime = 0;              // Время отрисовки последнего кадра
 
     //-----------------------------------------------------------------------------------
     // Координаты вершины прямоугольника для отрисовки спрайта
     //-----------------------------------------------------------------------------------
-    public class Animation {
-        int startFrame;
-        int stopFrame;
-        int framesPerSecond;
-        boolean loop;
+    public static class Animation {
+        int startFrame;                     // Начальный кадр
+        int stopFrame;                      // Конечный кадр
+        int framesPerSecond;                // Количество кадров в секунду
+        boolean loop;                       // Зациклена ли анимация (должна повторятся)
     }
 
     //-----------------------------------------------------------------------------------
@@ -78,7 +79,7 @@ public class Sprite {
             };
 
     //-----------------------------------------------------------------------------------
-    // Код вершинного шейдера
+    // Код вершинного шейдера спрайта
     //-----------------------------------------------------------------------------------
     private final String vertexShaderCode =
                     "uniform mat4 u_MVPMatrix; " +
@@ -91,10 +92,10 @@ public class Sprite {
                     "}";
 
     //-----------------------------------------------------------------------------------
-    // Код пиксельного шейдера
+    // Код пиксельного шейдера спрайта
     //-----------------------------------------------------------------------------------
     private final String fragmentShaderCode =
-            "precision mediump float; " +
+                    "precision mediump float; " +
                     "uniform sampler2D TexCoordIn; " +
                     "varying vec2 TexCoordOut;" +
                     "void main() {" +
@@ -133,8 +134,9 @@ public class Sprite {
 
         this.columns = columns;
         this.rows = rows;
-        spriteWidth = 1.0f / columns;
-        spriteHeight = 1.0f / rows;
+
+        spriteWidth = 1.0f / columns;  // Ширина спрайта в текстурных координатах
+        spriteHeight = 1.0f / rows;    // Высоата спрайта в текстурных координатах
 
         setActiveFrame(0);
     }
@@ -150,29 +152,27 @@ public class Sprite {
         //-------------------------------------------------------------------------------
         // Проверка на экране ли спрайт, если нет то не отрисовывать
         //-------------------------------------------------------------------------------
-        float hw = getWidth() * scale * 0.5f;
-        float hh = getHeight() * scale * 0.5f;
-        if (camera.isVisible(x-hw,y-hh, x+hw,y+hh)) {
-
-            float width = getWidth();
-            float height = getHeight();
-            // triangle 1
-            vertices[0] = -0.5f * width * scale + x;
-            vertices[1] = 0.5f * height * scale + y;
-            vertices[3] = -0.5f * width * scale + x;
-            vertices[4] = -0.5f * height * scale + y;
-            vertices[6] = 0.5f * width * scale + x;
-            vertices[7] = 0.5f * height * scale + y;
-            // triangle 2
-            vertices[9] = -0.5f * width * scale + x;
-            vertices[10] = -0.5f * height * scale + y;
-            vertices[12] = 0.5f * width * scale + x;
-            vertices[13] = 0.5f * height * scale + y;
-            vertices[15] = 0.5f * width * scale + x;
-            vertices[16] = -0.5f * height * scale + y;
-
+        float scaledWidth = getWidth() * scale;
+        float scaledHeight = getHeight() * scale;
+        float halfWidth = scaledWidth * 0.5f;
+        float halfHeight = scaledHeight * 0.5f;
+        if (camera.isVisible(x-halfWidth,y-halfHeight, x+halfWidth,y+halfHeight)) {
+            // Треугольник 1
+            vertices[0] = -0.5f * scaledWidth + x;
+            vertices[1] = 0.5f * scaledHeight + y;
+            vertices[3] = -0.5f * scaledWidth + x;
+            vertices[4] = -0.5f * scaledHeight + y;
+            vertices[6] = 0.5f * scaledWidth + x;
+            vertices[7] = 0.5f * scaledHeight + y;
+            // Треугольник 2
+            vertices[9] = -0.5f * scaledWidth + x;
+            vertices[10] = -0.5f * scaledHeight + y;
+            vertices[12] = 0.5f * scaledWidth + x;
+            vertices[13] = 0.5f * scaledHeight + y;
+            vertices[15] = 0.5f * scaledWidth + x;
+            vertices[16] = -0.5f * scaledHeight + y;
+            // Добавляем в список отрисовки
             Batcher.addSprite(texture, vertices, textureCoordinates, zOrder);
-
         }
         animationNextFrame();
     }
@@ -191,8 +191,8 @@ public class Sprite {
         //-------------------------------------------------------------------------------
         if (camera.isVisible(x,y, x+width,y+height)) {
             //-------------------------------------------------------------------------------
-            float sx = x + width / 2;
-            float sy = y + height / 2;
+            float sx = x + width * 0.5f;
+            float sy = y + height * 0.5f;
             // Triangle 1
             vertices[0] = -0.5f * width + sx;
             vertices[1] = 0.5f * height + sy;

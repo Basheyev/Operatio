@@ -13,8 +13,6 @@ import com.axiom.atom.engine.physics.geometry.AABB;
 import com.axiom.operatio.model.matflow.blocks.Block;
 import com.axiom.operatio.model.matflow.blocks.Production;
 
-import static com.axiom.atom.engine.graphics.GraphicsRender.camera;
-
 public class ProductionScene extends GameScene {
 
     private AABB exitBtn;
@@ -56,10 +54,10 @@ public class ProductionScene extends GameScene {
     @Override
     public void updateScene(float deltaTime) {
         production.productionCycle();
-        Camera camera = GraphicsRender.camera;
+        Camera camera = GraphicsRender.getCamera();
         cursorX = camera.x + Input.xAxis * 5;
         cursorY = camera.y + Input.yAxis * 5;
-        GraphicsRender.camera.lookAt(cursorX, cursorY);
+        camera.lookAt(cursorX, cursorY);
     }
 
     @Override
@@ -95,7 +93,8 @@ public class ProductionScene extends GameScene {
 
         GraphicsRender.drawText(
                 ("FPS:" + GraphicsRender.getFPS() +
-                 " CALLS=" + Batcher.getDrawCallsCount()).toCharArray(),
+                 " CALLS=" + Batcher.getDrawCallsCount() +
+                        " MS:" + GraphicsRender.getRenderTime()).toCharArray(),
                 camera.x1+50, camera.y1+1040, 2);
 
         GraphicsRender.setZOrder(0);
@@ -115,7 +114,8 @@ public class ProductionScene extends GameScene {
                     selectedRow = block.row;
                 }
             }
-            //Log.i("CLICK AT", " X="+worldX + " Y="+worldY);
+
+            Camera camera = GraphicsRender.getCamera();
             if (exitBtn.collides(worldX - camera.x1, worldY - camera.y1)) {
                 sceneManager.exitGame();
             }

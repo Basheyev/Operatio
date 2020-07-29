@@ -8,7 +8,7 @@ import com.axiom.atom.engine.graphics.GraphicsRender;
  * Инкапсуляция сущности программа.
  * (С) Atom Engine, Bolat Basheyev 2020
  */
-public class Program implements GLObject {
+public class Program implements GLESObject {
 
     protected int programID = -1;
     protected Shader vertexShader;
@@ -18,14 +18,14 @@ public class Program implements GLObject {
     public Program(Shader vertexShader, Shader fragmentShader) {
         this.vertexShader = vertexShader;
         this.fragmentShader = fragmentShader;
-        GraphicsRender.glTasksQueue.add(this);
+        GraphicsRender.addToLoadQueue(this);
         initialized = false;
     }
 
     //---------------------------------------------------------------------------
 
     @Override
-    public void initializeOnGLThread() {
+    public void loadObjectToGPU() {
         programID = GLES20.glCreateProgram();
         GLES20.glAttachShader(programID, vertexShader.getShaderID());
         GLES20.glAttachShader(programID, fragmentShader.getShaderID());

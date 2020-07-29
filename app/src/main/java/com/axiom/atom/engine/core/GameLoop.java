@@ -17,13 +17,17 @@ import java.util.concurrent.ArrayBlockingQueue;
  */
 public class GameLoop extends Thread {
 
+    public static final int INPUT_EVENTS_BUFFER_SIZE = 128;
+
     protected GameView gameView;
     protected SceneManager sceneManager;
     protected boolean running;
     protected float deltaTime;
     protected long lastCycleTime = 0;
 
+    //--------------------------------------------------------------------------------
     // Очередь событий ввода от пользователя (дополняется из UIThread)
+    //--------------------------------------------------------------------------------
     public static ArrayBlockingQueue<MotionEvent> inputEventQueue;
 
     /**
@@ -35,7 +39,7 @@ public class GameLoop extends Thread {
         super("GameLoop");
         this.gameView = view;
         this.sceneManager = sceneManager;
-        inputEventQueue = new ArrayBlockingQueue<MotionEvent>(100);
+        inputEventQueue = new ArrayBlockingQueue<MotionEvent>(INPUT_EVENTS_BUFFER_SIZE);
     }
 
     /**
@@ -60,7 +64,7 @@ public class GameLoop extends Thread {
 
             if (waitTime < 10)  {
                 try {
-                    this.sleep(5);
+                    sleep(5);
                 } catch(InterruptedException e)  {
                     Log.e("GAME LOOP", "Thread interrupted", e);
                 }
@@ -118,8 +122,7 @@ public class GameLoop extends Thread {
         scene.deletedObjects.clear();
 
         //------------------------------------------------------------------------------------------
-        // Вызываем обработчик событий ввода сцены
-        // (заодно вычисляем XY в координатах игрового мира)
+        // Вызываем обновление сцены
         //------------------------------------------------------------------------------------------
         deltaTime = (System.nanoTime() - lastCycleTime) / 1000000000f;
         scene.updateScene(deltaTime);
@@ -128,19 +131,26 @@ public class GameLoop extends Thread {
     }
 
 
+    /**
+     * Обработчик событий ввода с переводом экранных координат в координаты игрового мира
+     * @param scene игровая сцена в обработчик которой нужно доставить события
+     */
     private void processInputEvent(GameScene scene) {
+        // Если есть события ввода
         while (inputEventQueue.size() > 0) {
             MotionEvent event = inputEventQueue.poll(); // Берем очередное событие ввода
             if (event!=null) {
-                // Берем нормированные координаты и переворачиваем координату Y (экран/GLES)
-                float worldX = event.getX() / (float) gameView.getWidth();        // Нормировать 0-1
-                float worldY = 1 - (event.getY() / (float) gameView.getHeight()); // Нормировать 0-1
+                // Вычисляем нормированные экранные координаты (0-1)
+                // и переворачиваем координату Y (экран/GLES)
+                Camera camera = GraphicsRender.getCamera();
+                float worldX = event.getX() / (float) gameView.getWidth();
+                float worldY = 1 - (event.getY() / (float) gameView.getHeight());
 
-                // переводим в логические координаты экрана игрового движка c учетом зума
-                worldX *= Camera.SCREEN_WIDTH;
-                worldY *= Camera.SCREEN_HEIGHT;
-                worldX += GraphicsRender.camera.x1;     // добавляем горизонтальное смещение камеры
-                worldY += GraphicsRender.camera.y1;     // добавляем вертикальное смещение камеры
+                worldX *= Camera.SCREEN_WIDTH;          // переводим в логические координаты камеры
+                worldY *= Camera.SCREEN_HEIGHT;         // переводим в логические координаты камеры
+
+                worldX += camera.x1;     // добавляем горизонтальное смещение камеры
+                worldY += camera.y1;     // добавляем вертикальное смещение камеры
 
                 scene.onMotion(event, worldX, worldY);  // Вызываем обработчик события игровой сцены
             }

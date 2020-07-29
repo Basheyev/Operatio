@@ -81,7 +81,9 @@ public class PhysScene extends GameScene {
     public void postRender(Camera camera) {
         GraphicsRender.drawText(
                 ("FPS:" + GraphicsRender.getFPS() +
-                        " CALLS=" + Batcher.getDrawCallsCount()).toCharArray(),
+                        " CALLS=" + Batcher.getDrawCallsCount() +
+                        " QUADS=" + Batcher.getEntriesCount() +
+                        " MS:" + GraphicsRender.getRenderTime()).toCharArray(),
                 camera.x1+50, camera.y1+1040, 2);
     }
 

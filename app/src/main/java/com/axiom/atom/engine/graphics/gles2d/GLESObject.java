@@ -7,13 +7,13 @@ package com.axiom.atom.engine.graphics.gles2d;
  * <br><br>
  * (С) Atom Engine, Bolat Basheyev 2020
  */
-public interface GLObject {
+public interface GLESObject {
 
     /**
      * Ввиду того, что шейдеры, программы и текстуры могут загружаться только
      * в потоке GLThread (один поток = один контекст) мы добавляем задачи в очередь
      * чтобы потом вызвать initializeOnGLThread() из потока GLThread
      */
-    void initializeOnGLThread();
+    void loadObjectToGPU();
 
 }

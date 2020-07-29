@@ -17,7 +17,6 @@ import com.axiom.atom.engine.tests.shoottest.objects.TileMap;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import static com.axiom.atom.engine.graphics.GraphicsRender.camera;
 
 
 public class ShooterScene extends GameScene {
@@ -35,7 +34,7 @@ public class ShooterScene extends GameScene {
     public void startScene() {
         joystick = new Sprite(getResources(), R.drawable.joystick, 2,2);
         tileMap = new TileMap(this, 5);
-        for (int i=1; i<2; i++) {
+        for (int i=1; i<10; i++) {
             player = new Player(this, 8f);
             player.x = i * 4 * player.getLocalBounds().width;
             player.y = 700;
@@ -48,6 +47,8 @@ public class ShooterScene extends GameScene {
 
     @Override
     public void updateScene(float deltaTime) {
+
+        Camera camera = GraphicsRender.getCamera();
 
         // плавное движение камеры в сторону нажатия
         float dx = (player.x - camera.x) * 0.1f;
@@ -98,7 +99,9 @@ public class ShooterScene extends GameScene {
         GraphicsRender.setZOrder(100);
         GraphicsRender.drawText(
                 ("FPS:" + GraphicsRender.getFPS() +
-                        " CALLS=" + Batcher.getDrawCallsCount()).toCharArray(),
+                        " CALLS=" + Batcher.getDrawCallsCount() +
+                        " QUADS=" + Batcher.getEntriesCount() +
+                        " MS:" + GraphicsRender.getRenderTime()).toCharArray(),
                 camera.x1+50, camera.y1+1040, 2);
     }
 

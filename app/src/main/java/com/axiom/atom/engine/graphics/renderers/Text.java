@@ -22,7 +22,6 @@ public class Text {
         this.spacing = spacing;
     }
 
-
     public void draw(Camera camera, char[] text, float x, float y, float scale) {
         float bx = x;
         float by = y;

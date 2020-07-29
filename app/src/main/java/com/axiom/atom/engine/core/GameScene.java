@@ -56,7 +56,13 @@ public abstract class GameScene {
         }
         return null;
     }
-    public void addObject(GameObject obj) { addedObjects.add(obj); } // TODO защититься от повторного добавления одного объекта
+
+
+    public void addObject(GameObject obj) {
+        // исключаем повторное добавление одного и того же объекта
+        if (!getSceneObjects().contains(obj)) addedObjects.add(obj);
+    }
+
     public void removeObject(GameObject obj) { deletedObjects.add(obj); }
     public Resources getResources() {
         return resources;

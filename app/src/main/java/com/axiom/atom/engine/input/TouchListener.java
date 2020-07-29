@@ -14,10 +14,12 @@ public class TouchListener implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (event.getActionMasked()==MotionEvent.ACTION_UP) v.performClick(); // Потому что warning
-        Input.handleVirtualJoystick(event);      // Вызываем обработчик Touch Joystick
-        // Fixme будет жрать память, но надо придумать механизм
-        GameLoop.inputEventQueue.add(MotionEvent.obtain(event));     // Добавляем в очередь событий игрового цикла
+        // Потому что warning
+        if (event.getActionMasked()==MotionEvent.ACTION_UP) v.performClick();
+        // Вызываем обработчик Touch Joystick
+        Input.handleVirtualJoystick(event);
+        // Добавляем копию события в очередь событий игрового цикла
+        GameLoop.inputEventQueue.add(MotionEvent.obtain(event)); // FIXME способ не создавать копию
         return true;
     }
 

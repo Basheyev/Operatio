@@ -10,7 +10,7 @@ import com.axiom.atom.engine.graphics.GraphicsRender;
  * Реализует типовые операции над шейдерами.
  * (C) Atom Engine, Bolat Basheyev 2020
  */
-public class Shader implements GLObject {
+public class Shader implements GLESObject {
 
     protected int shaderID;
     protected int shaderType;
@@ -30,11 +30,11 @@ public class Shader implements GLObject {
             if (type==GLES20.GL_FRAGMENT_SHADER)
                 shaderCode = DEFAULT_FRAGMENT_SHADER_CODE;
         }
-        GraphicsRender.glTasksQueue.add(this);
+        GraphicsRender.addToLoadQueue(this);
     }
 
     @Override
-    public void initializeOnGLThread() {
+    public void loadObjectToGPU() {
         shaderID = GLES20.glCreateShader(shaderType);
         if (shaderID==0) Log.e ("SHADER", "Failed to create shader.");
         GLES20.glShaderSource(shaderID, shaderCode);

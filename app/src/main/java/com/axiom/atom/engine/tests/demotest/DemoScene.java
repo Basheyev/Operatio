@@ -100,7 +100,9 @@ public class DemoScene extends GameScene {
 
         GraphicsRender.drawText(
                 ("FPS:" + GraphicsRender.getFPS() +
-                        " CALLS=" + Batcher.getDrawCallsCount()).toCharArray(),
+                        " CALLS=" + Batcher.getDrawCallsCount() +
+                        " QUADS=" + Batcher.getEntriesCount() +
+                        " MS:" + GraphicsRender.getRenderTime()).toCharArray(),
                 camera.x1+50, camera.y1+1040, 2);
     }
 

@@ -37,7 +37,7 @@ public class SpriteScene extends GameScene {
         background.zOrder = 0;
         background.draw(camera,0,0,Camera.SCREEN_WIDTH,Camera.SCREEN_HEIGHT);
         box.zOrder = 1;
-        for (int i=0; i<2000; i++) {
+        for (int i=0; i<1000; i++) {
             x = (float) Math.random() * Camera.SCREEN_WIDTH;
             y = (float) Math.random() * Camera.SCREEN_HEIGHT;
             scale = 1 + (float) Math.random() * 9;
@@ -53,7 +53,8 @@ public class SpriteScene extends GameScene {
         GraphicsRender.drawText(
                 ("FPS:" + GraphicsRender.getFPS() +
                         " CALLS=" + Batcher.getDrawCallsCount() +
-                        " QUADS=" + Batcher.getEntriesCount()).toCharArray(),
+                        " QUADS=" + Batcher.getEntriesCount() +
+                        " MS:" + GraphicsRender.getRenderTime()).toCharArray(),
                 camera.x1+50, camera.y1+1040, 2);
     }
 
