@@ -1,5 +1,6 @@
 package com.axiom.atom.engine.core;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -170,6 +171,5 @@ public class GameLoop extends Thread {
             }
         }
     }
-
 
 }

@@ -2,13 +2,16 @@ package com.axiom.operatio.scenes;
 
 import android.view.MotionEvent;
 
+import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
+import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Batcher;
 import com.axiom.atom.engine.input.Input;
 import com.axiom.atom.engine.core.geometry.AABB;
+import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.matflow.blocks.Block;
 import com.axiom.operatio.model.matflow.blocks.Production;
 
@@ -18,6 +21,7 @@ public class ProductionScene extends GameScene {
 
     protected Production production;
 
+    protected int tickSound;
     protected float cursorX, cursorY;
     protected int selectedColumn=0, selectedRow=0;
     protected float gridSize = 128;
@@ -48,6 +52,7 @@ public class ProductionScene extends GameScene {
     public void startScene() {
         if (production==null) production = new Production(this,100,100,gridSize);
         exitBtn = new AABB(1720,1004,1919,1079);
+        tickSound = SoundRenderer.loadSound(R.raw.tick );
     }
 
     @Override
@@ -109,6 +114,7 @@ public class ProductionScene extends GameScene {
                     Block block = (Block) obj;
                     selectedColumn = block.column;
                     selectedRow = block.row;
+                    SoundRenderer.play(tickSound);
                 }
             }
 
@@ -122,6 +128,6 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void disposeScene() {
-
+        SoundRenderer.unloadAll();
     }
 }

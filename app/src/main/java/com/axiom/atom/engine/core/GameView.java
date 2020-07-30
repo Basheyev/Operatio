@@ -1,5 +1,6 @@
 package com.axiom.atom.engine.core;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.input.Input;
 import com.axiom.atom.engine.input.TouchListener;
+import com.axiom.atom.engine.sound.SoundRenderer;
 
 
 /**
@@ -16,6 +18,7 @@ import com.axiom.atom.engine.input.TouchListener;
  * <br><br>
  * С) Atom Engine, Bolat Basheyev 2020
  */
+@SuppressLint("ViewConstructor")
 public class GameView extends GLSurfaceView {
 
     protected static GameView gameView;
@@ -45,10 +48,14 @@ public class GameView extends GLSurfaceView {
         setEGLContextClientVersion(2);
         setPreserveEGLContextOnPause(true);
         //------------------------------------------------------------------------------------
-        // Инициализация ввода
+        // Инициализация подсистемы ввода
         //------------------------------------------------------------------------------------
         setOnTouchListener(new TouchListener());    // Добавляем обработчик событий ввода
         Input.initialize(context);                  // Инициализируем обработчик джойстика
+        //------------------------------------------------------------------------------------
+        // Инициализация звуковой подсистемы
+        //------------------------------------------------------------------------------------
+        SoundRenderer.initialize(this);
         //------------------------------------------------------------------------------------
         // Создаём менеджер сцен и передаем доступ к ресурсам
         //------------------------------------------------------------------------------------
@@ -74,6 +81,7 @@ public class GameView extends GLSurfaceView {
         //-----------------------------------------------------------------------------------
         // Закрываем нашу активность и все её дочерние активности (освобождаем GL Context)
         //-----------------------------------------------------------------------------------
+        SoundRenderer.dispose();
         AppCompatActivity mainActivity = (AppCompatActivity) getContext();
         mainActivity.finishAffinity();
         System.runFinalization();
