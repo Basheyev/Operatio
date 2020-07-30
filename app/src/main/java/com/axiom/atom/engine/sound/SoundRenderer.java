@@ -1,14 +1,12 @@
 package com.axiom.atom.engine.sound;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Build;
 
-import com.axiom.atom.engine.core.GameLoop;
 import com.axiom.atom.engine.core.GameView;
 
 import java.util.HashMap;
@@ -24,9 +22,10 @@ public class SoundRenderer {
     public static final int MAX_STREAMS = 4;
     protected static boolean initialized = false;
     protected static GameView gameView;
-    protected static SoundPool soundEffects;
-
-
+    protected static SoundPool soundPool;
+    protected static MediaPlayer music;
+    protected static float soundLeftVolume = 1;
+    protected static float soundRightVolume = 1;
 
 
     public static void initialize(GameView view) {
@@ -37,8 +36,8 @@ public class SoundRenderer {
     }
 
     public static void dispose() {
-        soundEffects.release();
-        soundEffects = null;
+        soundPool.release();
+        soundPool = null;
         initialized = false;
     }
 
@@ -63,7 +62,7 @@ public class SoundRenderer {
                 .setUsage(AudioAttributes.USAGE_GAME)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build();
-        soundEffects = new SoundPool.Builder()
+        soundPool = new SoundPool.Builder()
                 .setAudioAttributes(attributes)
                 .build();
     }
@@ -73,7 +72,7 @@ public class SoundRenderer {
      */
     @SuppressWarnings("deprecation")
     private static void createOldSoundPool(){
-        soundEffects = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC,0);
+        soundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC,0);
     }
 
     //-------------------------------------------------------------------------------------
@@ -87,25 +86,33 @@ public class SoundRenderer {
         if (!initialized) return -1;
         Integer soundID = loadedSounds.get(resource);
         if (soundID!=null) return soundID;
-        soundID = soundEffects.load(gameView.getContext(), resource, 1);
+        soundID = soundPool.load(gameView.getContext(), resource, 1);
         loadedSounds.put(resource, soundID);
         return soundID;
     }
 
-    public static void play(int soundID) {
-        if (!initialized) return;
-        soundEffects.play(soundID,1,1,0,0,1);
+
+    public static void setSoundVolume(float left, float right) {
+        soundLeftVolume = left;
+        soundRightVolume = right;
     }
 
-    public static void unloadAll() {
+    public static void playSound(int soundID) {
+        if (!initialized) return;
+        soundPool.play(soundID,soundLeftVolume,soundRightVolume,0,0,1);
+    }
+
+
+
+    public static void unloadSounds() {
         for (Map.Entry<Integer,Integer> entry:loadedSounds.entrySet()) {
-            soundEffects.unload(entry.getValue());
+            soundPool.unload(entry.getValue());
         }
         loadedSounds.clear();
     }
 
 
-    public static void unload(int soundID) {
+    public static void unloadSound(int soundID) {
         if (!initialized) return;
         int key = -1;
         for (Map.Entry<Integer,Integer> entry:loadedSounds.entrySet()) {
@@ -116,8 +123,56 @@ public class SoundRenderer {
         }
         if (key!=-1) {
             loadedSounds.remove(key);
-            soundEffects.unload(soundID);
+            soundPool.unload(soundID);
         }
     }
+
+
+    //-------------------------------------------------------------------------------------
+    // Управление музыкой
+    //-------------------------------------------------------------------------------------
+    public static boolean loadMusic(int resourceID) {
+        if (music!=null) unloadMusic();
+        music = MediaPlayer.create(gameView.getContext(), resourceID);
+        return music != null;
+    }
+
+    public static boolean playMusic() {
+        if (music==null) return false;
+        music.start();
+        return music.isPlaying();
+    }
+
+    public static void setMusicVolume(float leftVolume, float rightVolume) {
+        if (music==null) return;
+        music.setVolume(leftVolume, rightVolume);
+    }
+
+    public static boolean isMusicPlaying() {
+        if (music==null) return false;
+        return music.isPlaying();
+    }
+
+    public static void pauseMusic() {
+        if (music==null) return;
+        music.pause();
+    }
+
+    public static void stopMusic() {
+        if (music==null) return;
+        music.stop();
+    }
+
+    public static void resetMusic() {
+        if (music==null) return;
+        music.reset();
+    }
+
+    public static void unloadMusic() {
+        if (music==null) return;
+        music.release();
+        music = null;
+    }
+
 
 }
