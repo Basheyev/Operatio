@@ -23,12 +23,17 @@ public abstract class GameScene {
     protected ArrayList<GameObject> deletedObjects = new ArrayList<GameObject>();  // Служебный список удаления объектов
 
     public abstract String getSceneName();
-    public abstract void startScene();                   // Вызывается из потока UIThread
+    public abstract void startScene();                   // Вызывается при запуск/смене сцены
+    public abstract void disposeScene();                 // Вызывается из потока GameLoop
+
+    //----------------------------------------------------------------------------------------
+    // Важно: избегайте создание объектов в этих методах, так они вызываются 60 раз в секунду
+    // это будет вызывать задержки при работе Garbage Collector (сборщика мусора
+    //----------------------------------------------------------------------------------------
     public abstract void updateScene(float deltaTime);   // Вызывается из потока GameLoop
     public abstract void preRender(Camera camera);       // Вызывается из потока GLThread
     public abstract void postRender(Camera camera);      // Вызывается из потока GLThread
     public abstract void onMotion(MotionEvent event, float worldX, float worldY); // GameLoop
-    public abstract void dispose();                      // Вызывается из потока GameLoop
 
     /**
      * Возвращает объекты сцены

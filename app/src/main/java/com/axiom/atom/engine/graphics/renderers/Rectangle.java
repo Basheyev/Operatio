@@ -7,7 +7,7 @@ import android.opengl.GLES20;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.Program;
 import com.axiom.atom.engine.graphics.gles2d.Shader;
-import com.axiom.atom.engine.physics.geometry.AABB;
+import com.axiom.atom.engine.core.geometry.AABB;
 
 /**
  * Отрисовывает прямоугольник

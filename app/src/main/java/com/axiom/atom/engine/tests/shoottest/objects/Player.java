@@ -6,14 +6,14 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Rectangle;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.input.Input;
-import com.axiom.atom.engine.physics.geometry.AABB;
+import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.physics.PhysicsRender;
 import com.axiom.atom.engine.tests.shoottest.ShooterScene;
 import com.axiom.atom.engine.core.GameScene;
 
 
 /**
- * TODO: Перенести общую логику персонажа в GameCharacter
+ *
  */
 public class Player extends GameObject {
 

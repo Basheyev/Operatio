@@ -19,7 +19,7 @@ public class TouchListener implements View.OnTouchListener {
         // Вызываем обработчик Touch Joystick
         Input.handleVirtualJoystick(event);
         // Добавляем копию события в очередь событий игрового цикла
-        GameLoop.inputEventQueue.add(MotionEvent.obtain(event)); // FIXME способ не создавать копию
+        GameLoop.inputEventQueue.add(MotionEvent.obtain(event));
         return true;
     }
 

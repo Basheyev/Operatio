@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        gameView = new GameView(this, new SpriteScene());
+        gameView = new GameView(this, new ProductionScene());
         setContentView(gameView);
     }
 

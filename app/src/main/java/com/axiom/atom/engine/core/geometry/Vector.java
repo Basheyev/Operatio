@@ -1,4 +1,4 @@
-package com.axiom.atom.engine.physics.geometry;
+package com.axiom.atom.engine.core.geometry;
 
 /**
  * 2D вектор и операции над ним<BR>

@@ -7,10 +7,10 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Rectangle;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.physics.PhysicsRender;
-import com.axiom.atom.engine.physics.geometry.AABB;
+import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.tests.shoottest.ShooterScene;
 
-// TODO Надо сделат класс Abstractным
+
 public class TileObject extends GameObject {
   //  protected Sprite sprite;
     protected TileMap tilemap;
@@ -43,7 +43,7 @@ public class TileObject extends GameObject {
      */
     public void draw(Camera camera) {
         sprite.setActiveFrame(tileType);
-        sprite.draw(camera,x,y,scale); // TODO тут можно дерзкую оптимизацию сделать за счет пакета
+        sprite.draw(camera,x,y,scale);
         if (tileType>0 & ((ShooterScene)scene).debug) {
             AABB bounds = getWorldBounds();
             debugRectangle.draw(camera, bounds.min.x, bounds.min.y, bounds.width, bounds.height);

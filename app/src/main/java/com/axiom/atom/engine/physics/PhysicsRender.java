@@ -2,8 +2,8 @@ package com.axiom.atom.engine.physics;
 
 import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
-import com.axiom.atom.engine.physics.geometry.AABB;
-import com.axiom.atom.engine.physics.geometry.Vector;
+import com.axiom.atom.engine.core.geometry.AABB;
+import com.axiom.atom.engine.core.geometry.Vector;
 
 import java.util.ArrayList;
 

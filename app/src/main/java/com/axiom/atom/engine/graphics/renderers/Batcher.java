@@ -125,6 +125,7 @@ public class Batcher {
     public static void finishBatching(Camera camera) {
         if (entriesCounter==0) return;
 
+        // Сортируем всё, чтобы подготовить к группировке
         Arrays.sort(entries,0, entriesCounter, comparator);
 
         Entry entry = entries[0];
@@ -161,7 +162,7 @@ public class Batcher {
                 verticesBatch.prepare();
                 texCoordBatch.prepare();
                 // Отрисовываем прошлый пакет
-                renderBatch(camera, lastTexture, lastColor);
+                renderBatch(camera.getCameraMatrix(), lastTexture, lastColor);
                 batchRendered = true;
                 // начинаем новый пакет
                 verticesBatch.clear();
@@ -180,7 +181,7 @@ public class Batcher {
             verticesBatch.prepare();
             texCoordBatch.prepare();
             // Отрисовываем прошлый пакет
-            renderBatch(camera, lastTexture, entry.color);
+            renderBatch(camera.getCameraMatrix(), lastTexture, entry.color);
             verticesBatch.clear();
             texCoordBatch.clear();
         }
@@ -188,7 +189,7 @@ public class Batcher {
     }
 
 
-    protected static void renderBatch(Camera camera, Texture texture, float[] color) {
+    protected static void renderBatch(float[] cameraMatrix, Texture texture, float[] color) {
         // Если пустой пакет уходим
         if (verticesBatch.getVertexCount()==0) return;
 
@@ -199,7 +200,7 @@ public class Batcher {
             Rectangle.program.use();
             int vertexHandler = Rectangle.program.setAttribVertexArray("vPosition", verticesBatch);
             Rectangle.program.setUniformVec4Value("vColor", color);
-            Rectangle.program.setUniformMat4Value("u_MVPMatrix", camera.getCameraMatrix());
+            Rectangle.program.setUniformMat4Value("u_MVPMatrix", cameraMatrix);
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, verticesBatch.getVertexCount());
             Rectangle.program.disableVertexArray(vertexHandler);
         } else {
@@ -208,7 +209,7 @@ public class Batcher {
             int vertexHandler = Sprite.program.setAttribVertexArray("vPosition", verticesBatch);
             int textureHandler = Sprite.program.setAttribVertexArray("TexCoordIn", texCoordBatch);
             Sprite.program.setUniformIntValue("sampler", 0);
-            Sprite.program.setUniformMat4Value("u_MVPMatrix", camera.getCameraMatrix());
+            Sprite.program.setUniformMat4Value("u_MVPMatrix", cameraMatrix);
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, verticesBatch.getVertexCount());
             Sprite.program.disableVertexArray(textureHandler);
             Sprite.program.disableVertexArray(vertexHandler);

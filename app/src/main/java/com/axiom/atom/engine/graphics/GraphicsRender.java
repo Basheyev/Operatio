@@ -15,7 +15,7 @@ import com.axiom.atom.engine.graphics.renderers.Rectangle;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.graphics.renderers.Batcher;
 import com.axiom.atom.engine.graphics.renderers.Text;
-import com.axiom.atom.engine.physics.geometry.AABB;
+import com.axiom.atom.engine.core.geometry.AABB;
 
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -27,7 +27,6 @@ import javax.microedition.khronos.opengles.GL10;
 
 /**
  *  Графический рендер - отрисовывает всю графику
- *  // TODO Навести порядок в этом классе
  *  (C) Atom Engine, Bolat Basheyev 2020
  */
 public class GraphicsRender implements GLSurfaceView.Renderer {
@@ -57,18 +56,29 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
 
 
     /**
+     * Возвращает единственный экземпляр графического рендера (Singleton)
+     * @param gameView экземпляр GameView (где рисуем и откуда забираем ввод)
+     * @param sceneManager экземпляр менеджера сцен
+     * @return единственный экземпляр графического рендера (Singleton)
+     */
+    public static GraphicsRender getInstance(GameView gameView, SceneManager sceneManager) {
+        if (render==null) render = new GraphicsRender(gameView,sceneManager);
+        return render;
+    }
+
+
+    /**
      * Конструктор графического рендера
      * @param gameView где рисуем и откуда забираем ввод
      * @param sceneManager менеджер сцен
      */
-    public GraphicsRender(GameView gameView, SceneManager sceneManager) {
+    private GraphicsRender(GameView gameView, SceneManager sceneManager) {
         super();
         this.gameView = gameView;
         this.sceneManager = sceneManager;
         // Инициализируем статические переменные
         loadQueue = new ArrayBlockingQueue<>(LAZY_LOAD_QUEUE_LENGTH);
-        camera = new Camera();
-        render = this;
+        camera = Camera.getInstance();
     }
 
 

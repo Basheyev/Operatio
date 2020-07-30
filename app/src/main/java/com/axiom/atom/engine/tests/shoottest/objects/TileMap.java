@@ -15,8 +15,6 @@ import java.io.InputStreamReader;
 
 /**
  * Ортогональная карта плиток (tilemap)
- * TODO: физика препятствий, переходы координат
- * TODO: добавить поддержку анимированных плиток
  */
 public class TileMap {
 

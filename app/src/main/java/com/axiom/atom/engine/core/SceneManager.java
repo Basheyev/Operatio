@@ -16,15 +16,29 @@ import java.util.Map;
  */
 public class SceneManager {
 
+    private static SceneManager sceneManager;
+
     protected HashMap<String, GameScene> scenes;
     protected GameScene activeGameScene = null;
     protected Resources resources;
     protected boolean exitGame;
 
+
+    /**
+     * Отдаёт единственный экземпляр SceneManager (Singleton)
+     * @param res ресурсы (чтобы сцены имели доступ к ним)
+     * @return единственный экземпляр SceneManager (Singleton)
+     */
+    public static SceneManager getInstance(Resources res) {
+        if (sceneManager==null) sceneManager = new SceneManager(res);
+        return sceneManager;
+    }
+
+
     /**
      * Конструктор менеджера сцен<br>
      */
-    public SceneManager(Resources res) {
+    private SceneManager(Resources res) {
         scenes = new HashMap<String, GameScene>();
         exitGame = false;
         resources = res;
@@ -49,7 +63,7 @@ public class SceneManager {
         GameScene scene = scenes.get(name);
         if (scene==null) return;
         if (scene==activeGameScene) activeGameScene = null;
-        scene.dispose();
+        scene.disposeScene();
         scene.getSceneObjects().clear();
         scenes.remove(name);
     }

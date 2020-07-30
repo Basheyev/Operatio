@@ -24,7 +24,6 @@ public class Conveyor extends Block {
     protected int animLR, animRL;
     protected int animUD, animDU;
 
-    // TODO стыковка конвейр-конвейер, конвейр-машина
     public Conveyor(GameScene scene, Production p, int in, int out, int deliveryTime, int capacity, float scale) {
         super(scene, p, capacity, in, out);
 

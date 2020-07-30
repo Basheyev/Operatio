@@ -51,12 +51,10 @@ public class ShooterScene extends GameScene {
         Camera camera = GraphicsRender.getCamera();
 
         // плавное движение камеры в сторону нажатия
-        float dx = (player.x - camera.x) * 0.1f;
-        float dy = (player.y - camera.y) * 0.1f;
-        camera.x += dx;
-        camera.y += dy;
+        float dx = (player.x - camera.getX()) * 0.1f;
+        float dy = (player.y - camera.getY()) * 0.1f;
 
-        camera.lookAt(camera.x, camera.y);
+        camera.lookAt(camera.getX() + dx, camera.getY() + dy);
 
         PhysicsRender.doPhysics(this, deltaTime);
     }
@@ -73,27 +71,27 @@ public class ShooterScene extends GameScene {
         joystick.zOrder = 10;
         joystick.setActiveFrame(0);
         joystick.draw(camera,
-                camera.x1 + camera.SCREEN_WIDTH * 0.9f,
-                camera.y1 + camera.SCREEN_HEIGHT * 0.25f,
+                camera.getMinX() + camera.SCREEN_WIDTH * 0.9f,
+                camera.getMinY() + camera.SCREEN_HEIGHT * 0.25f,
                 2 + (Input.AButton ? 0.5f : 0));
         // B
         joystick.setActiveFrame(1);
         joystick.draw(camera,
-                camera.x1 + camera.SCREEN_WIDTH * 0.7f,
-                camera.y1 + camera.SCREEN_HEIGHT * 0.25f,
+                camera.getMinX() + camera.SCREEN_WIDTH * 0.7f,
+                camera.getMinY() + camera.SCREEN_HEIGHT * 0.25f,
                 2 + (Input.BButton ? 0.5f : 0));
 
         // Joystick border
         joystick.setActiveFrame(3);
         joystick.draw(camera,
-                camera.x1 + camera.SCREEN_WIDTH * 0.2f,
-                camera.y1 + camera.SCREEN_HEIGHT * 0.3f,4);
+                camera.getMinX() + camera.SCREEN_WIDTH * 0.2f,
+                camera.getMinY() + camera.SCREEN_HEIGHT * 0.3f,4);
 
         // Joystick
         joystick.setActiveFrame(2);
         joystick.draw(camera,
-                camera.x1 + camera.SCREEN_WIDTH * 0.2f + Input.xAxis * (joystick.getWidth()),
-                camera.y1 + camera.SCREEN_HEIGHT * 0.3f + Input.yAxis * (joystick.getHeight()),
+                camera.getMinX() + camera.SCREEN_WIDTH * 0.2f + Input.xAxis * (joystick.getWidth()),
+                camera.getMinY() + camera.SCREEN_HEIGHT * 0.3f + Input.yAxis * (joystick.getHeight()),
                 1);
 
         GraphicsRender.setZOrder(100);
@@ -102,7 +100,7 @@ public class ShooterScene extends GameScene {
                         " CALLS=" + Batcher.getDrawCallsCount() +
                         " QUADS=" + Batcher.getEntriesCount() +
                         " MS:" + GraphicsRender.getRenderTime()).toCharArray(),
-                camera.x1+50, camera.y1+1040, 2);
+                camera.getMinX()+50, camera.getMinY()+1040, 2);
     }
 
     @Override
@@ -111,7 +109,7 @@ public class ShooterScene extends GameScene {
     }
 
     @Override
-    public void dispose() {
+    public void disposeScene() {
 
     }
 }

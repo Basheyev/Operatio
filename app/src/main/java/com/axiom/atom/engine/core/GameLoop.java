@@ -19,6 +19,7 @@ public class GameLoop extends Thread {
 
     public static final int INPUT_EVENTS_BUFFER_SIZE = 128;
 
+    private static GameLoop gameLoop;
     protected GameView gameView;
     protected SceneManager sceneManager;
     protected boolean running;
@@ -31,16 +32,29 @@ public class GameLoop extends Thread {
     public static ArrayBlockingQueue<MotionEvent> inputEventQueue;
 
     /**
+     * Возвращает единственный экземпляр потока игрового цикла (Singleton)
+     * @param view экземпляр GameView
+     * @param sceneManager экземпляр SceneManager
+     * @return единственный экземпляр потока игрового цикла (Singleton)
+     */
+    public static GameLoop getInstance(GameView view, SceneManager sceneManager) {
+        if (gameLoop==null) gameLoop = new GameLoop(view, sceneManager);
+        return gameLoop;
+    }
+
+    /**
      * Конструктор игрового цикла
      * @param view
      * @param sceneManager
      */
-    public GameLoop(GameView view, SceneManager sceneManager)  {
+    private GameLoop(GameView view, SceneManager sceneManager)  {
         super("GameLoop");
         this.gameView = view;
         this.sceneManager = sceneManager;
         inputEventQueue = new ArrayBlockingQueue<MotionEvent>(INPUT_EVENTS_BUFFER_SIZE);
     }
+
+
 
     /**
      * Основной цикл игры
@@ -149,8 +163,8 @@ public class GameLoop extends Thread {
                 worldX *= Camera.SCREEN_WIDTH;          // переводим в логические координаты камеры
                 worldY *= Camera.SCREEN_HEIGHT;         // переводим в логические координаты камеры
 
-                worldX += camera.x1;     // добавляем горизонтальное смещение камеры
-                worldY += camera.y1;     // добавляем вертикальное смещение камеры
+                worldX += camera.getMinX();            // добавляем горизонтальное смещение камеры
+                worldY += camera.getMinY();          // добавляем вертикальное смещение камеры
 
                 scene.onMotion(event, worldX, worldY);  // Вызываем обработчик события игровой сцены
             }

@@ -2,8 +2,8 @@ package com.axiom.atom.engine.core;
 
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.atom.engine.physics.geometry.AABB;
-import com.axiom.atom.engine.physics.geometry.Vector;
+import com.axiom.atom.engine.core.geometry.AABB;
+import com.axiom.atom.engine.core.geometry.Vector;
 import com.axiom.atom.engine.physics.PhysicsRender;
 
 

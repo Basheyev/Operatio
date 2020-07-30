@@ -4,7 +4,7 @@ import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Rectangle;
-import com.axiom.atom.engine.physics.geometry.AABB;
+import com.axiom.atom.engine.core.geometry.AABB;
 
 public class BoxObject extends GameObject {
 

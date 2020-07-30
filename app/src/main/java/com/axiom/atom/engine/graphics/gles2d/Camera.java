@@ -5,7 +5,7 @@ import android.opengl.Matrix;
 /**
  * Камера - вычисляет ортогнальную матрицу для наблюдения за точкой в игровом мире.
  * Формирует логическое разрешение экрана для всех устройств 1920x1080 (HD 16:9)
- * <br><br>
+ * <br><br> FIXME не синхронизируется работа с камерой из-за чего подергивания при отрисовке
  * (С) Atom Engine, Bolat Basheyev 2020
  */
 public class Camera {
@@ -14,12 +14,26 @@ public class Camera {
     public static final float SCREEN_WIDTH = 1920;
     public static final float SCREEN_HEIGHT = 1080;
 
-    protected float[] cameraMatrix = new float[16];
-    public float x1, y1, x2, y2;
-    public float x, y;
+    private static Camera camera;
+    private float x1, y1, x2, y2;
+    private float x, y;
+    private float[] cameraMatrix = new float[16];
     private float oldX, oldY;
 
-    public Camera() {
+
+    /**
+     * Возвращает единственный экземпляр камеры (Singleton)
+     * @return единственный экземпляр камеры (Singleton)
+     */
+    public static Camera getInstance() {
+        if (camera==null) camera = new Camera();
+        return camera;
+    }
+
+    /**
+     * Конструктор камеры
+     */
+    private Camera() {
         // По умолчанию смотрим в центр экрана
         lookAt(SCREEN_WIDTH / 2.0f,SCREEN_HEIGHT / 2.0f);
         // Инициализируем объекты для отрисовки прямоугольника
@@ -33,19 +47,19 @@ public class Camera {
      */
     public float[] lookAt(float x, float y) {
         if (x==oldX && y==oldY) return cameraMatrix;
-        x1 = x - (SCREEN_WIDTH) / 2.0f;
-        y1 = y - (SCREEN_HEIGHT) / 2.0f;
-        x2 = x + (SCREEN_WIDTH ) / 2.0f;
-        y2 = y + (SCREEN_HEIGHT ) / 2.0f;
-        this.x = x; // Camera center X
-        this.y = y; // Camera center Y
         // Ортогональная проекция 1920x1080 (HD)
         // удостовериться, что не меняем матрицу во время отрисовки кадра
         synchronized (cameraMatrix) {
+            x1 = x - (SCREEN_WIDTH) / 2.0f;
+            y1 = y - (SCREEN_HEIGHT) / 2.0f;
+            x2 = x + (SCREEN_WIDTH ) / 2.0f;
+            y2 = y + (SCREEN_HEIGHT ) / 2.0f;
+            this.x = x; // Camera center X
+            this.y = y; // Camera center Y
             Matrix.orthoM(cameraMatrix, 0, x1, x2, y1, y2, -1, 1);
+            oldX = x;
+            oldY = y;
         }
-        oldX = x;
-        oldY = y;
         return cameraMatrix;
     }
 
@@ -84,5 +98,42 @@ public class Camera {
         return cameraMatrix;
     }
 
+    public float getX() {
+        synchronized (cameraMatrix) {
+            return x;
+        }
+    }
+
+    public float getY() {
+        synchronized (cameraMatrix) {
+            return y;
+        }
+    }
+
+
+    public float getMinX() {
+        synchronized (cameraMatrix) {
+            return x1;
+        }
+    }
+
+    public float getMinY() {
+        synchronized (cameraMatrix) {
+            return y1;
+        }
+    }
+
+
+    public float getMaxX() {
+        synchronized (cameraMatrix) {
+            return x2;
+        }
+    }
+
+    public float getMaxY() {
+        synchronized (cameraMatrix) {
+            return y2;
+        }
+    }
 
 }

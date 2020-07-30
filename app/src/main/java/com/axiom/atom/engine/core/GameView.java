@@ -18,11 +18,18 @@ import com.axiom.atom.engine.input.TouchListener;
  */
 public class GameView extends GLSurfaceView {
 
+    protected static GameView gameView;
     protected GameLoop gameLoop;
     protected SceneManager sceneManager;
     protected GraphicsRender renderer;
 
-    public GameView(Context context, GameScene gameScene) {
+
+    public static GameView getInstance(Context context, GameScene gameScene) {
+        if (gameView==null) gameView = new GameView(context, gameScene);
+        return gameView;
+    }
+
+    private GameView(Context context, GameScene gameScene) {
         super(context);
         initializeGameEngine(gameScene, context);
     }
@@ -45,16 +52,16 @@ public class GameView extends GLSurfaceView {
         //------------------------------------------------------------------------------------
         // Создаём менеджер сцен и передаем доступ к ресурсам
         //------------------------------------------------------------------------------------
-        sceneManager = new SceneManager(getResources());
+        sceneManager = SceneManager.getInstance(getResources());
         //------------------------------------------------------------------------------------
         // Запускаем поток графического рендера
         //------------------------------------------------------------------------------------
-        renderer = new GraphicsRender(this, sceneManager);
+        renderer = GraphicsRender.getInstance(this, sceneManager);
         setRenderer(renderer);
         //------------------------------------------------------------------------------------
         // Запускаем поток основного цикла игры
         //------------------------------------------------------------------------------------
-        gameLoop = new GameLoop(this, sceneManager);
+        gameLoop = GameLoop.getInstance(this, sceneManager);
         gameLoop.start();
         //------------------------------------------------------------------------------------
         // Запускаем сцену

@@ -84,7 +84,7 @@ public class PhysScene extends GameScene {
                         " CALLS=" + Batcher.getDrawCallsCount() +
                         " QUADS=" + Batcher.getEntriesCount() +
                         " MS:" + GraphicsRender.getRenderTime()).toCharArray(),
-                camera.x1+50, camera.y1+1040, 2);
+                camera.getMinX()+50, camera.getMinY()+1040, 2);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class PhysScene extends GameScene {
     }
 
     @Override
-    public void dispose() {
+    public void disposeScene() {
 
     }
 }

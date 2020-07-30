@@ -1,6 +1,5 @@
 package com.axiom.operatio.scenes;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.axiom.atom.engine.core.GameObject;
@@ -9,7 +8,7 @@ import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Batcher;
 import com.axiom.atom.engine.input.Input;
-import com.axiom.atom.engine.physics.geometry.AABB;
+import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.operatio.model.matflow.blocks.Block;
 import com.axiom.operatio.model.matflow.blocks.Production;
 
@@ -55,8 +54,8 @@ public class ProductionScene extends GameScene {
     public void updateScene(float deltaTime) {
         production.productionCycle();
         Camera camera = GraphicsRender.getCamera();
-        cursorX = camera.x + Input.xAxis * 5;
-        cursorY = camera.y + Input.yAxis * 5;
+        cursorX = camera.getX() + Input.xAxis * 5;
+        cursorY = camera.getY() + Input.yAxis * 5;
         camera.lookAt(cursorX, cursorY);
     }
 
@@ -72,20 +71,19 @@ public class ProductionScene extends GameScene {
         GraphicsRender.drawText(("QUADS:"+ Batcher.getEntriesCount() +
                 " ITEMS:" + production.getTotalItems() +
                 "\n" + production.getBlockAt(selectedColumn,selectedRow)).toCharArray(),
-                camera.x1 + 50,
-                camera.y1 + 100,2);
+                camera.getMinX() + 50,
+                camera.getMinY() + 100,2);
         GraphicsRender.setColor(1,0,0,1);
 
-
         GraphicsRender.drawRectangle(
-                camera.x1 + exitBtn.min.x,
-                camera.y1 + exitBtn.min.y,
+                camera.getMinX() + exitBtn.min.x,
+                camera.getMinY() + exitBtn.min.y,
                 exitBtn.width, exitBtn.height);
 
         GraphicsRender.setZOrder(101);
         GraphicsRender.drawText("EXIT".toCharArray(),
-                camera.x1 + exitBtn.min.x+30,
-                camera.y1 + exitBtn.min.y + 30,2);
+                camera.getMinX() + exitBtn.min.x+30,
+                camera.getMinY() + exitBtn.min.y + 30,2);
 
         GraphicsRender.setColor(1,1,0,0.3f);
         GraphicsRender.drawRectangle(selectedColumn*gridSize, selectedRow*gridSize, gridSize,gridSize);
@@ -95,10 +93,9 @@ public class ProductionScene extends GameScene {
                 ("FPS:" + GraphicsRender.getFPS() +
                  " CALLS=" + Batcher.getDrawCallsCount() +
                         " MS:" + GraphicsRender.getRenderTime()).toCharArray(),
-                camera.x1+50, camera.y1+1040, 2);
+                camera.getMinX()+50, camera.getMinY()+1040, 2);
 
         GraphicsRender.setZOrder(0);
-
 
     }
 
@@ -116,7 +113,7 @@ public class ProductionScene extends GameScene {
             }
 
             Camera camera = GraphicsRender.getCamera();
-            if (exitBtn.collides(worldX - camera.x1, worldY - camera.y1)) {
+            if (exitBtn.collides(worldX - camera.getMinX(), worldY - camera.getMinY())) {
                 sceneManager.exitGame();
             }
         }
@@ -124,7 +121,7 @@ public class ProductionScene extends GameScene {
     }
 
     @Override
-    public void dispose() {
+    public void disposeScene() {
 
     }
 }
