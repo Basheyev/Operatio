@@ -5,15 +5,18 @@ import android.view.MotionEvent;
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
-import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Batcher;
+import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.input.Input;
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.matflow.blocks.Block;
 import com.axiom.operatio.model.matflow.blocks.Production;
+import com.axiom.operatio.model.matflow.buffer.Buffer;
+import com.axiom.operatio.model.matflow.machine.Machine;
+import com.axiom.operatio.model.matflow.transport.Conveyor;
 
 public class ProductionScene extends GameScene {
 
@@ -21,9 +24,10 @@ public class ProductionScene extends GameScene {
 
     protected Production production;
 
-    protected int tickSound;
+    protected int machineSound, bufferSound, conveyorSound;
     protected float cursorX, cursorY;
     protected int selectedColumn=0, selectedRow=0;
+    protected Sprite tile;
     protected float gridSize = 128;
 
     //--------------------------------------------------------------------------------------
@@ -50,9 +54,15 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void startScene() {
-        if (production==null) production = new Production(this,100,100,gridSize);
+        if (production==null) production = new Production(this,20,15,gridSize);
         exitBtn = new AABB(1720,1004,1919,1079);
-        tickSound = SoundRenderer.loadSound(R.raw.tick );
+        tile = new Sprite(getResources(), R.drawable.tile);
+        machineSound = SoundRenderer.loadSound(R.raw.machine_snd);
+        bufferSound = SoundRenderer.loadSound(R.raw.buffer_snd);
+        conveyorSound = SoundRenderer.loadSound(R.raw.conveyor_snd);
+        SoundRenderer.loadMusic(R.raw.music);
+        SoundRenderer.setMusicVolume(0.02f,0.02f);
+        SoundRenderer.playMusic();
     }
 
     @Override
@@ -67,6 +77,13 @@ public class ProductionScene extends GameScene {
     @Override
     public void preRender(Camera camera) {
         GraphicsRender.clear();
+        tile.zOrder = -1;
+        for (int y=0; y<production.rows; y++) {
+            for (int x=0; x <production.columns; x++) {
+
+                tile.draw(camera, x*gridSize, y*gridSize, gridSize, gridSize);
+            }
+        }
     }
 
     @Override
@@ -114,7 +131,9 @@ public class ProductionScene extends GameScene {
                     Block block = (Block) obj;
                     selectedColumn = block.column;
                     selectedRow = block.row;
-                    SoundRenderer.play(tickSound);
+                    if (block instanceof Machine) SoundRenderer.playSound(machineSound);
+                    if (block instanceof Buffer) SoundRenderer.playSound(bufferSound);
+                    if (block instanceof Conveyor) SoundRenderer.playSound(conveyorSound);
                 }
             }
 
@@ -128,6 +147,7 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void disposeScene() {
-        SoundRenderer.unloadAll();
+        SoundRenderer.unloadSounds();
+        SoundRenderer.unloadMusic();
     }
 }

@@ -71,7 +71,7 @@ public abstract class Block extends GameObject {
         // Считаем загрузку блока нормированную на 0-1
         float load = capacity!=0 ? items.size() / (float) capacity : 0;
         GraphicsRender.setColor(load, 1 - load,0,0.3f);
-        GraphicsRender.setZOrder(10);
+        GraphicsRender.setZOrder(0);
         GraphicsRender.drawRectangle(getWorldBounds());
     }
 

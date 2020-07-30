@@ -63,7 +63,7 @@ public class SoundRenderer {
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build();
         soundPool = new SoundPool.Builder()
-                .setAudioAttributes(attributes)
+                .setAudioAttributes(attributes).setMaxStreams(MAX_STREAMS)
                 .build();
     }
 
