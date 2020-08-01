@@ -12,17 +12,17 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.input.Input;
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.sound.SoundRenderer;
-import com.axiom.operatio.model.matflow.blocks.Block;
-import com.axiom.operatio.model.matflow.blocks.Production;
-import com.axiom.operatio.model.matflow.buffer.Buffer;
-import com.axiom.operatio.model.matflow.machine.Machine;
-import com.axiom.operatio.model.matflow.transport.Conveyor;
+import com.axiom.operatio.model.production.blocks.Block;
+import com.axiom.operatio.model.production.ProductionModel;
+import com.axiom.operatio.model.production.buffer.Buffer;
+import com.axiom.operatio.model.production.machine.Machine;
+import com.axiom.operatio.model.production.transport.Conveyor;
 
 public class ProductionScene extends GameScene {
 
     private AABB exitBtn;
 
-    protected Production production;
+    protected ProductionModel productionModel;
 
     protected int machineSound, bufferSound, conveyorSound;
     protected float cursorX, cursorY;
@@ -38,7 +38,7 @@ public class ProductionScene extends GameScene {
      * Производственный цикл (такт)
      */
     public void cycle() {
-        production.productionCycle();
+        productionModel.productionCycle();
     }
 
 
@@ -54,20 +54,20 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void startScene() {
-        if (production==null) production = new Production(this,20,15,gridSize);
+        if (productionModel ==null) productionModel = new ProductionModel(this,20,15,gridSize);
         exitBtn = new AABB(1720,1004,1919,1079);
         tile = new Sprite(getResources(), R.drawable.tile);
         machineSound = SoundRenderer.loadSound(R.raw.machine_snd);
         bufferSound = SoundRenderer.loadSound(R.raw.buffer_snd);
         conveyorSound = SoundRenderer.loadSound(R.raw.conveyor_snd);
-        SoundRenderer.loadMusic(R.raw.music);
-        SoundRenderer.setMusicVolume(0.02f,0.02f);
-        SoundRenderer.playMusic();
+      //  SoundRenderer.loadMusic(R.raw.music);
+      //  SoundRenderer.setMusicVolume(0.02f,0.02f);
+      //  SoundRenderer.playMusic();
     }
 
     @Override
     public void updateScene(float deltaTime) {
-        production.productionCycle();
+        productionModel.productionCycle();
         Camera camera = GraphicsRender.getCamera();
         cursorX = camera.getX() + Input.xAxis * 5;
         cursorY = camera.getY() + Input.yAxis * 5;
@@ -78,8 +78,8 @@ public class ProductionScene extends GameScene {
     public void preRender(Camera camera) {
         GraphicsRender.clear();
         tile.zOrder = -1;
-        for (int y=0; y<production.rows; y++) {
-            for (int x=0; x <production.columns; x++) {
+        for (int y = 0; y< productionModel.rows; y++) {
+            for (int x = 0; x < productionModel.columns; x++) {
 
                 tile.draw(camera, x*gridSize, y*gridSize, gridSize, gridSize);
             }
@@ -91,8 +91,8 @@ public class ProductionScene extends GameScene {
 
         GraphicsRender.setZOrder(100);
         GraphicsRender.drawText(("QUADS:"+ Batcher.getEntriesCount() +
-                " ITEMS:" + production.getTotalItems() +
-                "\n" + production.getBlockAt(selectedColumn,selectedRow)).toCharArray(),
+                " ITEMS:" + productionModel.getTotalItems() +
+                "\n" + productionModel.getBlockAt(selectedColumn,selectedRow)).toCharArray(),
                 camera.getMinX() + 50,
                 camera.getMinY() + 100,2);
         GraphicsRender.setColor(1,0,0,1);

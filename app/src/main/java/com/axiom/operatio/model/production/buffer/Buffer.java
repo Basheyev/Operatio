@@ -1,4 +1,4 @@
-package com.axiom.operatio.model.matflow.buffer;
+package com.axiom.operatio.model.production.buffer;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameObject;
@@ -6,12 +6,10 @@ import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.operatio.model.matflow.blocks.Block;
-import com.axiom.operatio.model.matflow.blocks.Production;
-import com.axiom.operatio.model.matflow.materials.Item;
-import com.axiom.operatio.model.matflow.materials.Material;
-
-import java.util.LinkedList;
+import com.axiom.operatio.model.production.blocks.Block;
+import com.axiom.operatio.model.production.ProductionModel;
+import com.axiom.operatio.model.production.materials.Item;
+import com.axiom.operatio.model.production.materials.Material;
 
 /**
  * Буфер для временного хранения однородных материалов (FIFO)
@@ -31,8 +29,8 @@ public class Buffer extends Block {
      * @param capacity максимальное количество материалов хранимых в буфере
      * @param scale масштаб объекта
      */
-    public Buffer(GameScene scene, Production production, Material info, int capacity, float scale) {
-        super(scene,production,capacity,Block.NONE,Block.NONE);
+    public Buffer(GameScene scene, ProductionModel productionModel, Material info, int capacity, float scale) {
+        super(scene, productionModel,capacity,Block.NONE,Block.NONE);
 
         material = info;
         maximumCapacity = capacity;
@@ -61,7 +59,7 @@ public class Buffer extends Block {
             setState(STATE_FAULT);
             return false;
         }
-        if (!material.equals(item.info)) return false;
+        if (!material.equals(item.material)) return false;
         item.owner = this;
         return items.add(item);
     }
@@ -113,13 +111,6 @@ public class Buffer extends Block {
         return maximumCapacity;
     }
 
-    /**
-     * Возвращает стоимость материалов хранящихся в буфере
-     * @return стоимость
-     */
-    public long getMaterialsValue() {
-        return items.size() * material.price;
-    }
 
     //------------------------------------------------------------------------------------------
 

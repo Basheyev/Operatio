@@ -134,6 +134,8 @@ public class Batcher {
         float[] lastColor = new float[4];
         boolean batchRendered = true;
 
+        System.arraycopy(entry.color, 0, lastColor, 0, 4);
+
         drawCallsCounter = 0;
 
         for (int i=0; i<entriesCounter; i++) {
@@ -146,17 +148,6 @@ public class Batcher {
                 lastTexture = entry.texture;
                 lastZOrder = entry.zOrder;
                 System.arraycopy(entry.color, 0, lastColor, 0, 4);
-/*
-                // если это прямоугольник, сразу отрисовываем
-                if (entry.texture==null) {
-                    verticesBatch.prepare();
-                    texCoordBatch.prepare();
-                    renderBatch(camera, lastTexture, lastColor);
-                    batchRendered = true;
-                    // начинаем новый пакет
-                    verticesBatch.clear();
-                    texCoordBatch.clear();
-                }*/
             } else {
                 // Загружаем данные пакета
                 verticesBatch.prepare();

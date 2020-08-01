@@ -1,4 +1,4 @@
-package com.axiom.operatio.model.matflow.machine;
+package com.axiom.operatio.model.production.machine;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameObject;
@@ -6,10 +6,9 @@ import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.atom.engine.sound.SoundRenderer;
-import com.axiom.operatio.model.matflow.blocks.Block;
-import com.axiom.operatio.model.matflow.blocks.Production;
-import com.axiom.operatio.model.matflow.materials.Item;
+import com.axiom.operatio.model.production.blocks.Block;
+import com.axiom.operatio.model.production.ProductionModel;
+import com.axiom.operatio.model.production.materials.Item;
 
 /**
  * Машина преобразует входящие потоки материалов в выходящие потоки материалов.
@@ -31,7 +30,7 @@ public class Machine extends Block {
      * @param flowIn вуфер входящих материалов
      * @param flowOut буфер исходящих материалов
      */
-    public Machine(GameScene scene, Production p, Operation op, int flowIn, int flowOut, int millisec, float scale) {
+    public Machine(GameScene scene, ProductionModel p, Operation op, int flowIn, int flowOut, int millisec, float scale) {
         super(scene,p,1,flowIn,flowOut);
         operation = op;
         processingTime = millisec;
@@ -82,7 +81,7 @@ public class Machine extends Block {
         long now = System.currentTimeMillis();
         for (Item item:items) {
             if (now > (item.processingStart + processingTime) || item.owner!=this) {
-                item.info = operation.output;              // Превращаем материал во выходной
+                item.material = operation.output;              // Превращаем материал во выходной
                 items.remove(item);
                 setState(STATE_IDLE);
                 return item;
@@ -101,13 +100,13 @@ public class Machine extends Block {
         Block input, output;
         Item item;
         if (state==STATE_IDLE) {
-            input = production.getBlockAt(this, inputDirection);
+            input = productionModel.getBlockAt(this, inputDirection);
             if (input==null) return false;
             item = input.peek();
             if (item==null) return false;
             if (this.push(item)) input.poll();      // забрать из входного блока материал
         } else if (state==STATE_BUSY) {           // Если состояние машины "работаем"
-            output = production.getBlockAt(this, outputDirection);
+            output = productionModel.getBlockAt(this, outputDirection);
             if (output==null) return false;
             item = peek();
             if (item==null) return false;

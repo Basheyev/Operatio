@@ -1,14 +1,13 @@
-package com.axiom.operatio.model.matflow.blocks;
+package com.axiom.operatio.model.production.blocks;
 
 import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.operatio.model.matflow.materials.Item;
+import com.axiom.operatio.model.production.ProductionModel;
+import com.axiom.operatio.model.production.materials.Item;
 
-import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Базовый блок производства реализующий основную механику потока материалов.
@@ -26,14 +25,14 @@ public abstract class Block extends GameObject {
     //------------------------------------------------------------------------------------------
     // Основные параметры и данные блока
     //------------------------------------------------------------------------------------------
-    protected Production production;             // производство в котором размещен блок
+    protected ProductionModel productionModel;   // производство в котором размещен блок
     protected int state;                         // текущее состояние блока
     protected int capacity;                      // максимальная ёмкость блока (предметов)
     protected int processingTime;                // время обработки в миллесекундах
     protected int inputDirection;                // направление из которого поступают материалы
     protected int outputDirection;               // направление на которое отправляются материалы
-    protected ArrayBlockingQueue<Item> items;   // Перечень предметов находящихся в блоке
-    public int column, row;                   // Расположение блока на сетке производства
+    protected ArrayBlockingQueue<Item> items;    // Перечень предметов находящихся в блоке
+    public int column, row;                      // Расположение блока на сетке производства
 
     //------------------------------------------------------------------------------------------
     // Константы для указания положения блока источника и блока приемника
@@ -41,21 +40,21 @@ public abstract class Block extends GameObject {
     public static final int NONE = 0;       // Направление не указано
     public static final int LEFT = 1;       // Блок слева
     public static final int RIGHT = 2;      // Блок справа
-    public static final int UPPER = 3;      // Блок сверху
+    public static final int UP = 3;      // Блок сверху
     public static final int DOWN = 4;       // Блок снизу
 
 
     /**
      * Конструктор блока: инициализирует параметры и данные блока
      * @param scene игровая сцена к которой относится блок
-     * @param production производство к которому относится блок
+     * @param productionModel производство к которому относится блок
      * @param capacity максимальная вместимость
      * @param flowIn направление из которого приходят материалы (FLOW_NONE - нет направления)
      * @param flowOut направление на которое отправляются материаы (FLOW_NONE - нет направления)
      */
-    public Block(GameScene scene, Production production, int capacity, int flowIn, int flowOut) {
+    public Block(GameScene scene, ProductionModel productionModel, int capacity, int flowIn, int flowOut) {
         super(scene);
-        this.production = production;
+        this.productionModel = productionModel;
         this.state = STATE_IDLE;
         this.capacity = capacity;
         items = new ArrayBlockingQueue<>(capacity);
@@ -73,6 +72,10 @@ public abstract class Block extends GameObject {
         GraphicsRender.setColor(load, 1 - load,0,0.3f);
         GraphicsRender.setZOrder(0);
         GraphicsRender.drawRectangle(getWorldBounds());
+    }
+
+    public ArrayBlockingQueue<Item> getItems() {
+        return items;
     }
 
     /**
@@ -103,4 +106,5 @@ public abstract class Block extends GameObject {
     public abstract boolean setState(int state);
 
     public abstract int getState();
+
 }

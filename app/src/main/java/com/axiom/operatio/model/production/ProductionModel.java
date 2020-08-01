@@ -1,15 +1,16 @@
-package com.axiom.operatio.model.matflow.blocks;
+package com.axiom.operatio.model.production;
 
 import android.util.Log;
 
 import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
-import com.axiom.operatio.model.matflow.buffer.Buffer;
-import com.axiom.operatio.model.matflow.machine.Machine;
-import com.axiom.operatio.model.matflow.machine.Operation;
-import com.axiom.operatio.model.matflow.materials.Item;
-import com.axiom.operatio.model.matflow.materials.Material;
-import com.axiom.operatio.model.matflow.transport.Conveyor;
+import com.axiom.operatio.model.production.blocks.Block;
+import com.axiom.operatio.model.production.buffer.Buffer;
+import com.axiom.operatio.model.production.machine.Machine;
+import com.axiom.operatio.model.production.machine.Operation;
+import com.axiom.operatio.model.production.materials.Item;
+import com.axiom.operatio.model.production.materials.Material;
+import com.axiom.operatio.model.production.transport.Conveyor;
 
 import java.util.ArrayList;
 
@@ -17,7 +18,7 @@ import java.util.ArrayList;
  * Модель производства исполняющая симуляцию на базе блоков
  * (C) Bolat Basheyev 2020
  */
-public class Production {
+public class ProductionModel {
 
     //---------------------------------------------------------------------------------------
     // Основные данные производства
@@ -43,7 +44,7 @@ public class Production {
      * @param rows количество строк производства в блоках
      * @param gridSize размер блока в пикселях
      */
-    public Production(GameScene gameScene, int cols, int rows,float gridSize) {
+    public ProductionModel(GameScene gameScene, int cols, int rows, float gridSize) {
         this.scene = gameScene;
         this.columns = cols;
         this.rows = rows;
@@ -139,7 +140,7 @@ public class Production {
                 return getBlockAt(relativeTo.column - 1, relativeTo.row);
             case Block.RIGHT:
                 return getBlockAt(relativeTo.column+1, relativeTo.row);
-            case Block.UPPER:
+            case Block.UP:
                 return getBlockAt(relativeTo.column, relativeTo.row + 1);
             case Block.DOWN:
                 return getBlockAt(relativeTo.column, relativeTo.row - 1);
@@ -151,7 +152,7 @@ public class Production {
     public int getTotalItems() {
         int total = 0;
         for (Block block:blocks) {
-            total += block.items.size();
+            total += block.getItems().size();
         }
         return total;
     }
@@ -165,20 +166,19 @@ public class Production {
         clearBlocks();
 
         float scale = gridSize / 32; // Sprite size 32x32
-        material = new Material(0,"material", "",0,0);
+        material = new Material(scene.getResources(), 3,"material");
+
         loadProductionObjects(0,0, scale);
-        loadProductionObjects(0,4,scale);
-        loadProductionObjects(8,0,scale);
-        loadProductionObjects(8,4,scale);
-        Conveyor c1 = new Conveyor(scene, this, Block.UPPER, Block.DOWN,500, 3, scale);
-        setBlock(c1, 8, 4);
-        Conveyor c2 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT,500, 3, scale);
-        setBlock(c2, 7, 1);
-        Conveyor c3 = new Conveyor(scene, this, Block.DOWN, Block.UPPER,500, 3, scale);
-        setBlock(c3, 6, 4);
-        Conveyor c4 = new Conveyor(scene, this, Block.LEFT, Block.RIGHT,500, 3, scale);
-        setBlock(c4, 7, 5);
+        loadProductionObjects2(0,4, scale);
+        loadProductionObjects3(8,1,scale);
+
+     //   loadProductionObjects(8,0,scale);
+     //   loadProductionObjects(8,4,scale);
+
+
     }
+
+
 
     public void loadProductionObjects(int col, int row, float scale) {
 
@@ -187,7 +187,6 @@ public class Production {
 
         Buffer storage1 = new Buffer(scene, this, material, 100, scale);
         Machine machine1 = new Machine(scene,this, op1, Block.LEFT, Block.RIGHT,200, scale);
-     //   Buffer storage2 = new Buffer(scene, this, material, 100, scale);
         Conveyor conv0 = new Conveyor(scene, this, Block.LEFT, Block.RIGHT,500, 3, scale);
         Machine machine2 = new Machine(scene, this, op2,  Block.LEFT, Block.RIGHT,200, scale);
         Buffer storage3 = new Buffer(scene,this, material, 100, scale);
@@ -196,20 +195,19 @@ public class Production {
         Buffer storage4 = new Buffer(scene, this, material, 50, scale);
 
 
-        Conveyor conv2 = new Conveyor(scene, this, Block.DOWN, Block.UPPER,500, 3, scale);
+        Conveyor conv2 = new Conveyor(scene, this, Block.DOWN, Block.UP,500, 3, scale);
         Buffer storage5 = new Buffer(scene, this, material, 100, scale);
-        Conveyor conv3 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT,500, 3, scale);
+        Conveyor conv3 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT, 1500, 3, scale);
 
 
-        Conveyor conv4 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT,500, 3, scale);
-        Conveyor conv5 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT,500, 3, scale);
-        Conveyor conv6 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT,500, 3, scale);
-        Conveyor conv7 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT,500, 3, scale);
-        Conveyor conv8 = new Conveyor(scene, this, Block.UPPER, Block.DOWN,500, 3, scale);
+        Conveyor conv4 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT,1500, 3, scale);
+        Conveyor conv5 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT,1500, 3, scale);
+        Conveyor conv6 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT,1500, 3, scale);
+        Conveyor conv7 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT,1500, 3, scale);
+        Conveyor conv8 = new Conveyor(scene, this, Block.UP, Block.DOWN,1500, 3, scale);
         Buffer storage6 = new Buffer(scene, this, material, 100, scale);
 
-
-        setBlock(storage1, col+0,row+1);
+        setBlock(storage1, col,row+1);
         setBlock(machine1, col+1, row+1);
         setBlock(conv0, col+2, row+1);
         setBlock(machine2, col+3, row+1);
@@ -223,11 +221,90 @@ public class Production {
         setBlock(conv5, col+3,row+3);
         setBlock(conv6, col+2,row+3);
         setBlock(conv7, col+1,row+3);
-        setBlock(storage6, col+0, row+3);
-        setBlock(conv8, col+0, row+2);
+        setBlock(storage6, col, row+3);
+        setBlock(conv8, col, row+2);
 
         for (int i=0; i<99; i++) storage1.push(new Item(material));
 
     }
+
+
+    public void loadProductionObjects2(int col, int row, float scale) {
+
+        Operation op1 = new Operation(Operation.PROCESS, material, material,1,1);
+        Operation op2 = new Operation(Operation.PROCESS, material, material,1,1);
+
+        Buffer storage1 = new Buffer(scene, this, material, 100, scale);
+        Machine machine1 = new Machine(scene,this, op1, Block.LEFT, Block.RIGHT,200, scale);
+        Conveyor conv0 = new Conveyor(scene, this, Block.LEFT, Block.RIGHT,500, 3, scale);
+        Machine machine2 = new Machine(scene, this, op2,  Block.LEFT, Block.RIGHT,200, scale);
+        Buffer storage3 = new Buffer(scene,this, material, 100, scale);
+
+        Conveyor conv = new Conveyor(scene, this, Block.LEFT, Block.RIGHT,500, 3, scale);
+        Buffer storage4 = new Buffer(scene, this, material, 50, scale);
+
+
+        Conveyor conv2 = new Conveyor(scene, this, Block.DOWN, Block.LEFT,5000, 3, scale);
+        Conveyor conv3 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT,500, 3, scale);
+        Conveyor conv4 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT,500, 3, scale);
+        Conveyor conv5 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT,500, 3, scale);
+        Conveyor conv6 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT,500, 3, scale);
+        Conveyor conv7 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT,500, 3, scale);
+        Conveyor conv8 = new Conveyor(scene, this, Block.RIGHT, Block.DOWN,500, 3, scale);
+
+        setBlock(storage1, col,row+1);
+        setBlock(machine1, col+1, row+1);
+        setBlock(conv0, col+2, row+1);
+        setBlock(machine2, col+3, row+1);
+        setBlock(storage3, col+4, row+1);
+        setBlock(conv, col+5,row+1);
+        setBlock(storage4, col+6, row+1);
+        setBlock(conv2, col+6,row+2);
+        setBlock(conv3, col+5,row+2);
+        setBlock(conv4, col+4,row+2);
+        setBlock(conv5, col+3,row+2);
+        setBlock(conv6, col+2,row+2);
+        setBlock(conv7, col+1,row+2);
+        setBlock(conv8, col, row+2);
+
+        for (int i=0; i<99; i++) storage1.push(new Item(material));
+
+    }
+
+    public void loadProductionObjects3(int col, int row, float scale) {
+
+        // Circle clock
+        Conveyor c4 = new Conveyor(scene, this, Block.RIGHT, Block.UP,2000, 3, scale);
+        setBlock(c4, col, row);
+        Conveyor c5 = new Conveyor(scene, this, Block.DOWN, Block.RIGHT,2000, 3, scale);
+        setBlock(c5, col, row+1);
+        Conveyor c6 = new Conveyor(scene, this, Block.LEFT, Block.DOWN,2000, 3, scale);
+        setBlock(c6, col+1, row+1);
+        Conveyor c7 = new Conveyor(scene, this, Block.UP, Block.LEFT,2000, 3, scale);
+        setBlock(c7, col+1, row);
+
+        // Circle clockwise
+        Conveyor c8 = new Conveyor(scene, this, Block.UP, Block.RIGHT,2000, 3, scale);
+        setBlock(c8, col, row+3);
+        Conveyor c9 = new Conveyor(scene, this, Block.LEFT, Block.UP,2000, 3, scale);
+        setBlock(c9, col+1, row+3);
+        Conveyor c10 = new Conveyor(scene, this, Block.DOWN, Block.LEFT,2000, 3, scale);
+        setBlock(c10, col+1, row+4);
+        Conveyor c1 = new Conveyor(scene, this, Block.RIGHT, Block.DOWN,2000, 3, scale);
+        setBlock(c1, col, row+4);
+
+        Item item;
+        for (int i=0; i<3; i++) {
+            item = new Item(material);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            c4.push(item);
+        }
+      //  for (int i=0; i<3; i++) c8.getItems().add(new Item(material));
+    }
+
 
 }

@@ -9,6 +9,7 @@ import com.axiom.atom.engine.tests.demotest.DemoScene;
 import com.axiom.atom.engine.tests.phystest.PhysScene;
 import com.axiom.atom.engine.tests.shoottest.ShooterScene;
 import com.axiom.atom.engine.tests.spritetest.SpriteScene;
+import com.axiom.operatio.scenes.MarketScene;
 import com.axiom.operatio.scenes.ProductionScene;
 
 public class MainActivity extends AppCompatActivity {

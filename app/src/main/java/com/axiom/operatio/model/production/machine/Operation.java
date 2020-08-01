@@ -1,6 +1,6 @@
-package com.axiom.operatio.model.matflow.machine;
+package com.axiom.operatio.model.production.machine;
 
-import com.axiom.operatio.model.matflow.materials.Material;
+import com.axiom.operatio.model.production.materials.Material;
 
 /**
  * Описывает операцию выполняемую машиной
