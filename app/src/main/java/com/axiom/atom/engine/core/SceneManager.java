@@ -118,4 +118,15 @@ public class SceneManager {
     public boolean isGameFinished() {
         return exitGame;
     }
+
+
+    /**
+     * Возвращает ссылку на ресурсы приложения
+     * @return ссылка на ресурсы приложения
+     */
+    public static Resources getResources() {
+        if (sceneManager==null) return null;
+        return sceneManager.resources;
+    }
+
 }
