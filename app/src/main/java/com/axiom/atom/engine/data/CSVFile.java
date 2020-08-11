@@ -7,8 +7,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+
 /**
  * Загружает файл CSV в память и предоставляет простой доступ к данным
+ * <br><br>
+ * (С) Atom Engine, Bolat Basheyev 2020
  */
 public class CSVFile {
 
