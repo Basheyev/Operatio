@@ -1,0 +1,64 @@
+0, Steel
+1, Aluminium
+2, Copper
+3, Rubber
+4, Sand
+5, Plastic granules
+6, Silicon monocrystal
+7, Lithium
+8, Steel plate
+9, Aluminium plate
+10, Copper plate
+11, Rubber plate
+12, Glass plate
+13, Plastic board
+14, Fiberglass board
+15, Silicon wafer
+16, Steel rod
+17, Screw
+18, Aluminium profile
+19, Aluminium tube
+20, Copper wire
+21, Copper tube
+22, Rubber tube
+23, Electronic component
+24, Heater
+25, Electric motor
+26, Cooler
+27, Wheel
+28, Propeller
+29, Circuit board
+30, Microchip
+31, Lithium Ion Battary
+32, Electric Stove Parts
+33, Refrigirator Parts
+34, Washing Machine Parts
+35, Microwave Oven Parts
+36, Robot Vacuum Parts
+37, Motherboard
+38, Display
+39, Power Supply Unit
+40, Electric Stove Body
+41, Refrigirator Body
+42, Washing Machine Body
+43, Microwave Oven Body
+44, Robot Vacuum Body
+45, TV Body
+46, Mobile Body
+47, Quadcopter Body
+48, Electric Stove
+49, Refrigirator
+50, Washing Machine
+51, Microwave Oven
+52, Robot Vacuum
+53, TV Parts
+54, Mobile Parts
+55, Quadcopter Parts
+56, reserved
+57, reserved
+58, reserved
+59, reserved
+60, reserved
+61, TV
+62, Mobile
+63, Quadcopter
