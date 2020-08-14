@@ -1,13 +1,11 @@
 package com.axiom.operatio.model.production;
 
-import android.util.Log;
-
 import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.operatio.model.production.blocks.Block;
 import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.production.machine.Machine;
-import com.axiom.operatio.model.production.machine.Operation;
+import com.axiom.operatio.model.production.machine.OperationOld;
 import com.axiom.operatio.model.production.materials.Item;
 import com.axiom.operatio.model.production.materials.Material;
 import com.axiom.operatio.model.production.transport.Conveyor;
@@ -27,7 +25,6 @@ public class ProductionModel {
     protected ArrayList<Block> blocks;                 // Все блоки производства (список)
     public int columns, rows;                       // Размер карты производства в блоках
     protected GameScene scene;                         // Игровая сцена к которой относится
-    protected Material material;
 
     //--------------------------------------------------------------------------------------
     // Основные параметры производства
@@ -68,24 +65,9 @@ public class ProductionModel {
         if (now - lastCycleTime >= cycleTime) {  // ожидаем время следующего цикла
             for (int i = 0; i<blocks.size(); i++) {
                 blocks.get(i).doWork();
-
-
-
-                // TODO Этот кусок кода показывает кто потерял предмет при total=396
-                if (getTotalItems() < 396 && !bugAlreadyShown) {
-                    Block b = blocks.get(i);
-                    Log.i("OBJECT LOST AFTER:" + b, " COL=" + b.column + " ROW=" + b.row);
-                    bugAlreadyShown = true;
-                }
-
-
-
-
             }
             lastCycleTime = now;                 // сохраняем время начала последнего цикла
             cycle++;
-
-
         }
     }
 
@@ -166,7 +148,6 @@ public class ProductionModel {
         clearBlocks();
 
         float scale = gridSize / 32; // Sprite size 32x32
-        material = new Material(scene.getResources(), 3,"material");
 
         loadProductionObjects(0,0, scale);
         loadProductionObjects2(0,4, scale);
@@ -181,22 +162,24 @@ public class ProductionModel {
 
 
     public void loadProductionObjects(int col, int row, float scale) {
+        Material material1 = Material.getMaterial(0);
+        Material material2 = Material.getMaterial(8);
+        Material material3 = Material.getMaterial(16);
+        OperationOld op1 = new OperationOld(OperationOld.PROCESS, material1, material2,1,1);
+        OperationOld op2 = new OperationOld(OperationOld.PROCESS, material2, material3,1,1);
 
-        Operation op1 = new Operation(Operation.PROCESS, material, material,1,1);
-        Operation op2 = new Operation(Operation.PROCESS, material, material,1,1);
-
-        Buffer storage1 = new Buffer(scene, this, material, 100, scale);
+        Buffer storage1 = new Buffer(scene, this, 100, scale);
         Machine machine1 = new Machine(scene,this, op1, Block.LEFT, Block.RIGHT,200, scale);
         Conveyor conv0 = new Conveyor(scene, this, Block.LEFT, Block.RIGHT,500, 3, scale);
         Machine machine2 = new Machine(scene, this, op2,  Block.LEFT, Block.RIGHT,200, scale);
-        Buffer storage3 = new Buffer(scene,this, material, 100, scale);
+        Buffer storage3 = new Buffer(scene,this, 100, scale);
 
         Conveyor conv = new Conveyor(scene, this, Block.LEFT, Block.RIGHT,500, 3, scale);
-        Buffer storage4 = new Buffer(scene, this, material, 50, scale);
+        Buffer storage4 = new Buffer(scene, this, 50, scale);
 
 
         Conveyor conv2 = new Conveyor(scene, this, Block.DOWN, Block.UP,500, 3, scale);
-        Buffer storage5 = new Buffer(scene, this, material, 100, scale);
+        Buffer storage5 = new Buffer(scene, this, 100, scale);
         Conveyor conv3 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT, 1500, 3, scale);
 
 
@@ -205,7 +188,7 @@ public class ProductionModel {
         Conveyor conv6 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT,1500, 3, scale);
         Conveyor conv7 = new Conveyor(scene, this, Block.RIGHT, Block.LEFT,1500, 3, scale);
         Conveyor conv8 = new Conveyor(scene, this, Block.UP, Block.DOWN,1500, 3, scale);
-        Buffer storage6 = new Buffer(scene, this, material, 100, scale);
+        Buffer storage6 = new Buffer(scene, this, 100, scale);
 
         setBlock(storage1, col,row+1);
         setBlock(machine1, col+1, row+1);
@@ -224,24 +207,26 @@ public class ProductionModel {
         setBlock(storage6, col, row+3);
         setBlock(conv8, col, row+2);
 
-        for (int i=0; i<99; i++) storage1.push(new Item(material));
+        for (int i=0; i<64; i++) storage1.push(new Item(i));
 
     }
 
 
     public void loadProductionObjects2(int col, int row, float scale) {
+        Material material1 = Material.getMaterial(0);
+        Material material2 = Material.getMaterial(8);
+        Material material3 = Material.getMaterial(17);
+        OperationOld op1 = new OperationOld(OperationOld.PROCESS, material1, material2,1,1);
+        OperationOld op2 = new OperationOld(OperationOld.PROCESS, material2, material3,1,1);
 
-        Operation op1 = new Operation(Operation.PROCESS, material, material,1,1);
-        Operation op2 = new Operation(Operation.PROCESS, material, material,1,1);
-
-        Buffer storage1 = new Buffer(scene, this, material, 100, scale);
+        Buffer storage1 = new Buffer(scene, this,  100, scale);
         Machine machine1 = new Machine(scene,this, op1, Block.LEFT, Block.RIGHT,200, scale);
         Conveyor conv0 = new Conveyor(scene, this, Block.LEFT, Block.RIGHT,500, 3, scale);
         Machine machine2 = new Machine(scene, this, op2,  Block.LEFT, Block.RIGHT,200, scale);
-        Buffer storage3 = new Buffer(scene,this, material, 100, scale);
+        Buffer storage3 = new Buffer(scene,this, 100, scale);
 
         Conveyor conv = new Conveyor(scene, this, Block.LEFT, Block.RIGHT,500, 3, scale);
-        Buffer storage4 = new Buffer(scene, this, material, 50, scale);
+        Buffer storage4 = new Buffer(scene, this, 50, scale);
 
 
         Conveyor conv2 = new Conveyor(scene, this, Block.DOWN, Block.LEFT,5000, 3, scale);
@@ -267,7 +252,7 @@ public class ProductionModel {
         setBlock(conv7, col+1,row+2);
         setBlock(conv8, col, row+2);
 
-        for (int i=0; i<99; i++) storage1.push(new Item(material));
+        for (int i=0; i<64; i++) storage1.push(new Item(i));
 
     }
 
@@ -293,17 +278,16 @@ public class ProductionModel {
         Conveyor c1 = new Conveyor(scene, this, Block.RIGHT, Block.DOWN,2000, 3, scale);
         setBlock(c1, col, row+4);
 
-        Item item;
         for (int i=0; i<3; i++) {
-            item = new Item(material);
+            c4.push(new Item(32+i));
+            c8.push(new Item(40+i));
             try {
-                Thread.sleep(1000);
+                Thread.sleep(700);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            c4.push(item);
         }
-      //  for (int i=0; i<3; i++) c8.getItems().add(new Item(material));
+      //  for (int i=0; i<3; i++)
     }
 
 

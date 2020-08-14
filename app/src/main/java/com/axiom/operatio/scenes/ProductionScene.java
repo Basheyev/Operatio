@@ -1,10 +1,12 @@
 package com.axiom.operatio.scenes;
 
+import android.content.res.Resources;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
+import com.axiom.atom.engine.data.CSVFile;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Batcher;
@@ -16,6 +18,7 @@ import com.axiom.operatio.model.production.blocks.Block;
 import com.axiom.operatio.model.production.ProductionModel;
 import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.production.machine.Machine;
+import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.transport.Conveyor;
 
 public class ProductionScene extends GameScene {
@@ -60,6 +63,11 @@ public class ProductionScene extends GameScene {
         machineSound = SoundRenderer.loadSound(R.raw.machine_snd);
         bufferSound = SoundRenderer.loadSound(R.raw.buffer_snd);
         conveyorSound = SoundRenderer.loadSound(R.raw.conveyor_snd);
+
+
+        MachineType.getMachineType(0);
+        MachineType.printDebug();
+
       //  SoundRenderer.loadMusic(R.raw.music);
       //  SoundRenderer.setMusicVolume(0.02f,0.02f);
       //  SoundRenderer.playMusic();
@@ -80,7 +88,6 @@ public class ProductionScene extends GameScene {
         tile.zOrder = -1;
         for (int y = 0; y< productionModel.rows; y++) {
             for (int x = 0; x < productionModel.columns; x++) {
-
                 tile.draw(camera, x*gridSize, y*gridSize, gridSize, gridSize);
             }
         }
@@ -150,4 +157,5 @@ public class ProductionScene extends GameScene {
         SoundRenderer.unloadSounds();
         SoundRenderer.unloadMusic();
     }
+
 }
