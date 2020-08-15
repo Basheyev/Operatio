@@ -1,11 +1,11 @@
-package com.axiom.operatio.model.production.blocks;
+package com.axiom.operatio.modelold.production.blocks;
 
 import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.operatio.model.production.ProductionModel;
-import com.axiom.operatio.model.production.materials.Item;
+import com.axiom.operatio.modelold.production.materials.Item;
+import com.axiom.operatio.modelold.production.ProductionModel;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -19,8 +19,8 @@ public abstract class Block extends GameObject {
     // Состояния блока
     //------------------------------------------------------------------------------------------
     public static final int STATE_IDLE = 0;      // Блок простаивает
-    public static final int STATE_BUSY = 1;   // Блок работает над предметами
-    public static final int STATE_FAULT = -1;    // Сбой машины
+    public static final int STATE_BUSY = 1;      // Блок работает над предметами
+    public static final int STATE_FAULT = -1;    // Сбой в работе блока
 
     //------------------------------------------------------------------------------------------
     // Основные параметры и данные блока
@@ -40,7 +40,7 @@ public abstract class Block extends GameObject {
     public static final int NONE = 0;       // Направление не указано
     public static final int LEFT = 1;       // Блок слева
     public static final int RIGHT = 2;      // Блок справа
-    public static final int UP = 3;      // Блок сверху
+    public static final int UP = 3;         // Блок сверху
     public static final int DOWN = 4;       // Блок снизу
 
 

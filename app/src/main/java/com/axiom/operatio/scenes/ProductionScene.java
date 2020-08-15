@@ -1,12 +1,10 @@
 package com.axiom.operatio.scenes;
 
-import android.content.res.Resources;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
-import com.axiom.atom.engine.data.CSVFile;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Batcher;
@@ -14,12 +12,12 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.input.Input;
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.sound.SoundRenderer;
-import com.axiom.operatio.model.production.blocks.Block;
-import com.axiom.operatio.model.production.ProductionModel;
-import com.axiom.operatio.model.production.buffer.Buffer;
-import com.axiom.operatio.model.production.machine.Machine;
-import com.axiom.operatio.model.production.machine.MachineType;
-import com.axiom.operatio.model.production.transport.Conveyor;
+import com.axiom.operatio.modelold.production.blocks.Block;
+import com.axiom.operatio.modelold.production.ProductionModel;
+import com.axiom.operatio.modelold.production.buffer.Buffer;
+import com.axiom.operatio.modelold.production.machine.Machine;
+import com.axiom.operatio.modelold.machine.MachineType;
+import com.axiom.operatio.modelold.transport.Conveyor;
 
 public class ProductionScene extends GameScene {
 

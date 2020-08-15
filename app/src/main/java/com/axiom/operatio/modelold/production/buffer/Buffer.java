@@ -1,4 +1,4 @@
-package com.axiom.operatio.model.production.buffer;
+package com.axiom.operatio.modelold.production.buffer;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameObject;
@@ -6,10 +6,9 @@ import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.operatio.model.production.blocks.Block;
-import com.axiom.operatio.model.production.ProductionModel;
-import com.axiom.operatio.model.production.materials.Item;
-import com.axiom.operatio.model.production.materials.Material;
+import com.axiom.operatio.modelold.production.blocks.Block;
+import com.axiom.operatio.modelold.production.ProductionModel;
+import com.axiom.operatio.modelold.production.materials.Item;
 
 /**
  * Буфер для временного хранения однородных материалов (FIFO)
@@ -17,7 +16,6 @@ import com.axiom.operatio.model.production.materials.Material;
  */
 public class Buffer extends Block {
 
-    private Material material;        // Информация о хранимом материале
     private int maximumCapacity;      // Максимальная вместимость
     private Sprite sprite;            // Изображение буфера
 
@@ -25,14 +23,12 @@ public class Buffer extends Block {
     /**
      * Создаёт буфер нужного размера под необходимый материал
      * @param scene игровая сцена к которой относится игровой объект
-     * @param info тип материала для хранения в буфере
      * @param capacity максимальное количество материалов хранимых в буфере
      * @param scale масштаб объекта
      */
-    public Buffer(GameScene scene, ProductionModel productionModel, Material info, int capacity, float scale) {
-        super(scene, productionModel,capacity,Block.NONE,Block.NONE);
+    public Buffer(GameScene scene, ProductionModel productionModel, int capacity, float scale) {
+        super(scene, productionModel,capacity, Block.NONE, Block.NONE);
 
-        material = info;
         maximumCapacity = capacity;
         this.scale = scale;
 
@@ -59,7 +55,7 @@ public class Buffer extends Block {
             setState(STATE_FAULT);
             return false;
         }
-        if (!material.equals(item.material)) return false;
+        //if (!material.equals(item.material)) return false;
         item.owner = this;
         return items.add(item);
     }

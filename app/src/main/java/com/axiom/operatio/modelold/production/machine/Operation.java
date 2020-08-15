@@ -1,20 +1,12 @@
-package com.axiom.operatio.model.production.machine;
+package com.axiom.operatio.modelold.production.machine;
 
-import android.content.res.Resources;
-
-import com.axiom.atom.R;
-import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.data.CSVFile;
-import com.axiom.operatio.model.production.materials.Material;
-
-import java.util.ArrayList;
+import com.axiom.operatio.modelold.production.materials.Material;
 
 
 /**
  * Описывает операцию выполняемую машиной
- * TODO Реализовать загрузку данных о машинах
  */
-public class OperationOld {
+public class Operation {
 
 
 
@@ -28,7 +20,7 @@ public class OperationOld {
     protected int inputCount;
 
 
-    public OperationOld(int OP, Material input, Material output, int inCount, int outCount) {
+    public Operation(int OP, Material input, Material output, int inCount, int outCount) {
 
         code = OP;
         this.input = input;

@@ -1,4 +1,4 @@
-package com.axiom.operatio.model.production.machine;
+package com.axiom.operatio.modelold.production.machine;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameObject;
@@ -6,15 +6,13 @@ import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.operatio.model.production.blocks.Block;
-import com.axiom.operatio.model.production.ProductionModel;
-import com.axiom.operatio.model.production.materials.Item;
+import com.axiom.operatio.modelold.production.blocks.Block;
+import com.axiom.operatio.modelold.production.ProductionModel;
+import com.axiom.operatio.modelold.production.materials.Item;
 
 /**
  * Машина преобразует входящие потоки материалов в выходящие потоки материалов.
  * Реализует такие машины как: обработка материалов, сборка/смешивание материалов, расщепление
- * TODO стыковки конвейер-машина
- * TODO реализовать операцию сборки и расщепление
  */
 public class Machine extends Block {
 
@@ -35,19 +33,20 @@ public class Machine extends Block {
         operation = op;
         processingTime = millisec;
         this.scale = scale;
-        sprite = new Sprite(scene.getResources(), R.drawable.machine00,4,4);
+        sprite = new Sprite(scene.getResources(), R.drawable.machines,8,8);
         sprite.zOrder = 3;
         float w = sprite.getWidth() * scale;
         float h = sprite.getHeight() * scale;
         setLocalBounds(-w/2,-h/2,w/2,h/2);
 
-        busyAnim = sprite.addAnimation(0,7,15,true);
-        idleAnim = sprite.addAnimation(0,0,1,true);
+        busyAnim = sprite.addAnimation(24,31,15,true);
+        idleAnim = sprite.addAnimation(24,24,1,true);
 
         setState(STATE_IDLE);
     }
 
 
+    // TODO Не проверяется входящий материал
     public boolean push(Item item) {
         if (getState()==STATE_IDLE) {
             if (items.size() >= capacity) {

@@ -1,14 +1,14 @@
-package com.axiom.operatio.model.production;
+package com.axiom.operatio.modelold.production;
 
 import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
-import com.axiom.operatio.model.production.blocks.Block;
-import com.axiom.operatio.model.production.buffer.Buffer;
-import com.axiom.operatio.model.production.machine.Machine;
-import com.axiom.operatio.model.production.machine.OperationOld;
-import com.axiom.operatio.model.production.materials.Item;
-import com.axiom.operatio.model.production.materials.Material;
-import com.axiom.operatio.model.production.transport.Conveyor;
+import com.axiom.operatio.modelold.production.buffer.Buffer;
+import com.axiom.operatio.modelold.production.machine.Machine;
+import com.axiom.operatio.modelold.production.machine.Operation;
+import com.axiom.operatio.modelold.production.blocks.Block;
+import com.axiom.operatio.modelold.production.materials.Item;
+import com.axiom.operatio.modelold.production.materials.Material;
+import com.axiom.operatio.modelold.transport.Conveyor;
 
 import java.util.ArrayList;
 
@@ -63,7 +63,7 @@ public class ProductionModel {
 
         long now = System.currentTimeMillis();   // берем текущее время в миллисекундах
         if (now - lastCycleTime >= cycleTime) {  // ожидаем время следующего цикла
-            for (int i = 0; i<blocks.size(); i++) {
+            for (int i = 0; i< blocks.size(); i++) {
                 blocks.get(i).doWork();
             }
             lastCycleTime = now;                 // сохраняем время начала последнего цикла
@@ -92,7 +92,7 @@ public class ProductionModel {
      * @return true - если блок успешно добавлен, false если нет
      */
     public boolean setBlock(Block block, int col, int row) {
-        if (block==null) return false;
+        if (block ==null) return false;
 
         if (col < 0 || col >= columns) return false;
         if (row < 0 || row >= rows) return false;
@@ -133,7 +133,7 @@ public class ProductionModel {
 
     public int getTotalItems() {
         int total = 0;
-        for (Block block:blocks) {
+        for (Block block : blocks) {
             total += block.getItems().size();
         }
         return total;
@@ -165,13 +165,13 @@ public class ProductionModel {
         Material material1 = Material.getMaterial(0);
         Material material2 = Material.getMaterial(8);
         Material material3 = Material.getMaterial(16);
-        OperationOld op1 = new OperationOld(OperationOld.PROCESS, material1, material2,1,1);
-        OperationOld op2 = new OperationOld(OperationOld.PROCESS, material2, material3,1,1);
+        Operation op1 = new Operation(Operation.PROCESS, material1, material2,1,1);
+        Operation op2 = new Operation(Operation.PROCESS, material2, material3,1,1);
 
         Buffer storage1 = new Buffer(scene, this, 100, scale);
-        Machine machine1 = new Machine(scene,this, op1, Block.LEFT, Block.RIGHT,200, scale);
+        Machine machineOld1 = new Machine(scene,this, op1, Block.LEFT, Block.RIGHT,200, scale);
         Conveyor conv0 = new Conveyor(scene, this, Block.LEFT, Block.RIGHT,500, 3, scale);
-        Machine machine2 = new Machine(scene, this, op2,  Block.LEFT, Block.RIGHT,200, scale);
+        Machine machineOld2 = new Machine(scene, this, op2,  Block.LEFT, Block.RIGHT,200, scale);
         Buffer storage3 = new Buffer(scene,this, 100, scale);
 
         Conveyor conv = new Conveyor(scene, this, Block.LEFT, Block.RIGHT,500, 3, scale);
@@ -191,9 +191,9 @@ public class ProductionModel {
         Buffer storage6 = new Buffer(scene, this, 100, scale);
 
         setBlock(storage1, col,row+1);
-        setBlock(machine1, col+1, row+1);
+        setBlock(machineOld1, col+1, row+1);
         setBlock(conv0, col+2, row+1);
-        setBlock(machine2, col+3, row+1);
+        setBlock(machineOld2, col+3, row+1);
         setBlock(storage3, col+4, row+1);
         setBlock(conv, col+5,row+1);
         setBlock(storage4, col+6, row+1);
@@ -216,13 +216,13 @@ public class ProductionModel {
         Material material1 = Material.getMaterial(0);
         Material material2 = Material.getMaterial(8);
         Material material3 = Material.getMaterial(17);
-        OperationOld op1 = new OperationOld(OperationOld.PROCESS, material1, material2,1,1);
-        OperationOld op2 = new OperationOld(OperationOld.PROCESS, material2, material3,1,1);
+        Operation op1 = new Operation(Operation.PROCESS, material1, material2,1,1);
+        Operation op2 = new Operation(Operation.PROCESS, material2, material3,1,1);
 
         Buffer storage1 = new Buffer(scene, this,  100, scale);
-        Machine machine1 = new Machine(scene,this, op1, Block.LEFT, Block.RIGHT,200, scale);
+        Machine machineOld1 = new Machine(scene,this, op1, Block.LEFT, Block.RIGHT,200, scale);
         Conveyor conv0 = new Conveyor(scene, this, Block.LEFT, Block.RIGHT,500, 3, scale);
-        Machine machine2 = new Machine(scene, this, op2,  Block.LEFT, Block.RIGHT,200, scale);
+        Machine machineOld2 = new Machine(scene, this, op2,  Block.LEFT, Block.RIGHT,200, scale);
         Buffer storage3 = new Buffer(scene,this, 100, scale);
 
         Conveyor conv = new Conveyor(scene, this, Block.LEFT, Block.RIGHT,500, 3, scale);
@@ -238,9 +238,9 @@ public class ProductionModel {
         Conveyor conv8 = new Conveyor(scene, this, Block.RIGHT, Block.DOWN,500, 3, scale);
 
         setBlock(storage1, col,row+1);
-        setBlock(machine1, col+1, row+1);
+        setBlock(machineOld1, col+1, row+1);
         setBlock(conv0, col+2, row+1);
-        setBlock(machine2, col+3, row+1);
+        setBlock(machineOld2, col+3, row+1);
         setBlock(storage3, col+4, row+1);
         setBlock(conv, col+5,row+1);
         setBlock(storage4, col+6, row+1);

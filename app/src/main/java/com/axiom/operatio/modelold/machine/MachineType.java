@@ -1,4 +1,4 @@
-package com.axiom.operatio.model.production.machine;
+package com.axiom.operatio.modelold.machine;
 
 import android.content.res.Resources;
 import android.util.Log;
@@ -6,19 +6,31 @@ import android.util.Log;
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.data.CSVFile;
-import com.axiom.operatio.model.production.materials.Material;
+import com.axiom.operatio.modelold.production.materials.Material;
 
 import java.util.ArrayList;
 
+
+/**
+ * Описывает машины и доступные операции над материалами
+ * (C) Bolat Basheyev 2020
+ */
 public class MachineType {
 
-    private static ArrayList<MachineType> machineTypes;
-    private static boolean initialized = false;
+    //---------------------------------------------------------------------------------
+    private static ArrayList<MachineType> machineTypes;    // Список всех типов машин
+    private static boolean initialized = false;            // Флаг инициализации
+    //---------------------------------------------------------------------------------
+    protected int ID;                                      // Код машины
+    protected String name;                                 // Название
+    protected Operation[] operations;                      // Доступные операции
+    //---------------------------------------------------------------------------------
 
-    protected int ID;
-    protected String name;
-    protected Operation[] operations;
-
+    /**
+     * Выдаёт экземпляр описания машины
+     * @param ID код машины
+     * @return экземпляр описания машины
+     */
     public static MachineType getMachineType(int ID) {
         if (!initialized) loadMachinesData(SceneManager.getResources());
         return machineTypes.get(ID);
@@ -82,6 +94,9 @@ public class MachineType {
     }
 
 
+    /**
+     * Отладочный метод распечатки списка описания машин
+     */
     public static void printDebug() {
         MachineType m;
         Operation op;

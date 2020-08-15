@@ -6,8 +6,7 @@ import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Batcher;
-import com.axiom.atom.engine.graphics.renderers.Rectangle;
-import com.axiom.operatio.model.market.MarketModel;
+import com.axiom.operatio.modelold.market.MarketModel;
 import com.axiom.operatio.renderers.BarChart;
 
 public class MarketScene extends GameScene {

@@ -1,4 +1,4 @@
-package com.axiom.operatio.model.production.transport;
+package com.axiom.operatio.modelold.transport;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameObject;
@@ -6,9 +6,9 @@ import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.operatio.model.production.blocks.Block;
-import com.axiom.operatio.model.production.ProductionModel;
-import com.axiom.operatio.model.production.materials.Item;
+import com.axiom.operatio.modelold.production.blocks.Block;
+import com.axiom.operatio.modelold.production.ProductionModel;
+import com.axiom.operatio.modelold.production.materials.Item;
 
 /**
  * Транспортировщик: конвейер, AGV, манимулятор (из буфера в буфер)
@@ -185,6 +185,7 @@ public class Conveyor extends Block {
 
         int counter = 0;
         int finishedCount = 0;
+        float maxProgress;
 
         for (Item item:items) {
             now = System.currentTimeMillis();
@@ -192,7 +193,7 @@ public class Conveyor extends Block {
 
             // Если есть завершенные, то располагаем в правильное место
             if (finishedCount > 0) {
-                float maxProgress = 1 - counter * (1.0f / capacity);
+                maxProgress = 1 - counter * (1.0f / capacity);
                 if (progress > maxProgress) progress = maxProgress;
             }
 
@@ -252,8 +253,8 @@ public class Conveyor extends Block {
                 ypos = (float) (Math.sin(rads) - 1) / 2;
             }
 
-            item.material.image.zOrder = 2;
-            item.material.image.draw(camera,
+            item.material.getImage().zOrder = 2;
+            item.material.getImage().draw(camera,
                     x + xpos * sprite.getWidth() * scale,
                     y + ypos * sprite.getHeight() * scale,
                     scale/2);

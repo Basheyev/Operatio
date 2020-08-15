@@ -1,4 +1,4 @@
-package com.axiom.operatio.model.market;
+package com.axiom.operatio.modelold.market;
 
 public class MarketModel {
 

@@ -1,6 +1,6 @@
-package com.axiom.operatio.model.production.machine;
+package com.axiom.operatio.modelold.machine;
 
-import com.axiom.operatio.model.production.materials.Material;
+import com.axiom.operatio.modelold.production.materials.Material;
 
 public class Operation {
 
