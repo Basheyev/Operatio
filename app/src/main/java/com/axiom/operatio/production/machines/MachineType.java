@@ -1,4 +1,4 @@
-package com.axiom.operatio.modelold.machine;
+package com.axiom.operatio.production.machines;
 
 import android.content.res.Resources;
 import android.util.Log;
@@ -6,7 +6,7 @@ import android.util.Log;
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.data.CSVFile;
-import com.axiom.operatio.modelold.production.materials.Material;
+import com.axiom.operatio.production.materials.Material;
 
 import java.util.ArrayList;
 
@@ -93,6 +93,27 @@ public class MachineType {
         initialized = true;
     }
 
+
+    public int getID() {
+        return ID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Operation[] getOperations() {
+        return operations;
+    }
+
+    public boolean isOperationAvailable(Operation op) {
+        for (Operation operation : operations) {
+            if (operation.equals(op)) return true;
+        }
+        return false;
+    }
+
+    //--------------------------------------------------------------------------------
 
     /**
      * Отладочный метод распечатки списка описания машин
