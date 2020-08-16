@@ -9,8 +9,9 @@ public class Machine extends Block {
 
     protected MachineType type;
     protected Operation operation;
+
     private int[] matCounter;
-    private int cyclesLeft;
+    private int cyclesLeft = 0;
 
     public Machine(Production production, MachineType type, Operation op, int inDir, int outDir) {
         super(production, inDir, op.totalInputAmount(), outDir, op.totalOutputAmount());
@@ -29,7 +30,7 @@ public class Machine extends Block {
     @Override
     public boolean process() {
 
-        // Если машина работает, уменьшаем счетчик оставшегося времени
+        // Если машина работает, уменьшаем счетчик оставшихся циклов работы
         if (state==BUSY && cyclesLeft > 0) {
             cyclesLeft--;
             if (cyclesLeft==0) {     // Если время операции прошло
@@ -44,7 +45,6 @@ public class Machine extends Block {
         // пытаемся самостоятельно взять из направления входа (блок)
         int totalAmount = operation.totalInputAmount();
         if (input.size() < totalAmount) return getItemFromInputDirection();
-
 
         // Подтверждаем, что есть необходимое количество каждого предмета по Операции
         if (operationInputVerified()) {              // Начинаем работу машины
@@ -91,9 +91,9 @@ public class Machine extends Block {
                 }
             }
         }
-        // Если все необходимые материалы есть, то каждый элемент matCounter будет равен 0
+        // Если все необходимые материалы есть, то каждый элемент matCounter будет меньше/равен 0
         for (int i=0; i<matCounter.length; i++) {
-            if (matCounter[i] != 0) return false;
+            if (matCounter[i] > 0) return false; // Если больше 0, предметов не хватает
         }
         // Все необходимые материалы есть
         return true;
