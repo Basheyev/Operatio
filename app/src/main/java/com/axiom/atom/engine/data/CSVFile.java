@@ -56,6 +56,11 @@ public class CSVFile {
         return data[col];
     }
 
+    public int getIntValue(int row, int col) {
+        String value = getValue(row,col).trim();
+        return Integer.parseInt(value);
+    }
+
     public int getRowCount() {
         return csv.size();
     }

@@ -1,6 +1,6 @@
 package com.axiom.operatio.production.machines;
 
-import com.axiom.operatio.production.blocks.Block;
+import com.axiom.operatio.production.block.Block;
 import com.axiom.operatio.production.Production;
 import com.axiom.operatio.production.materials.Item;
 import com.axiom.operatio.production.materials.Material;
@@ -18,6 +18,7 @@ public class Machine extends Block {
         this.type = type;
         this.operation = op;
         this.matCounter = new int[operation.inputMaterials.length];
+        this.renderer = new MachineRenderer(this);
     }
 
     @Override
@@ -28,48 +29,37 @@ public class Machine extends Block {
     }
 
     @Override
-    public boolean process() {
+    public void process() {
 
         // Если машина работает, уменьшаем счетчик оставшихся циклов работы
         if (state==BUSY && cyclesLeft > 0) {
             cyclesLeft--;
-            if (cyclesLeft==0) {     // Если время операции прошло
+            // Если время операции прошло и выход свободен
+            if (cyclesLeft==0 && output.remainingCapacity() > outputCapacity) {
                 input.clear();       // Удаляем входящие предметы
                 generateOutput();    // Генерируем выходные предметы
                 state = IDLE;        // Устанавливаем состояние IDLE
             }
-            return true;
+            return;
         }
 
         // Если количество предметов во вхоядщий очереди меньше чем необходимо для операции
         // пытаемся самостоятельно взять из направления входа (блок)
         int totalAmount = operation.totalInputAmount();
-        if (input.size() < totalAmount) return getItemFromInputDirection();
+        if (input.size() < totalAmount) {
+            getItemFromInputDirection();
+            return;
+        }
 
         // Подтверждаем, что есть необходимое количество каждого предмета по Операции
         if (operationInputVerified()) {              // Начинаем работу машины
             state = BUSY;                            // Устанавливаем состояние - BUSY
             cyclesLeft = operation.operationTime;    // Указываем количество циклов работы
-            return true;
         }
 
-        return false;
     }
 
 
-    /**
-     * Забирает один предмет из блока по направлению входа
-     * @return true - если получилось забрать, false - если нет
-     */
-    protected boolean getItemFromInputDirection() {
-        Block inputBlock = production.getBlockAt(this, inputDirection);
-        if (inputBlock==null) return false;  // Если на входящем направление ничего нет
-        Item item = inputBlock.peek();       // Пытаемся взять предмет из блока входа
-        if (item==null) return false;        // Если ничего нет возвращаем false
-        if (!push(item)) return false;       // Если не получилось добавить к себе - false
-        inputBlock.poll();                   // Если получилось - удаляем из блока входа
-        return true;
-    }
 
 
     /**
@@ -101,19 +91,22 @@ public class Machine extends Block {
 
 
     // Добавляем на выход исходящие предметы
-    protected boolean generateOutput() {
+    protected void generateOutput() {
         Item item;
         for (int i=0; i<operation.outputAmount.length; i++) {
             Material material = operation.outputMaterials[i];
             for (int j=0; j<operation.outputAmount[i]; j++) {
                 item = new Item(material);
                 item.setOwner(this, Production.getCurrentCycle());
+                // FIXME Queue full exception
                 output.add(item);
             }
         }
-        return true;
     }
 
 
+    public MachineType getType() {
+        return type;
+    }
 
 }

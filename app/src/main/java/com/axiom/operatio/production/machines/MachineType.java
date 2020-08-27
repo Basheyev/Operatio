@@ -6,6 +6,7 @@ import android.util.Log;
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.data.CSVFile;
+import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.production.materials.Material;
 
 import java.util.ArrayList;
@@ -18,12 +19,13 @@ import java.util.ArrayList;
 public class MachineType {
 
     //---------------------------------------------------------------------------------
-    private static ArrayList<MachineType> machineTypes;    // Список всех типов машин
-    private static boolean initialized = false;            // Флаг инициализации
+    protected static ArrayList<MachineType> machineTypes;  // Список всех типов машин
+    protected static boolean initialized = false;          // Флаг инициализации
     //---------------------------------------------------------------------------------
     protected int ID;                                      // Код машины
     protected String name;                                 // Название
     protected Operation[] operations;                      // Доступные операции
+
     //---------------------------------------------------------------------------------
 
     /**

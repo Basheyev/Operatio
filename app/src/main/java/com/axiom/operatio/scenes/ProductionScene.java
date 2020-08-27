@@ -2,158 +2,81 @@ package com.axiom.operatio.scenes;
 
 import android.view.MotionEvent;
 
-import com.axiom.atom.R;
-import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.atom.engine.graphics.renderers.Batcher;
-import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.atom.engine.input.Input;
-import com.axiom.atom.engine.core.geometry.AABB;
-import com.axiom.atom.engine.sound.SoundRenderer;
-import com.axiom.operatio.modelold.production.blocks.Block;
-import com.axiom.operatio.modelold.production.ProductionModel;
-import com.axiom.operatio.modelold.production.buffer.Buffer;
-import com.axiom.operatio.modelold.production.machine.Machine;
-import com.axiom.operatio.modelold.machine.MachineType;
-import com.axiom.operatio.modelold.transport.Conveyor;
+import com.axiom.operatio.production.ProductionBuilder;
+import com.axiom.operatio.production.block.Block;
+import com.axiom.operatio.production.Production;
+import com.axiom.operatio.production.block.Renderer;
+
 
 public class ProductionScene extends GameScene {
 
-    private AABB exitBtn;
+    private Production production;
 
-    protected ProductionModel productionModel;
+    private float cellWidth = 128;                  // Ширина клетки
+    private float cellHeight = 128;                 // Высота клетки
+    private long lastCycleTime;                     // Время последнего цикла (миллисекунды)
+    private long cycleMilliseconds = 200;            // Длительносить цикла (миллисекунды)
 
-    protected int machineSound, bufferSound, conveyorSound;
-    protected float cursorX, cursorY;
-    protected int selectedColumn=0, selectedRow=0;
-    protected Sprite tile;
-    protected float gridSize = 128;
-
-    //--------------------------------------------------------------------------------------
-    // Модель производства
-    //--------------------------------------------------------------------------------------
-
-    /**
-     * Производственный цикл (такт)
-     */
-    public void cycle() {
-        productionModel.productionCycle();
-    }
-
-
-
-    //--------------------------------------------------------------------------------------
-    // Отображение и управление
-    //--------------------------------------------------------------------------------------
 
     @Override
     public String getSceneName() {
-        return "Simulation";
+        return "Production";
     }
 
     @Override
     public void startScene() {
-        if (productionModel ==null) productionModel = new ProductionModel(this,20,15,gridSize);
-        exitBtn = new AABB(1720,1004,1919,1079);
-        tile = new Sprite(getResources(), R.drawable.tile);
-        machineSound = SoundRenderer.loadSound(R.raw.machine_snd);
-        bufferSound = SoundRenderer.loadSound(R.raw.buffer_snd);
-        conveyorSound = SoundRenderer.loadSound(R.raw.conveyor_snd);
-
-
-        MachineType.getMachineType(0);
-        MachineType.printDebug();
-
-      //  SoundRenderer.loadMusic(R.raw.music);
-      //  SoundRenderer.setMusicVolume(0.02f,0.02f);
-      //  SoundRenderer.playMusic();
-    }
-
-    @Override
-    public void updateScene(float deltaTime) {
-        productionModel.productionCycle();
-        Camera camera = GraphicsRender.getCamera();
-        cursorX = camera.getX() + Input.xAxis * 5;
-        cursorY = camera.getY() + Input.yAxis * 5;
-        camera.lookAt(cursorX, cursorY);
-    }
-
-    @Override
-    public void preRender(Camera camera) {
-        GraphicsRender.clear();
-        tile.zOrder = -1;
-        for (int y = 0; y< productionModel.rows; y++) {
-            for (int x = 0; x < productionModel.columns; x++) {
-                tile.draw(camera, x*gridSize, y*gridSize, gridSize, gridSize);
-            }
-        }
-    }
-
-    @Override
-    public void postRender(Camera camera) {
-
-        GraphicsRender.setZOrder(100);
-        GraphicsRender.drawText(("QUADS:"+ Batcher.getEntriesCount() +
-                " ITEMS:" + productionModel.getTotalItems() +
-                "\n" + productionModel.getBlockAt(selectedColumn,selectedRow)).toCharArray(),
-                camera.getMinX() + 50,
-                camera.getMinY() + 100,2);
-        GraphicsRender.setColor(1,0,0,1);
-
-        GraphicsRender.drawRectangle(
-                camera.getMinX() + exitBtn.min.x,
-                camera.getMinY() + exitBtn.min.y,
-                exitBtn.width, exitBtn.height);
-
-        GraphicsRender.setZOrder(101);
-        GraphicsRender.drawText("EXIT".toCharArray(),
-                camera.getMinX() + exitBtn.min.x+30,
-                camera.getMinY() + exitBtn.min.y + 30,2);
-
-        GraphicsRender.setColor(1,1,0,0.3f);
-        GraphicsRender.drawRectangle(selectedColumn*gridSize, selectedRow*gridSize, gridSize,gridSize);
-
-
-        GraphicsRender.drawText(
-                ("FPS:" + GraphicsRender.getFPS() +
-                 " CALLS=" + Batcher.getDrawCallsCount() +
-                        " MS:" + GraphicsRender.getRenderTime()).toCharArray(),
-                camera.getMinX()+50, camera.getMinY()+1040, 2);
-
-        GraphicsRender.setZOrder(0);
-
-    }
-
-
-    @Override
-    public void onMotion(MotionEvent event, float worldX, float worldY) {
-        if (event.getActionMasked()==MotionEvent.ACTION_UP) {
-            GameObject obj = getSceneObjectAt(worldX, worldY);
-            if (obj!=null) {
-                if (obj instanceof Block) {
-                    Block block = (Block) obj;
-                    selectedColumn = block.column;
-                    selectedRow = block.row;
-                    if (block instanceof Machine) SoundRenderer.playSound(machineSound);
-                    if (block instanceof Buffer) SoundRenderer.playSound(bufferSound);
-                    if (block instanceof Conveyor) SoundRenderer.playSound(conveyorSound);
-                }
-            }
-
-            Camera camera = GraphicsRender.getCamera();
-            if (exitBtn.collides(worldX - camera.getMinX(), worldY - camera.getMinY())) {
-                sceneManager.exitGame();
-            }
-        }
-
+        production = ProductionBuilder.createDemoProduction();
     }
 
     @Override
     public void disposeScene() {
-        SoundRenderer.unloadSounds();
-        SoundRenderer.unloadMusic();
+        production.clearBlocks();
     }
 
+    @Override
+    public void updateScene(float deltaTime) {
+        long now = System.currentTimeMillis();
+        if (now - lastCycleTime > cycleMilliseconds) {
+            production.cycle();
+            lastCycleTime = now;
+        }
+    }
+
+    @Override
+    public void preRender(Camera camera) {
+        int columns = production.getColumns();
+        int rows = production.getRows();
+        Block block;
+        Renderer renderer;
+        GraphicsRender.clear();
+        for (int row=0; row < rows; row++) {
+            for (int col=0; col < columns; col++) {
+                block = production.getBlockAt(col, row);
+                if (block!=null) {
+                    renderer = block.getRenderer();
+                    if (renderer != null) {
+                        renderer.draw(camera,
+                                col * cellWidth,
+                                row * cellHeight,
+                                cellWidth,
+                                cellHeight);
+                    }
+                }
+            }
+        }
+        block = null;
+    }
+
+    @Override
+    public void postRender(Camera camera) {
+        GraphicsRender.drawText("Hello world!".toCharArray(), 0,1000, 2);
+    }
+
+    @Override
+    public void onMotion(MotionEvent event, float worldX, float worldY) {
+
+    }
 }

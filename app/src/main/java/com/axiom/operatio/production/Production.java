@@ -1,6 +1,6 @@
 package com.axiom.operatio.production;
 
-import com.axiom.operatio.production.blocks.Block;
+import com.axiom.operatio.production.block.Block;
 
 import java.util.ArrayList;
 
@@ -23,6 +23,7 @@ public class Production {
         this.columns = columns;
         this.rows = rows;
         grid = new Block[rows][columns];
+
         blocks = new ArrayList<Block>(100);
     }
 
@@ -102,5 +103,12 @@ public class Production {
     }
 
 
+    public int getColumns() {
+        return columns;
+    }
+
+    public int getRows() {
+        return rows;
+    }
 
 }
