@@ -26,6 +26,7 @@ public class ConveyorRenderer implements Renderer {
     public ConveyorRenderer(Conveyor conveyor) {
         this.conveyor = conveyor;
         sprite = new Sprite(SceneManager.getResources(), R.drawable.conveyor_texture,4,6);
+        sprite.zOrder = 1;
         arrangeAnimation(conveyor.getInputDirection(), conveyor.getOutputDirection());
 
     }

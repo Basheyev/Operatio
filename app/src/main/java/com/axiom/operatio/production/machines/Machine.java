@@ -2,8 +2,10 @@ package com.axiom.operatio.production.machines;
 
 import com.axiom.operatio.production.block.Block;
 import com.axiom.operatio.production.Production;
+import com.axiom.operatio.production.buffer.Buffer;
 import com.axiom.operatio.production.materials.Item;
 import com.axiom.operatio.production.materials.Material;
+import com.axiom.operatio.production.transport.Conveyor;
 
 public class Machine extends Block {
 
@@ -25,6 +27,7 @@ public class Machine extends Block {
     public boolean push(Item item) {
         // Проверяем допустимый ли материал для добавления в очередь ввода
         if (!operation.isCorrectInput(item.getMaterial())) return false;
+        if (output.remainingCapacity() < outputCapacity) return false;
         return super.push(item);
     }
 
@@ -32,13 +35,13 @@ public class Machine extends Block {
     public void process() {
 
         // Если машина работает, уменьшаем счетчик оставшихся циклов работы
-        if (state==BUSY && cyclesLeft > 0) {
+        if (getState()==BUSY && cyclesLeft > 0) {
             cyclesLeft--;
             // Если время операции прошло и выход свободен
-            if (cyclesLeft==0 && output.remainingCapacity() > outputCapacity) {
+            if (cyclesLeft==0 && output.remainingCapacity() <= outputCapacity) {
                 input.clear();       // Удаляем входящие предметы
                 generateOutput();    // Генерируем выходные предметы
-                state = IDLE;        // Устанавливаем состояние IDLE
+                setState(IDLE);      // Устанавливаем состояние IDLE
             }
             return;
         }
@@ -53,7 +56,7 @@ public class Machine extends Block {
 
         // Подтверждаем, что есть необходимое количество каждого предмета по Операции
         if (operationInputVerified()) {              // Начинаем работу машины
-            state = BUSY;                            // Устанавливаем состояние - BUSY
+            setState(BUSY);                            // Устанавливаем состояние - BUSY
             cyclesLeft = operation.operationTime;    // Указываем количество циклов работы
         }
 
@@ -100,7 +103,29 @@ public class Machine extends Block {
                 item.setOwner(this, Production.getCurrentCycle());
                 // FIXME Queue full exception
                 output.add(item);
+
+                // TODO если приёмник буфер или конвейер - затолкать самостоятельно
+                Block outputBlock = production.getBlockAt(this,outputDirection);
+                if (outputBlock!=null) {
+                    if (outputBlock instanceof Buffer || outputBlock instanceof Conveyor) {
+                        if (outputBlock.push(item)) output.remove(item);
+                    }
+                }
+
             }
+        }
+    }
+
+    public void setState(int state) {
+        if (this.state==state) return;
+        switch (state) {
+            case Block.IDLE:
+                ((MachineRenderer) renderer).setIdleAnimation();
+                this.state = state;
+            case Block.BUSY:
+                ((MachineRenderer) renderer).setBusyAnimation();
+                this.state = state;
+
         }
     }
 

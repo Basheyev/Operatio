@@ -19,6 +19,7 @@ public class MachineRenderer implements Renderer {
         this.machine = machine;
         int ID = machine.getType().ID;
         sprite = new Sprite(SceneManager.getResources(), R.drawable.machines, 8, 8);
+        sprite.zOrder = 1;
         idleAnimation = sprite.addAnimation(ID * 8, ID * 8, 8, true);
         busyAnimation = sprite.addAnimation(ID * 8, ID * 8 + 7, 8, true);
     }
@@ -31,5 +32,12 @@ public class MachineRenderer implements Renderer {
         GraphicsRender.drawText(bf1.toCharArray(), x + width / 2 ,y + height / 2,1);
     }
 
+    public void setIdleAnimation() {
+        sprite.setActiveAnimation(idleAnimation);
+    }
+
+    public void setBusyAnimation() {
+        sprite.setActiveAnimation(busyAnimation);
+    }
 
 }
