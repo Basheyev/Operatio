@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.axiom.atom.engine.core.GameView;
+import com.axiom.atom.engine.tests.demotest.DemoScene;
 import com.axiom.operatio.scenes.ProductionScene;
 
 public class MainActivity extends AppCompatActivity {
@@ -14,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        gameView = GameView.getInstance(this, new ProductionScene());
+        gameView = GameView.getInstance(this, new DemoScene());
         setContentView(gameView);
     }
 

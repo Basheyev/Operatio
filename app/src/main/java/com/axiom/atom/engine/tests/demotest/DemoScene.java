@@ -7,8 +7,9 @@ import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.atom.engine.graphics.renderers.Batcher;
+import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
+import com.axiom.atom.engine.graphics.ui.Widget;
 import com.axiom.atom.engine.input.Input;
 
 public class DemoScene extends GameScene {
@@ -22,12 +23,34 @@ public class DemoScene extends GameScene {
         return "Demo";
     }
 
-
     /**
      * Вызывается из потока GLThreads чтобы шейдеры загрузились
      */
     public void startScene() {
 
+        Widget widget = getScreenWidget();
+        widget.opaque = false;
+
+        Widget panel = new Widget();
+        panel.setLocalBounds(50,50,800,200);
+        panel.r = 1;
+        panel.g = 0;
+        panel.b = 0;
+        widget.addChild(panel);
+
+        Widget button = new Widget();
+        button.setLocalBounds(50,50,300,300);
+        button.r = 1;
+        button.g = 1;
+        button.b = 1;
+        panel.addChild(button);
+
+        Widget button2 = new Widget();
+        button2.setLocalBounds(400,50,300,300);
+        button2.r = 1;
+        button2.g = 1;
+        button2.b = 1;
+        panel.addChild(button2);
 
         long startTime = System.currentTimeMillis();
         background = new Sprite(getResources(), R.drawable.bitmap);
@@ -100,8 +123,8 @@ public class DemoScene extends GameScene {
 
         GraphicsRender.drawText(
                 ("FPS:" + GraphicsRender.getFPS() +
-                        " CALLS=" + Batcher.getDrawCallsCount() +
-                        " QUADS=" + Batcher.getEntriesCount() +
+                        " CALLS=" + BatchRender.getDrawCallsCount() +
+                        " QUADS=" + BatchRender.getEntriesCount() +
                         " MS:" + GraphicsRender.getRenderTime()).toCharArray(),
                 camera.getMinX()+50, camera.getMinY()+1040, 2);
     }

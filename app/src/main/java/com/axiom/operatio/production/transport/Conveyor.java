@@ -53,16 +53,17 @@ public class Conveyor extends Block {
         for (int i=0; i<input.size(); i++) {
             Item item = input.peek();
             if (item==null) break;
+
             long cyclesPassed = Production.getCurrentCycle() - item.getCycleOwned();
-            if (cyclesPassed > deliveryCycles) {
+            if (cyclesPassed >= deliveryCycles) {
                 item = input.poll();  // Удалаем из входящей очереди
                 output.add(item);     // Добавляем в выходящую очередь
                 state = IDLE;         // Состояние - IDLE (можем брать еще)
 
-                // TODO если приёмник буфер - затолкать самостоятельно
+                // Если приёмник буфер или конвейер - затолкать самостоятельно
                 Block outputBlock = production.getBlockAt(this,outputDirection);
                 if (outputBlock!=null) {
-                    if (outputBlock instanceof Buffer) {
+                    if (outputBlock instanceof Buffer || outputBlock instanceof Conveyor) {
                        if (outputBlock.push(item)) output.remove(item);
                     }
                 }

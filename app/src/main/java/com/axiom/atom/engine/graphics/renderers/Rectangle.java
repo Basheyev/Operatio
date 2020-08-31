@@ -41,7 +41,7 @@ public class Rectangle {
     }
 
 
-    public void draw(Camera camera, float x, float y, float width, float height) {
+    public void draw(Camera camera, float x, float y, float width, float height, AABB scissor) {
         if (!camera.isVisible(x,y, x+width,y+height)) return;
 
         float sx = x + width / 2;
@@ -62,12 +62,20 @@ public class Rectangle {
         vertices[15] = 0.5f * width + sx;
         vertices[16] = -0.5f * height + sy;
 
-        Batcher.addRectangle(vertices, zOrder, color);
+        BatchRender.addRectangle(vertices, zOrder, color, scissor);
 
     }
 
+    public void draw(Camera camera, float x, float y, float width, float height) {
+        draw(camera,x,y,width,height,null);
+    }
+
+    public void draw(Camera camera, AABB aabb, AABB scissor) {
+        draw(camera, aabb.min.x, aabb.min.y, aabb.width, aabb.height, scissor);
+    }
+
     public void draw(Camera camera, AABB aabb) {
-        draw(camera, aabb.min.x, aabb.min.y, aabb.width, aabb.height);
+        draw(camera, aabb.min.x, aabb.min.y, aabb.width, aabb.height, null);
     }
 
 }

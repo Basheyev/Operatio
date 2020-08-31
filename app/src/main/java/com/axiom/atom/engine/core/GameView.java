@@ -32,6 +32,10 @@ public class GameView extends GLSurfaceView {
         return gameView;
     }
 
+    public static GameView getInstance() {
+        return gameView;
+    }
+
     private GameView(Context context, GameScene gameScene) {
         super(context);
         initializeGameEngine(gameScene, context);

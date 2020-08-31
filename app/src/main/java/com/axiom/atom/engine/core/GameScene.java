@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.view.MotionEvent;
 
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.graphics.ui.Widget;
 
 import java.util.ArrayList;
 
@@ -18,6 +19,7 @@ public abstract class GameScene {
     protected Resources resources;
     public boolean started = false;
 
+    protected Widget sceneWidget = new Widget();                          // Корневой виджет сцены
     protected ArrayList<GameObject> objects = new ArrayList<GameObject>();         // Объекты сцены
     protected ArrayList<GameObject> addedObjects = new ArrayList<GameObject>();    // Служебный список добавления объектов
     protected ArrayList<GameObject> deletedObjects = new ArrayList<GameObject>();  // Служебный список удаления объектов
@@ -69,6 +71,11 @@ public abstract class GameScene {
     }
 
     public void removeObject(GameObject obj) { deletedObjects.add(obj); }
+
+    public Widget getScreenWidget() {
+        return sceneWidget;
+    }
+
     public Resources getResources() {
         return resources;
     }

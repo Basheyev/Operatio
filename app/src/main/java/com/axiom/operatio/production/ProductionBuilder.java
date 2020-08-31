@@ -17,6 +17,7 @@ public class ProductionBuilder {
 
         Production production = Production.getInstance(15,15);
         circularConveyor(production, 0, 0);
+        circularConveyor(production, 0, 4);
         conveyorTask(production,8,1);
         return production;
     }
@@ -85,7 +86,7 @@ public class ProductionBuilder {
         Conveyor conv7 = new Conveyor( production, Block.RIGHT, Block.DOWN,5);
         Conveyor conv8 = new Conveyor( production, Block.UP, Block.DOWN,5);
 
-        for (int i=0; i<3; i++) buf1.push(new Item(Material.getMaterial(0)));
+        for (int i=0; i<21; i++) buf1.push(new Item(Material.getMaterial(0)));
 
         production.setBlock(conv1, col,row);
         production.setBlock(buf1, col+1, row);

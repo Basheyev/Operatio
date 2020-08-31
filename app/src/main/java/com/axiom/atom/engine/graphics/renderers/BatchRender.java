@@ -4,6 +4,7 @@ package com.axiom.atom.engine.graphics.renderers;
 import android.opengl.GLES20;
 import android.util.Log;
 
+import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.Texture;
 import com.axiom.atom.engine.graphics.gles2d.VertexBuffer;
@@ -20,7 +21,7 @@ import java.util.Comparator;
  * <br><br>
  * (С) Atom Engine, Bolat Basheyev 2020
  */
-public class Batcher {
+public class BatchRender {
     //------------------------------------------------------------------------------------------
     // Единица хранения очереди отрисовки: спрайт или прямоугольник
     //------------------------------------------------------------------------------------------
@@ -30,6 +31,7 @@ public class Batcher {
         public float[] vertices = new float[18];    // Вершины спрайта (2 треугольника - 18 коорд)
         public float[] coordinates = new float[12]; // текстурные координаты спрайта
         public float[] color = new float[4];        // цвет примитива если нет текстуры
+        public AABB scissor;                       // Область отсечения в физических координатах экрана
     }
     //------------------------------------------------------------------------------------------
     public static final int MAX_SPRITES = 2048;   // Максимальное количество спрайтов на экране
@@ -82,7 +84,7 @@ public class Batcher {
     }
 
     //-------------------------------------------------------------------------------------------
-    public static void addRectangle(float[] vert, int zOrder, float[] color) {
+    public static void addRectangle(float[] vert, int zOrder, float[] color, AABB scissor) {
         // Проверяем есть ли ещё место
         if (entriesCounter + 1 >= entries.length) {
             Log.w("WARNING", "Max sprites count reached " + MAX_SPRITES);
@@ -96,12 +98,13 @@ public class Batcher {
         entry.color[3] = color[3];
         entry.texture = null;
         entry.zOrder = zOrder;
+        entry.scissor = scissor;
         System.arraycopy(vert, 0, entry.vertices, 0, 18);
         entriesCounter++;
     }
 
     //-------------------------------------------------------------------------------------------
-    public static void addSprite(Texture texture, float[] vert, float[] texcoord, int zOrder) {
+    public static void addSprite(Texture texture, float[] vert, float[] texcoord, int zOrder, AABB scissor) {
         // Проверяем есть ли ещё место
         if (entriesCounter + 1 >= entries.length) {
             Log.w("WARNING", "Max sprites count reached " + MAX_SPRITES);
@@ -115,11 +118,11 @@ public class Batcher {
         entry.color[3] = 0;
         entry.texture = texture;
         entry.zOrder = zOrder;
+        entry.scissor = scissor;
         System.arraycopy(vert, 0, entry.vertices, 0, 18);
         System.arraycopy(texcoord, 0, entry.coordinates, 0, 12);
         entriesCounter++;
     }
-
 
     //-------------------------------------------------------------------------------------------
     public static void finishBatching(Camera camera) {
@@ -141,30 +144,35 @@ public class Batcher {
         for (int i=0; i<entriesCounter; i++) {
             entry = entries[i];
             batchRendered = false;
-            // если та же текстура и тот же z order упаковываем всё в один пакет
-            if (entry.texture==lastTexture && entry.zOrder==lastZOrder && compareColor(lastColor,entry.color)==0) {
+            // если та же текстура, тот же z order и нет обрезания - упаковываем всё в один пакет
+            if (entry.texture==lastTexture && entry.zOrder==lastZOrder
+                    && compareColor(lastColor,entry.color)==0 && entry.scissor==null) {
                 verticesBatch.pushVertices(entry.vertices);
                 texCoordBatch.pushVertices(entry.coordinates);
                 lastTexture = entry.texture;
                 lastZOrder = entry.zOrder;
                 System.arraycopy(entry.color, 0, lastColor, 0, 4);
             } else {
-                // Загружаем данные пакета
+                // Загружаем данные пакета для отрисвки
                 verticesBatch.prepare();
                 texCoordBatch.prepare();
                 // Отрисовываем прошлый пакет
                 renderBatch(camera.getCameraMatrix(), lastTexture, lastColor);
                 batchRendered = true;
+
                 // начинаем новый пакет
+                disableScissor();
                 verticesBatch.clear();
                 texCoordBatch.clear();
+                // добавляем в пакет вершины следующей записи
                 verticesBatch.pushVertices(entry.vertices);
                 texCoordBatch.pushVertices(entry.coordinates);
                 lastTexture = entry.texture;
                 lastZOrder = entry.zOrder;
                 System.arraycopy(entry.color, 0, lastColor, 0, 4);
+                // Включаем обрезку если она есть
+                if (entry.scissor!=null) enableScissors(entry.scissor);
             }
-
         }
 
         if (!batchRendered) {
@@ -173,10 +181,11 @@ public class Batcher {
             texCoordBatch.prepare();
             // Отрисовываем прошлый пакет
             renderBatch(camera.getCameraMatrix(), lastTexture, entry.color);
+            // Начинаем новый пакет
+            disableScissor();
             verticesBatch.clear();
             texCoordBatch.clear();
         }
-
     }
 
 
@@ -225,6 +234,20 @@ public class Batcher {
 
     public static int getDrawCallsCount() {
         return drawCallsCounter;
+    }
+
+    protected static void enableScissors(AABB clip) {
+        GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
+        GLES20.glScissor(
+                (int) Math.round(clip.min.x),
+                (int) Math.round(clip.min.y),
+                (int) Math.round(clip.width),
+                (int) Math.round(clip.height)
+        );
+    }
+
+    protected static void disableScissor() {
+        GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
     }
 
 }

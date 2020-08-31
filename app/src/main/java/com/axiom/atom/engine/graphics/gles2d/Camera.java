@@ -2,10 +2,13 @@ package com.axiom.atom.engine.graphics.gles2d;
 
 import android.opengl.Matrix;
 
+import com.axiom.atom.engine.core.GameView;
+import com.axiom.atom.engine.core.geometry.AABB;
+
 /**
  * Камера - вычисляет ортогнальную матрицу для наблюдения за точкой в игровом мире.
  * Формирует логическое разрешение экрана для всех устройств 1920x1080 (HD 16:9)
- * <br><br> FIXME не синхронизируется работа с камерой из-за чего подергивания при отрисовке
+ * <br><br>
  * (С) Atom Engine, Bolat Basheyev 2020
  */
 public class Camera {
@@ -64,18 +67,22 @@ public class Camera {
     }
 
     /**
-     * Определяет находится ли прямоугольник в обзоре камеры.
+     * Определяет находится ли прямоугольник в обзоре камеры (мировые координаты).
      * Используется для оптимизации рендеринга и отсечения невидимых спрайтов.
-     * @param minX координата
-     * @param minY координата
-     * @param maxX координата
-     * @param maxY координата
+     * @param minX мировая координата
+     * @param minY мировая координата
+     * @param maxX мировая координата
+     * @param maxY мировая координата
      * @return true - если виден, иначе false;
      */
     public boolean isVisible(float minX, float minY, float maxX, float maxY) {
         if (y2 < minY || y1 > maxY) return false;
         if (x2 < minX || x1 > maxX) return false;
         return true;
+    }
+
+    public boolean isVisible(AABB rect) {
+        return isVisible(rect.min.x, rect.min.y, rect.max.x, rect.max.y);
     }
 
     /**
@@ -134,6 +141,26 @@ public class Camera {
         synchronized (cameraMatrix) {
             return y2;
         }
+    }
+
+    /**
+     * Конвертировать координаты AABB в физические экранные координаты
+     * @param box объект который необходимо конвертировать в него же и записать
+     * @return true - если он видимый на экране, false - если нет
+     */
+    public boolean convertToScreen(AABB box) {
+        // Вычисляем видна ли область на экране
+        boolean isVisibleOnScreen = box.collides(x1,y1,x2,y2);
+        // В любом случае конвертируем
+        GameView view = GameView.getInstance();
+        float resolutionX = view.getWidth();
+        float resolutionY = view.getHeight();
+        float minX = (box.min.x - camera.x1) / SCREEN_WIDTH * resolutionX;
+        float minY = (box.min.y - camera.y1) / SCREEN_HEIGHT * resolutionY;
+        float maxX = (box.max.x - camera.x1) / SCREEN_WIDTH * resolutionX;
+        float maxY = (box.max.y - camera.y1) / SCREEN_HEIGHT * resolutionY;
+        box.setBounds(minX, minY, maxX, maxY);
+        return isVisibleOnScreen;
     }
 
 }

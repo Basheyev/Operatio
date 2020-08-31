@@ -100,11 +100,11 @@ public class Machine extends Block {
             Material material = operation.outputMaterials[i];
             for (int j=0; j<operation.outputAmount[i]; j++) {
                 item = new Item(material);
-                item.setOwner(this, Production.getCurrentCycle());
+                item.setOwner(this);
                 // FIXME Queue full exception
                 output.add(item);
 
-                // TODO если приёмник буфер или конвейер - затолкать самостоятельно
+                // Если приёмник буфер или конвейер - затолкать самостоятельно
                 Block outputBlock = production.getBlockAt(this,outputDirection);
                 if (outputBlock!=null) {
                     if (outputBlock instanceof Buffer || outputBlock instanceof Conveyor) {

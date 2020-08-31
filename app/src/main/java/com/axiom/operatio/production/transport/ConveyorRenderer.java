@@ -5,9 +5,11 @@ import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.operatio.production.Production;
 import com.axiom.operatio.production.block.Renderer;
 import com.axiom.operatio.production.materials.Item;
+import com.axiom.operatio.scenes.ProductionScene;
+
+import java.util.concurrent.ArrayBlockingQueue;
 
 import static com.axiom.operatio.production.block.Block.DOWN;
 import static com.axiom.operatio.production.block.Block.LEFT;
@@ -22,13 +24,14 @@ public class ConveyorRenderer implements Renderer {
     protected int animLR, animRL;
     protected int animUD, animDU;
     protected int animRU, animUR;
+    protected long timeStarted;
 
     public ConveyorRenderer(Conveyor conveyor) {
         this.conveyor = conveyor;
         sprite = new Sprite(SceneManager.getResources(), R.drawable.conveyor_texture,4,6);
         sprite.zOrder = 1;
         arrangeAnimation(conveyor.getInputDirection(), conveyor.getOutputDirection());
-
+        timeStarted = System.currentTimeMillis();
     }
 
 
@@ -100,59 +103,36 @@ public class ConveyorRenderer implements Renderer {
     }
 
 
-    // TODO Сделать плавное движение материалов при отображении
     protected void drawItems(Camera camera, float x, float y, float width, float height) {
 
-        float progress;
+        float cycleTime = ProductionScene.getCycleTimeMs();   // Длительность цикла в мс.
+        float deliveryCycles = conveyor.getDeliveryCycles();  // Циклов для доставки предмета
+        float capacity = conveyor.getTotalCapacity();         // Вместимость конвейера в предметах
+        float stridePerItem = 1.0f / (capacity / 2.0f);       // Шаг для одного предмета
+        float deliveryTime = deliveryCycles * cycleTime;      // Время доставки в мс.
+        float progress;                                       // Прогресс движения от 0.0 до 1.0
+
+        // Разместим на конвейере доставленные предметы
+        int finishedCounter = 0;
+        ArrayBlockingQueue<Item> outputQueue = conveyor.getOutputQueue();
+        for (Item item:outputQueue) {
+            progress = 1.0f - (finishedCounter * stridePerItem);
+            drawItem (camera, x, y, width, height, item, progress);
+            finishedCounter++;
+        }
+
+        // Разместим на конвейере движущиеся предмаеты
+        ArrayBlockingQueue<Item> inputQueue = conveyor.getInputQueue();
+        float maxProgress = 1.0f - (finishedCounter * stridePerItem);
         long now;
-        int counter = 0;
-        float maxProgress;
-
-        float deliveryCycles = conveyor.getDeliveryCycles();
-        float capacity = conveyor.getTotalCapacity();
-
-
-        for (Item item:conveyor.getInputQueue()) {
-            now = Production.getCurrentCycle();
-            progress = (now - item.getCycleOwned()) / deliveryCycles;
-
-            // Если есть завершенные, то располагаем в правильное место
-            if (conveyor.getOutputQueue().size() > 0) {
-                maxProgress = 1 - counter * (1.0f / capacity);
-                if (progress > maxProgress) progress = maxProgress;
+        for (Item item:inputQueue) {
+            now = System.currentTimeMillis();
+            progress = (now - item.getTimeOwned()) /  deliveryTime;
+            if (progress > maxProgress) {
+                progress = maxProgress;
             }
-
-            // Если завершено, то располагаем в правильное место
-            if (progress > 1) {
-                progress = 1 - counter * (1.0f / capacity);
-            }
-
             drawItem (camera, x, y, width, height, item, progress);
-
-            counter++;
         }
-
-
-        for (Item item:conveyor.getOutputQueue()) {
-            now = Production.getCurrentCycle();
-            progress = (now - item.getCycleOwned()) / deliveryCycles;
-
-            // Если есть завершенные, то располагаем в правильное место
-            if (conveyor.getOutputQueue().size() > 0) {
-                maxProgress = 1 - counter * (1.0f / capacity);
-                if (progress > maxProgress) progress = maxProgress;
-            }
-
-            // Если завершено, то располагаем в правильное место
-            if (progress > 1) {
-                progress = 1 - counter * (1.0f / capacity);
-            }
-
-            drawItem (camera, x, y, width, height, item, progress);
-
-            counter++;
-        }
-
 
     }
 

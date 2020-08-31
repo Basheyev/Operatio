@@ -7,7 +7,7 @@ import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.atom.engine.graphics.renderers.Batcher;
+import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.physics.PhysicsRender;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -81,8 +81,8 @@ public class PhysScene extends GameScene {
     public void postRender(Camera camera) {
         GraphicsRender.drawText(
                 ("FPS:" + GraphicsRender.getFPS() +
-                        " CALLS=" + Batcher.getDrawCallsCount() +
-                        " QUADS=" + Batcher.getEntriesCount() +
+                        " CALLS=" + BatchRender.getDrawCallsCount() +
+                        " QUADS=" + BatchRender.getEntriesCount() +
                         " MS:" + GraphicsRender.getRenderTime()).toCharArray(),
                 camera.getMinX()+50, camera.getMinY()+1040, 2);
     }

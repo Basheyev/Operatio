@@ -47,7 +47,7 @@ public abstract class Block {
         if (item==null) return false;
         if (state==BUSY) return false;
         if (input.size()>=inputCapacity) return false;
-        item.setOwner(this, Production.getCurrentCycle());
+        item.setOwner(this);
         input.add(item);
         return true;
     }

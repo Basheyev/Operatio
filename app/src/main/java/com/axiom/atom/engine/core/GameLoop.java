@@ -167,7 +167,12 @@ public class GameLoop extends Thread {
                 worldX += camera.getMinX();            // добавляем горизонтальное смещение камеры
                 worldY += camera.getMinY();          // добавляем вертикальное смещение камеры
 
-                scene.onMotion(event, worldX, worldY);  // Вызываем обработчик события игровой сцены
+                // Доставляем события корневому виджету сцены
+                boolean deleteEvent = scene.sceneWidget.onMotionEvent(event, worldX, worldY);
+
+                // Вызываем обработчик события игровой сцены
+                if (!deleteEvent) scene.onMotion(event, worldX, worldY);
+
             }
         }
     }

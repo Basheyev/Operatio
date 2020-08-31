@@ -1,5 +1,6 @@
 package com.axiom.operatio.production.materials;
 
+import com.axiom.operatio.production.Production;
 import com.axiom.operatio.production.block.Block;
 
 /**
@@ -7,9 +8,10 @@ import com.axiom.operatio.production.block.Block;
  */
 public class Item {
 
-    protected Material material;
-    protected Block owner;
-    protected long timeOwned;
+    protected Material material;            // Материал
+    protected Block owner;                  // Блок владелец
+    protected long cycleOwned;              // Цикл производства (захват)
+    protected long timeOwned;               // Время в миллисекундах (захват)
 
     //----------------------------------------------------------------------------
 
@@ -26,12 +28,16 @@ public class Item {
     }
 
     public long getCycleOwned() {
-        return timeOwned;
+        return cycleOwned;
     }
 
-    public void setOwner(Block owner, long timeOwned) {
+    public long getTimeOwned() { return timeOwned; }
+
+    public void setOwner(Block owner) {
         this.owner = owner;
-        this.timeOwned = timeOwned;
+        this.cycleOwned = Production.getCurrentCycle();
+        this.timeOwned = System.currentTimeMillis();
     }
+
 
 }

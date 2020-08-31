@@ -3,6 +3,7 @@ package com.axiom.atom.engine.graphics.renderers;
 import android.content.res.Resources;
 import android.opengl.GLES20;
 
+import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.Program;
 import com.axiom.atom.engine.graphics.gles2d.Shader;
@@ -16,7 +17,7 @@ import java.util.HashMap;
  * Реализует такие функции как загрузка изображений в текстуру,
  * поддержка листов спрайтов, покадровая анимации спрайтов с,
  * разным FPS, быстрый рендеринг спрайта и анимации.
- *
+ * TODO Добавить поддержку текстурных атласов в спрайте (Sprite)
  * <br><br>
  * (С) Atom Engine, Bolat Basheyev 2020
  */
@@ -147,8 +148,9 @@ public class Sprite {
      * @param x положение центра спрайта по x
      * @param y положение центра спрайта по y
      * @param scale масштабирование размера спрайта, 1 - исходный
+     * @param scissor
      */
-    public void draw(Camera camera, float x, float y, float scale) {
+    public void draw(Camera camera, float x, float y, float scale, AABB scissor) {
         //-------------------------------------------------------------------------------
         // Проверка на экране ли спрайт, если нет то не отрисовывать
         //-------------------------------------------------------------------------------
@@ -172,9 +174,13 @@ public class Sprite {
             vertices[15] = 0.5f * scaledWidth + x;
             vertices[16] = -0.5f * scaledHeight + y;
             // Добавляем в список отрисовки
-            Batcher.addSprite(texture, vertices, textureCoordinates, zOrder);
+            BatchRender.addSprite(texture, vertices, textureCoordinates, zOrder, scissor);
         }
         animationNextFrame();
+    }
+
+    public void draw(Camera camera, float x, float y, float scale) {
+        draw(camera,x,y,scale,null);
     }
 
     /**
@@ -185,7 +191,7 @@ public class Sprite {
      * @param width ширина спрайта
      * @param height ширина спрайта
      */
-    public void draw(Camera camera, float x, float y, float width, float height) {
+    public void draw(Camera camera, float x, float y, float width, float height, AABB scissor) {
         //-------------------------------------------------------------------------------
         // Проверка на экране ли спрайт, если нет то не отрисовывать
         //-------------------------------------------------------------------------------
@@ -208,10 +214,14 @@ public class Sprite {
             vertices[15] = 0.5f * width + sx;
             vertices[16] = -0.5f * height + sy;
 
-            Batcher.addSprite(texture, vertices, textureCoordinates, zOrder);
+            BatchRender.addSprite(texture, vertices, textureCoordinates, zOrder, scissor);
 
         }
         animationNextFrame();
+    }
+
+    public void draw(Camera camera, float x, float y, float width, float height) {
+        draw(camera, x,y,width,height,null);
     }
 
     /**

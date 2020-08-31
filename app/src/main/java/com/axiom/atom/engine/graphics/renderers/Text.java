@@ -33,7 +33,7 @@ public class Text {
                 continue;
             }
             font.setActiveFrame(text[i] - ' ');
-            font.draw(camera, bx, by, scale);
+            font.draw(camera, bx, by, scale, null);
             bx += font.getWidth() * scale * spacing;
         }
     }

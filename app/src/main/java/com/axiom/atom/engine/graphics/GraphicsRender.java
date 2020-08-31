@@ -13,7 +13,7 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.GLESObject;
 import com.axiom.atom.engine.graphics.renderers.Rectangle;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.atom.engine.graphics.renderers.Batcher;
+import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.atom.engine.core.geometry.AABB;
 
@@ -109,7 +109,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
     /**
      * Отложенная загрузка программ, шейдеров и текстур в GPU
      */
-    protected void performLazyLoad() {
+    protected void performLazyLoadToGPU() {
         GLESObject task;
         long startTime = System.currentTimeMillis();
         int tasksAmount = loadQueue.size();
@@ -126,10 +126,6 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
                 (System.currentTimeMillis() - startTime) + "ms");
     }
 
-
-
-
-
     //------------------------------------------------------------------------------------------
     // Методы отрисовки кадра сцены
     //------------------------------------------------------------------------------------------
@@ -139,14 +135,13 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
      */
     public void onDrawFrame(GL10 gl) {
         // Если есть очередь "отложенных" загрузок, выполняем
-        if (loadQueue.size() > 0) performLazyLoad();
+        if (loadQueue.size() > 0) performLazyLoadToGPU();
         // Отрисовываем активную сцену
         renderScene();
     }
 
     /**
      * Вызывает метод отрисовки всех объектов сцены
-     * @return
      */
     protected void renderScene() {
 
@@ -160,7 +155,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
         if (scene!=null) synchronized (camera.getCameraMatrix()) {
 
             // Начинаем пакетирование спрайтов
-            Batcher.beginBatching();
+            BatchRender.beginBatching();
 
             // Вызывается до отрисовки сцены
             scene.preRender(camera);
@@ -179,15 +174,19 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
             // Вызывается после отрисовки сцены
             scene.postRender(camera);
 
+            // Отрисовка пользователского интерфйса
+            // Вызывается после всего рендеринга сцены
+            scene.getScreenWidget().draw(camera);
+
             // Завершаем и отрисовываем собранные пакеты спрайтов
-            Batcher.finishBatching(camera);
+            BatchRender.finishBatching(camera);
 
         }
 
         //-------------------------------------------------------------------------------
         framesCounter++;
         long now = System.nanoTime();
-        float renderTime = (now - renderStartTime) / 1000000.0f;
+        float renderTime = (now - renderStartTime) / 1_000_000.0f;
         totalRenderTime += renderTime;
 
         //-------------------------------------------------------------------------------
@@ -204,7 +203,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
              e.printStackTrace();
         }
 
-        if (now - fpsLastEvaluationTime > 1000000000) {
+        if (now - fpsLastEvaluationTime > 1_000_000_000) {
             fpsLastEvaluationTime = now;
             fps = framesCounter;
             framesCounter = 0;
@@ -260,14 +259,14 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
         render.textRender.zOrder = zOrder;
     }
 
-    public static void drawRectangle(float x, float y, float width, float height) {
+    public static void drawRectangle(float x, float y, float width, float height, AABB scissor) {
         if (render==null) return;
-        render.rectangleRender.draw(camera,x,y,width,height);
+        render.rectangleRender.draw(camera,x,y,width,height, scissor);
     }
 
-    public static void drawRectangle(AABB rect) {
+    public static void drawRectangle(AABB rect, AABB scissor) {
         if (render==null) return;
-        render.rectangleRender.draw(camera,rect);
+        render.rectangleRender.draw(camera,rect,scissor);
     }
 
 }

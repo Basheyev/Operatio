@@ -8,7 +8,7 @@ import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.atom.engine.graphics.renderers.Batcher;
+import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.input.Input;
 import com.axiom.atom.engine.physics.PhysicsRender;
@@ -97,8 +97,8 @@ public class ShooterScene extends GameScene {
         GraphicsRender.setZOrder(100);
         GraphicsRender.drawText(
                 ("FPS:" + GraphicsRender.getFPS() +
-                        " CALLS=" + Batcher.getDrawCallsCount() +
-                        " QUADS=" + Batcher.getEntriesCount() +
+                        " CALLS=" + BatchRender.getDrawCallsCount() +
+                        " QUADS=" + BatchRender.getEntriesCount() +
                         " MS:" + GraphicsRender.getRenderTime()).toCharArray(),
                 camera.getMinX()+50, camera.getMinY()+1040, 2);
     }

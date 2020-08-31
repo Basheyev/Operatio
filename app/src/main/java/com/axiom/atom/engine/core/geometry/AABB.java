@@ -34,6 +34,18 @@ public class AABB {
         center.y = min.y + height * 0.5f;
     }
 
+
+    public void copy(AABB aabb) {
+        this.min.x = aabb.min.x;
+        this.min.y = aabb.min.y;
+        this.max.x = aabb.max.x;
+        this.max.y = aabb.max.y;
+        this.center.x = aabb.center.x;
+        this.center.y = aabb.center.y;
+        this.width = aabb.width;
+        this.height = aabb.height;
+    }
+
     /**
      * Проверка пересечения AABB vs AABB
      * @param box другой AABB
@@ -55,6 +67,29 @@ public class AABB {
         if (x < min.x || x > max.x) return false;
         if (y < min.y || y > max.y) return false;
         return true;
+    }
+
+
+    public boolean collides(float minX, float minY, float maxX, float maxY) {
+        if (max.y < minY || min.y > maxY) return false;
+        if (max.x < minX || min.x > maxX) return false;
+        return true;
+    }
+
+    /**
+     * Находит область пересечения этого AABB c box и записывает область в Result
+     * @param box AABB с которым надо найти пересечение
+     * @param result куда записать область пересечения
+     * @return если пересекаются возвращает result, если не пересекаются возвращает null
+     */
+    public AABB findIntersection(AABB box, AABB result) {
+        if (!collides(box)) return null;
+        float minX = Math.max(min.x, box.min.x);
+        float minY = Math.max(min.y, box.min.y);
+        float maxX = Math.min(max.x, box.max.x);
+        float maxY = Math.min(max.y, box.max.y);
+        result.setBounds(minX, minY, maxX, maxY);
+        return result;
     }
 
 }

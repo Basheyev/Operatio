@@ -25,7 +25,7 @@ public class DemoBackground extends GameObject {
 
     @Override
     public void draw(Camera camera) {
-        sprite.draw(camera, 0,0,1920,1080);
+        sprite.draw(camera, 0,0,1920,1080, null);
     }
 
 
