@@ -1,10 +1,12 @@
-package com.axiom.atom.engine.graphics.ui;
+package com.axiom.atom.engine.ui.widgets;
 
 import android.view.MotionEvent;
 
+import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.ui.listeners.ClickListener;
 
 import java.util.ArrayList;
 
@@ -13,27 +15,25 @@ import java.util.ArrayList;
  */
 public class Widget {
 
-    public boolean visible;                // Виден ли виджет (отображается/обрабатывает события)
-    public boolean opaque = true;
-    public float r,g,b,alpha;
-    protected int zOrder = 1000;           // Слой виджета
+    public boolean visible = true;           // Виден ли виджет (отображается/обрабатывает события)
+    public boolean opaque = true;            // Является ли виджет непрозрачным
+    protected float[] color = new float[4];  // Цвет компонента (если непрозрачный)
+    protected int zOrder = 1000;             // Слой виджета при отрисовке рендером
 
-    protected Widget parent;               // Родительский виджет (null для корневых)
-    protected ArrayList<Widget> children;  // Дочерние виджеты (вложенные)
-    protected AABB localBounds;            // Границы виджета в координатах родительского виджета
-    protected AABB worldBounds;            // Границы виджета в мировых координатах
-    protected AABB scissorBounds;          // Границы отсечения в экранных координатах
+    protected Widget parent;                 // Родительский виджет (null для корневых)
+    protected ArrayList<Widget> children;    // Дочерние виджеты (вложенные)
+    protected AABB localBounds;              // Границы виджета в координатах родительского виджета
+    protected AABB worldBounds;              // Границы виджета в мировых координатах
+    protected AABB scissorBounds;            // Границы отсечения в экранных координатах
 
+    protected ClickListener clickListener;   // Обработчик нажатия на виджет
 
     /**
      * Создает корневой виджет сцены на весь экран
      */
     public Widget() {
         this(0,0, Camera.SCREEN_WIDTH, Camera.SCREEN_HEIGHT);
-        r = 0.6f;
-        g = 0.6f;
-        b = 0.8f;
-        alpha = 0.7f;
+        setColor(0.6f, 0.6f, 0.8f, 0.7f);
     }
 
 
@@ -42,7 +42,6 @@ public class Widget {
         this.localBounds = new AABB(x,y, x + width, y + height);
         this.worldBounds = new AABB(x,y, x + width, y + height);
         this.scissorBounds = new AABB(0,0, 0, 0);
-        this.visible = true;
     }
 
 
@@ -80,6 +79,38 @@ public class Widget {
         }
     }
 
+    //--------------------------------------------------------------------------------------------
+
+    public void setColor(float r, float g, float b, float alpha) {
+        color[0] = r;
+        color[1] = g;
+        color[2] = b;
+        color[3] = alpha;
+    }
+
+    public void setColor(int rgba) {
+        color[3] = ((rgba >> 24) & 0xff) / 255.0f;
+        color[0] = ((rgba >> 16) & 0xff) / 255.0f;
+        color[1] = ((rgba >>  8) & 0xff) / 255.0f;
+        color[2] = ((rgba      ) & 0xff) / 255.0f;
+    }
+
+    public void getColor(float[] color) {
+        color[0] = this.color[0];
+        color[1] = this.color[1];
+        color[2] = this.color[2];
+        color[3] = this.color[3];
+    }
+
+    public int getColor() {
+        return ((int)(color[3] * 255.0f)) << 24 |
+                ((int)(color[0] * 255.0f)) << 16 |
+                ((int)(color[1] * 255.0f)) << 8 |
+                ((int)(color[2] * 255.0f));
+    }
+
+    //--------------------------------------------------------------------------------------------
+
     /**
      * Устанавливает границы виджета в координатах родительского виджета
      * @param x - минимальная левая координата
@@ -91,6 +122,33 @@ public class Widget {
         localBounds.setBounds(x, y, x + width, y + height);
     }
 
+
+    public void setLocation(float x, float y) {
+        setLocalBounds(x, y, localBounds.width, localBounds.height);
+    }
+
+    public void setSize(float width, float height) {
+        if (width < 1) width = 1;
+        if (height < 1) height = 1;
+        setLocalBounds(localBounds.min.x, localBounds.min.y, width, height);
+    }
+
+    public float getX() {
+        return localBounds.min.x;
+    }
+
+    public float getY() {
+        return localBounds.min.y;
+    }
+
+    public float getWidth() {
+        return localBounds.width;
+    }
+
+    public float getHeight() {
+        return localBounds.height;
+    }
+
     /**
      * Возвращает границы объекта в координатах родительского виджета
      * @return границы объекта
@@ -98,6 +156,8 @@ public class Widget {
     public AABB getLocalBounds() {
         return localBounds;
     }
+
+    //--------------------------------------------------------------------------------------------
 
 
     /**
@@ -124,7 +184,7 @@ public class Widget {
      * Возвращает физическую экранную область отсечения виджета
      * @return прямоугольник отсечения на физическом экране либо null если нет пересечения
      */
-    protected AABB getScreenClippingAABB(Camera camera) {
+    protected AABB getScreenClippingAABB() {
         // Весь алгоритм построен так, чтобы не выделять память дополнительно на каждом кадре
         // Берем сначала область виджета в мировых координатах
         scissorBounds.copy(getWorldBounds());
@@ -138,23 +198,29 @@ public class Widget {
             widget = widget.parent;
         }
         // Пересчитываем с помощью камеры мировые координаты в физические экранные координаты
+        Camera camera = Camera.getInstance();
         if (!camera.convertToScreen(scissorBounds)) return null; // Возвращем null если не виден
         // Возвращаем видимую физическую экранную область
         return scissorBounds;
     }
+
+    //--------------------------------------------------------------------------------------------
+
 
     /**
      * Отрисовывает виджет и дочерние виджеты
      * @param camera
      */
     public void draw(Camera camera) {
-        AABB clippingArea = getScreenClippingAABB(camera);
+        AABB clippingArea = getScreenClippingAABB();
         if (clippingArea==null) return;
 
         if (opaque) {
             GraphicsRender.setZOrder(zOrder);
-            GraphicsRender.setColor(r, g, b, alpha);
-            GraphicsRender.drawRectangle(getWorldBounds(), clippingArea);
+            GraphicsRender.setColor(color[0], color[1], color[2], color[3]);
+            AABB bnds = getWorldBounds();
+            GraphicsRender.drawRectangle(bnds, clippingArea);
+            GraphicsRender.drawText("Button".toCharArray(), bnds.center.x, bnds.center.y, 1);
         }
 
         for (Widget child:children) {
@@ -162,6 +228,11 @@ public class Widget {
         }
     }
 
+    //---------------------------------------------------------------------------------------------
+
+    public void setClickListener(ClickListener listener) {
+        this.clickListener = listener;
+    }
 
     /**
      * Обработчик событий ввода виджета
@@ -173,16 +244,35 @@ public class Widget {
     public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
         // Доставляем события дочерним виджетам
         boolean deleteEvent = false;
+
         for (int i=0; i<children.size(); i++) {
             Widget widget = children.get(i);
             // Если widget не null
             if (widget!=null) {
                 if (widget.visible) {
-                    deleteEvent = widget.onMotionEvent(event, worldX, worldY);
-                    if (deleteEvent) break;
+                    // Взять экранную область дочернего виджета в физических координатах
+                    AABB box = widget.getScreenClippingAABB();
+                    GameView view = GameView.getInstance();
+                    // Если нажатие попадает в область дочернего виджета в физических координатах
+                    // Переворачиваем Y координату так как система отсчёта GLES идёт снизу
+                    if (box.collides(event.getX(), view.getHeight() - event.getY())) {
+                        deleteEvent = widget.onMotionEvent(event, worldX, worldY);
+                        if (deleteEvent) return true;
+                    }
                 }
             }
         }
+
+        // Если произошел клик
+        if (event.getActionMasked()==MotionEvent.ACTION_UP) {
+            // И в виджета есть обработчик клика
+            if (clickListener != null) {
+                // Вызвать обработчик
+                clickListener.onClick(this);
+                deleteEvent = true;
+            }
+        }
+
         return deleteEvent;
     }
 

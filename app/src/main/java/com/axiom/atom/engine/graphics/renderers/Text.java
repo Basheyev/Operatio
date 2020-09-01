@@ -1,5 +1,6 @@
 package com.axiom.atom.engine.graphics.renderers;
 
+import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 
 /**
@@ -23,6 +24,10 @@ public class Text {
     }
 
     public void draw(Camera camera, char[] text, float x, float y, float scale) {
+        draw(camera,text,x,y,scale, null);
+    }
+
+    public void draw(Camera camera, char[] text, float x, float y, float scale, AABB scissor) {
         float bx = x;
         float by = y;
         font.zOrder = zOrder;
@@ -33,7 +38,7 @@ public class Text {
                 continue;
             }
             font.setActiveFrame(text[i] - ' ');
-            font.draw(camera, bx, by, scale, null);
+            font.draw(camera, bx, by, scale, scissor);
             bx += font.getWidth() * scale * spacing;
         }
     }

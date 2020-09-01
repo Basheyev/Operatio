@@ -1,5 +1,6 @@
 package com.axiom.atom.engine.tests.demotest;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -9,12 +10,14 @@ import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.atom.engine.graphics.ui.Widget;
+import com.axiom.atom.engine.ui.listeners.ClickListener;
+import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.atom.engine.input.Input;
 
 public class DemoScene extends GameScene {
 
     Sprite background;
+    Widget panel = new Widget();
     DemoCharacter person;
 
     Sprite joystick;
@@ -31,25 +34,28 @@ public class DemoScene extends GameScene {
         Widget widget = getScreenWidget();
         widget.opaque = false;
 
-        Widget panel = new Widget();
-        panel.setLocalBounds(50,50,800,200);
-        panel.r = 1;
-        panel.g = 0;
-        panel.b = 0;
+        ClickListener listener = new ClickListener() {
+            @Override
+            public void onClick(Widget w) {
+                Log.i("INPUT", "BUTTON PRESSED " + w.toString());
+            }
+        };
+
+        panel.setLocalBounds(0,0,1920,180);
+        panel.setColor(1,0,0,0.7f);
+        panel.setClickListener(listener);
         widget.addChild(panel);
 
         Widget button = new Widget();
-        button.setLocalBounds(50,50,300,300);
-        button.r = 1;
-        button.g = 1;
-        button.b = 1;
+        button.setLocalBounds(1680,40,200,100);
+        button.setColor(Color.GREEN);
+        button.setClickListener(listener);
         panel.addChild(button);
 
         Widget button2 = new Widget();
-        button2.setLocalBounds(400,50,300,300);
-        button2.r = 1;
-        button2.g = 1;
-        button2.b = 1;
+        button2.setLocalBounds(50,40,200,100);
+        button2.setColor(Color.BLUE);
+        button2.setClickListener(listener);
         panel.addChild(button2);
 
         long startTime = System.currentTimeMillis();

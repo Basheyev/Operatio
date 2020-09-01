@@ -4,7 +4,7 @@ import android.content.res.Resources;
 import android.view.MotionEvent;
 
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.atom.engine.graphics.ui.Widget;
+import com.axiom.atom.engine.ui.widgets.Widget;
 
 import java.util.ArrayList;
 
