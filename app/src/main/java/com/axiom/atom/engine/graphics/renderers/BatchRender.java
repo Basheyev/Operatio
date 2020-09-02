@@ -125,7 +125,7 @@ public class BatchRender {
     }
 
     //-------------------------------------------------------------------------------------------
-    protected static Entry previous = new Entry();
+    private static Entry previous = new Entry();
 
     public static void finishBatching(Camera camera) {
         if (entriesCounter==0) return;
@@ -154,37 +154,39 @@ public class BatchRender {
             }
             // если не равны или это последний элемент - отрисовываем пакет
             if (!equals || lastEntry) {
-                loadBatchToBuffer();
-                if (previous.scissor!=null) enableScissors(previous.scissor);
-                renderBatch(camera.getCameraMatrix(), previous.texture, previous.color);
-                if (previous.scissor!=null) disableScissor();
+                renderBatch(camera.getCameraMatrix(), previous);
                 // начинаем новый пакет
                 clearBatch();
                 addEntryToBatch(entry);
                 copyEntry(entry, previous);
+                if (lastEntry) renderBatch(camera.getCameraMatrix(), previous);
             }
         }
 
     }
 
 
-    protected static void renderBatch(float[] cameraMatrix, Texture texture, float[] color) {
+    private static void renderBatch(float[] cameraMatrix, Entry entry) {
+
+        loadBatchToBuffer();
         // Если пустой пакет уходим
         if (verticesBatch.getVertexCount()==0) return;
+
+        if (entry.scissor!=null) enableScissors(entry.scissor);
 
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
-        if (texture==null) {
+        if (entry.texture==null) {
             Rectangle.program.use();
             int vertexHandler = Rectangle.program.setAttribVertexArray("vPosition", verticesBatch);
-            Rectangle.program.setUniformVec4Value("vColor", color);
+            Rectangle.program.setUniformVec4Value("vColor", entry.color);
             Rectangle.program.setUniformMat4Value("u_MVPMatrix", cameraMatrix);
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, verticesBatch.getVertexCount());
             Rectangle.program.disableVertexArray(vertexHandler);
         } else {
             Sprite.program.use();
-            texture.bind();
+            entry.texture.bind();
             int vertexHandler = Sprite.program.setAttribVertexArray("vPosition", verticesBatch);
             int textureHandler = Sprite.program.setAttribVertexArray("TexCoordIn", texCoordBatch);
             Sprite.program.setUniformIntValue("sampler", 0);
@@ -195,6 +197,9 @@ public class BatchRender {
         }
 
         GLES20.glDisable(GLES20.GL_BLEND);
+
+        if (entry.scissor!=null) disableScissor();
+
         drawCallsCounter++;
     }
 
