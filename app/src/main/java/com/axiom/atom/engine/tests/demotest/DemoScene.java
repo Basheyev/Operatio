@@ -11,13 +11,15 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
+import com.axiom.atom.engine.ui.widgets.Button;
+import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.atom.engine.input.Input;
 
 public class DemoScene extends GameScene {
 
     Sprite background;
-    Widget panel = new Widget();
+    Widget panel = new Panel();
     DemoCharacter person;
 
     Sprite joystick;
@@ -31,8 +33,7 @@ public class DemoScene extends GameScene {
      */
     public void startScene() {
 
-        Widget widget = getScreenWidget();
-        widget.opaque = false;
+        Widget widget = getSceneWidget();
 
         ClickListener listener = new ClickListener() {
             @Override
@@ -42,19 +43,19 @@ public class DemoScene extends GameScene {
         };
 
         panel.setLocalBounds(0,0,1920,180);
-        panel.setColor(1,0,0,0.7f);
+       // panel.setColor(1,0,0,0.7f);
         panel.setClickListener(listener);
         widget.addChild(panel);
 
-        Widget button = new Widget();
+        Widget button = new Button("EXIT BUTTON");
         button.setLocalBounds(1680,40,200,100);
         button.setColor(Color.GREEN);
         button.setClickListener(listener);
         panel.addChild(button);
 
-        Widget button2 = new Widget();
+        Widget button2 = new Button(new Sprite(getResources(), R.drawable.material));
         button2.setLocalBounds(50,40,200,100);
-        button2.setColor(Color.BLUE);
+        button2.setColor(Color.YELLOW);
         button2.setClickListener(listener);
         panel.addChild(button2);
 

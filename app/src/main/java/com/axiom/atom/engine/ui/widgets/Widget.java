@@ -13,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Реализует простейший виджет пользовательского интерфейса (контейнер)
  */
-public class Widget {
+public abstract class Widget {
 
     public boolean visible = true;           // Виден ли виджет (отображается/обрабатывает события)
     public boolean opaque = true;            // Является ли виджет непрозрачным
@@ -33,7 +33,6 @@ public class Widget {
      */
     public Widget() {
         this(0,0, Camera.SCREEN_WIDTH, Camera.SCREEN_HEIGHT);
-        setColor(0.6f, 0.6f, 0.8f, 0.7f);
     }
 
 
@@ -212,17 +211,6 @@ public class Widget {
      * @param camera
      */
     public void draw(Camera camera) {
-        AABB clippingArea = getScreenClippingAABB();
-        if (clippingArea==null) return;
-
-        if (opaque) {
-            GraphicsRender.setZOrder(zOrder);
-            GraphicsRender.setColor(color[0], color[1], color[2], color[3]);
-            AABB bnds = getWorldBounds();
-            GraphicsRender.drawRectangle(bnds, clippingArea);
-            GraphicsRender.drawText("Button".toCharArray(), bnds.center.x, bnds.center.y, 1);
-        }
-
         for (Widget child:children) {
             child.draw(camera);
         }
@@ -252,23 +240,26 @@ public class Widget {
                 if (widget.visible) {
                     // Взять экранную область дочернего виджета в физических координатах
                     AABB box = widget.getScreenClippingAABB();
+                    // Берём разрешение экрана
                     GameView view = GameView.getInstance();
                     // Если нажатие попадает в область дочернего виджета в физических координатах
                     // Переворачиваем Y координату так как система отсчёта GLES идёт снизу
                     if (box.collides(event.getX(), view.getHeight() - event.getY())) {
                         deleteEvent = widget.onMotionEvent(event, worldX, worldY);
+                        // Если событие обработано уходим
                         if (deleteEvent) return true;
                     }
                 }
             }
         }
 
-        // Если произошел клик
+        // Если произошел клик и событие не обработано
         if (event.getActionMasked()==MotionEvent.ACTION_UP) {
             // И в виджета есть обработчик клика
             if (clickListener != null) {
                 // Вызвать обработчик
                 clickListener.onClick(this);
+                // Указываем, что событие обработано
                 deleteEvent = true;
             }
         }

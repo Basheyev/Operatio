@@ -1,6 +1,5 @@
 package com.axiom.atom.engine.core;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -168,7 +167,7 @@ public class GameLoop extends Thread {
                 worldY += camera.getMinY();          // добавляем вертикальное смещение камеры
 
                 // Доставляем события корневому виджету сцены
-                boolean deleteEvent = scene.sceneWidget.onMotionEvent(event, worldX, worldY);
+                boolean deleteEvent = scene.getSceneWidget().onMotionEvent(event, worldX, worldY);
 
                 // Вызываем обработчик события игровой сцены
                 if (!deleteEvent) scene.onMotion(event, worldX, worldY);

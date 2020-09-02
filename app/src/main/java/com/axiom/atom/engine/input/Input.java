@@ -44,6 +44,7 @@ public class Input {
      * @param context
      */
     public static void initialize(Context context) {
+        // Тут по идее вопрос: брать разрешение экрана или GameView ?
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         Point size = new Point();

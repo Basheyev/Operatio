@@ -151,16 +151,14 @@ public class BatchRender {
             if (equals) {
                 addEntryToBatch(entry);
                 copyEntry(entry, previous);
-            }
-            // если не равны или это последний элемент - отрисовываем пакет
-            if (!equals || lastEntry) {
+            } else {
                 renderBatch(camera.getCameraMatrix(), previous);
                 // начинаем новый пакет
                 clearBatch();
                 addEntryToBatch(entry);
                 copyEntry(entry, previous);
-                if (lastEntry) renderBatch(camera.getCameraMatrix(), previous);
             }
+            if (lastEntry) renderBatch(camera.getCameraMatrix(), previous);
         }
 
     }

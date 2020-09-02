@@ -248,6 +248,11 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
         render.textRender.draw(camera, text, x, y, scale);
     }
 
+    public static void drawText(char[] text, float x, float y, float scale, AABB scissor) {
+        if (render==null) return;
+        render.textRender.draw(camera, text, x, y, scale, scissor);
+    }
+
     public static void setColor(float r, float g, float b, float alpha) {
         if (render==null) return;
         render.rectangleRender.setColor(r, g, b, alpha);
