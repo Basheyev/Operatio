@@ -169,7 +169,7 @@ public class BatchRender {
     private static void renderBatch(float[] cameraMatrix, Entry entry) {
 
         loadBatchToBuffer();
-        // Если пустой пакет уходим
+
         if (verticesBatch.getVertexCount()==0) return;
 
         if (entry.scissor!=null) enableScissors(entry.scissor);
