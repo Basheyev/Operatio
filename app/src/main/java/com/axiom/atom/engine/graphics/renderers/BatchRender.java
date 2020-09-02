@@ -147,7 +147,7 @@ public class BatchRender {
             lastEntry = (i == entriesCounter - 1);
             // Сравниваем текстуру, z order, цвет и ножницы с предыдущей
             equals = comparator.compare(entry, previous) == 0 && entry.scissor == previous.scissor;
-            // Если текущий и предыдущий пакет равны добавляем в один пакет
+            // Если текущий и предыдущий элемент равны добавляем в один пакет
             if (equals) {
                 addEntryToBatch(entry);
                 copyEntry(entry, previous);

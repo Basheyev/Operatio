@@ -19,7 +19,6 @@ import com.axiom.atom.engine.input.Input;
 public class DemoScene extends GameScene {
 
     Sprite background;
-    Widget panel = new Panel();
     DemoCharacter person;
 
     Sprite joystick;
@@ -32,32 +31,6 @@ public class DemoScene extends GameScene {
      * Вызывается из потока GLThreads чтобы шейдеры загрузились
      */
     public void startScene() {
-
-        Widget widget = getSceneWidget();
-
-        ClickListener listener = new ClickListener() {
-            @Override
-            public void onClick(Widget w) {
-                Log.i("INPUT", "BUTTON PRESSED " + w.toString());
-            }
-        };
-
-        panel.setLocalBounds(0,0,1920,180);
-       // panel.setColor(1,0,0,0.7f);
-        panel.setClickListener(listener);
-        widget.addChild(panel);
-
-        Widget button = new Button("EXIT BUTTON");
-        button.setLocalBounds(1680,40,200,100);
-        button.setColor(Color.GREEN);
-        button.setClickListener(listener);
-        panel.addChild(button);
-
-        Widget button2 = new Button(new Sprite(getResources(), R.drawable.material));
-        button2.setLocalBounds(50,40,200,100);
-        button2.setColor(Color.YELLOW);
-        button2.setClickListener(listener);
-        panel.addChild(button2);
 
         long startTime = System.currentTimeMillis();
         background = new Sprite(getResources(), R.drawable.bitmap);
