@@ -125,67 +125,46 @@ public class BatchRender {
     }
 
     //-------------------------------------------------------------------------------------------
+    protected static Entry previous = new Entry();
+
     public static void finishBatching(Camera camera) {
         if (entriesCounter==0) return;
 
-        // Сортируем всё, чтобы подготовить к группировке
+        // Сортируем всё, чтобы подготовить к группировке в пакеты
         Arrays.sort(entries,0, entriesCounter, comparator);
 
+        // Начинаем новый пакет
+        clearBatch();
         Entry entry = entries[0];
-        int lastZOrder = entry.zOrder;
-        Texture lastTexture = entry.texture;
-        float[] lastColor = new float[4];
-        boolean batchRendered = true;
-
-        System.arraycopy(entry.color, 0, lastColor, 0, 4);
+        addEntryToBatch(entry);
+        copyEntry(entry, previous);
 
         drawCallsCounter = 0;
+        boolean equals, lastEntry;
 
         for (int i=0; i<entriesCounter; i++) {
             entry = entries[i];
-            batchRendered = false;
-            // если та же текстура, тот же z order и нет обрезания - упаковываем всё в один пакет
-            if (entry.texture==lastTexture && entry.zOrder==lastZOrder
-                    && compareColor(lastColor,entry.color)==0 && entry.scissor==null) {
-                verticesBatch.pushVertices(entry.vertices);
-                texCoordBatch.pushVertices(entry.coordinates);
-                lastTexture = entry.texture;
-                lastZOrder = entry.zOrder;
-                System.arraycopy(entry.color, 0, lastColor, 0, 4);
-            } else {
-                // Загружаем данные пакета для отрисвки
-                verticesBatch.prepare();
-                texCoordBatch.prepare();
-                // Отрисовываем прошлый пакет
-                renderBatch(camera.getCameraMatrix(), lastTexture, lastColor);
-                batchRendered = true;
-
+            lastEntry = (i == entriesCounter - 1);
+            // Сравниваем текстуру, z order, цвет и ножницы с предыдущей
+            equals = comparator.compare(entry, previous) == 0 && entry.scissor == previous.scissor;
+            // Если текущий и предыдущий пакет равны добавляем в один пакет
+            if (equals) {
+                addEntryToBatch(entry);
+                copyEntry(entry, previous);
+            }
+            // если не равны или это последний элемент - отрисовываем пакет
+            if (!equals || lastEntry) {
+                loadBatchToBuffer();
+                if (previous.scissor!=null) enableScissors(previous.scissor);
+                renderBatch(camera.getCameraMatrix(), previous.texture, previous.color);
+                if (previous.scissor!=null) disableScissor();
                 // начинаем новый пакет
-                disableScissor();
-                verticesBatch.clear();
-                texCoordBatch.clear();
-                // добавляем в пакет вершины следующей записи
-                verticesBatch.pushVertices(entry.vertices);
-                texCoordBatch.pushVertices(entry.coordinates);
-                lastTexture = entry.texture;
-                lastZOrder = entry.zOrder;
-                System.arraycopy(entry.color, 0, lastColor, 0, 4);
-                // Включаем обрезку если она есть
-                if (entry.scissor!=null) enableScissors(entry.scissor);
+                clearBatch();
+                addEntryToBatch(entry);
+                copyEntry(entry, previous);
             }
         }
 
-        if (!batchRendered) {
-            // Загружаем данные пакета данные
-            verticesBatch.prepare();
-            texCoordBatch.prepare();
-            // Отрисовываем прошлый пакет
-            renderBatch(camera.getCameraMatrix(), lastTexture, entry.color);
-            // Начинаем новый пакет
-            disableScissor();
-            verticesBatch.clear();
-            texCoordBatch.clear();
-        }
     }
 
 
@@ -239,15 +218,41 @@ public class BatchRender {
     protected static void enableScissors(AABB clip) {
         GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
         GLES20.glScissor(
-                (int) Math.round(clip.min.x),
-                (int) Math.round(clip.min.y),
-                (int) Math.round(clip.width),
-                (int) Math.round(clip.height)
+                Math.round(clip.min.x),
+                Math.round(clip.min.y),
+                Math.round(clip.width),
+                Math.round(clip.height)
         );
     }
 
     protected static void disableScissor() {
         GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
+    }
+
+    //-------------------------------------------------------------------------------------------
+    // Вспомогательные методы для пакетирования
+    //-------------------------------------------------------------------------------------------
+
+    private static void clearBatch() {
+        verticesBatch.clear();
+        texCoordBatch.clear();
+    }
+
+    private static void addEntryToBatch(Entry entry) {
+        verticesBatch.pushVertices(entry.vertices);
+        texCoordBatch.pushVertices(entry.coordinates);
+    }
+
+    private static void loadBatchToBuffer() {
+        verticesBatch.prepare();
+        texCoordBatch.prepare();
+    }
+
+    private static void copyEntry(Entry src, Entry dst) {
+        dst.texture = src.texture;
+        dst.zOrder = src.zOrder;
+        dst.scissor = src.scissor;
+        System.arraycopy(src.color, 0, dst.color, 0, 4);
     }
 
 }
