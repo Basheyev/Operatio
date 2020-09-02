@@ -32,6 +32,7 @@ public class ProductionScene extends GameScene {
     public void startScene() {
         production = ProductionBuilder.createDemoProduction();
         productionRenderer = new ProductionRenderer(production, cellWidth, cellHeight);
+        UIBuilder.buildUI(getResources(), getSceneWidget());
     }
 
     @Override

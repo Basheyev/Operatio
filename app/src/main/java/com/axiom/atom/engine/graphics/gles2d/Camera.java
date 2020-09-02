@@ -143,6 +143,11 @@ public class Camera {
         }
     }
 
+    public void getCameraBounds(AABB dest) {
+        dest.setBounds(x1,y1,x2,y2);
+    }
+
+
     /**
      * Конвертировать координаты AABB в физические экранные координаты
      * @param box объект который необходимо конвертировать в него же и записать
