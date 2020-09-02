@@ -176,7 +176,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
 
             // Отрисовка пользователского интерфйса
             // Вызывается после всего рендеринга сцены
-            scene.getScreenWidget().draw(camera);
+            scene.getSceneWidget().draw(camera);
 
             // Завершаем и отрисовываем собранные пакеты спрайтов
             BatchRender.finishBatching(camera);
