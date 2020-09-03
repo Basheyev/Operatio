@@ -9,19 +9,18 @@ public class Panel extends Widget {
 
     public Panel() {
         super();
-        setColor(0.7f, 0.7f, 0.75f, 0.7f);
+        setColor(0.9f, 0.9f, 0.9f, 0.9f);
     }
 
     @Override
     public void draw(Camera camera) {
-        AABB clippingArea = getScreenClippingAABB();
-        if (clippingArea==null) return;
+        if (parent==null) return;
 
         if (opaque) {
             GraphicsRender.setZOrder(zOrder);
             GraphicsRender.setColor(color[0], color[1], color[2], color[3]);
             AABB bnds = getWorldBounds();
-            GraphicsRender.drawRectangle(bnds, clippingArea);
+            GraphicsRender.drawRectangle(bnds, parent.getScissors());
         }
 
         super.draw(camera);

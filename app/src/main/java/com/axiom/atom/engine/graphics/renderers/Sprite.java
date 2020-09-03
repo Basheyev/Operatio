@@ -224,6 +224,10 @@ public class Sprite {
         draw(camera, x,y,width,height,null);
     }
 
+    public void draw(Camera camera, AABB bounds, AABB scissors) {
+        draw(camera, bounds.min.x, bounds.min.y, bounds.width, bounds.height,scissors);
+    }
+
     /**
      * Возвращает ширину спрайта
      * @return ширина спрайта в пикселях

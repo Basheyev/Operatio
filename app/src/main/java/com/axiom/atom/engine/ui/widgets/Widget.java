@@ -4,7 +4,6 @@ import android.view.MotionEvent;
 
 import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.geometry.AABB;
-import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 
@@ -183,11 +182,11 @@ public abstract class Widget {
      * Возвращает физическую экранную область отсечения виджета
      * @return прямоугольник отсечения на физическом экране либо null если нет пересечения
      */
-    protected AABB getScreenClippingAABB() {
+    protected AABB getScissors() {
         // Весь алгоритм построен так, чтобы не выделять память дополнительно на каждом кадре
         // Берем сначала область виджета в мировых координатах
-        scissorBounds.copy(getWorldBounds());
         Widget widget = this;
+        scissorBounds.copy(widget.getWorldBounds());
         // Проходим от текущего виджета до самого корневого родительского
         // и вычисляем область пересечения в мировых координатах (видимый ли виджет вообще)
         while (widget != null) {
@@ -241,7 +240,7 @@ public abstract class Widget {
             if (widget!=null) {
                 if (widget.visible) {
                     // Взять экранную область дочернего виджета в физических координатах
-                    AABB box = widget.getScreenClippingAABB();
+                    AABB box = widget.getScissors();
                     // Берём разрешение экрана
                     GameView view = GameView.getInstance();
                     // Если нажатие попадает в область дочернего виджета в физических координатах
@@ -255,11 +254,14 @@ public abstract class Widget {
             }
         }
 
+        // TODO Добавить Обработку Drag Listener
+
         // Если произошел клик и событие не обработано
         if (event.getActionMasked()==MotionEvent.ACTION_UP) {
             // И в виджета есть обработчик клика
             if (clickListener != null) {
                 // Вызвать обработчик
+                // TODO Учитывать начальную точку нажатия и конечную
                 clickListener.onClick(this);
                 // Указываем, что событие обработано
                 deleteEvent = true;

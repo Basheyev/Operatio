@@ -66,7 +66,7 @@ public class ProductionScene extends GameScene {
         String fps = "FPS:" + GraphicsRender.getFPS() +
                 " QUADS:" + BatchRender.getEntriesCount() +
                 " CALLS:" + BatchRender.getDrawCallsCount();
-        GraphicsRender.drawText(fps.toCharArray(), x - 900,y + 500, 2);
+        GraphicsRender.drawText(fps.toCharArray(), x - 700,y + 500, 2);
     }
 
     @Override

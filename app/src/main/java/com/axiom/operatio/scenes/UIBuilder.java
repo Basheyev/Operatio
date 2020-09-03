@@ -32,24 +32,53 @@ public class UIBuilder {
             }
         };
 
+        Widget exitButton = new Button("EXIT");
+        exitButton.setLocalBounds(1700,960,200,100);
+        exitButton.setColor(0.8f, 0.5f, 0.5f, 0.9f);
+        exitButton.setClickListener(exitListener);
+        widget.addChild(exitButton);
 
         Widget panel = new Panel();
-        panel.setLocalBounds(0,0,1920,180);
-        // panel.setColor(1,0,0,0.7f);
+        panel.setLocalBounds(0,0,180,1080);
         panel.setClickListener(listener);
         widget.addChild(panel);
 
-        Widget button = new Button("EXIT BUTTON");
-        button.setLocalBounds(1680,40,200,100);
-        button.setColor(Color.GREEN);
-        button.setClickListener(exitListener);
-        panel.addChild(button);
+        Widget button1 = new Button(new Sprite(resources, R.drawable.material), "BTN 1");
+        button1.setLocalBounds(20,940,140,120);
+        button1.setClickListener(listener);
+        panel.addChild(button1);
 
-        Widget button2 = new Button(new Sprite(resources, R.drawable.material));
-        button2.setLocalBounds(50,40,200,100);
-        button2.setColor(Color.YELLOW);
+        Widget button2 = new Button("BTN 2");
+        button2.setLocalBounds(20,800,140,120);
         button2.setClickListener(listener);
         panel.addChild(button2);
+
+        String str = null;
+        Widget button3 = new Button(str);
+        button3.setLocalBounds(20,660,140,120);
+        button3.setClickListener(listener);
+        panel.addChild(button3);
+
+        Widget button4 = new Button(str);
+        button4.setLocalBounds(20,520,140,120);
+        button4.setClickListener(listener);
+        panel.addChild(button4);
+
+        Widget button5 = new Button(str);
+        button5.setLocalBounds(20,380,140,120);
+        button5.setClickListener(listener);
+        panel.addChild(button5);
+
+        Widget button6 = new Button(str);
+        button6.setLocalBounds(20,240,140,120);
+        button6.setClickListener(listener);
+        panel.addChild(button6);
+
+        Widget button7 = new Button(str);
+        button7.setLocalBounds(20,100,140,120);
+        button7.setClickListener(listener);
+        panel.addChild(button7);
+
     }
 
 }
