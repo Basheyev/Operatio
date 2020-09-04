@@ -1,9 +1,14 @@
 package com.axiom.atom.engine.graphics.gles2d;
 
+import android.content.Context;
+import android.graphics.Point;
 import android.opengl.Matrix;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.geometry.AABB;
+import com.axiom.operatio.MainActivity;
 
 /**
  * Камера - вычисляет ортогнальную матрицу для наблюдения за точкой в игровом мире.
@@ -14,31 +19,43 @@ import com.axiom.atom.engine.core.geometry.AABB;
 public class Camera {
 
     // Логическое разрешение экрана для всех устройств 1920x1080 (HD 16:9)
-    public static final float SCREEN_WIDTH = 1920;
-    public static final float SCREEN_HEIGHT = 1080;
+    public static final float WIDTH = 1920;
+    public static final float HEIGHT = 1080;
 
     private static Camera camera;
     private float x1, y1, x2, y2;
     private float x, y;
     private float[] cameraMatrix = new float[16];
     private float oldX, oldY;
-
+    private float displayWidth;
+    private float displayHeight;
 
     /**
      * Возвращает единственный экземпляр камеры (Singleton)
      * @return единственный экземпляр камеры (Singleton)
      */
+    public static Camera getInstance(GameView view) {
+        if (camera==null) camera = new Camera(view);
+        return camera;
+    }
+
     public static Camera getInstance() {
-        if (camera==null) camera = new Camera();
         return camera;
     }
 
     /**
      * Конструктор камеры
      */
-    private Camera() {
+    private Camera(GameView view) {
+        Context context = view.getContext();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        displayWidth = size.x;
+        displayHeight = size.y;
         // По умолчанию смотрим в центр экрана
-        lookAt(SCREEN_WIDTH / 2.0f,SCREEN_HEIGHT / 2.0f);
+        lookAt(WIDTH / 2.0f, HEIGHT / 2.0f);
         // Инициализируем объекты для отрисовки прямоугольника
     }
 
@@ -53,10 +70,10 @@ public class Camera {
         // Ортогональная проекция 1920x1080 (HD)
         // удостовериться, что не меняем матрицу во время отрисовки кадра
         synchronized (cameraMatrix) {
-            x1 = x - (SCREEN_WIDTH) / 2.0f;
-            y1 = y - (SCREEN_HEIGHT) / 2.0f;
-            x2 = x + (SCREEN_WIDTH ) / 2.0f;
-            y2 = y + (SCREEN_HEIGHT ) / 2.0f;
+            x1 = x - (WIDTH) / 2.0f;
+            y1 = y - (HEIGHT) / 2.0f;
+            x2 = x + (WIDTH) / 2.0f;
+            y2 = y + (HEIGHT) / 2.0f;
             this.x = x; // Camera center X
             this.y = y; // Camera center Y
             Matrix.orthoM(cameraMatrix, 0, x1, x2, y1, y2, -1, 1);
@@ -153,19 +170,32 @@ public class Camera {
      * @param box объект который необходимо конвертировать в него же и записать
      * @return true - если он видимый на экране, false - если нет
      */
-    public boolean convertToScreen(AABB box) {
+    public boolean convertWorldToScreen(AABB box) {
         // Вычисляем видна ли область на экране
         boolean isVisibleOnScreen = box.collides(x1,y1,x2,y2);
         // В любом случае конвертируем
-        GameView view = GameView.getInstance();
-        float resolutionX = view.getWidth();
-        float resolutionY = view.getHeight();
-        float minX = (box.min.x - camera.x1) / SCREEN_WIDTH * resolutionX;
-        float minY = (box.min.y - camera.y1) / SCREEN_HEIGHT * resolutionY;
-        float maxX = (box.max.x - camera.x1) / SCREEN_WIDTH * resolutionX;
-        float maxY = (box.max.y - camera.y1) / SCREEN_HEIGHT * resolutionY;
+        float minX = (box.min.x - camera.x1) / WIDTH * displayWidth;
+        float minY = (box.min.y - camera.y1) / HEIGHT * displayHeight;
+        float maxX = (box.max.x - camera.x1) / WIDTH * displayWidth;
+        float maxY = (box.max.y - camera.y1) / HEIGHT * displayHeight;
         box.setBounds(minX, minY, maxX, maxY);
         return isVisibleOnScreen;
+    }
+
+    public float convertScreenToWorldX(float screenX) {
+        return screenX / displayWidth * WIDTH + x1;
+    }
+
+    public float convertScreenToWorldY(float screenY) {
+        return (1 - screenY / displayHeight) * HEIGHT + y1;
+    }
+
+    public float getDisplayWidth() {
+        return displayWidth;
+    }
+
+    public float getDisplayHeight() {
+        return displayHeight;
     }
 
 }
