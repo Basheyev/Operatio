@@ -10,6 +10,7 @@ import com.axiom.atom.engine.tests.phystest.PhysScene;
 import com.axiom.atom.engine.tests.shoottest.ShooterScene;
 import com.axiom.operatio.scenes.ProductionScene;
 
+// TODO Колебания GC вызывают Строки и Collections (надо избавиться от выделения памяти в цикле)
 public class MainActivity extends AppCompatActivity {
 
     private GameView gameView;

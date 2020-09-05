@@ -15,10 +15,10 @@ public class ProductionBuilder {
     
     public static Production createDemoProduction() {
 
-        Production production = Production.getInstance(15,15);
-        circularConveyor(production, 0, 0);
-        circularConveyor(production, 0, 4);
-        conveyorTask(production,8,1);
+        Production production = Production.getInstance(20,15);
+        circularConveyor(production, 2, 0);
+        circularConveyor(production, 2, 4);
+        conveyorTask(production,10,1);
         return production;
     }
 

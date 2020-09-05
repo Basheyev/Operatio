@@ -16,8 +16,8 @@ public class TouchListener implements View.OnTouchListener {
     public boolean onTouch(View v, MotionEvent event) {
         // Потому что warning
         if (event.getActionMasked()==MotionEvent.ACTION_UP) v.performClick();
-        // Вызываем обработчик Touch Joystick
-        Input.handleVirtualJoystick(event);
+        // Вызываем обработчик Touch Joystick если включен
+        if (Input.enabled) Input.handleVirtualJoystick(event);
         // Добавляем копию события в очередь событий игрового цикла
         GameLoop.inputEventQueue.add(MotionEvent.obtain(event));
         return true;

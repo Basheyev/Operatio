@@ -2,7 +2,7 @@ package com.axiom.atom.engine.input;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.util.Log;
+import android.opengl.GLSurfaceView;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.WindowManager;
@@ -23,13 +23,14 @@ import android.view.WindowManager;
  */
 public class Input {
     //-------------------------------------------------------------------------------------
+    public static boolean enabled = true;
     public static float xAxis = 0.0f;
     public static float yAxis = 0.0f;
     public static boolean AButton = false;
     public static boolean BButton = false;
     //-------------------------------------------------------------------------------------
-    private static float screenResolutionX;
-    private static float screenResolutionY;
+    private static float displayWidth;
+    private static float displayHeight;
     private static float motionStartX, motionCurrentX;
     private static float motionStartY, motionCurrentY;
     private static boolean axisMotion = false;
@@ -44,13 +45,12 @@ public class Input {
      * @param context
      */
     public static void initialize(Context context) {
-        // Тут по идее вопрос: брать разрешение экрана или GameView ?
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        screenResolutionX = size.x;
-        screenResolutionY = size.y;
+        displayWidth = size.x;
+        displayHeight = size.y;
         //----------------------------------
         initialized = true;
     }
@@ -62,7 +62,7 @@ public class Input {
     public static void handleVirtualJoystick(MotionEvent event) {
         if (!initialized) return;
         int index = event.getActionIndex();
-        if (event.getX(index) / screenResolutionX < 0.5f) {
+        if (event.getX(index) / displayWidth < 0.5f) {
             handleAxisMotion(event, event.getPointerId(index), event.getX(index) , event.getY(index));
         } else {
             handleButtons(event, event.getPointerId(index), event.getX(index), event.getY(index));
@@ -80,8 +80,8 @@ public class Input {
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_POINTER_DOWN:
             case MotionEvent.ACTION_DOWN:
-                motionStartX = eventX / screenResolutionX;
-                motionStartY = eventY / screenResolutionY;
+                motionStartX = eventX / displayWidth;
+                motionStartY = eventY / displayHeight;
                 motionCurrentX = motionStartX;
                 motionCurrentY = motionStartY;
                 motionPointerID = ID;
@@ -107,8 +107,8 @@ public class Input {
         switch (event.getActionMasked()){
             case MotionEvent.ACTION_POINTER_DOWN:
             case MotionEvent.ACTION_DOWN:
-                if (event.getY() / screenResolutionY > 0.5f) {
-                    float mX = eventX / screenResolutionX;
+                if (event.getY() / displayHeight > 0.5f) {
+                    float mX = eventX / displayWidth;
                     if (mX > 0.8) { AButton = true; APointerID = ID; }
                     else if (mX > 0.6) { BButton = true; BPointerID = ID; }
                 }
@@ -132,8 +132,8 @@ public class Input {
         if (axisMotion) {
             for (int i=0; i < event.getPointerCount(); i++) {
                 if (event.getPointerId(i)==motionPointerID) {
-                    motionCurrentX = event.getX(i) / screenResolutionX;
-                    motionCurrentY = event.getY(i) / screenResolutionY;
+                    motionCurrentX = event.getX(i) / displayWidth;
+                    motionCurrentY = event.getY(i) / displayHeight;
                 }
             }
             xAxis = (motionCurrentX - motionStartX) / 0.10f;

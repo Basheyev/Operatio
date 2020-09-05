@@ -2,6 +2,7 @@ package com.axiom.atom.engine.tests.shoottest;
 
 
 import android.opengl.GLES20;
+import android.view.DragEvent;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
@@ -71,27 +72,27 @@ public class ShooterScene extends GameScene {
         joystick.zOrder = 10;
         joystick.setActiveFrame(0);
         joystick.draw(camera,
-                camera.getMinX() + camera.SCREEN_WIDTH * 0.9f,
-                camera.getMinY() + camera.SCREEN_HEIGHT * 0.25f,
+                camera.getMinX() + camera.WIDTH * 0.9f,
+                camera.getMinY() + camera.HEIGHT * 0.25f,
                 2 + (Input.AButton ? 0.5f : 0));
         // B
         joystick.setActiveFrame(1);
         joystick.draw(camera,
-                camera.getMinX() + camera.SCREEN_WIDTH * 0.7f,
-                camera.getMinY() + camera.SCREEN_HEIGHT * 0.25f,
+                camera.getMinX() + camera.WIDTH * 0.7f,
+                camera.getMinY() + camera.HEIGHT * 0.25f,
                 2 + (Input.BButton ? 0.5f : 0));
 
         // Joystick border
         joystick.setActiveFrame(3);
         joystick.draw(camera,
-                camera.getMinX() + camera.SCREEN_WIDTH * 0.2f,
-                camera.getMinY() + camera.SCREEN_HEIGHT * 0.3f,4);
+                camera.getMinX() + camera.WIDTH * 0.2f,
+                camera.getMinY() + camera.HEIGHT * 0.3f,4);
 
         // Joystick
         joystick.setActiveFrame(2);
         joystick.draw(camera,
-                camera.getMinX() + camera.SCREEN_WIDTH * 0.2f + Input.xAxis * (joystick.getWidth()),
-                camera.getMinY() + camera.SCREEN_HEIGHT * 0.3f + Input.yAxis * (joystick.getHeight()),
+                camera.getMinX() + camera.WIDTH * 0.2f + Input.xAxis * (joystick.getWidth()),
+                camera.getMinY() + camera.HEIGHT * 0.3f + Input.yAxis * (joystick.getHeight()),
                 1);
 
         GraphicsRender.setZOrder(100);

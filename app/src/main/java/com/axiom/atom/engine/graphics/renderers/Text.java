@@ -9,6 +9,8 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
  */
 public class Text {
 
+    // TODO Сделать поддержку генерируемых шрифтов
+
     public int zOrder = 0;
     protected Sprite font;
     protected float spacing;

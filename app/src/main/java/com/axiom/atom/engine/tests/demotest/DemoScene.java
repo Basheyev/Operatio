@@ -1,7 +1,7 @@
 package com.axiom.atom.engine.tests.demotest;
 
-import android.graphics.Color;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
@@ -10,10 +10,6 @@ import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.atom.engine.ui.listeners.ClickListener;
-import com.axiom.atom.engine.ui.widgets.Button;
-import com.axiom.atom.engine.ui.widgets.Panel;
-import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.atom.engine.input.Input;
 
 public class DemoScene extends GameScene {
@@ -83,22 +79,22 @@ public class DemoScene extends GameScene {
         // В текстуре все кнопочки
         // A
         joystick.setActiveFrame(0);
-        joystick.draw(camera, camera.SCREEN_WIDTH * 0.9f,
-                camera.SCREEN_HEIGHT * 0.25f,2 + (Input.AButton ? 0.5f : 0));
+        joystick.draw(camera, camera.WIDTH * 0.9f,
+                camera.HEIGHT * 0.25f,2 + (Input.AButton ? 0.5f : 0));
         // B
         joystick.setActiveFrame(1);
-        joystick.draw(camera, camera.SCREEN_WIDTH * 0.7f,
-                camera.SCREEN_HEIGHT * 0.25f,2 + (Input.BButton ? 0.5f : 0));
+        joystick.draw(camera, camera.WIDTH * 0.7f,
+                camera.HEIGHT * 0.25f,2 + (Input.BButton ? 0.5f : 0));
 
         // Joystick border
         joystick.setActiveFrame(3);
-        joystick.draw(camera, camera.SCREEN_WIDTH * 0.2f, camera.SCREEN_HEIGHT * 0.3f,4);
+        joystick.draw(camera, camera.WIDTH * 0.2f, camera.HEIGHT * 0.3f,4);
 
         // Joystick
         joystick.setActiveFrame(2);
         joystick.draw(camera,
-                camera.SCREEN_WIDTH * 0.2f + Input.xAxis * (joystick.getWidth()),
-                camera.SCREEN_HEIGHT * 0.3f + Input.yAxis * (joystick.getHeight()),
+                camera.WIDTH * 0.2f + Input.xAxis * (joystick.getWidth()),
+                camera.HEIGHT * 0.3f + Input.yAxis * (joystick.getHeight()),
                 1);
 
         GraphicsRender.drawText(
@@ -113,7 +109,6 @@ public class DemoScene extends GameScene {
     public void onMotion(MotionEvent event, float worldX, float worldY) {
 
     }
-
 
     public void disposeScene() {
 

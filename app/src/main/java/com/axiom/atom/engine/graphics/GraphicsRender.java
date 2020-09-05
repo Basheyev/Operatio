@@ -78,7 +78,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
         this.sceneManager = sceneManager;
         // Инициализируем статические переменные
         loadQueue = new ArrayBlockingQueue<>(LAZY_LOAD_QUEUE_LENGTH);
-        camera = Camera.getInstance();
+        camera = Camera.getInstance(gameView);
     }
 
 

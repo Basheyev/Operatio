@@ -22,8 +22,8 @@ public class DemoCharacter extends GameObject {
         crouch = sprite.addAnimation(14,14,6, true);
         sprite.setActiveAnimation(walking);
 
-        x = Camera.SCREEN_WIDTH / 2;
-        y = Camera.SCREEN_HEIGHT / 2;
+        x = Camera.WIDTH / 2;
+        y = Camera.HEIGHT / 2;
         this.scale = scale;
         float hw = sprite.getWidth() * scale / 2;
         float hh = sprite.getHeight() * scale / 2;

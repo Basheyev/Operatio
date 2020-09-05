@@ -1,5 +1,6 @@
 package com.axiom.operatio.scenes;
 
+import android.view.DragEvent;
 import android.view.MotionEvent;
 
 import com.axiom.atom.engine.core.GameScene;
@@ -19,6 +20,8 @@ public class ProductionScene extends GameScene {
 
     private float cellWidth = 128;                  // Ширина клетки
     private float cellHeight = 128;                 // Высота клетки
+    private boolean dragging = false;
+    private float cursorX, cursorY;
     private long lastCycleTime;                     // Время последнего цикла (миллисекунды)
     private static long cycleMilliseconds = 300;    // Длительносить цикла (миллисекунды)
 
@@ -30,6 +33,7 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void startScene() {
+        //Input.enabled = false;
         production = ProductionBuilder.createDemoProduction();
         productionRenderer = new ProductionRenderer(production, cellWidth, cellHeight);
         UIBuilder.buildUI(getResources(), getSceneWidget());
@@ -47,11 +51,6 @@ public class ProductionScene extends GameScene {
             production.cycle();
             lastCycleTime = now;
         }
-
-        Camera camera = Camera.getInstance();
-        float x = camera.getX();
-        float y = camera.getY();
-        camera.lookAt(x + Input.xAxis, y + Input.yAxis);
     }
 
     @Override
@@ -63,6 +62,9 @@ public class ProductionScene extends GameScene {
     public void postRender(Camera camera) {
         float x = camera.getX();
         float y = camera.getY();
+        GraphicsRender.setZOrder(2000);
+     //   GraphicsRender.setColor(0,0,0,1);
+     //   GraphicsRender.drawRectangle(cursorX-10,cursorY-10, 20, 20,null);
         String fps = "FPS:" + GraphicsRender.getFPS() +
                 " QUADS:" + BatchRender.getEntriesCount() +
                 " CALLS:" + BatchRender.getDrawCallsCount();
@@ -71,8 +73,34 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void onMotion(MotionEvent event, float worldX, float worldY) {
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                dragging = true;
+                cursorX = worldX;
+                cursorY = worldY;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (dragging) {
+                    Camera camera = Camera.getInstance();
+                    float x = camera.getX() + (cursorX - worldX);
+                    float y = camera.getY() + (cursorY - worldY);
+                    // Проверка границ карты
+                    if (x - Camera.WIDTH / 2 < 0) x = Camera.WIDTH / 2;
+                    if (y - Camera.HEIGHT / 2 < 0) y = Camera.HEIGHT / 2;
+                    if (x + Camera.WIDTH / 2 > production.getColumns() * cellWidth)
+                        x = production.getColumns() * cellWidth - Camera.WIDTH / 2;
+                    if (y + Camera.HEIGHT / 2 > production.getRows() * cellHeight)
+                        y = production.getRows() * cellHeight - Camera.HEIGHT / 2;
+                    camera.lookAt(x, y);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                dragging = false;
+        }
+
 
     }
+
 
     public static long getCycleTimeMs() {
         return cycleMilliseconds;

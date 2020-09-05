@@ -1,7 +1,6 @@
 package com.axiom.atom.engine.core;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 
@@ -54,8 +53,8 @@ public class GameView extends GLSurfaceView {
         //------------------------------------------------------------------------------------
         // Инициализация подсистемы ввода
         //------------------------------------------------------------------------------------
-        setOnTouchListener(new TouchListener());    // Добавляем обработчик событий ввода
-        Input.initialize(context);                  // Инициализируем обработчик джойстика
+        setOnTouchListener(new TouchListener());  // Добавляем обработчик событий ввода
+        Input.initialize(getContext());               // Инициализируем обработчик джойстика
         //------------------------------------------------------------------------------------
         // Инициализация звуковой подсистемы
         //------------------------------------------------------------------------------------

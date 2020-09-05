@@ -1,5 +1,6 @@
 package com.axiom.atom.engine.tests.spritetest;
 
+import android.view.DragEvent;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
@@ -35,11 +36,11 @@ public class SpriteScene extends GameScene {
     public void preRender(Camera camera) {
         float x,y, scale;
         background.zOrder = 0;
-        background.draw(camera,0,0,Camera.SCREEN_WIDTH,Camera.SCREEN_HEIGHT);
+        background.draw(camera,0,0,Camera.WIDTH,Camera.HEIGHT);
         box.zOrder = 1;
         for (int i=0; i<1000; i++) {
-            x = (float) Math.random() * Camera.SCREEN_WIDTH;
-            y = (float) Math.random() * Camera.SCREEN_HEIGHT;
+            x = (float) Math.random() * Camera.WIDTH;
+            y = (float) Math.random() * Camera.HEIGHT;
             scale = 1 + (float) Math.random() * 9;
             box.draw(camera,x,y,scale);
         }

@@ -1,5 +1,6 @@
 package com.axiom.atom.engine.core;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -29,7 +30,7 @@ public class GameLoop extends Thread {
     //--------------------------------------------------------------------------------
     // Очередь событий ввода от пользователя (дополняется из UIThread)
     //--------------------------------------------------------------------------------
-    public static ArrayBlockingQueue<MotionEvent> inputEventQueue;
+    public static ArrayBlockingQueue<Parcelable> inputEventQueue;
 
     /**
      * Возвращает единственный экземпляр потока игрового цикла (Singleton)
@@ -51,7 +52,7 @@ public class GameLoop extends Thread {
         super("GameLoop");
         this.gameView = view;
         this.sceneManager = sceneManager;
-        inputEventQueue = new ArrayBlockingQueue<MotionEvent>(INPUT_EVENTS_BUFFER_SIZE);
+        inputEventQueue = new ArrayBlockingQueue<Parcelable>(INPUT_EVENTS_BUFFER_SIZE);
     }
 
 
@@ -152,28 +153,26 @@ public class GameLoop extends Thread {
     private void processInputEvent(GameScene scene) {
         // Если есть события ввода
         while (inputEventQueue.size() > 0) {
-            MotionEvent event = inputEventQueue.poll(); // Берем очередное событие ввода
+            Parcelable event = inputEventQueue.poll(); // Берем очередное событие ввода
             if (event!=null) {
-                // Вычисляем нормированные экранные координаты (0-1)
-                // и переворачиваем координату Y (экран/GLES)
-                Camera camera = GraphicsRender.getCamera();
-                float worldX = event.getX() / (float) gameView.getWidth();
-                float worldY = 1 - (event.getY() / (float) gameView.getHeight());
-
-                worldX *= Camera.SCREEN_WIDTH;          // переводим в логические координаты камеры
-                worldY *= Camera.SCREEN_HEIGHT;         // переводим в логические координаты камеры
-
-                worldX += camera.getMinX();            // добавляем горизонтальное смещение камеры
-                worldY += camera.getMinY();          // добавляем вертикальное смещение камеры
-
-                // Доставляем события корневому виджету сцены
-                boolean deleteEvent = scene.getSceneWidget().onMotionEvent(event, worldX, worldY);
-
-                // Вызываем обработчик события игровой сцены
-                if (!deleteEvent) scene.onMotion(event, worldX, worldY);
-
+                if (event instanceof MotionEvent) processMotionEvent(scene, (MotionEvent) event);
+                // Здесь можно развить тему добавляя события других типов
             }
         }
+    }
+
+
+    private void processMotionEvent(GameScene scene, MotionEvent event) {
+        Camera camera = GraphicsRender.getCamera();
+        // Вычисляем координаты игрового мира чтобы передать обработчику
+        float worldX = camera.convertScreenToWorldX(event.getX());
+        float worldY = camera.convertScreenToWorldY(event.getY());
+
+        // Доставляем события корневому виджету сцены
+        boolean deleteEvent = scene.getSceneWidget().onMotionEvent(event, worldX, worldY);
+
+        // Вызываем обработчик события игровой сцены
+        if (!deleteEvent) scene.onMotion(event, worldX, worldY);
     }
 
 }

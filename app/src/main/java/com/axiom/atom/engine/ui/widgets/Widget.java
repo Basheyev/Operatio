@@ -31,7 +31,7 @@ public abstract class Widget {
      * Создает корневой виджет сцены на весь экран
      */
     public Widget() {
-        this(0,0, Camera.SCREEN_WIDTH, Camera.SCREEN_HEIGHT);
+        this(0,0, Camera.WIDTH, Camera.HEIGHT);
     }
 
 
@@ -197,7 +197,7 @@ public abstract class Widget {
         }
         // Пересчитываем с помощью камеры мировые координаты в физические экранные координаты
         Camera camera = Camera.getInstance();
-        if (!camera.convertToScreen(scissorBounds)) return null; // Возвращем null если не виден
+        if (!camera.convertWorldToScreen(scissorBounds)) return null; // Возвращем null если не виден
         // Возвращаем видимую физическую экранную область
         return scissorBounds;
     }
@@ -231,32 +231,29 @@ public abstract class Widget {
      * @return удалить ли событие, чтобы не передавать дальше (true - да, false - нет)
      */
     public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
+        boolean eventHandeled = false;
         // Доставляем события дочерним виджетам
-        boolean deleteEvent = false;
-
-        for (int i=0; i<children.size(); i++) {
-            Widget widget = children.get(i);
+        for (Widget widget:children) {
             // Если widget не null
             if (widget!=null) {
                 if (widget.visible) {
-                    // Взять экранную область дочернего виджета в физических координатах
+                    // Взять экранную область дочернего виджета в физических координатах экрана
                     AABB box = widget.getScissors();
+                    if (box==null) continue;
                     // Берём разрешение экрана
                     GameView view = GameView.getInstance();
                     // Если нажатие попадает в область дочернего виджета в физических координатах
                     // Переворачиваем Y координату так как система отсчёта GLES идёт снизу
                     if (box.collides(event.getX(), view.getHeight() - event.getY())) {
-                        deleteEvent = widget.onMotionEvent(event, worldX, worldY);
+                        eventHandeled = widget.onMotionEvent(event, worldX, worldY);
                         // Если событие обработано уходим
-                        if (deleteEvent) return true;
+                        if (eventHandeled) return true;
                     }
                 }
             }
         }
 
-        // TODO Добавить Обработку Drag Listener
-
-        // Если произошел клик и событие не обработано
+        // Если произошел клик и событие не обработано дочерними виджетами
         if (event.getActionMasked()==MotionEvent.ACTION_UP) {
             // И в виджета есть обработчик клика
             if (clickListener != null) {
@@ -264,11 +261,10 @@ public abstract class Widget {
                 // TODO Учитывать начальную точку нажатия и конечную
                 clickListener.onClick(this);
                 // Указываем, что событие обработано
-                deleteEvent = true;
+                eventHandeled = true;
             }
         }
-
-        return deleteEvent;
+        return eventHandeled;
     }
 
 }

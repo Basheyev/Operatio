@@ -1,6 +1,7 @@
 package com.axiom.atom.engine.core;
 
 import android.content.res.Resources;
+import android.view.DragEvent;
 import android.view.MotionEvent;
 
 import com.axiom.atom.engine.graphics.gles2d.Camera;
@@ -37,6 +38,7 @@ public abstract class GameScene {
     public abstract void preRender(Camera camera);       // Вызывается из потока GLThread
     public abstract void postRender(Camera camera);      // Вызывается из потока GLThread
     public abstract void onMotion(MotionEvent event, float worldX, float worldY); // GameLoop
+//    public abstract void onDrag(DragEvent event, float worldX, float worldY);     // GameLoop
 
     /**
      * Возвращает объекты сцены
