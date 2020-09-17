@@ -46,8 +46,19 @@ public class ProductionRenderer implements Renderer {
                 }
             }
         }
+    }
 
 
+    public int getProductionColumn(float worldX) {
+        int column = (int) (worldX / cellWidth);
+        if (column >= production.columns) column = -1;
+        return column;
+    }
+
+    public int getProductionRow(float worldY) {
+        int row = (int) (worldY / cellHeight);
+        if (row >= production.columns) row = -1;
+        return row;
     }
 
 }

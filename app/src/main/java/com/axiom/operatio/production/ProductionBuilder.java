@@ -14,8 +14,7 @@ import com.axiom.operatio.production.transport.Conveyor;
 public class ProductionBuilder {
     
     public static Production createDemoProduction() {
-
-        Production production = Production.getInstance(20,15);
+        Production production = Production.getInstance(25,20);
         circularConveyor(production, 2, 0);
         circularConveyor(production, 2, 4);
         conveyorTask(production,10,1);

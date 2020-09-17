@@ -24,6 +24,7 @@ public abstract class Widget {
     protected AABB localBounds;              // Границы виджета в координатах родительского виджета
     protected AABB worldBounds;              // Границы виджета в мировых координатах
     protected AABB scissorBounds;            // Границы отсечения в экранных координатах
+    protected String tag = null;             // Метка виджета
 
     protected ClickListener clickListener;   // Обработчик нажатия на виджет
 
@@ -265,6 +266,16 @@ public abstract class Widget {
             }
         }
         return eventHandeled;
+    }
+
+    //---------------------------------------------------------------------------------------------
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public String getTag() {
+        return tag;
     }
 
 }

@@ -42,6 +42,7 @@ public class Button extends Widget {
             image.zOrder = zOrder + 1;
             image.draw(camera, bounds, parentScissor);
         }
+
         if (text!=null) {
             GraphicsRender.setZOrder(zOrder + 2);
             GraphicsRender.drawText(text, bounds.center.x, bounds.center.y, 1, scissors);

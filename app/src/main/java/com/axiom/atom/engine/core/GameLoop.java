@@ -169,10 +169,10 @@ public class GameLoop extends Thread {
         float worldY = camera.convertScreenToWorldY(event.getY());
 
         // Доставляем события корневому виджету сцены
-        boolean deleteEvent = scene.getSceneWidget().onMotionEvent(event, worldX, worldY);
+        boolean eventHandled = scene.getSceneWidget().onMotionEvent(event, worldX, worldY);
 
         // Вызываем обработчик события игровой сцены
-        if (!deleteEvent) scene.onMotion(event, worldX, worldY);
+        if (!eventHandled) scene.onMotion(event, worldX, worldY);
     }
 
 }

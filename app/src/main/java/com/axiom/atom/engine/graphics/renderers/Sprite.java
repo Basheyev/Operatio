@@ -17,7 +17,9 @@ import java.util.HashMap;
  * Реализует такие функции как загрузка изображений в текстуру,
  * поддержка листов спрайтов, покадровая анимации спрайтов с,
  * разным FPS, быстрый рендеринг спрайта и анимации.
- * TODO Добавить поддержку текстурных атласов в спрайте (Sprite)
+ * TODO Добавить поддержку текстурных атласов (Texture Atlas - вынести туда расчёт Texture Coord)
+ * TODO Добавить поддержку вращения
+ * TODO Добавить поддержку прозрачности
  * <br><br>
  * (С) Atom Engine, Bolat Basheyev 2020
  */
@@ -397,7 +399,7 @@ public class Sprite {
         // Сколько времени прошло с переключения текущего кадра (в наносекундах)
         long timeInterval = System.nanoTime() - lastFrameTime;
         // Если не пришло время переключения кадра, то уходим
-        if (timeInterval < (1000000000 / anim.framesPerSecond)) return;
+        if (timeInterval < (1_000_000_000 / anim.framesPerSecond)) return;
 
         // Если пришло время следующего кадра, то переключаем
         int nextFrame = getActiveFrame() + 1;
