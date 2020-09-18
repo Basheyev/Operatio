@@ -18,13 +18,30 @@ import java.util.HashMap;
  */
 public class Texture implements GLESObject {
 
+    // Список всех загруженных текстур, для исключения повторной загрузки одной текстуры
+    protected static HashMap<Integer, Texture> loadedTextures = new HashMap<>();
+
     protected int textureID;            // ID загружнной в GPU текстуры
     protected float width;              // Ширина текстуры в пикселях
     protected float height;             // Высота текстуры в пикселях
     private Bitmap flippedBitmap;       // Перевернутое изображения для загрузки в GPU
 
 
-    public Texture(Resources resources, int resource) {
+    public static Texture getInstance(Resources resources, int resource) {
+        //----------------------------------------------------------------
+        // Загружаем текстуру если она еще не была загружна
+        //---------------------------------------------------------------
+        Texture texture = loadedTextures.get(resource);
+        if (texture==null) {
+            // Текстуру загружаем только один раз
+            texture = new Texture(resources, resource);
+            loadedTextures.put(resource,texture);
+        }
+        return texture;
+    }
+
+
+    private Texture(Resources resources, int resource) {
         //------------------------------------------------------------------------
         // Загружаем исходное изображение
         //------------------------------------------------------------------------
