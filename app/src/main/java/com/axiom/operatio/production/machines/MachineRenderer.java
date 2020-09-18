@@ -22,6 +22,7 @@ public class MachineRenderer implements Renderer {
         sprite.zOrder = 2;
         idleAnimation = sprite.addAnimation(ID * 8, ID * 8, 8, true);
         busyAnimation = sprite.addAnimation(ID * 8, ID * 8 + 7, 8, true);
+        sprite.setActiveAnimation(idleAnimation);
     }
 
 
