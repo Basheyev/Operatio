@@ -25,8 +25,6 @@ import java.util.HashMap;
  */
 public class Sprite {
 
-    // Список всех загруженных текстур, для исключения повторной загрузки одной текстуры
-    protected static HashMap<Integer, Texture> loadedTextures = new HashMap<>();
 
     public static Program program = null;          // Программа со скомпилированными шейдерами
     protected Texture texture;                     // Текстура спрайта
@@ -120,12 +118,7 @@ public class Sprite {
         //----------------------------------------------------------------
         // Загружаем текстуру если она еще не была загружна
         //----------------------------------------------------------------
-        texture = loadedTextures.get(resource);
-        if (texture==null) {
-            // Текстуру загружаем только один раз
-            texture = new Texture(resources, resource);
-            loadedTextures.put(resource,texture);
-        }
+        texture = Texture.getInstance(resources, resource);
         //----------------------------------------------------------------
         // Компилируем шейдеры и линкуем программы, если её еще нет
         //----------------------------------------------------------------
