@@ -7,12 +7,12 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 
 public class Button extends Widget {
 
-    protected Sprite image;
+    protected Sprite background;
     protected char[] text;
 
-    public Button(Sprite image, String text) {
+    public Button(Sprite background, String text) {
         super();
-        this.image = image;
+        this.background = background;
         this.text = text!=null ? text.toCharArray() : null;
         setColor(0.5f, 0.7f, 0.5f, 0.9f);
     }
@@ -21,8 +21,8 @@ public class Button extends Widget {
         this(null, text);
     }
 
-    public Button(Sprite image) {
-        this(image, null);
+    public Button(Sprite background) {
+        this(background, null);
     }
 
     @Override
@@ -38,9 +38,9 @@ public class Button extends Widget {
             GraphicsRender.drawRectangle(bounds, parentScissor);
         }
 
-        if (image!=null) {
-            image.zOrder = zOrder + 1;
-            image.draw(camera, bounds, parentScissor);
+        if (background !=null) {
+            background.zOrder = zOrder + 1;
+            background.draw(camera, bounds, parentScissor);
         }
 
         if (text!=null) {

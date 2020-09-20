@@ -5,8 +5,7 @@ import android.util.Log;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.data.CSVFile;
-import com.axiom.atom.engine.graphics.renderers.Sprite;
+import com.axiom.atom.engine.data.CSVTable;
 import com.axiom.operatio.production.materials.Material;
 
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class MachineType {
      * @param resources ресурсы приложения
      */
     protected static void loadMachinesData(Resources resources) {
-        CSVFile csv = new CSVFile(resources, R.raw.machines);
+        CSVTable csv = new CSVTable(resources, R.raw.machines);
         machineTypes = new ArrayList<>(100);
         MachineType machineType;
         int total = csv.getRowCount();

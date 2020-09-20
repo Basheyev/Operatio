@@ -1,4 +1,4 @@
-package com.axiom.operatio.scenes.ui;
+package com.axiom.operatio.scenes.production.controller;
 
 import android.util.Log;
 import android.view.MotionEvent;
@@ -12,7 +12,18 @@ import com.axiom.operatio.production.buffer.Buffer;
 import com.axiom.operatio.production.machines.Machine;
 import com.axiom.operatio.production.machines.MachineType;
 import com.axiom.operatio.production.transport.Conveyor;
-import com.axiom.operatio.scenes.ProductionScene;
+import com.axiom.operatio.scenes.production.ProductionScene;
+
+// Задачи которые необходимо выполнить:
+// Продумать архитектуру разделения
+//
+// TODO Перетаскивание блока с панели на карту (Drag & Drop)
+// TODO Отображение будущего места блока на карте во время перетаскивания (занимаемое место)
+
+// TODO Добавить перетаскивание блока с одного места на другое
+// TODO Добавить вращение блока (направлений вход-выход)
+
+// TODO Добавить кнопки на панель Буфер и Конвейер
 
 public class ProductionEditor {
 
@@ -66,22 +77,55 @@ public class ProductionEditor {
                         if (block instanceof Buffer) SoundRenderer.playSound(scene.snd3);
                         Log.i("PROD COL=" + column + ", ROW=" + row, block.toString());
                     } else if (scene.panel.getToggledButton()!=null) {
-                        MachineType mt = null;
                         String toggled = scene.panel.getToggledButton();
-                        if (toggled.equals("0")) mt = MachineType.getMachineType(0);
-                        if (toggled.equals("1")) mt = MachineType.getMachineType(1);
-                        if (toggled.equals("2")) mt = MachineType.getMachineType(2);
-                        if (toggled.equals("3")) mt = MachineType.getMachineType(3);
-                        if (mt!=null) {
-                            Machine machine = new Machine(production,
-                                    mt, mt.getOperations()[0],
-                                    Machine.LEFT, Machine.RIGHT);
-                            production.setBlock(machine, column, row);
-                        }
+                        addBlockAt(toggled, column, row);
                     }
                 }
 
         }
+    }
+
+    protected void addBlockAt(String toggled, int column, int row) {
+        Block block = null;
+        MachineType mt = null;
+        int choice = Integer.parseInt(toggled);
+        switch (choice) {
+            case 0:
+                mt = MachineType.getMachineType(0);
+                block = new Machine(production,
+                        mt, mt.getOperations()[0],
+                        Machine.LEFT, Machine.RIGHT);
+                break;
+            case 1:
+                mt = MachineType.getMachineType(1);
+                block = new Machine(production,
+                        mt, mt.getOperations()[0],
+                        Machine.LEFT, Machine.RIGHT);
+                break;
+            case 2:
+                mt = MachineType.getMachineType(2);
+                block = new Machine(production,
+                        mt, mt.getOperations()[0],
+                        Machine.LEFT, Machine.RIGHT);
+                break;
+            case 3:
+                mt = MachineType.getMachineType(3);
+                block = new Machine(production,
+                        mt, mt.getOperations()[0],
+                        Machine.LEFT, Machine.RIGHT);
+                break;
+            case 4:
+                block = new Buffer(production, 100);
+                break;
+            case 5:
+                block = new Conveyor(production, Block.LEFT, Block.RIGHT, 5);
+                break;
+        }
+
+        if (block!=null) {
+            production.setBlock(block, column, row);
+        }
+
     }
 
 }

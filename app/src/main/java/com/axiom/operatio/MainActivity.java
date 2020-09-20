@@ -5,10 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.axiom.atom.engine.core.GameView;
-import com.axiom.atom.engine.tests.demotest.DemoScene;
-import com.axiom.atom.engine.tests.phystest.PhysScene;
-import com.axiom.atom.engine.tests.shoottest.ShooterScene;
-import com.axiom.operatio.scenes.ProductionScene;
+import com.axiom.operatio.scenes.production.ProductionScene;
 
 // TODO Колебания GC вызывают Строки и Collections (надо избавиться от выделения памяти в цикле)
 // String, ArrayBlockingQueue, ArrayList

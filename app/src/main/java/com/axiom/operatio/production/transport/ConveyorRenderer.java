@@ -7,7 +7,7 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.production.block.Renderer;
 import com.axiom.operatio.production.materials.Item;
-import com.axiom.operatio.scenes.ProductionScene;
+import com.axiom.operatio.scenes.production.ProductionScene;
 
 import java.util.concurrent.ArrayBlockingQueue;
 

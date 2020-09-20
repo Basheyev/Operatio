@@ -10,7 +10,7 @@ import com.axiom.atom.engine.ui.listeners.ClickListener;
 import java.util.ArrayList;
 
 /**
- * Реализует простейший виджет пользовательского интерфейса (контейнер)
+ * Реализует базовый элемент UI - виджет пользовательского интерфейса (контейнер)
  */
 public abstract class Widget {
 

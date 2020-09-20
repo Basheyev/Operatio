@@ -13,11 +13,11 @@ import java.util.ArrayList;
  * <br><br>
  * (С) Atom Engine, Bolat Basheyev 2020
  */
-public class CSVFile {
+public class CSVTable {
 
     protected ArrayList<String[]> csv;
 
-    public CSVFile(Resources resources, int resID) {
+    public CSVTable(Resources resources, int resID) {
         csv = new ArrayList<>(100);
         load(resources, resID);
     }

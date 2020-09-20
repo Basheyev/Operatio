@@ -5,7 +5,7 @@ import android.content.res.Resources;
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.atom.engine.data.CSVFile;
+import com.axiom.atom.engine.data.CSVTable;
 
 /**
  * Содержит данные и изображения материалов (materials.png, materials.csv)
@@ -71,7 +71,7 @@ public class Material {
         // Загружаем спрайт с изображегиями всех материалов
         image = new Sprite(resources, R.drawable.materials, 8, 8);
         // Загружаем массив материалов
-        CSVFile csv = new CSVFile(resources, R.raw.materials);
+        CSVTable csv = new CSVTable(resources, R.raw.materials);
         int ID, rows = csv.getRowCount();
         materials = new Material[rows];
         for (int i = 0; i < rows; i++) {

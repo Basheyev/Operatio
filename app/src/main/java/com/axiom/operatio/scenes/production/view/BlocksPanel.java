@@ -1,4 +1,4 @@
-package com.axiom.operatio.scenes.ui;
+package com.axiom.operatio.scenes.production.view;
 
 import android.graphics.Color;
 import android.util.Log;
@@ -18,12 +18,14 @@ import java.util.ArrayList;
 
 public class BlocksPanel extends Panel {
 
+    public final int panelColor = 0xCC505050;
+
     protected String toggledButton;
 
     public BlocksPanel() {
         super();
         setLocalBounds(0,0,180,1080);
-        setColor(Color.DKGRAY);
+        setColor(panelColor);
         buildButtons();
     }
 
@@ -63,18 +65,43 @@ public class BlocksPanel extends Panel {
 
     private void buildButtons() {
         Sprite sprite;
+        Widget button;
         int animation;
+
         for (int i =0; i<4; i++) {
             sprite = new Sprite(SceneManager.getResources(), R.drawable.machines, 8, 8);
             animation = sprite.addAnimation(i * 8, i * 8 + 7, 8, true);
             sprite.setActiveAnimation(animation);
-            Widget button = new Button(sprite);
+            button = new Button(sprite);
             button.setTag(""+i);
             button.setLocalBounds(30, 940 - i * 140, 120, 120);
             button.setColor(Color.GRAY);
             button.setClickListener(listener);
             this.addChild(button);
         }
+
+        int i = 4;
+        sprite = new Sprite(SceneManager.getResources(), R.drawable.buffer_texture, 4, 4);
+        animation = sprite.addAnimation(0, 8, 8,true);
+        sprite.setActiveAnimation(animation);
+        button = new Button(sprite);
+        button.setTag(""+i);
+        button.setLocalBounds(30, 940 - i * 140, 120, 120);
+        button.setColor(Color.GRAY);
+        button.setClickListener(listener);
+        this.addChild(button);
+
+        i = 5;
+        sprite = new Sprite(SceneManager.getResources(), R.drawable.conveyor_texture, 4, 6);
+        animation = sprite.addAnimation(0, 3, 8,true);
+        sprite.setActiveAnimation(animation);
+        button = new Button(sprite);
+        button.setTag(""+i);
+        button.setLocalBounds(30, 940 - i * 140, 120, 120);
+        button.setColor(Color.GRAY);
+        button.setClickListener(listener);
+        this.addChild(button);
+
     }
 
 
