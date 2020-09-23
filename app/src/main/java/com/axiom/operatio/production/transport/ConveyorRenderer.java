@@ -115,7 +115,6 @@ public class ConveyorRenderer implements Renderer {
         int finishedCounter = 0;
         Channel<Item> outputQueue = conveyor.getOutputQueue();
 
-        // FIXME как то надо избавиться от использования итератора для снижения задержек GC
         for (int k=0; k<outputQueue.size(); k++) {
             Item item = outputQueue.get(k);
             if (item==null) continue;
