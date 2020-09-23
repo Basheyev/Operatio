@@ -23,72 +23,59 @@ public class Channel<T> {
         queue = new Object[capacity];
     }
 
-    public boolean add(T element) {
+    public synchronized boolean add(T element) {
         if (rear==capacity) return false;
-        synchronized (this) {
-            queue[rear] = element;
-            rear++;
-            return true;
-        }
+        queue[rear] = element;
+        rear++;
+        return true;
     }
 
 
-    public T poll() {
+    public synchronized T poll() {
         if (front==rear) return null;
-        synchronized (this) {
-            Object element = queue[front];
-            if (rear - 1 >= 0)
-                System.arraycopy(queue, 1, queue, 0, rear - 1);
-            rear--;
-            return (T) element;
-        }
+        Object element = queue[front];
+        if (rear - 1 >= 0)
+            System.arraycopy(queue, 1, queue, 0, rear - 1);
+        rear--;
+        return (T) element;
     }
 
-    public T get(int index) {
+    public synchronized T get(int index) {
         if (front==rear) return null;
-        synchronized (this) {
-            if (index<0 || index>=rear) return null;
-            return (T) queue[index];
-        }
+        if (index<0 || index>=rear) return null;
+        return (T) queue[index];
     }
 
-    public T peek() {
+    public synchronized T peek() {
         if (front==rear) return null;
-        synchronized (this) {
-            Object element = queue[front];
-            return (T) element;
-        }
+        Object element = queue[front];
+        return (T) element;
     }
 
-
-    public void remove(T element) {
+    public synchronized void remove(T element) {
         if (front==rear) return;
-        synchronized (this) {
-            for (int i=0; i<rear; i++) {
-                if (queue[i]==element) {
-                    if (rear - 1 - i >= 0)
-                        System.arraycopy(queue, i + 1, queue, i, rear - 1 - i);
-                    rear--;
-                    break;
-                }
+        for (int i=0; i<rear; i++) {
+            if (queue[i]==element) {
+                if (rear - 1 - i >= 0)
+                    System.arraycopy(queue, i + 1, queue, i, rear - 1 - i);
+                rear--;
+                break;
             }
         }
     }
 
-    public void clear() {
+    public synchronized void clear() {
         rear = 0;
     }
 
-    public int remainingCapacity() {
+    public synchronized int remainingCapacity() {
         synchronized (this) {
             return capacity - rear;
         }
     }
 
-    public int size() {
-        synchronized (this) {
-            return rear;
-        }
+    public synchronized int size() {
+        return rear;
     }
 
 }
