@@ -1,4 +1,4 @@
-package com.axiom.operatio.scenes.production.controller;
+package com.axiom.operatio.scenes.production.ui;
 
 import android.util.Log;
 import android.view.MotionEvent;
@@ -19,13 +19,10 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 //
 // TODO Перетаскивание блока с панели на карту (Drag & Drop)
 // TODO Отображение будущего места блока на карте во время перетаскивания (занимаемое место)
-
 // TODO Добавить перетаскивание блока с одного места на другое
 // TODO Добавить вращение блока (направлений вход-выход)
 
-// TODO Добавить кнопки на панель Буфер и Конвейер
-
-public class ProductionEditor {
+public class EditorInput {
 
     private ProductionScene scene;
     private Production production;
@@ -34,7 +31,7 @@ public class ProductionEditor {
     private float cursorX, cursorY;
     private int lastCol, lastRow;
 
-    public ProductionEditor(ProductionScene scene, Production production, ProductionRenderer productionRenderer) {
+    public EditorInput(ProductionScene scene, Production production, ProductionRenderer productionRenderer) {
         this.production = production;
         this.productionRenderer = productionRenderer;
         this.scene = scene;
@@ -75,15 +72,21 @@ public class ProductionEditor {
                         if (block instanceof Machine) SoundRenderer.playSound(scene.snd1);
                         if (block instanceof Conveyor) SoundRenderer.playSound(scene.snd2);
                         if (block instanceof Buffer) SoundRenderer.playSound(scene.snd3);
+                        if (scene.editorPanel.getToggledButton()!=null) {
+                            int choice = Integer.parseInt(scene.editorPanel.getToggledButton());
+                            if (choice==2) production.removeBlock(block);
+                        }
                         Log.i("PROD COL=" + column + ", ROW=" + row, block.toString());
-                    } else if (scene.panel.getToggledButton()!=null) {
-                        String toggled = scene.panel.getToggledButton();
+                    } else if (scene.blocksPanel.getToggledButton()!=null) {
+                        String toggled = scene.blocksPanel.getToggledButton();
                         addBlockAt(toggled, column, row);
                     }
                 }
 
         }
     }
+
+
 
     protected void addBlockAt(String toggled, int column, int row) {
         Block block = null;

@@ -31,7 +31,7 @@ public class BatchRender {
         public float[] vertices = new float[18];    // Вершины спрайта (2 треугольника - 18 коорд)
         public float[] coordinates = new float[12]; // текстурные координаты спрайта
         public float[] color = new float[4];        // цвет примитива если нет текстуры
-        public AABB scissor;                       // Область отсечения в физических координатах экрана
+        public AABB scissor;                        // Область отсечения в физических координатах экрана
     }
     //------------------------------------------------------------------------------------------
     public static final int MAX_SPRITES = 2048;   // Максимальное количество спрайтов на экране

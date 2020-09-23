@@ -28,9 +28,9 @@ public class MachineRenderer implements Renderer {
 
     public void draw(Camera camera, float x, float y, float width, float height) {
         sprite.draw(camera, x, y, width, height);
-        GraphicsRender.setZOrder(10);
+        /*GraphicsRender.setZOrder(10);
         String bf1 = ""+ machine.getItemsAmount();
-        GraphicsRender.drawText(bf1.toCharArray(), x + width / 2 ,y + height / 2,1);
+        GraphicsRender.drawText(bf1.toCharArray(), x + width / 2 ,y + height / 2,1);*/
     }
 
     public void setIdleAnimation() {

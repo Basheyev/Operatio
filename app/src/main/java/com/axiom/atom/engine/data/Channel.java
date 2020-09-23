@@ -8,7 +8,7 @@ package com.axiom.atom.engine.data;
  */
 public class Channel<T> {
 
-    public static final int MIN_CAPACITY = 100;
+    public static final int MIN_CAPACITY = 64;
     private int front, rear, capacity;
     private Object[] queue;
 

@@ -213,7 +213,10 @@ public abstract class Widget {
     public void draw(Camera camera) {
         // Если нет родителя двигать за камерой
         if (parent==null) camera.getCameraBounds(localBounds);
-        for (Widget child:children) {
+        Widget child;
+        int size = children.size();
+        for (int i=0; i<size; i++) {
+            child = children.get(i);
             child.draw(camera);
         }
     }
@@ -234,7 +237,10 @@ public abstract class Widget {
     public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
         boolean eventHandeled = false;
         // Доставляем события дочерним виджетам
-        for (Widget widget:children) {
+        Widget widget;
+        int size = children.size();
+        for (int i=0; i<size; i++) {
+            widget = children.get(i);
             // Если widget не null
             if (widget!=null) {
                 if (widget.visible) {

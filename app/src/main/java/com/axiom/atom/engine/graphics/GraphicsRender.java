@@ -9,6 +9,7 @@ import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.SceneManager;
+import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.GLESObject;
 import com.axiom.atom.engine.graphics.renderers.Rectangle;
@@ -18,7 +19,6 @@ import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.atom.engine.core.geometry.AABB;
 
 import java.util.ArrayList;
-import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -35,7 +35,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
     // Список объектов которые должны быть инициализированы в потоке/контексте OpenGL
     //-------------------------------------------------------------------------------------
     public static final int LAZY_LOAD_QUEUE_LENGTH = 1024;     // Максимальная длина очереди
-    protected static ArrayBlockingQueue<GLESObject> loadQueue; // Очередь "ленивой" загрузки
+    protected static Channel<GLESObject> loadQueue;            // Очередь "ленивой" загрузки
 
     //-------------------------------------------------------------------------------------
     // Основные объекты графического рендера
@@ -77,7 +77,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
         this.gameView = gameView;
         this.sceneManager = sceneManager;
         // Инициализируем статические переменные
-        loadQueue = new ArrayBlockingQueue<>(LAZY_LOAD_QUEUE_LENGTH);
+        loadQueue = new Channel<>(LAZY_LOAD_QUEUE_LENGTH);
         camera = Camera.getInstance(gameView);
     }
 
@@ -115,15 +115,14 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
         int tasksAmount = loadQueue.size();
 
         while (loadQueue.size() > 0) {
+        //if (loadQueue.size() > 0) {
             task = loadQueue.poll();
             if (task!=null) {
                 task.loadObjectToGPU();
-                Log.i("LAZY TASK", task.toString());
+                Log.i("LOAD TO GPU", task.toString());
             }
         }
 
-        Log.i ("SCENE LAZY LOADER", tasksAmount + " tasks done by " +
-                (System.currentTimeMillis() - startTime) + "ms");
     }
 
     //------------------------------------------------------------------------------------------
@@ -134,10 +133,14 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
      * @param gl контекст (не используется)
      */
     public void onDrawFrame(GL10 gl) {
-        // Если есть очередь "отложенных" загрузок, выполняем
-        if (loadQueue.size() > 0) performLazyLoadToGPU();
-        // Отрисовываем активную сцену
-        renderScene();
+        try {
+            // Если есть очередь "отложенных" загрузок, выполняем
+            if (loadQueue.size() > 0) performLazyLoadToGPU();
+            // Отрисовываем активную сцену
+            renderScene();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -251,6 +254,11 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
     public static void drawText(char[] text, float x, float y, float scale, AABB scissor) {
         if (render==null) return;
         render.textRender.draw(camera, text, x, y, scale, scissor);
+    }
+
+    public static float getTextWidth(char[] text, float scale) {
+        if (render==null) return 0;
+        return render.textRender.getTextWidth(text, scale);
     }
 
     public static void setColor(float r, float g, float b, float alpha) {

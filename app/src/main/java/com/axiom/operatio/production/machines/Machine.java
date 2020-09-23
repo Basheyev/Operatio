@@ -56,7 +56,7 @@ public class Machine extends Block {
 
         // Подтверждаем, что есть необходимое количество каждого предмета по Операции
         if (operationInputVerified()) {              // Начинаем работу машины
-            setState(BUSY);                            // Устанавливаем состояние - BUSY
+            setState(BUSY);                          // Устанавливаем состояние - BUSY
             cyclesLeft = operation.operationTime;    // Указываем количество циклов работы
         }
 
@@ -73,11 +73,16 @@ public class Machine extends Block {
         // Копируем количество необходимого входного материала из описания операции в matCounter
         System.arraycopy(operation.inputAmount, 0, matCounter,0, matCounter.length);
         // Алгоритм построен с учтом того, что все входящие материалы входят в рецепт
-        for (Item item:input) {
+        //for (Item item:input) {
+        for (int k=0; k<input.size(); k++) {
+            Item item = input.get(k);
+            if (item==null) continue;
             // Берем код очередного материала из входящей очереди
             int materialID = item.getMaterial().materialID;
+
             for (int i=0; i<operation.inputMaterials.length; i++) {
                 // Если нашли такой же материал, то уменьшаем счетчик необходимых материалов
+
                 if (operation.inputMaterials[i].materialID==materialID) {
                     matCounter[i]--;
                     break;
@@ -101,7 +106,6 @@ public class Machine extends Block {
             for (int j=0; j<operation.outputAmount[i]; j++) {
                 item = new Item(material);
                 item.setOwner(this);
-                // FIXME Queue full exception
                 output.add(item);
 
                 // Если приёмник буфер или конвейер - затолкать самостоятельно

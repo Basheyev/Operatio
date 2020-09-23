@@ -1,10 +1,9 @@
 package com.axiom.operatio.production.block;
 
 
+import com.axiom.atom.engine.data.Channel;
 import com.axiom.operatio.production.Production;
 import com.axiom.operatio.production.materials.Item;
-
-import java.util.concurrent.ArrayBlockingQueue;
 
 
 /**
@@ -16,8 +15,8 @@ public abstract class Block {
     protected int state = IDLE;                       // Текущее состояние блока
     protected int inputDirection, outputDirection;    // Направление ввода и вывода
     protected int inputCapacity, outputCapacity;      // Максимальая вместимость блока в предметах
-    protected ArrayBlockingQueue<Item> input;         // Буферы ввода предметов
-    protected ArrayBlockingQueue<Item> output;        // Буферы вывода предметов
+    protected Channel<Item> input;                    // Буферы ввода предметов
+    protected Channel<Item> output;                   // Буферы вывода предметов
     public int column, row;                           // Координаты блока в сетке карты
     protected Renderer renderer;                      // Отрисовщик
 
@@ -33,8 +32,8 @@ public abstract class Block {
         this.inputCapacity = inCapacity;
         this.outputDirection = outDir;
         this.outputCapacity = outCapacity;
-        this.input = new ArrayBlockingQueue<Item>(inCapacity);
-        this.output = new ArrayBlockingQueue<Item>(outCapacity);
+        this.input = new Channel<Item>(inCapacity);
+        this.output = new Channel<Item>(outCapacity);
     }
 
 

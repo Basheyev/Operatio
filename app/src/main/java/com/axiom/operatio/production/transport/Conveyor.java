@@ -1,11 +1,10 @@
 package com.axiom.operatio.production.transport;
 
+import com.axiom.atom.engine.data.Channel;
 import com.axiom.operatio.production.buffer.Buffer;
 import com.axiom.operatio.production.Production;
 import com.axiom.operatio.production.block.Block;
 import com.axiom.operatio.production.materials.Item;
-
-import java.util.concurrent.ArrayBlockingQueue;
 
 public class Conveyor extends Block {
 
@@ -85,12 +84,11 @@ public class Conveyor extends Block {
     }
 
 
-    public ArrayBlockingQueue<Item> getInputQueue() {
+    public Channel<Item> getInputQueue() {
         return input;
     }
 
-
-    public ArrayBlockingQueue<Item> getOutputQueue() {
+    public Channel<Item> getOutputQueue() {
         return output;
     }
 

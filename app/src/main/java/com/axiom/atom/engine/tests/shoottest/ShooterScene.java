@@ -2,11 +2,11 @@ package com.axiom.atom.engine.tests.shoottest;
 
 
 import android.opengl.GLES20;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameScene;
+import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
@@ -106,7 +106,7 @@ public class ShooterScene extends GameScene {
 
     @Override
     public void onMotion(MotionEvent event, float worldX, float worldY) {
-        if (Input.AButton) getSceneManager().exitGame();
+        if (Input.AButton) SceneManager.exitGame();
     }
 
     @Override

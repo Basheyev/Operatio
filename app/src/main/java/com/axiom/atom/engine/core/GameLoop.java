@@ -4,10 +4,9 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-
-import java.util.concurrent.ArrayBlockingQueue;
 
 
 /**
@@ -30,8 +29,7 @@ public class GameLoop extends Thread {
     //--------------------------------------------------------------------------------
     // Очередь событий ввода от пользователя (дополняется из UIThread)
     //--------------------------------------------------------------------------------
-    public static ArrayBlockingQueue<Parcelable> inputEventQueue;
-
+    public static Channel<Parcelable> inputEventQueue;
     /**
      * Возвращает единственный экземпляр потока игрового цикла (Singleton)
      * @param view экземпляр GameView
@@ -52,7 +50,7 @@ public class GameLoop extends Thread {
         super("GameLoop");
         this.gameView = view;
         this.sceneManager = sceneManager;
-        inputEventQueue = new ArrayBlockingQueue<Parcelable>(INPUT_EVENTS_BUFFER_SIZE);
+        inputEventQueue = new Channel<Parcelable>(INPUT_EVENTS_BUFFER_SIZE);
     }
 
 
@@ -70,7 +68,12 @@ public class GameLoop extends Thread {
         while(running)  {
 
             // Вызываем обработку сцены
-            gameCycle();
+            try {
+                gameCycle();
+            } catch (Exception e) {
+                e.printStackTrace();
+                break;
+            }
 
             if (sceneManager.isGameFinished()) setRunning(false);
 

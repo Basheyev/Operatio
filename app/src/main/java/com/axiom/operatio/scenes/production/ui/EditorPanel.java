@@ -1,4 +1,4 @@
-package com.axiom.operatio.scenes.production.view;
+package com.axiom.operatio.scenes.production.ui;
 
 import android.graphics.Color;
 import android.util.Log;
@@ -43,13 +43,12 @@ public class EditorPanel extends Panel {
 
     public EditorPanel() {
         super();
-        setLocalBounds(Camera.WIDTH-400,0,400,140);
+        setLocalBounds(Camera.WIDTH-500,0,400,140);
         setColor(panelColor);
         buildButtons();
     }
 
     private void buildButtons() {
-        Sprite sprite;
         Widget button;
 
         for (int i =0; i<3; i++) {
@@ -61,6 +60,10 @@ public class EditorPanel extends Panel {
             this.addChild(button);
         }
 
+    }
+
+    public String getToggledButton() {
+        return toggledButton;
     }
 
 }

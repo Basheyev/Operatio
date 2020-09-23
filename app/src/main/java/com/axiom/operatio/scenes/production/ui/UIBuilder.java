@@ -1,4 +1,4 @@
-package com.axiom.operatio.scenes.production.view;
+package com.axiom.operatio.scenes.production.ui;
 
 import android.content.res.Resources;
 
@@ -6,16 +6,18 @@ import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.scenes.production.view.BlocksPanel;
 
 public class UIBuilder {
 
-    public static Widget buildUI(final Resources resources, Widget widget) {
+    private static Widget blocksPanel;
+    private static Widget editorPanel;
+
+    public static void buildUI(final Resources resources, Widget widget) {
 
         ClickListener exitListener = new ClickListener() {
             @Override
             public void onClick(Widget w) {
-                SceneManager.getInstance(resources).exitGame();
+                SceneManager.getInstance().setActiveScene("Menu");
             }
         };
 
@@ -25,14 +27,19 @@ public class UIBuilder {
         exitButton.setClickListener(exitListener);
         widget.addChild(exitButton);
 
-        Widget blocksPanel = new BlocksPanel();
+        blocksPanel = new BlocksPanel();
         widget.addChild(blocksPanel);
 
-        Widget editorPanel = new EditorPanel();
+        editorPanel = new EditorPanel();
         widget.addChild(editorPanel);
+    }
 
-        // Вернем панельку выбора блока
+    public static Widget getBlocksPanel() {
         return blocksPanel;
+    }
+
+    public static Widget getEditorPanel() {
+        return editorPanel;
     }
 
 }

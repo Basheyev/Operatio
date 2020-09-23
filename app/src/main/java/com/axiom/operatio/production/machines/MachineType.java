@@ -108,8 +108,9 @@ public class MachineType {
     }
 
     public boolean isOperationAvailable(Operation op) {
-        for (Operation operation : operations) {
-            if (operation.equals(op)) return true;
+        int size = operations.length;
+        for (int i=0; i<size; i++) {
+            if (operations[i].equals(op)) return true;
         }
         return false;
     }

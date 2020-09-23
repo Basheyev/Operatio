@@ -24,9 +24,9 @@ public class BufferRenderer implements Renderer {
         int frame = (int) Math.ceil(load * 8);  // всего кадров 8, поэтому нормируем вермя на кадры
         sprite.setActiveFrame(frame);
         sprite.draw(camera,x,y, width, height);
-        String bf1 = ""+ buffer.getItemsAmount();
+       /* String bf1 = ""+ buffer.getItemsAmount();
         GraphicsRender.setZOrder(10);
-        GraphicsRender.drawText(bf1.toCharArray(), x + width / 2 ,y + height / 2,1);
+        GraphicsRender.drawText(bf1.toCharArray(), x + width / 2 ,y + height / 2,1);*/
     }
 
 }

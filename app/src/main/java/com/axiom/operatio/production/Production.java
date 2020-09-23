@@ -29,7 +29,10 @@ public class Production {
 
 
     public void cycle() {
-        for (Block block:blocks) {
+        Block block;
+        int size = blocks.size();
+        for (int i=0; i<size; i++) {
+            block = blocks.get(i);
             block.process();
         }
         cycle++;
@@ -89,8 +92,11 @@ public class Production {
 
 
     public int getTotalItems() {
+        Block block;
+        int size = blocks.size();
         int total = 0;
-        for (Block block : blocks) {
+        for (int i=0; i<size; i++) {
+            block = blocks.get(i);
             total += block.getItemsAmount();
         }
         return total;

@@ -34,6 +34,15 @@ public class SceneManager {
         return sceneManager;
     }
 
+    public static SceneManager getInstance() {
+        return getInstance(getResources());
+    }
+
+    public static void exitGame() {
+        if (sceneManager!=null) {
+            sceneManager.shutdownGame();;
+        }
+    }
 
     /**
      * Конструктор менеджера сцен<br>
@@ -102,12 +111,12 @@ public class SceneManager {
      * Установить флаг завершения работы игры<br>
      * Вызывает метод удаления сцены для каждой сцены
      */
-    public void exitGame() {
+    protected void shutdownGame() {
         String key;
-        for (Map.Entry<String,GameScene> entry:scenes.entrySet()) {
+/*        for (Map.Entry<String,GameScene> entry:scenes.entrySet()) {
             key = entry.getKey();
             removeGameScene(key);
-        }
+        }*/
         this.exitGame = true;
     }
 

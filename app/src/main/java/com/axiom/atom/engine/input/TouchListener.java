@@ -19,6 +19,7 @@ public class TouchListener implements View.OnTouchListener {
         // Вызываем обработчик Touch Joystick если включен
         if (Input.enabled) Input.handleVirtualJoystick(event);
         // Добавляем копию события в очередь событий игрового цикла
+        // Так как event используется как единственный экземпляр
         GameLoop.inputEventQueue.add(MotionEvent.obtain(event));
         return true;
     }

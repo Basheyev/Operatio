@@ -2,14 +2,13 @@ package com.axiom.operatio.production.transport;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
+import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.production.block.Renderer;
 import com.axiom.operatio.production.materials.Item;
 import com.axiom.operatio.scenes.production.ProductionScene;
-
-import java.util.concurrent.ArrayBlockingQueue;
 
 import static com.axiom.operatio.production.block.Block.DOWN;
 import static com.axiom.operatio.production.block.Block.LEFT;
@@ -97,9 +96,9 @@ public class ConveyorRenderer implements Renderer {
         // Отрисовать предметы на нём
         drawItems(camera, x, y, width, height);
         // Отрисовать количество предметов
-        String bf1 = "" + conveyor.getItemsAmount();
+      /*  String bf1 = "" + conveyor.getItemsAmount();
         GraphicsRender.setZOrder(10);
-        GraphicsRender.drawText(bf1.toCharArray(), x + width /2 ,y + height / 2,1);
+        GraphicsRender.drawText(bf1.toCharArray(), x + width /2 ,y + height / 2,1);*/
     }
 
 
@@ -114,18 +113,24 @@ public class ConveyorRenderer implements Renderer {
 
         // Разместим на конвейере доставленные предметы
         int finishedCounter = 0;
-        ArrayBlockingQueue<Item> outputQueue = conveyor.getOutputQueue();
-        for (Item item:outputQueue) {
+        Channel<Item> outputQueue = conveyor.getOutputQueue();
+
+        // FIXME как то надо избавиться от использования итератора для снижения задержек GC
+        for (int k=0; k<outputQueue.size(); k++) {
+            Item item = outputQueue.get(k);
+            if (item==null) continue;
             progress = 1.0f - (finishedCounter * stridePerItem);
             drawItem (camera, x, y, width, height, item, progress);
             finishedCounter++;
         }
 
         // Разместим на конвейере движущиеся предмаеты
-        ArrayBlockingQueue<Item> inputQueue = conveyor.getInputQueue();
+        Channel<Item> inputQueue = conveyor.getInputQueue();
         float maxProgress = 1.0f - (finishedCounter * stridePerItem);
         long now;
-        for (Item item:inputQueue) {
+        for (int k=0; k<inputQueue.size(); k++) {
+            Item item = inputQueue.get(k);
+            if (item==null) continue;
             now = System.currentTimeMillis();
             progress = (now - item.getTimeOwned()) /  deliveryTime;
             if (progress > maxProgress) {

@@ -1,8 +1,7 @@
-package com.axiom.operatio.scenes.production.view;
+package com.axiom.operatio.scenes.production.ui;
 
 import android.graphics.Color;
 import android.util.Log;
-import android.view.MotionEvent;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
@@ -58,7 +57,7 @@ public class BlocksPanel extends Panel {
         super.draw(camera);
         if (toggledButton!=null) {
             GraphicsRender.setZOrder(zOrder);
-            GraphicsRender.drawText(toggledButton.toCharArray(), 0, 0, 1, scissorBounds);
+            GraphicsRender.drawText(toggledButton.toCharArray(), 50, 50, 5);
         }
     }
 
