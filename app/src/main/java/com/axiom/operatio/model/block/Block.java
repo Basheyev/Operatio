@@ -1,9 +1,9 @@
-package com.axiom.operatio.production.block;
+package com.axiom.operatio.model.block;
 
 
 import com.axiom.atom.engine.data.Channel;
-import com.axiom.operatio.production.Production;
-import com.axiom.operatio.production.materials.Item;
+import com.axiom.operatio.model.Production;
+import com.axiom.operatio.model.materials.Item;
 
 
 /**

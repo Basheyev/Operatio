@@ -1,8 +1,8 @@
-package com.axiom.operatio.production.buffer;
+package com.axiom.operatio.model.buffer;
 
-import com.axiom.operatio.production.Production;
-import com.axiom.operatio.production.block.Block;
-import com.axiom.operatio.production.materials.Item;
+import com.axiom.operatio.model.Production;
+import com.axiom.operatio.model.block.Block;
+import com.axiom.operatio.model.materials.Item;
 
 public class Buffer extends Block {
 

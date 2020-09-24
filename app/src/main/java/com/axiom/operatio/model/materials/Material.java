@@ -1,4 +1,4 @@
-package com.axiom.operatio.production.materials;
+package com.axiom.operatio.model.materials;
 
 import android.content.res.Resources;
 

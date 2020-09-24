@@ -1,15 +1,13 @@
-package com.axiom.operatio.production;
+package com.axiom.operatio.model;
 
-import androidx.core.content.pm.PermissionInfoCompat;
-
-import com.axiom.operatio.production.materials.Item;
-import com.axiom.operatio.production.block.Block;
-import com.axiom.operatio.production.buffer.Buffer;
-import com.axiom.operatio.production.machines.Machine;
-import com.axiom.operatio.production.machines.MachineType;
-import com.axiom.operatio.production.machines.Operation;
-import com.axiom.operatio.production.materials.Material;
-import com.axiom.operatio.production.transport.Conveyor;
+import com.axiom.operatio.model.materials.Item;
+import com.axiom.operatio.model.block.Block;
+import com.axiom.operatio.model.buffer.Buffer;
+import com.axiom.operatio.model.machines.Machine;
+import com.axiom.operatio.model.machines.MachineType;
+import com.axiom.operatio.model.machines.Operation;
+import com.axiom.operatio.model.materials.Material;
+import com.axiom.operatio.model.transport.Conveyor;
 
 public class ProductionBuilder {
     

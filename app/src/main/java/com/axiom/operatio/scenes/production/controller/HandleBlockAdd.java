@@ -1,28 +1,20 @@
-package com.axiom.operatio.scenes.production.ui;
+package com.axiom.operatio.scenes.production.controller;
 
 import android.util.Log;
 import android.view.MotionEvent;
 
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
-import com.axiom.operatio.production.Production;
-import com.axiom.operatio.production.ProductionRenderer;
-import com.axiom.operatio.production.block.Block;
-import com.axiom.operatio.production.buffer.Buffer;
-import com.axiom.operatio.production.machines.Machine;
-import com.axiom.operatio.production.machines.MachineType;
-import com.axiom.operatio.production.transport.Conveyor;
+import com.axiom.operatio.model.Production;
+import com.axiom.operatio.model.ProductionRenderer;
+import com.axiom.operatio.model.block.Block;
+import com.axiom.operatio.model.buffer.Buffer;
+import com.axiom.operatio.model.machines.Machine;
+import com.axiom.operatio.model.machines.MachineType;
+import com.axiom.operatio.model.transport.Conveyor;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
-// Задачи которые необходимо выполнить:
-// Продумать архитектуру разделения
-//
-// TODO Перетаскивание блока с панели на карту (Drag & Drop)
-// TODO Отображение будущего места блока на карте во время перетаскивания (занимаемое место)
-// TODO Добавить перетаскивание блока с одного места на другое
-// TODO Добавить вращение блока (направлений вход-выход)
-
-public class EditorInput {
+public class HandleBlockAdd {
 
     private ProductionScene scene;
     private Production production;
@@ -31,11 +23,12 @@ public class EditorInput {
     private float cursorX, cursorY;
     private int lastCol, lastRow;
 
-    public EditorInput(ProductionScene scene, Production production, ProductionRenderer productionRenderer) {
+    public HandleBlockAdd(ProductionScene scene, Production production, ProductionRenderer productionRenderer) {
         this.production = production;
         this.productionRenderer = productionRenderer;
         this.scene = scene;
     }
+
 
     public void onMotion(MotionEvent event, float worldX, float worldY) {
         int column = productionRenderer.getProductionColumn(worldX);
@@ -50,36 +43,14 @@ public class EditorInput {
                 cursorY = worldY;
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (dragging) {
-                    Camera camera = Camera.getInstance();
-                    float x = camera.getX() + (cursorX - worldX);
-                    float y = camera.getY() + (cursorY - worldY);
-                    // Проверка границ карты
-                    if (x - Camera.WIDTH / 2 < 0) x = Camera.WIDTH / 2;
-                    if (y - Camera.HEIGHT / 2 < 0) y = Camera.HEIGHT / 2;
-                    if (x + Camera.WIDTH / 2 > production.getColumns() * scene.cellWidth)
-                        x = production.getColumns() * scene.cellWidth - Camera.WIDTH / 2;
-                    if (y + Camera.HEIGHT / 2 > production.getRows() * scene.cellHeight)
-                        y = production.getRows() * scene.cellHeight - Camera.HEIGHT / 2;
-                    camera.lookAt(x, y);
-                }
                 break;
             case MotionEvent.ACTION_UP:
                 dragging = false;
                 if (column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
                     Block block = production.getBlockAt(column, row);
-                    if (block!=null) {
-                        if (block instanceof Machine) SoundRenderer.playSound(scene.snd1);
-                        if (block instanceof Conveyor) SoundRenderer.playSound(scene.snd2);
-                        if (block instanceof Buffer) SoundRenderer.playSound(scene.snd3);
-                        if (scene.editorPanel.getToggledButton()!=null) {
-                            int choice = Integer.parseInt(scene.editorPanel.getToggledButton());
-                            if (choice==2) production.removeBlock(block);
-                        }
-                        Log.i("PROD COL=" + column + ", ROW=" + row, block.toString());
-                    } else if (scene.blocksPanel.getToggledButton()!=null) {
+                    if (block==null) {
                         String toggled = scene.blocksPanel.getToggledButton();
-                        addBlockAt(toggled, column, row);
+                        if (toggled!=null) addBlockAt(toggled, column, row);
                     }
                 }
 
@@ -130,5 +101,7 @@ public class EditorInput {
         }
 
     }
+
+
 
 }

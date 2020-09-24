@@ -1,11 +1,10 @@
-package com.axiom.operatio.production.buffer;
+package com.axiom.operatio.model.buffer;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.operatio.production.block.Renderer;
+import com.axiom.operatio.model.block.Renderer;
 
 public class BufferRenderer implements Renderer {
 

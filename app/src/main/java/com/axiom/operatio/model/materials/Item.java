@@ -1,7 +1,7 @@
-package com.axiom.operatio.production.materials;
+package com.axiom.operatio.model.materials;
 
-import com.axiom.operatio.production.Production;
-import com.axiom.operatio.production.block.Block;
+import com.axiom.operatio.model.Production;
+import com.axiom.operatio.model.block.Block;
 
 /**
  * Содержит информацию о предмете

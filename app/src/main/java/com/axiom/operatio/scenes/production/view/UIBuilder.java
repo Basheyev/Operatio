@@ -1,4 +1,4 @@
-package com.axiom.operatio.scenes.production.ui;
+package com.axiom.operatio.scenes.production.view;
 
 import android.content.res.Resources;
 
@@ -30,7 +30,7 @@ public class UIBuilder {
         blocksPanel = new BlocksPanel();
         widget.addChild(blocksPanel);
 
-        editorPanel = new EditorPanel();
+        editorPanel = new ModePanel();
         widget.addChild(editorPanel);
     }
 

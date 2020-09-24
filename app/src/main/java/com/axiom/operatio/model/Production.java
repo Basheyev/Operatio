@@ -1,6 +1,6 @@
-package com.axiom.operatio.production;
+package com.axiom.operatio.model;
 
-import com.axiom.operatio.production.block.Block;
+import com.axiom.operatio.model.block.Block;
 
 import java.util.ArrayList;
 

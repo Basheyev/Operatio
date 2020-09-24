@@ -1,10 +1,10 @@
-package com.axiom.operatio.production.transport;
+package com.axiom.operatio.model.transport;
 
 import com.axiom.atom.engine.data.Channel;
-import com.axiom.operatio.production.buffer.Buffer;
-import com.axiom.operatio.production.Production;
-import com.axiom.operatio.production.block.Block;
-import com.axiom.operatio.production.materials.Item;
+import com.axiom.operatio.model.buffer.Buffer;
+import com.axiom.operatio.model.Production;
+import com.axiom.operatio.model.block.Block;
+import com.axiom.operatio.model.materials.Item;
 
 public class Conveyor extends Block {
 

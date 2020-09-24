@@ -1,4 +1,4 @@
-package com.axiom.operatio.production.machines;
+package com.axiom.operatio.model.machines;
 
 import android.content.res.Resources;
 import android.util.Log;
@@ -6,7 +6,7 @@ import android.util.Log;
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.data.CSVTable;
-import com.axiom.operatio.production.materials.Material;
+import com.axiom.operatio.model.materials.Material;
 
 import java.util.ArrayList;
 

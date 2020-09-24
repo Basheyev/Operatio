@@ -1,10 +1,9 @@
-package com.axiom.operatio.scenes.production.ui;
+package com.axiom.operatio.scenes.production.view;
 
 import android.graphics.Color;
 import android.util.Log;
 
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Panel;
@@ -12,7 +11,7 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 
 import java.util.ArrayList;
 
-public class EditorPanel extends Panel {
+public class ModePanel extends Panel {
 
     public final int panelColor = 0xCC505050;
     protected String toggledButton;
@@ -41,7 +40,7 @@ public class EditorPanel extends Panel {
     };
 
 
-    public EditorPanel() {
+    public ModePanel() {
         super();
         setLocalBounds(Camera.WIDTH-500,0,400,140);
         setColor(panelColor);

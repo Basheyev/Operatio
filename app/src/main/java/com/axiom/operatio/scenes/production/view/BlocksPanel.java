@@ -1,4 +1,4 @@
-package com.axiom.operatio.scenes.production.ui;
+package com.axiom.operatio.scenes.production.view;
 
 import android.graphics.Color;
 import android.util.Log;

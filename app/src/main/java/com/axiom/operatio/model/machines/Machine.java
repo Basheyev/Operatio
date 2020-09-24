@@ -1,11 +1,11 @@
-package com.axiom.operatio.production.machines;
+package com.axiom.operatio.model.machines;
 
-import com.axiom.operatio.production.block.Block;
-import com.axiom.operatio.production.Production;
-import com.axiom.operatio.production.buffer.Buffer;
-import com.axiom.operatio.production.materials.Item;
-import com.axiom.operatio.production.materials.Material;
-import com.axiom.operatio.production.transport.Conveyor;
+import com.axiom.operatio.model.block.Block;
+import com.axiom.operatio.model.Production;
+import com.axiom.operatio.model.buffer.Buffer;
+import com.axiom.operatio.model.materials.Item;
+import com.axiom.operatio.model.materials.Material;
+import com.axiom.operatio.model.transport.Conveyor;
 
 public class Machine extends Block {
 

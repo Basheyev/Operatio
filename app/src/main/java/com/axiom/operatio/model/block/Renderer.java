@@ -1,4 +1,4 @@
-package com.axiom.operatio.production.block;
+package com.axiom.operatio.model.block;
 
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 
