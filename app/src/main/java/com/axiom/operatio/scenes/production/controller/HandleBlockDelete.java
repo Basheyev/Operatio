@@ -13,6 +13,8 @@ import com.axiom.operatio.model.machines.Machine;
 import com.axiom.operatio.model.transport.Conveyor;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
+
+//  TODO Удаление блока производства
 public class HandleBlockDelete {
 
     private ProductionScene scene;

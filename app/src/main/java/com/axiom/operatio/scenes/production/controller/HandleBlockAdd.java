@@ -14,6 +14,7 @@ import com.axiom.operatio.model.machines.MachineType;
 import com.axiom.operatio.model.transport.Conveyor;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
+//  TODO Перетаскивание блока с панели на карту производства и отображение (Drag & Drop)
 public class HandleBlockAdd {
 
     private ProductionScene scene;
