@@ -84,7 +84,7 @@ public class BatchRender {
     }
 
     //-------------------------------------------------------------------------------------------
-    public static void addRectangle(float[] vert, int zOrder, float[] color, AABB scissor) {
+    public static synchronized void addRectangle(float[] vert, int zOrder, float[] color, AABB scissor) {
         // Проверяем есть ли ещё место
         if (entriesCounter + 1 >= entries.length) {
             Log.w("WARNING", "Max sprites count reached " + MAX_SPRITES);
@@ -104,7 +104,7 @@ public class BatchRender {
     }
 
     //-------------------------------------------------------------------------------------------
-    public static void addSprite(Texture texture, float[] vert, float[] texcoord, int zOrder, AABB scissor) {
+    public static synchronized void addSprite(Texture texture, float[] vert, float[] texcoord, int zOrder, AABB scissor) {
         // Проверяем есть ли ещё место
         if (entriesCounter + 1 >= entries.length) {
             Log.w("WARNING", "Max sprites count reached " + MAX_SPRITES);
@@ -127,7 +127,7 @@ public class BatchRender {
     //-------------------------------------------------------------------------------------------
     private static Entry previous = new Entry();
 
-    public static void finishBatching(Camera camera) {
+    public static synchronized void finishBatching(Camera camera) {
         if (entriesCounter==0) return;
 
         // Сортируем всё, чтобы подготовить к группировке в пакеты
