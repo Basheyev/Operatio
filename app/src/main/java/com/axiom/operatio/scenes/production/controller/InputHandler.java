@@ -18,14 +18,22 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 
 public class InputHandler {
 
+    public static final int LOOK_AROUND = 0;
+    public static final int BLOCK_ADD = 1;
+    public static final int BLOCK_DELETE = 2;
+    public static final int BLOCK_MOVE = 3;
+    public static final int BLOCK_ROTATE = 4;
+
     private HandleLookAround handleLookAround;
     private HandleBlockAdd handleBlockAdd;
     private HandleBlockDelete handleBlockDelete;
+    private HandleBlockMove handleBlockMove;
 
     private ProductionScene scene;
     private Production production;
     private ProductionRenderer productionRenderer;
 
+    
     public InputHandler(ProductionScene scene, Production production, ProductionRenderer productionRenderer) {
         this.production = production;
         this.productionRenderer = productionRenderer;
@@ -33,19 +41,33 @@ public class InputHandler {
         handleLookAround = new HandleLookAround(scene, production, productionRenderer);
         handleBlockAdd = new HandleBlockAdd(scene, production, productionRenderer);
         handleBlockDelete = new HandleBlockDelete(scene, production, productionRenderer);
+        handleBlockMove = new HandleBlockMove(scene, production, productionRenderer);
     }
 
+
     public void onMotion(MotionEvent event, float worldX, float worldY) {
-        // STATE
+
+
         boolean blockTooggled = scene.blocksPanel.getToggledButton() != null;
         boolean modeToggled = scene.modePanel.getToggledButton() != null;
 
-        if (blockTooggled || modeToggled) {
-            if (modeToggled) handleBlockDelete.onMotion(event, worldX, worldY);
-            if (blockTooggled) handleBlockAdd.onMotion(event, worldX, worldY);
-        } else {
-            handleLookAround.onMotion(event, worldX, worldY);
+        // STATE
+        int state = LOOK_AROUND;
+        if (blockTooggled) state = BLOCK_ADD; else
+        if (modeToggled) {
+            if (scene.modePanel.getToggledButton().equals("0")) state = BLOCK_MOVE;
+            if (scene.modePanel.getToggledButton().equals("1")) state = BLOCK_ROTATE;
+            if (scene.modePanel.getToggledButton().equals("2")) state = BLOCK_DELETE;
         }
+
+        switch (state) {
+            case LOOK_AROUND: handleLookAround.onMotion(event, worldX, worldY); break;
+            case BLOCK_ADD: handleBlockAdd.onMotion(event, worldX, worldY); break;
+            case BLOCK_DELETE: handleBlockDelete.onMotion(event, worldX, worldY); break;
+            case BLOCK_MOVE: handleBlockMove.onMotion(event, worldX, worldY); break;
+        }
+
+
     }
 
 
