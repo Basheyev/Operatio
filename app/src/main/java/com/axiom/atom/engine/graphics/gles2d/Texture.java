@@ -41,11 +41,10 @@ public class Texture implements GLESObject {
 
 
     public static Texture getInstance(Bitmap bitmap) {
-
         // Так как ключом в HashMap используется ResourceID
         // приходится использовать некоторое смещение и хэшкод объекта
         // чтобы не пересекаться с ID ресурсов приложения
-        // FIXME не очень уверен что ID не пересечется
+        // FIXME не очень уверен что ID не пересечется (надо подумать)
         int resource = 0xFFFF + (bitmap.hashCode() % 0xFFFF);
 
         Texture texture = loadedTextures.get(resource);
