@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
-import android.util.Log;
 
 import com.axiom.atom.engine.graphics.GraphicsRender;
 
@@ -41,16 +40,40 @@ public class Texture implements GLESObject {
     }
 
 
+    public static Texture getInstance(Bitmap bitmap) {
+
+        // Так как ключом в HashMap используется ResourceID
+        // приходится использовать некоторое смещение и хэшкод объекта
+        // чтобы не пересекаться с ID ресурсов приложения
+        // FIXME не очень уверен что ID не пересечется
+        int resource = 0xFFFF + (bitmap.hashCode() % 0xFFFF);
+
+        Texture texture = loadedTextures.get(resource);
+        if (texture==null) {
+            //----------------------------------------------------------------
+            // Загружаем текстуру если она еще не была загружна
+            //---------------------------------------------------------------
+            texture = new Texture(bitmap);
+            loadedTextures.put(resource, texture);
+        }
+        return texture;
+    }
+
+
     private Texture(Resources resources, int resource) {
         //------------------------------------------------------------------------
-        // Загружаем исходное изображение
+        // Загружаем исходное изображение из ресурса
         //------------------------------------------------------------------------
-        Bitmap bitmap = BitmapFactory.decodeResource(resources, resource);
-        width = bitmap.getWidth();
-        height = bitmap.getHeight();
+        this(BitmapFactory.decodeResource(resources, resource));
+    }
+
+
+    private Texture(Bitmap bitmap) {
         //------------------------------------------------------------------------
         // Переворачиваем изображение по вертикали для загрузки в OpenGL
         //------------------------------------------------------------------------
+        width = bitmap.getWidth();
+        height = bitmap.getHeight();
         Matrix matrix = new Matrix();
         matrix.postScale(1,-1);
         flippedBitmap = Bitmap.createBitmap(bitmap,0,0,(int)width,(int)height,matrix,false);
