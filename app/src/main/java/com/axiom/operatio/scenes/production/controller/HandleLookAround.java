@@ -10,7 +10,7 @@ import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.model.buffer.Buffer;
 import com.axiom.operatio.model.machines.Machine;
-import com.axiom.operatio.model.transport.Conveyor;
+import com.axiom.operatio.model.conveyor.Conveyor;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
 public class HandleLookAround {

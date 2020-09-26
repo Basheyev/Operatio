@@ -7,7 +7,7 @@ import com.axiom.operatio.model.machines.Machine;
 import com.axiom.operatio.model.machines.MachineType;
 import com.axiom.operatio.model.machines.Operation;
 import com.axiom.operatio.model.materials.Material;
-import com.axiom.operatio.model.transport.Conveyor;
+import com.axiom.operatio.model.conveyor.Conveyor;
 
 public class ProductionBuilder {
     

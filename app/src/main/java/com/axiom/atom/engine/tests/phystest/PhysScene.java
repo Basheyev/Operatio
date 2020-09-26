@@ -84,7 +84,7 @@ public class PhysScene extends GameScene {
                 ("FPS:" + GraphicsRender.getFPS() +
                         " CALLS=" + BatchRender.getDrawCallsCount() +
                         " QUADS=" + BatchRender.getEntriesCount() +
-                        " MS:" + GraphicsRender.getRenderTime()).toCharArray(),
+                        " MS:" + GraphicsRender.getRenderTime()),
                 camera.getMinX()+50, camera.getMinY()+1040, 2);
     }
 

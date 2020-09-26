@@ -1,9 +1,13 @@
 package com.axiom.operatio.scenes.production.view;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.util.Log;
 
+import com.axiom.atom.R;
+import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Panel;
@@ -49,9 +53,12 @@ public class ModePanel extends Panel {
 
     private void buildButtons() {
         Widget button;
+        Sprite sprite;
 
         for (int i =0; i<3; i++) {
-            button = new Button("" + i);
+            sprite = new Sprite(SceneManager.getResources(), R.drawable.mode_buttons, 4, 1);
+            sprite.setActiveFrame(i);
+            button = new Button(sprite);
             button.setTag(""+i);
             button.setLocalBounds(30 + i * 120, 20, 100, 100);
             button.setColor(Color.GRAY);

@@ -1,17 +1,9 @@
 package com.axiom.operatio.scenes.production.controller;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
-import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.ProductionRenderer;
-import com.axiom.operatio.model.block.Block;
-import com.axiom.operatio.model.buffer.Buffer;
-import com.axiom.operatio.model.machines.Machine;
-import com.axiom.operatio.model.machines.MachineType;
-import com.axiom.operatio.model.transport.Conveyor;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
 // Обработчик ввода сцены изменяющий модель Производства
@@ -28,6 +20,7 @@ public class InputHandler {
     private HandleBlockAdd handleBlockAdd;
     private HandleBlockDelete handleBlockDelete;
     private HandleBlockMove handleBlockMove;
+    private HandleBlockRotate handleBlockRotate;
 
     private ProductionScene scene;
     private Production production;
@@ -42,11 +35,11 @@ public class InputHandler {
         handleBlockAdd = new HandleBlockAdd(scene, production, productionRenderer);
         handleBlockDelete = new HandleBlockDelete(scene, production, productionRenderer);
         handleBlockMove = new HandleBlockMove(scene, production, productionRenderer);
+        handleBlockRotate = new HandleBlockRotate(scene, production, productionRenderer);
     }
 
 
     public void onMotion(MotionEvent event, float worldX, float worldY) {
-
 
         boolean blockTooggled = scene.blocksPanel.getToggledButton() != null;
         boolean modeToggled = scene.modePanel.getToggledButton() != null;
@@ -65,6 +58,7 @@ public class InputHandler {
             case BLOCK_ADD: handleBlockAdd.onMotion(event, worldX, worldY); break;
             case BLOCK_DELETE: handleBlockDelete.onMotion(event, worldX, worldY); break;
             case BLOCK_MOVE: handleBlockMove.onMotion(event, worldX, worldY); break;
+            case BLOCK_ROTATE: handleBlockRotate.onMotion(event, worldX, worldY); break;
         }
 
 

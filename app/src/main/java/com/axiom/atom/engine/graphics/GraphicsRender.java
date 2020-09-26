@@ -246,17 +246,27 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
         GLES20.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
     }
 
-    public static void drawText(char[] text, float x, float y, float scale) {
+    public static void drawText(String text, float x, float y, float scale) {
         if (render==null) return;
         render.textRender.draw(camera, text, x, y, scale);
     }
 
-    public static void drawText(char[] text, float x, float y, float scale, AABB scissor) {
+    public static void drawText(StringBuffer text, float x, float y, float scale, AABB scissor) {
         if (render==null) return;
         render.textRender.draw(camera, text, x, y, scale, scissor);
     }
 
-    public static float getTextWidth(char[] text, float scale) {
+    public static void drawText(StringBuffer text, float x, float y, float scale) {
+        if (render==null) return;
+        render.textRender.draw(camera, text, x, y, scale);
+    }
+
+    public static void drawText(String text, float x, float y, float scale, AABB scissor) {
+        if (render==null) return;
+        render.textRender.draw(camera, text, x, y, scale, scissor);
+    }
+
+    public static float getTextWidth(String text, float scale) {
         if (render==null) return 0;
         return render.textRender.getTextWidth(text, scale);
     }

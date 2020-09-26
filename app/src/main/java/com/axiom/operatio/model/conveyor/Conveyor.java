@@ -1,4 +1,4 @@
-package com.axiom.operatio.model.transport;
+package com.axiom.operatio.model.conveyor;
 
 import com.axiom.atom.engine.data.Channel;
 import com.axiom.operatio.model.buffer.Buffer;
@@ -20,6 +20,17 @@ public class Conveyor extends Block {
         this.renderer = new ConveyorRenderer(this);
     }
 
+    @Override
+    public void setOutputDirection(int outDir) {
+        super.setOutputDirection(outDir);
+        ((ConveyorRenderer)renderer).arrangeAnimation(inputDirection, outputDirection);
+    }
+
+    @Override
+    public void setInputDirection(int inDir) {
+        super.setInputDirection(inDir);
+        ((ConveyorRenderer)renderer).arrangeAnimation(inputDirection, outputDirection);
+    }
 
     @Override
     public boolean push(Item item) {
@@ -58,16 +69,21 @@ public class Conveyor extends Block {
                 item = input.poll();  // Удалаем из входящей очереди
                 output.add(item);     // Добавляем в выходящую очередь
                 state = IDLE;         // Состояние - IDLE (можем брать еще)
+            }
+        }
 
-                // Если приёмник буфер или конвейер - затолкать самостоятельно
-                Block outputBlock = production.getBlockAt(this,outputDirection);
-                if (outputBlock!=null) {
-                    if (outputBlock instanceof Buffer || outputBlock instanceof Conveyor) {
-                       if (outputBlock.push(item)) output.remove(item);
+        // Если на выводе есть предметы и есть выходной блок отправляем один предмет в выходной блок
+        Item item = output.peek();
+        if (item!=null) {
+            Block outputBlock = production.getBlockAt(this, outputDirection);
+            if (outputBlock != null) {
+                // Если выходной блок буфер/конвейер - заталкиваем сами
+                if (outputBlock instanceof Buffer || outputBlock instanceof Conveyor) {
+                    if (outputBlock.push(item)) {
+                        output.remove(item);
+                        // Надо поставить временную метку
                     }
                 }
-
-
             }
         }
 

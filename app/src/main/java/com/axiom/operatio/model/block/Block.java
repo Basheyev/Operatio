@@ -37,6 +37,15 @@ public abstract class Block {
     }
 
 
+    public void setOutputDirection(int outDir) {
+        this.outputDirection = outDir;
+    }
+
+    public void setInputDirection(int inDir) {
+        this.inputDirection = inDir;
+    }
+
+
     /**
      * Добавляет предмет во входную очередь блока
      * @param item предмет
@@ -132,13 +141,19 @@ public abstract class Block {
     public static final int FAULT = -1;
 
     //---------------------------------------------------------------------------------------
-    // Ориентация
+    // Ориентация (по часовой стрелке)
     //---------------------------------------------------------------------------------------
     public static final int NONE = 0;
     public static final int LEFT = 1;
-    public static final int RIGHT = 2;
-    public static final int UP = 3;
+    public static final int UP = 2;
+    public static final int RIGHT = 3;
     public static final int DOWN = 4;
 
+    public static int nextClockwiseDirection(int direction) {
+        if (direction==NONE || direction < 0) return NONE;
+        direction++;
+        if (direction > DOWN) direction = LEFT;
+        return direction;
+    }
 
 }

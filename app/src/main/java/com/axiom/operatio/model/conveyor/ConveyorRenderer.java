@@ -1,4 +1,4 @@
-package com.axiom.operatio.model.transport;
+package com.axiom.operatio.model.conveyor;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
@@ -32,8 +32,7 @@ public class ConveyorRenderer implements Renderer {
         timeStarted = System.currentTimeMillis();
     }
 
-
-    private void arrangeAnimation(int inputDirection, int outputDirection) {
+    public void arrangeAnimation(int inputDirection, int outputDirection) {
 
         animLR = sprite.addAnimation(0,3,15,true);
         animRL = sprite.addAnimation(4,7,15,true);

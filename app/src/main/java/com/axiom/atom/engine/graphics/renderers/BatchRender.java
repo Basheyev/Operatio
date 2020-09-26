@@ -71,7 +71,7 @@ public class BatchRender {
     // Методы для пакетирования
     //-------------------------------------------------------------------------------------------
 
-    public static void beginBatching() {
+    public static synchronized void beginBatching() {
         // Если ещё не инициализировались
         if (entries==null) {
             entries = new Entry[MAX_SPRITES];

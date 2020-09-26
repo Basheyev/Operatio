@@ -52,16 +52,6 @@ public class BlocksPanel extends Panel {
     };
 
 
-    @Override
-    public void draw(Camera camera) {
-        super.draw(camera);
-        if (toggledButton!=null) {
-            GraphicsRender.setZOrder(zOrder);
-            GraphicsRender.drawText(toggledButton.toCharArray(), 50, 50, 5);
-        }
-    }
-
-
     private void buildButtons() {
         Sprite sprite;
         Widget button;

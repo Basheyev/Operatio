@@ -76,16 +76,21 @@ public class ProductionScene extends GameScene {
         productionRenderer.draw(camera,0,0,1920,1080);
     }
 
+    protected StringBuffer fps = new StringBuffer(100);
     @Override
     public void postRender(Camera camera) {
         float x = camera.getX();
         float y = camera.getY();
         GraphicsRender.setZOrder(2000);
-        String fps = "FPS:" + GraphicsRender.getFPS() +
-                " QUADS:" + BatchRender.getEntriesCount() +
-                " CALLS:" + BatchRender.getDrawCallsCount() +
-                " TIME:" + GraphicsRender.getRenderTime() + "ms";
-        GraphicsRender.drawText(fps.toCharArray(), x - 700,y + 500, 2);
+
+        fps.delete(0, fps.length());
+        fps.append("FPS:").append(GraphicsRender.getFPS())
+            .append(" QUADS:").append(BatchRender.getEntriesCount())
+            .append(" CALLS:").append(BatchRender.getDrawCallsCount())
+            .append(" TIME:").append(GraphicsRender.getRenderTime())
+            .append("ms");
+
+        GraphicsRender.drawText(fps, x - 700,y + 500, 2);
     }
 
     @Override

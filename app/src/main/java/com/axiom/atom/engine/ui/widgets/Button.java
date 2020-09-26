@@ -8,12 +8,12 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 public class Button extends Widget {
 
     protected Sprite background;
-    protected char[] text;
+    protected String text;
 
     public Button(Sprite background, String text) {
         super();
         this.background = background;
-        this.text = text!=null ? text.toCharArray() : null;
+        this.text = text;
         setColor(0.5f, 0.7f, 0.5f, 0.9f);
     }
 
@@ -45,8 +45,8 @@ public class Button extends Widget {
 
         if (text!=null) {
             GraphicsRender.setZOrder(zOrder + 2);
-            float textWidth = GraphicsRender.getTextWidth(text, 1);
-            GraphicsRender.drawText(text, bounds.center.x - textWidth/2, bounds.center.y, 1, scissors);
+            float textWidth = GraphicsRender.getTextWidth(text, 2);
+            GraphicsRender.drawText(text, bounds.center.x - textWidth/2, bounds.center.y, 2, scissors);
         }
 
         super.draw(camera);

@@ -5,7 +5,7 @@ import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.buffer.Buffer;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
-import com.axiom.operatio.model.transport.Conveyor;
+import com.axiom.operatio.model.conveyor.Conveyor;
 
 public class Machine extends Block {
 

@@ -8,13 +8,16 @@ import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.Texture;
 
+
+// TODO Сделать меньше взятия памяти
+// TODO Сделать поддержку генерируемых шрифтов
+
 /**
  * Отрисовывает текст, на основе шрифта в виде спрайта
  * (C) Atom Engine, Bolat Basheyev 2020
  */
 public class Text {
 
-    // TODO Сделать поддержку генерируемых шрифтов
 
     public int zOrder = 0;
     protected Sprite font;
@@ -35,32 +38,52 @@ public class Text {
         this.spacing = spacing;
     }
 
-    public void draw(Camera camera, char[] text, float x, float y, float scale) {
+    public void draw(Camera camera, String text, float x, float y, float scale) {
         draw(camera,text,x,y,scale, null);
     }
 
-    public void draw(Camera camera, char[] text, float x, float y, float scale, AABB scissor) {
+    public void draw(Camera camera, StringBuffer text, float x, float y, float scale) {
+        draw(camera,text,x,y,scale, null);
+    }
+
+    public void draw(Camera camera, String text, float x, float y, float scale, AABB scissor) {
         float bx = x;
         float by = y;
         font.zOrder = zOrder;
-        for (int i=0; i< text.length; i++) {
-            if (text[i]=='\n') {
+        for (int i=0; i< text.length(); i++) {
+            char symbol = text.charAt(i);
+            if (symbol=='\n') {
                 by -= font.getHeight() * scale;
                 bx = x;
                 continue;
             }
-            font.setActiveFrame(text[i] - ' ');
+            font.setActiveFrame(symbol - ' ');
             font.draw(camera, bx, by, scale, scissor);
             bx += font.getWidth() * scale * spacing;
         }
     }
 
-    public void draw(Camera camera, String text, float x, float y, float scale) {
-       draw(camera,text.toCharArray(),x,y,scale);
+
+    public void draw(Camera camera, StringBuffer text, float x, float y, float scale, AABB scissor) {
+        float bx = x;
+        float by = y;
+        font.zOrder = zOrder;
+        for (int i=0; i< text.length(); i++) {
+            char symbol = text.charAt(i);
+            if (symbol=='\n') {
+                by -= font.getHeight() * scale;
+                bx = x;
+                continue;
+            }
+            font.setActiveFrame(symbol - ' ');
+            font.draw(camera, bx, by, scale, scissor);
+            bx += font.getWidth() * scale * spacing;
+        }
     }
 
-    public float getTextWidth(char[] text, float scale) {
-        return text.length * font.getWidth() * scale * spacing;
+
+    public float getTextWidth(String text, float scale) {
+        return text.length() * font.getWidth() * scale * spacing;
     }
 
 
