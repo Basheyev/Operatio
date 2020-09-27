@@ -15,6 +15,7 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 
 public class HandleLookAround {
 
+    private InputHandler inputHandler;
     private ProductionScene scene;
     private Production production;
     private ProductionRenderer productionRenderer;
@@ -23,7 +24,8 @@ public class HandleLookAround {
     private float cursorX, cursorY;
     private int lastCol, lastRow;
 
-    public HandleLookAround(ProductionScene scn, Production prod, ProductionRenderer prodRender) {
+    public HandleLookAround(InputHandler inputHandler, ProductionScene scn, Production prod, ProductionRenderer prodRender) {
+        this.inputHandler = inputHandler;
         this.production = prod;
         this.productionRenderer = prodRender;
         this.scene = scn;

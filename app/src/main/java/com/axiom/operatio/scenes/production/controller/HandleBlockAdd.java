@@ -14,6 +14,7 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 //  TODO Перетаскивание блока с панели на карту производства и отображение (Drag & Drop)
 public class HandleBlockAdd {
 
+    private InputHandler inputHandler;
     private ProductionScene scene;
     private Production production;
     private ProductionRenderer productionRenderer;
@@ -21,7 +22,9 @@ public class HandleBlockAdd {
     private float cursorX, cursorY;
     private int lastCol, lastRow;
 
-    public HandleBlockAdd(ProductionScene scene, Production production, ProductionRenderer productionRenderer) {
+    public HandleBlockAdd(InputHandler inputHandler, ProductionScene scene, Production production,
+                          ProductionRenderer productionRenderer) {
+        this.inputHandler = inputHandler;
         this.production = production;
         this.productionRenderer = productionRenderer;
         this.scene = scene;

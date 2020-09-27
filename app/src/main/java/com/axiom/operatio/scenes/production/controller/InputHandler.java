@@ -16,7 +16,7 @@ public class InputHandler {
     public static final int BLOCK_MOVE = 3;
     public static final int BLOCK_ROTATE = 4;
 
-    private HandleLookAround handleLookAround;
+    protected HandleLookAround handleLookAround;
     private HandleBlockAdd handleBlockAdd;
     private HandleBlockDelete handleBlockDelete;
     private HandleBlockMove handleBlockMove;
@@ -31,11 +31,11 @@ public class InputHandler {
         this.production = production;
         this.productionRenderer = productionRenderer;
         this.scene = scene;
-        handleLookAround = new HandleLookAround(scene, production, productionRenderer);
-        handleBlockAdd = new HandleBlockAdd(scene, production, productionRenderer);
-        handleBlockDelete = new HandleBlockDelete(scene, production, productionRenderer);
-        handleBlockMove = new HandleBlockMove(scene, production, productionRenderer);
-        handleBlockRotate = new HandleBlockRotate(scene, production, productionRenderer);
+        handleLookAround = new HandleLookAround(this, scene, production, productionRenderer);
+        handleBlockAdd = new HandleBlockAdd(this, scene, production, productionRenderer);
+        handleBlockDelete = new HandleBlockDelete(this, scene, production, productionRenderer);
+        handleBlockMove = new HandleBlockMove(this, scene, production, productionRenderer);
+        handleBlockRotate = new HandleBlockRotate(this, scene, production, productionRenderer);
     }
 
 

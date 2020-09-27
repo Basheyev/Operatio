@@ -13,7 +13,7 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 //  TODO Перемещение блока производства и отображение будущего занимаемого места (Drag & Drop)
 public class HandleBlockMove {
 
-
+    private InputHandler inputHandler;
     private ProductionScene scene;
     private Production production;
     private ProductionRenderer productionRenderer;
@@ -23,7 +23,9 @@ public class HandleBlockMove {
     private float cursorX, cursorY;
     private int lastCol, lastRow;
 
-    public HandleBlockMove(ProductionScene scn, Production prod, ProductionRenderer prodRender) {
+    public HandleBlockMove(InputHandler inputHandler,
+                           ProductionScene scn, Production prod, ProductionRenderer prodRender) {
+        this.inputHandler = inputHandler;
         this.production = prod;
         this.productionRenderer = prodRender;
         this.scene = scn;
@@ -33,6 +35,7 @@ public class HandleBlockMove {
         int column = productionRenderer.getProductionColumn(worldX);
         int row = productionRenderer.getProductionRow(worldY);
         Block block = production.getBlockAt(column, row);;
+        if (block==null) inputHandler.handleLookAround.onMotion(event, worldX, worldY);
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
@@ -44,7 +47,7 @@ public class HandleBlockMove {
                     dragBlock = block;
                     production.removeBlock(block);
                     dragging = true;
-                } else
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (dragging && dragBlock!=null) {
