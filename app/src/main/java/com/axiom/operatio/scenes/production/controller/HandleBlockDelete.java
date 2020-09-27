@@ -9,7 +9,6 @@ import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
 
-//  TODO Удаление блока производства
 public class HandleBlockDelete {
 
     private InputHandler inputHandler;
