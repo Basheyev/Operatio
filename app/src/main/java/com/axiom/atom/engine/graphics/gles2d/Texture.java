@@ -51,11 +51,17 @@ public class Texture implements GLESObject {
      * @return текстура
      */
     public static Texture getInstance(Bitmap bitmap) {
-        // Так как ключом в HashMap используется ResourceID
+        // Так как ключом в HashMap текстур используется уникальный ResourceID
+        // чтобы сгенерированный Bitmap не пересекался с ID ресурсов приложения
         // приходится использовать некоторое смещение и хэшкод объекта
-        // чтобы не пересекаться с ID ресурсов приложения
-        // FIXME не очень уверен что ID не пересечется (надо подумать)
-        int resource = 0xFFFF + (bitmap.hashCode() % 0xFFFF);
+        //-------------------------------------------------------------------------
+        // An Android Resource id is a 32-bit integer. It comprises
+        // an 8-bit Package id [bits 24-31]
+        // an 8-bit Type id [bits 16-23]
+        // a 16-bit Entry index [bits 0-15]
+        //-------------------------------------------------------------------------
+        // Будем отсчитывать наши ID от позиции 0xFFFF0000 + [0..65535]
+        int resource = 0xFFFF0000 & (bitmap.hashCode() % 0xFFFF);
 
         Texture texture = loadedTextures.get(resource);
         if (texture==null) {
