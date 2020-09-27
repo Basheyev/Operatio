@@ -252,75 +252,17 @@ public class Sprite {
     //----------------------------------------------------------------------------------------
 
     /**
-     * Устанавливает активным указанный кадр и пересчитывает текстурные координаты
+     * Устанавливает активным указанный кадр и копирует из атласа текстурные координаты
      * @param frame номер кадра
      */
     public void setActiveFrame(int frame) {
         if (activeFrame==frame) return;
-        if (frame < 0 || frame >= atlas.size() /*columns * rows*/) return;
+        if (frame < 0 || frame >= atlas.size()) return;
         activeFrame = frame;
         TextureRegion region = atlas.getRegion(activeFrame);
         System.arraycopy(region.textureCoordinates, 0, textureCoordinates, 0, 12);
-
-        /*
-        // Пересчет номера кадра в номер столбца и строки
-        int col = activeFrame % columns;
-        // Учитываем что строки считаем сверху, а текстурные координаты снизу
-        int row = (rows - 1) - activeFrame / columns;
-        //--------------------------------------------------
-        // текстурные координаты кадра спрайта
-        //--------------------------------------------------
-
-        // ===== Треугольник 1
-        // левый верхний угол
-        textureCoordinates[0] = col * spriteWidth;
-        textureCoordinates[1] = (row + 1) * spriteHeight;
-        // левый нижний угол
-        textureCoordinates[2] = col * spriteWidth;
-        textureCoordinates[3] = row * spriteHeight;
-        // правый верхний угол
-        textureCoordinates[4] = (col + 1) * spriteWidth;
-        textureCoordinates[5] = (row + 1) * spriteHeight;
-
-        // ===== Треугольник 2
-        // левый нижний угол
-        textureCoordinates[6] = textureCoordinates[2];
-        textureCoordinates[7] = textureCoordinates[3];
-        // правый верхний угол
-        textureCoordinates[8] = textureCoordinates[4];
-        textureCoordinates[9] = textureCoordinates[5];
-        // правый нижний угол
-        textureCoordinates[10] = (col + 1) * spriteWidth;
-        textureCoordinates[11] = row * spriteHeight;
-
-         */
-
-        //--------------------------------------------------
-        // Пересчитать текстурные координаты если есть
-        // горизонтальное или вертикальное отражение
-        //--------------------------------------------------
-        float tmp;
-        if (horizontalFlip) {                                  // Поменять местами X координаты
-            tmp = textureCoordinates[0];                       // tmp = x1
-            textureCoordinates[0] = textureCoordinates[4];     // x1 = x2
-            textureCoordinates[4] = tmp;                       // x2 = tmp
-            tmp = textureCoordinates[2];                       // tmp = x1
-            textureCoordinates[2] = textureCoordinates[10];    // x1 = x2
-            textureCoordinates[10] = tmp;                      // x2 = tmp
-            textureCoordinates[6] = textureCoordinates[2];     // копируем в данные во второй
-            textureCoordinates[8] = textureCoordinates[4];     // трегуольник с общим ребром
-        }
-        if (verticalFlip) {                                    // Поменять местами Y координаты
-            tmp = textureCoordinates[1];                       // tmp = y1
-            textureCoordinates[1] = textureCoordinates[3];     // y1 = y2
-            textureCoordinates[3] = tmp;                       // y2 = tmp
-            tmp = textureCoordinates[5];                       // tmp = y1
-            textureCoordinates[5] = textureCoordinates[11];    // y1 = y2
-            textureCoordinates[11] = tmp;                      // y2 = tmp
-            textureCoordinates[7] = textureCoordinates[3];     // копируем в данные во второй
-            textureCoordinates[9] = textureCoordinates[5];     // трегуольник с общим ребром
-        }
-
+        if (horizontalFlip) flipHorizontally();
+        if (verticalFlip) flipVertically();
         lastFrameTime = System.nanoTime();
     }
 
@@ -333,35 +275,45 @@ public class Sprite {
     }
 
     //-------------------------------------------------------------------------------------------
-    // Горизонтальное / вертикальное отражение спрайта
+    // Горизонтальное / вертикальное отражение спрайта (отражение текстурных координат)
     //-------------------------------------------------------------------------------------------
 
     public void flipHorizontally(boolean flipped) {
-        if (horizontalFlip != flipped) {                       // Поменять местами X координаты
-            float tmp = textureCoordinates[0];                 // tmp = x1
-            textureCoordinates[0] = textureCoordinates[4];     // x1 = x2
-            textureCoordinates[4] = tmp;                       // x2 = tmp
-            tmp = textureCoordinates[2];                       // tmp = x1
-            textureCoordinates[2] = textureCoordinates[10];    // x1 = x2
-            textureCoordinates[10] = tmp;                      // x2 = tmp
-            textureCoordinates[6] = textureCoordinates[2];     // копируем в данные во второй
-            textureCoordinates[8] = textureCoordinates[4];     // трегуольник с общим ребром
+        if (horizontalFlip != flipped) {
+            flipHorizontally();
             horizontalFlip = flipped;
         }
     }
 
     public void flipVertically(boolean flipped) {
-        if (verticalFlip != flipped) {                         // Поменять местами Y координаты
-            float tmp = textureCoordinates[1];                 // tmp = y1
-            textureCoordinates[1] = textureCoordinates[3];     // y1 = y2
-            textureCoordinates[3] = tmp;                       // y2 = tmp
-            tmp = textureCoordinates[5];                       // tmp = y1
-            textureCoordinates[5] = textureCoordinates[11];    // y1 = y2
-            textureCoordinates[11] = tmp;                      // y2 = tmp
-            textureCoordinates[7] = textureCoordinates[3];     // копируем в данные во второй
-            textureCoordinates[9] = textureCoordinates[5];     // трегуольник с общим ребром
+        if (verticalFlip != flipped) {
+            flipVertically();
             verticalFlip = flipped;
         }
+    }
+
+    private void flipHorizontally() {
+         // Поменять местами X координаты
+        float tmp = textureCoordinates[0];                 // tmp = x1
+        textureCoordinates[0] = textureCoordinates[4];     // x1 = x2
+        textureCoordinates[4] = tmp;                       // x2 = tmp
+        tmp = textureCoordinates[2];                       // tmp = x1
+        textureCoordinates[2] = textureCoordinates[10];    // x1 = x2
+        textureCoordinates[10] = tmp;                      // x2 = tmp
+        textureCoordinates[6] = textureCoordinates[2];     // копируем в данные во второй
+        textureCoordinates[8] = textureCoordinates[4];     // трегуольник с общим ребром
+    }
+
+    private void flipVertically() {
+         // Поменять местами Y координаты
+        float tmp = textureCoordinates[1];                 // tmp = y1
+        textureCoordinates[1] = textureCoordinates[3];     // y1 = y2
+        textureCoordinates[3] = tmp;                       // y2 = tmp
+        tmp = textureCoordinates[5];                       // tmp = y1
+        textureCoordinates[5] = textureCoordinates[11];    // y1 = y2
+        textureCoordinates[11] = tmp;                      // y2 = tmp
+        textureCoordinates[7] = textureCoordinates[3];     // копируем в данные во второй
+        textureCoordinates[9] = textureCoordinates[5];     // трегуольник с общим ребром
     }
 
 
