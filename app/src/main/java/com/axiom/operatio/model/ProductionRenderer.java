@@ -29,7 +29,7 @@ public class ProductionRenderer implements Renderer {
         int rows = production.getRows();
         Block block;
         Renderer renderer;
-        GraphicsRender.clear();
+        //GraphicsRender.clear();
         for (int row=0; row < rows; row++) {
             for (int col=0; col < columns; col++) {
                 tile.draw(camera,col * cellWidth,row * cellHeight, cellWidth, cellHeight);
