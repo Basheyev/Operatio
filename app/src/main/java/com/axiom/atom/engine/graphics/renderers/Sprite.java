@@ -19,7 +19,6 @@ import java.util.ArrayList;
  * поддержка листов спрайтов, покадровая анимации спрайтов с,
  * разным FPS, быстрый рендеринг спрайта и анимации.
  * TODO Добавить поддержку вращения
- * TODO Добавить поддержку прозрачности
  * <br><br>
  * (С) Atom Engine, Bolat Basheyev 2020
  */
@@ -27,7 +26,8 @@ public class Sprite {
 
     public static Program program = null;          // Программа со скомпилированными шейдерами
     protected Texture texture;                     // Текстура спрайта
-    protected TextureAtlas atlas = null;           // Атлас текстуры
+    protected TextureAtlas atlas;                  // Атлас текстуры
+    protected float[] alpha = new float[4];        // Прозрачность спрайта
     public int zOrder = 0;                         // Порядок сортировки при отрисовке спрайта
 
     protected int activeFrame = -1;                // Текущий активный кадр
@@ -96,10 +96,13 @@ public class Sprite {
     //-----------------------------------------------------------------------------------
     private final String fragmentShaderCode =
                     "precision mediump float; " +
+                    "uniform vec4 alphaColor;" +
                     "uniform sampler2D TexCoordIn; " +
                     "varying vec2 TexCoordOut;" +
                     "void main() {" +
-                    "  gl_FragColor = texture2D(TexCoordIn, TexCoordOut);" +
+                    "  vec4 col = texture2D(TexCoordIn, TexCoordOut);" +
+                    "  col.a *= alphaColor.a;" +
+                    "  gl_FragColor = col; " +
                     "}";
 
     public Sprite(Resources resources, int resource) {
@@ -129,6 +132,10 @@ public class Sprite {
 
         // Сгенерировать текстурный атлас по количеству столбцов и строк
         atlas = new TextureAtlas(texture, columns, rows);
+        alpha[0] = 1;
+        alpha[1] = 1;
+        alpha[2] = 1;
+        alpha[3] = 1;
 
         spriteWidth = 1.0f / columns;  // Ширина спрайта в текстурных координатах
         spriteHeight = 1.0f / rows;    // Высоата спрайта в текстурных координатах
@@ -168,7 +175,7 @@ public class Sprite {
             vertices[15] = 0.5f * scaledWidth + x;
             vertices[16] = -0.5f * scaledHeight + y;
             // Добавляем в список отрисовки
-            BatchRender.addTexturedQuad(texture, vertices, textureCoordinates, zOrder, scissor);
+            BatchRender.addTexturedQuad(texture, vertices, textureCoordinates, alpha, zOrder, scissor);
         }
         animationNextFrame();
     }
@@ -208,7 +215,7 @@ public class Sprite {
             vertices[15] = 0.5f * width + sx;
             vertices[16] = -0.5f * height + sy;
 
-            BatchRender.addTexturedQuad(texture, vertices, textureCoordinates, zOrder, scissor);
+            BatchRender.addTexturedQuad(texture, vertices, textureCoordinates, alpha, zOrder, scissor);
 
         }
         animationNextFrame();
@@ -245,6 +252,12 @@ public class Sprite {
     public int getFramesAmount() {
         //return columns * rows;
         return atlas.size();
+    }
+
+    public void setAlpha(float alpha) {
+        if (alpha < 0) alpha = 0;
+        if (alpha > 1) alpha = 1;
+        this.alpha[3] = alpha;
     }
 
     //----------------------------------------------------------------------------------------
