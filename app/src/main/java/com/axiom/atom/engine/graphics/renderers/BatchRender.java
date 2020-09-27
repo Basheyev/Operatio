@@ -144,7 +144,6 @@ public class BatchRender {
 
         for (int i=0; i<entriesCounter; i++) {
             entry = entries[i];
-            lastEntry = (i == entriesCounter - 1);
             // Сравниваем текстуру, z order, цвет и ножницы с предыдущей
             equals = comparator.compare(entry, previous) == 0 && entry.scissor == previous.scissor;
             // Если текущий и предыдущий элемент равны добавляем в один пакет
@@ -158,6 +157,7 @@ public class BatchRender {
                 addEntryToBatch(entry);
                 copyEntry(entry, previous);
             }
+            lastEntry = (i == entriesCounter - 1);
             if (lastEntry) renderBatch(camera.getCameraMatrix(), previous);
         }
 
