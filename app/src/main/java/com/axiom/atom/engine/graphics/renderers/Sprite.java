@@ -18,7 +18,6 @@ import java.util.ArrayList;
  * Реализует такие функции как загрузка изображений в текстуру,
  * поддержка листов спрайтов, покадровая анимации спрайтов с,
  * разным FPS, быстрый рендеринг спрайта и анимации.
- * TODO Добавить поддержку вращения
  * <br><br>
  * (С) Atom Engine, Bolat Basheyev 2020
  */
@@ -35,6 +34,7 @@ public class Sprite {
     protected float spriteHeight;                  // Высота спрайта в текстурных координатах (0-1)
     protected boolean horizontalFlip = false;      // Горизонтальное отражение спрайта
     protected boolean verticalFlip = false;        // Вертикальное отражение спрайта
+    protected float rotation = 0;                  // Угол поворота в радианах
 
     protected ArrayList<Animation> animations = null;  // Список анимаций спрайта
     protected int activeAnimation = -1;            // Текущая активная анимация
@@ -147,28 +147,18 @@ public class Sprite {
      * @param scissor область обрезки в физических экранных координатах
      */
     public void draw(Camera camera, float x, float y, float scale, AABB scissor) {
-        //-------------------------------------------------------------------------------
-        // Проверка на экране ли спрайт, если нет то не отрисовывать
-        //-------------------------------------------------------------------------------
         float scaledWidth = getWidth() * scale;
         float scaledHeight = getHeight() * scale;
         float halfWidth = scaledWidth * 0.5f;
         float halfHeight = scaledHeight * 0.5f;
+        //-------------------------------------------------------------------------------
+        // Проверка на экране ли спрайт, если нет то не отрисовывать
+        //-------------------------------------------------------------------------------
         if (camera.isVisible(x-halfWidth,y-halfHeight, x+halfWidth,y+halfHeight)) {
-            // Треугольник 1
-            vertices[0] = -0.5f * scaledWidth + x;
-            vertices[1] = 0.5f * scaledHeight + y;
-            vertices[3] = -0.5f * scaledWidth + x;
-            vertices[4] = -0.5f * scaledHeight + y;
-            vertices[6] = 0.5f * scaledWidth + x;
-            vertices[7] = 0.5f * scaledHeight + y;
-            // Треугольник 2
-            vertices[9] = -0.5f * scaledWidth + x;
-            vertices[10] = -0.5f * scaledHeight + y;
-            vertices[12] = 0.5f * scaledWidth + x;
-            vertices[13] = 0.5f * scaledHeight + y;
-            vertices[15] = 0.5f * scaledWidth + x;
-            vertices[16] = -0.5f * scaledHeight + y;
+            initializeVertices();
+            if (rotation!=0) evaluateRotation(rotation);
+            evaluateScale(scaledWidth, scaledHeight);
+            evaluateOffset(x, y);
             // Добавляем в список отрисовки
             BatchRender.addTexturedQuad(texture, vertices, textureCoordinates, alpha, zOrder, scissor);
         }
@@ -195,23 +185,11 @@ public class Sprite {
             //-------------------------------------------------------------------------------
             float sx = x + width * 0.5f;
             float sy = y + height * 0.5f;
-            // Triangle 1
-            vertices[0] = -0.5f * width + sx;
-            vertices[1] = 0.5f * height + sy;
-            vertices[3] = -0.5f * width + sx;
-            vertices[4] = -0.5f * height + sy;
-            vertices[6] = 0.5f * width + sx;
-            vertices[7] = 0.5f * height + sy;
-            // Triangle 2
-            vertices[9] = -0.5f * width + sx;
-            vertices[10] = -0.5f * height + sy;
-            vertices[12] = 0.5f * width + sx;
-            vertices[13] = 0.5f * height + sy;
-            vertices[15] = 0.5f * width + sx;
-            vertices[16] = -0.5f * height + sy;
-
+            initializeVertices();
+            if (rotation!=0) evaluateRotation(rotation);
+            evaluateScale(width, height);
+            evaluateOffset(sx, sy);
             BatchRender.addTexturedQuad(texture, vertices, textureCoordinates, alpha, zOrder, scissor);
-
         }
         animationNextFrame();
     }
@@ -222,6 +200,97 @@ public class Sprite {
 
     public void draw(Camera camera, AABB bounds, AABB scissors) {
         draw(camera, bounds.min.x, bounds.min.y, bounds.width, bounds.height,scissors);
+    }
+
+    /**
+     * Инициализирует массив координат вершин
+     */
+    private void initializeVertices() {
+        vertices[0] = -0.5f;
+        vertices[1] = 0.5f;
+        vertices[3] = -0.5f;
+        vertices[4] = -0.5f;
+        vertices[6] = 0.5f;
+        vertices[7] = 0.5f;
+        // Треугольник 2
+        vertices[9] = -0.5f;
+        vertices[10] = -0.5f;
+        vertices[12] = 0.5f;
+        vertices[13] = 0.5f;
+        vertices[15] = 0.5f;
+        vertices[16] = -0.5f;
+    }
+
+
+    /**
+     * Рассчитать вершины с учетом размера спрайта
+     * @param scaledWidth ширина спрайта
+     * @param scaledHeight высота спрайта
+     */
+    private void evaluateScale(float scaledWidth, float scaledHeight) {
+        // Треугольник 1
+        vertices[0] *= scaledWidth;
+        vertices[1] *= scaledHeight;
+        vertices[3] *= scaledWidth;
+        vertices[4] *= scaledHeight;
+        vertices[6] *= scaledWidth;
+        vertices[7] *= scaledHeight;
+        // Треугольник 2
+        vertices[9] *= scaledWidth;
+        vertices[10] *= scaledHeight;
+        vertices[12] *= scaledWidth;
+        vertices[13] *= scaledHeight;
+        vertices[15] *= scaledWidth;
+        vertices[16] *= scaledHeight;
+    }
+
+
+    /**
+     * Смещение координат вершин
+     * @param x смещение
+     * @param y смещение
+     */
+    private void evaluateOffset(float x, float y) {
+        // Треугольник 1
+        vertices[0] += x;
+        vertices[1] += y;
+        vertices[3] += x;
+        vertices[4] += y;
+        vertices[6] += x;
+        vertices[7] += y;
+        // Треугольник 2
+        vertices[9] += x;
+        vertices[10] += y;
+        vertices[12] += x;
+        vertices[13] += y;
+        vertices[15] += x;
+        vertices[16] += y;
+    }
+
+
+    private void evaluateRotation(float rotation) {
+        float cosR = (float) Math.cos(rotation);
+        float sinR = (float) Math.sin(rotation);
+        // Треугольник 1
+        float X = vertices[0];
+        vertices[0] = X * cosR - vertices[1] * sinR;
+        vertices[1] = X * sinR + vertices[1] * cosR;
+        X = vertices[3];
+        vertices[3] = X * cosR - vertices[4] * sinR;
+        vertices[4] = X * sinR + vertices[4] * cosR;
+        X = vertices[6];
+        vertices[6] = X * cosR - vertices[7] * sinR;
+        vertices[7] = X * sinR + vertices[7] * cosR;
+        // Треугольник 2
+        X = vertices[9];
+        vertices[9] = X * cosR - vertices[10] * sinR;
+        vertices[10] = X * sinR + vertices[10] * cosR;
+        X = vertices[12];
+        vertices[12] = X * cosR - vertices[13] * sinR;
+        vertices[13] = X * sinR + vertices[13] * cosR;
+        X = vertices[15];
+        vertices[15] = X * cosR - vertices[16] * sinR;
+        vertices[16] = X * sinR + vertices[16] * cosR;
     }
 
     /**
@@ -253,6 +322,18 @@ public class Sprite {
         if (alpha < 0) alpha = 0;
         if (alpha > 1) alpha = 1;
         this.alpha = alpha;
+    }
+
+    public float getAlpha() {
+        return alpha;
+    }
+
+    public void setRotation(float radians) {
+        this.rotation = radians;
+    }
+
+    public float getRotation() {
+        return rotation;
     }
 
     //----------------------------------------------------------------------------------------
