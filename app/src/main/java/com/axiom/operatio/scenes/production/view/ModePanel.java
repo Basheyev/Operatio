@@ -23,6 +23,11 @@ public class ModePanel extends Panel {
     protected ClickListener listener = new ClickListener() {
         @Override
         public void onClick(Widget w) {
+
+            if (UIBuilder.blocksPanel.getToggledButton()!=null) {
+                UIBuilder.blocksPanel.untoggleButtons();
+            }
+
             Widget parent = w.getParent();
             if (parent!=null) {
                 ArrayList<Widget> children = parent.getChildren();
@@ -49,6 +54,13 @@ public class ModePanel extends Panel {
         setLocalBounds(Camera.WIDTH-500,0,400,140);
         setColor(panelColor);
         buildButtons();
+    }
+
+    public void untoggleButtons() {
+        for (Widget widget:children) {
+            widget.setColor(Color.GRAY);
+        }
+        toggledButton = null;
     }
 
     private void buildButtons() {

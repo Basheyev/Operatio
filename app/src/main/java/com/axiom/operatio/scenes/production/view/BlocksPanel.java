@@ -28,9 +28,19 @@ public class BlocksPanel extends Panel {
         buildButtons();
     }
 
+    public void untoggleButtons() {
+        for (Widget widget:children) {
+            widget.setColor(Color.GRAY);
+        }
+        toggledButton = null;
+    }
+
     protected ClickListener listener = new ClickListener() {
         @Override
         public void onClick(Widget w) {
+            if (UIBuilder.editorPanel.getToggledButton()!=null) {
+                UIBuilder.editorPanel.untoggleButtons();
+            }
             Widget parent = w.getParent();
             if (parent!=null) {
                 ArrayList<Widget> children = parent.getChildren();

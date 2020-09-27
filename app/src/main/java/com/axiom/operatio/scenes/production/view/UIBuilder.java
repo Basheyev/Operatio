@@ -9,8 +9,8 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 
 public class UIBuilder {
 
-    private static Widget blocksPanel;
-    private static Widget editorPanel;
+    protected static BlocksPanel blocksPanel;
+    protected static ModePanel editorPanel;
 
     public static void buildUI(final Resources resources, Widget widget) {
 

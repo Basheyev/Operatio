@@ -46,7 +46,9 @@ public class InputHandler {
 
         // STATE
         int state = LOOK_AROUND;
-        if (blockTooggled) state = BLOCK_ADD; else
+        if (blockTooggled) {
+            state = BLOCK_ADD;
+        } else
         if (modeToggled) {
             if (scene.modePanel.getToggledButton().equals("0")) state = BLOCK_MOVE;
             if (scene.modePanel.getToggledButton().equals("1")) state = BLOCK_ROTATE;
