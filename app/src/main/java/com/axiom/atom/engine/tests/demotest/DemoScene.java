@@ -70,7 +70,7 @@ public class DemoScene extends GameScene {
 
     @Override
     public void preRender(Camera camera) {
-        GraphicsRender.clear();
+        //GraphicsRender.clear();
         background.draw(camera, 0,0,1920,1080);
     }
 
