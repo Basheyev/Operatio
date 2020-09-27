@@ -15,7 +15,7 @@ import com.axiom.atom.engine.graphics.gles2d.GLESObject;
 import com.axiom.atom.engine.graphics.renderers.Rectangle;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
-import com.axiom.atom.engine.graphics.renderers.Text;
+import com.axiom.atom.engine.graphics.renderers.TextSprite;
 import com.axiom.atom.engine.core.geometry.AABB;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
     protected GameView gameView;                       // Наш View на котором делаем рендер
     protected SceneManager sceneManager;               // Менеджер игровых сцен
     //-------------------------------------------------------------------------------------
-    private Text textRender;                           // Рендер текста
+    private TextSprite textSpriteRender;                           // Рендер текста
     private Rectangle rectangleRender;                 // Рендер прямоугольников
     //-------------------------------------------------------------------------------------
     private int framesCounter = 0;                     // Счётчик отрисованных кадров
@@ -83,7 +83,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
 
 
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        textRender = new Text(new Sprite(gameView.getResources(), R.drawable.font, 15,8), 0.75f);
+        textSpriteRender = new TextSprite(new Sprite(gameView.getResources(), R.drawable.font, 15,8), 0.75f);
         rectangleRender = new Rectangle();
     }
 
@@ -248,27 +248,27 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
 
     public static void drawText(String text, float x, float y, float scale) {
         if (render==null) return;
-        render.textRender.draw(camera, text, x, y, scale);
+        render.textSpriteRender.draw(camera, text, x, y, scale);
     }
 
     public static void drawText(StringBuffer text, float x, float y, float scale, AABB scissor) {
         if (render==null) return;
-        render.textRender.draw(camera, text, x, y, scale, scissor);
+        render.textSpriteRender.draw(camera, text, x, y, scale, scissor);
     }
 
     public static void drawText(StringBuffer text, float x, float y, float scale) {
         if (render==null) return;
-        render.textRender.draw(camera, text, x, y, scale);
+        render.textSpriteRender.draw(camera, text, x, y, scale);
     }
 
     public static void drawText(String text, float x, float y, float scale, AABB scissor) {
         if (render==null) return;
-        render.textRender.draw(camera, text, x, y, scale, scissor);
+        render.textSpriteRender.draw(camera, text, x, y, scale, scissor);
     }
 
     public static float getTextWidth(String text, float scale) {
         if (render==null) return 0;
-        return render.textRender.getTextWidth(text, scale);
+        return render.textSpriteRender.getTextWidth(text, scale);
     }
 
     public static void setColor(float r, float g, float b, float alpha) {
@@ -279,7 +279,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
     public static void setZOrder(int zOrder) {
         if (render==null) return;
         render.rectangleRender.zOrder = zOrder;
-        render.textRender.zOrder = zOrder;
+        render.textSpriteRender.zOrder = zOrder;
     }
 
     public static void drawRectangle(float x, float y, float width, float height, AABB scissor) {

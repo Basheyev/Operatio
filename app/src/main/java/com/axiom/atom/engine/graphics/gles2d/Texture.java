@@ -25,7 +25,12 @@ public class Texture implements GLESObject {
     protected float height;             // Высота текстуры в пикселях
     private Bitmap flippedBitmap;       // Перевернутое изображения для загрузки в GPU
 
-
+    /**
+     * Загружает текстуру, если не была загружена, и отдает её
+     * @param resources ресурсы приложения
+     * @param resource ID ресурсы изображения
+     * @return текстура
+     */
     public static Texture getInstance(Resources resources, int resource) {
         //----------------------------------------------------------------
         // Загружаем текстуру если она еще не была загружна
@@ -40,6 +45,11 @@ public class Texture implements GLESObject {
     }
 
 
+    /**
+     * Загружает текстуру на основе Bitmap
+     * @param bitmap изображение
+     * @return текстура
+     */
     public static Texture getInstance(Bitmap bitmap) {
         // Так как ключом в HashMap используется ResourceID
         // приходится использовать некоторое смещение и хэшкод объекта
@@ -101,21 +111,37 @@ public class Texture implements GLESObject {
         GLUtils.texImage2D (GLES20.GL_TEXTURE_2D, 0, flippedBitmap, 0);
         // высвобождаем ресурсы изображения из оперативной памяти, так как уже загрузили в GPU
         flippedBitmap.recycle();
+        flippedBitmap = null;
     }
 
+    /**
+     * Биндит (применяет) текстуру перед отправкой Vertex Buffer
+     */
     public void bind() {
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureID);
     }
 
+    /**
+     * Возвращает ширину текстуры в пикселях
+     * @return ширина текстуры в пикселях
+     */
     public float getWidth() {
         return width;
     }
 
+    /**
+     * Возвращает высоту текстуры в пикселях
+     * @return высота текстуры в пикселях
+     */
     public float getHeight() {
         return height;
     }
 
+    /**
+     * Возвращает ID текстуры
+     * @return ID текстуры
+     */
     public int getTextureID() {
         return textureID;
     }

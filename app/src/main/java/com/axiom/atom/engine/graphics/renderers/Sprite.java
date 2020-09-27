@@ -8,16 +8,16 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.Program;
 import com.axiom.atom.engine.graphics.gles2d.Shader;
 import com.axiom.atom.engine.graphics.gles2d.Texture;
+import com.axiom.atom.engine.graphics.gles2d.TextureAtlas;
+import com.axiom.atom.engine.graphics.gles2d.TextureRegion;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Sprite - это основной класс выполняющий работу с 2D изображениями.
  * Реализует такие функции как загрузка изображений в текстуру,
  * поддержка листов спрайтов, покадровая анимации спрайтов с,
  * разным FPS, быстрый рендеринг спрайта и анимации.
- * TODO Добавить поддержку текстурных атласов (Texture Atlas - вынести туда расчёт Texture Coord)
  * TODO Добавить поддержку вращения
  * TODO Добавить поддержку прозрачности
  * <br><br>
@@ -25,13 +25,12 @@ import java.util.HashMap;
  */
 public class Sprite {
 
-
     public static Program program = null;          // Программа со скомпилированными шейдерами
     protected Texture texture;                     // Текстура спрайта
+    protected TextureAtlas atlas = null;           // Атлас текстуры
     public int zOrder = 0;                         // Порядок сортировки при отрисовке спрайта
 
     protected int activeFrame = -1;                // Текущий активный кадр
-    protected int columns, rows;                   // Количество столбцов и строк в листе спрайтов
     protected float spriteWidth;                   // Ширина спрайта в текстурных координатах (0-1)
     protected float spriteHeight;                  // Высота спрайта в текстурных координатах (0-1)
     protected boolean horizontalFlip = false;      // Горизонтальное отражение спрайта
@@ -128,8 +127,8 @@ public class Sprite {
                     new Shader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode));
         }
 
-        this.columns = columns;
-        this.rows = rows;
+        // Сгенерировать текстурный атлас по количеству столбцов и строк
+        atlas = new TextureAtlas(texture, columns, rows);
 
         spriteWidth = 1.0f / columns;  // Ширина спрайта в текстурных координатах
         spriteHeight = 1.0f / rows;    // Высоата спрайта в текстурных координатах
@@ -143,7 +142,7 @@ public class Sprite {
      * @param x положение центра спрайта по x
      * @param y положение центра спрайта по y
      * @param scale масштабирование размера спрайта, 1 - исходный
-     * @param scissor
+     * @param scissor область обрезки в физических экранных координатах
      */
     public void draw(Camera camera, float x, float y, float scale, AABB scissor) {
         //-------------------------------------------------------------------------------
@@ -169,7 +168,7 @@ public class Sprite {
             vertices[15] = 0.5f * scaledWidth + x;
             vertices[16] = -0.5f * scaledHeight + y;
             // Добавляем в список отрисовки
-            BatchRender.addSprite(texture, vertices, textureCoordinates, zOrder, scissor);
+            BatchRender.addTexturedQuad(texture, vertices, textureCoordinates, zOrder, scissor);
         }
         animationNextFrame();
     }
@@ -209,7 +208,7 @@ public class Sprite {
             vertices[15] = 0.5f * width + sx;
             vertices[16] = -0.5f * height + sy;
 
-            BatchRender.addSprite(texture, vertices, textureCoordinates, zOrder, scissor);
+            BatchRender.addTexturedQuad(texture, vertices, textureCoordinates, zOrder, scissor);
 
         }
         animationNextFrame();
@@ -244,7 +243,8 @@ public class Sprite {
      * @return количество кадров в листе спрайтов
      */
     public int getFramesAmount() {
-        return columns * rows;
+        //return columns * rows;
+        return atlas.size();
     }
 
     //----------------------------------------------------------------------------------------
@@ -257,8 +257,12 @@ public class Sprite {
      */
     public void setActiveFrame(int frame) {
         if (activeFrame==frame) return;
-        if (frame < 0 || frame >= columns * rows) return;
+        if (frame < 0 || frame >= atlas.size() /*columns * rows*/) return;
         activeFrame = frame;
+        TextureRegion region = atlas.getRegion(activeFrame);
+        System.arraycopy(region.textureCoordinates, 0, textureCoordinates, 0, 12);
+
+        /*
         // Пересчет номера кадра в номер столбца и строки
         int col = activeFrame % columns;
         // Учитываем что строки считаем сверху, а текстурные координаты снизу
@@ -288,6 +292,9 @@ public class Sprite {
         // правый нижний угол
         textureCoordinates[10] = (col + 1) * spriteWidth;
         textureCoordinates[11] = row * spriteHeight;
+
+         */
+
         //--------------------------------------------------
         // Пересчитать текстурные координаты если есть
         // горизонтальное или вертикальное отражение

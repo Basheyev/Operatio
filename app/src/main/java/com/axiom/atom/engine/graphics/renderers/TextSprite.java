@@ -1,39 +1,28 @@
 package com.axiom.atom.engine.graphics.renderers;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Typeface;
 
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.atom.engine.graphics.gles2d.Texture;
 
-
-// TODO Сделать меньше взятия памяти
-// TODO Сделать поддержку генерируемых шрифтов
 
 /**
  * Отрисовывает текст, на основе шрифта в виде спрайта
  * (C) Atom Engine, Bolat Basheyev 2020
  */
-public class Text {
+public class TextSprite {
 
 
     public int zOrder = 0;
     protected Sprite font;
     protected float spacing;
 
-    public Text(Sprite font) {
+    public TextSprite(Sprite font) {
         this.font = font;
         this.spacing = 1;
     }
 
-    public Text(String fontName) {
-        this.font = generateFontTexture(fontName);
-        this.spacing = 1;
-    }
 
-    public Text(Sprite font, float spacing) {
+    public TextSprite(Sprite font, float spacing) {
         this.font = font;
         this.spacing = spacing;
     }
@@ -87,20 +76,5 @@ public class Text {
     }
 
 
-    /**
-     * Генерирует текстуру шрифта на базе указанного
-     * @param fontName
-     * @return
-     */
-    protected Sprite generateFontTexture(String fontName) {
-
-        Bitmap bmp;
-        Canvas canvas;
-        Typeface typeface;
-
-        // TODO Сделать генерацию текстуры
-
-        return null;
-    }
 
 }

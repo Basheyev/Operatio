@@ -84,7 +84,7 @@ public class BatchRender {
     }
 
     //-------------------------------------------------------------------------------------------
-    public static synchronized void addRectangle(float[] vert, int zOrder, float[] color, AABB scissor) {
+    public static synchronized void addQuad(float[] vert, int zOrder, float[] color, AABB scissor) {
         // Проверяем есть ли ещё место
         if (entriesCounter + 1 >= entries.length) {
             Log.w("WARNING", "Max sprites count reached " + MAX_SPRITES);
@@ -104,7 +104,7 @@ public class BatchRender {
     }
 
     //-------------------------------------------------------------------------------------------
-    public static synchronized void addSprite(Texture texture, float[] vert, float[] texcoord, int zOrder, AABB scissor) {
+    public static synchronized void addTexturedQuad(Texture texture, float[] vert, float[] texcoord, int zOrder, AABB scissor) {
         // Проверяем есть ли ещё место
         if (entriesCounter + 1 >= entries.length) {
             Log.w("WARNING", "Max sprites count reached " + MAX_SPRITES);

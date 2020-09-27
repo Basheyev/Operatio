@@ -62,7 +62,7 @@ public class Rectangle {
         vertices[15] = 0.5f * width + sx;
         vertices[16] = -0.5f * height + sy;
 
-        BatchRender.addRectangle(vertices, zOrder, color, scissor);
+        BatchRender.addQuad(vertices, zOrder, color, scissor);
 
     }
 
