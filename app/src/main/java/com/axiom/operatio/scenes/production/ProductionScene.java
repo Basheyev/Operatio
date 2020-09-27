@@ -95,7 +95,6 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void onMotion(MotionEvent event, float worldX, float worldY) {
-        // TODO Вызывать разные обработчики в зависимости от состояния сцены
         inputHandler.onMotion(event,worldX,worldY);
     }
 
