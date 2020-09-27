@@ -27,7 +27,7 @@ public class Sprite {
     public static Program program = null;          // Программа со скомпилированными шейдерами
     protected Texture texture;                     // Текстура спрайта
     protected TextureAtlas atlas;                  // Атлас текстуры
-    protected float[] alpha = new float[4];        // Прозрачность спрайта
+    protected float alpha = 1.0f;                  // Прозрачность спрайта
     public int zOrder = 0;                         // Порядок сортировки при отрисовке спрайта
 
     protected int activeFrame = -1;                // Текущий активный кадр
@@ -96,12 +96,12 @@ public class Sprite {
     //-----------------------------------------------------------------------------------
     private final String fragmentShaderCode =
                     "precision mediump float; " +
-                    "uniform vec4 alphaColor;" +
+                    "uniform float alphaColor;" +
                     "uniform sampler2D TexCoordIn; " +
                     "varying vec2 TexCoordOut;" +
                     "void main() {" +
                     "  vec4 col = texture2D(TexCoordIn, TexCoordOut);" +
-                    "  col.a *= alphaColor.a;" +
+                    "  col.a *= alphaColor;" +
                     "  gl_FragColor = col; " +
                     "}";
 
@@ -132,11 +132,6 @@ public class Sprite {
 
         // Сгенерировать текстурный атлас по количеству столбцов и строк
         atlas = new TextureAtlas(texture, columns, rows);
-        alpha[0] = 1;
-        alpha[1] = 1;
-        alpha[2] = 1;
-        alpha[3] = 1;
-
         spriteWidth = 1.0f / columns;  // Ширина спрайта в текстурных координатах
         spriteHeight = 1.0f / rows;    // Высоата спрайта в текстурных координатах
 
@@ -257,7 +252,7 @@ public class Sprite {
     public void setAlpha(float alpha) {
         if (alpha < 0) alpha = 0;
         if (alpha > 1) alpha = 1;
-        this.alpha[3] = alpha;
+        this.alpha = alpha;
     }
 
     //----------------------------------------------------------------------------------------
