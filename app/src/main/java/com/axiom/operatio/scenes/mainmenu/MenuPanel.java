@@ -2,9 +2,12 @@ package com.axiom.operatio.scenes.mainmenu;
 
 import android.graphics.Color;
 import android.util.Log;
+import android.view.MotionEvent;
 
+import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Panel;
@@ -18,11 +21,13 @@ public class MenuPanel extends Panel {
     public final int panelColor = 0xCC505050;
     protected ProductionScene pc = null;
     protected String toggledButton;
+    protected int tickSound;
 
     protected ClickListener listener = new ClickListener() {
         @Override
         public void onClick(Widget w) {
             int choice = Integer.parseInt(w.getTag());
+            SoundRenderer.playSound(tickSound);
             switch (choice) {
                 case 1:
                     SceneManager sm = SceneManager.getInstance();
@@ -46,6 +51,7 @@ public class MenuPanel extends Panel {
         setLocalBounds(Camera.WIDTH/2 - 300,Camera.HEIGHT/2 - 300,600,600);
         setColor(panelColor);
         buildButtons();
+        tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
     }
 
 
@@ -69,6 +75,5 @@ public class MenuPanel extends Panel {
     public String getToggledButton() {
         return toggledButton;
     }
-
 
 }
