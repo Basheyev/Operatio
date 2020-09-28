@@ -27,6 +27,8 @@ public abstract class Widget {
     protected String tag = null;             // Метка виджета
 
     protected ClickListener clickListener;   // Обработчик нажатия на виджет
+    protected boolean pressed = false;       // Есть ли сейчас нажатие на виджет
+
 
     /**
      * Создает корневой виджет сцены на весь экран
@@ -259,17 +261,22 @@ public abstract class Widget {
                 }
             }
         }
-
+        //-------------------------------------------------------------------
         // Если произошел клик и событие не обработано дочерними виджетами
-        if (event.getActionMasked()==MotionEvent.ACTION_UP) {
+        //-------------------------------------------------------------------
+        int action = event.getActionMasked();
+        if (action == MotionEvent.ACTION_DOWN) {
+            pressed = true;
+        } else
+        if (action == MotionEvent.ACTION_UP) {
             // И в виджета есть обработчик клика
-            if (clickListener != null) {
+            if (pressed && clickListener != null) {
                 // Вызвать обработчик
-                // TODO Учитывать начальную точку нажатия и конечную
                 clickListener.onClick(this);
                 // Указываем, что событие обработано
                 eventHandeled = true;
             }
+            pressed = false;
         }
         return eventHandeled;
     }
