@@ -36,7 +36,6 @@ public class DemoCharacter extends GameObject {
 
     }
 
-    private float step = 0.005f;
     @Override
     public void draw(Camera camera) {
         if (direction==-1) {
@@ -45,12 +44,7 @@ public class DemoCharacter extends GameObject {
         else if (direction==1) {
             sprite.flipHorizontally(false);
         }
-        sprite.setRotation(sprite.getRotation() + 0.01f);
-        float alpha = sprite.getAlpha() - step;
-        if (alpha<0 || alpha>1) {
-            step = -step;
-        }
-        sprite.setAlpha(alpha);
+
         sprite.draw(camera, x, y, scale);
     }
 
