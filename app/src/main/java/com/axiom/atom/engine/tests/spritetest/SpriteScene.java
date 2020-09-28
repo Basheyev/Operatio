@@ -32,19 +32,28 @@ public class SpriteScene extends GameScene {
 
     }
 
+    private float step = 0.005f;
+
     @Override
     public void preRender(Camera camera) {
         float x,y, scale;
         background.zOrder = 0;
         background.draw(camera,0,0,Camera.WIDTH,Camera.HEIGHT);
         box.zOrder = 1;
-        for (int i=0; i<1000; i++) {
+        for (int i=0; i<768; i++) {
             x = (float) Math.random() * Camera.WIDTH;
             y = (float) Math.random() * Camera.HEIGHT;
             scale = 1 + (float) Math.random() * 9;
+            box.setRotation(box.getRotation() + 0.01f);
             box.draw(camera,x,y,scale);
         }
         actor.zOrder = 2;
+        actor.setRotation(actor.getRotation() + 0.01f);
+        float alpha = actor.getAlpha() - step;
+        if (alpha<0 || alpha>1) {
+            step = -step;
+        }
+        actor.setAlpha(alpha);
         actor.draw(camera, 960, 540, 10);
     }
 

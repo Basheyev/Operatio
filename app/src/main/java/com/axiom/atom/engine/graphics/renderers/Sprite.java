@@ -23,15 +23,15 @@ import java.util.ArrayList;
  */
 public class Sprite {
 
-    public static Program program = null;          // Программа со скомпилированными шейдерами
+    protected static Program program = null;       // Программа со скомпилированными шейдерами
     protected Texture texture;                     // Текстура спрайта
     protected TextureAtlas atlas;                  // Атлас текстуры
     protected float alpha = 1.0f;                  // Прозрачность спрайта
     public int zOrder = 0;                         // Порядок сортировки при отрисовке спрайта
 
     protected int activeFrame = -1;                // Текущий активный кадр
-    protected float spriteWidth;                   // Ширина спрайта в текстурных координатах (0-1)
-    protected float spriteHeight;                  // Высота спрайта в текстурных координатах (0-1)
+//    protected float spriteWidth;                   // Ширина спрайта в текстурных координатах (0-1)
+//    protected float spriteHeight;                  // Высота спрайта в текстурных координатах (0-1)
     protected boolean horizontalFlip = false;      // Горизонтальное отражение спрайта
     protected boolean verticalFlip = false;        // Вертикальное отражение спрайта
     protected float rotation = 0;                  // Угол поворота в радианах
@@ -51,63 +51,6 @@ public class Sprite {
         boolean loop;                       // Зациклена ли анимация (должна повторятся)
     }
 
-    //-----------------------------------------------------------------------------------
-    // Координаты вершины прямоугольника для отрисовки спрайта
-    //-----------------------------------------------------------------------------------
-    private static float[] vertices =                 // прямоугольника спрайта
-                 { -0.5f,  0.5f,  0.0f,               // левый верхний угол
-                   -0.5f, -0.5f,  0.0f,               // левый нижний угол
-                    0.5f,  0.5f,  0.0f,               // правый верхний угол
-
-                   -0.5f, -0.5f,  0.0f,               // левый нижний угол
-                    0.5f,  0.5f,  0.0f,               // правый верхний угол
-                    0.5f, -0.5f,  0.0f,               // правый нижний угол
-                 };
-
-    //-----------------------------------------------------------------------------------
-    // Текстурные координаты для отрисовки спрайта (по умолчанию)
-    //-----------------------------------------------------------------------------------
-    private float[] textureCoordinates =              // текстуры спрайта по умолчанию
-            {
-                    0.0f, 1.0f,                       // левый верхний угол
-                    0.0f, 0.0f,                       // левый нижний угол
-                    1.0f, 1.0f,                       // правый верхний угол
-
-                    0.0f, 0.0f,                       // левый нижний угол
-                    1.0f, 1.0f,                       // правый верхний угол
-                    1.0f, 0.0f                        // правый нижний угол
-            };
-
-    //-----------------------------------------------------------------------------------
-    // Код вершинного шейдера спрайта
-    //-----------------------------------------------------------------------------------
-    private final String vertexShaderCode =
-                    "uniform mat4 u_MVPMatrix; " +
-                    "attribute vec4 vPosition;" +
-                    "attribute vec2 TexCoordIn;" +
-                    "varying vec2 TexCoordOut;" +
-                    "void main() { " +
-                    "    gl_Position = u_MVPMatrix * vPosition; " +
-                    "    TexCoordOut = TexCoordIn; " +
-                    "}";
-
-    //-----------------------------------------------------------------------------------
-    // Код пиксельного шейдера спрайта
-    //-----------------------------------------------------------------------------------
-    private final String fragmentShaderCode =
-                    "precision mediump float; " +
-                    "uniform float alphaColor;" +
-                    "uniform sampler2D TexCoordIn; " +
-                    "varying vec2 TexCoordOut;" +
-                    "void main() {" +
-                    "  vec4 col = texture2D(TexCoordIn, TexCoordOut);" +
-                    "  col.a *= alphaColor;" +
-                    "  gl_FragColor = col; " +
-                    "}";
-
-    public Sprite(Resources resources, int resource) {
-        this(resources,resource,1,1);
-    }
 
     /**
      * Конструктор спрайта
@@ -117,10 +60,22 @@ public class Sprite {
      * @param rows количество строк в листе спрайтов
      */
     public Sprite(Resources resources, int resource, int columns, int rows) {
+        this(Texture.getInstance(resources, resource), columns, rows);
+    }
+
+    public Sprite(Resources resources, int resource) {
+        this(resources,resource,1,1);
+    }
+
+    public Sprite(Texture texture) {
+        this(texture, 1,1);
+    }
+
+    public Sprite(Texture texture, int columns, int rows) {
         //----------------------------------------------------------------
         // Загружаем текстуру если она еще не была загружна
         //----------------------------------------------------------------
-        texture = Texture.getInstance(resources, resource);
+        this.texture = texture;
         //----------------------------------------------------------------
         // Компилируем шейдеры и линкуем программы, если её еще нет
         //----------------------------------------------------------------
@@ -132,9 +87,6 @@ public class Sprite {
 
         // Сгенерировать текстурный атлас по количеству столбцов и строк
         atlas = new TextureAtlas(texture, columns, rows);
-        spriteWidth = 1.0f / columns;  // Ширина спрайта в текстурных координатах
-        spriteHeight = 1.0f / rows;    // Высоата спрайта в текстурных координатах
-
         setActiveFrame(0);
     }
 
@@ -206,6 +158,7 @@ public class Sprite {
      * Инициализирует массив координат вершин
      */
     private void initializeVertices() {
+        // Треугольник 1
         vertices[0] = -0.5f;
         vertices[1] = 0.5f;
         vertices[3] = -0.5f;
@@ -228,20 +181,10 @@ public class Sprite {
      * @param scaledHeight высота спрайта
      */
     private void evaluateScale(float scaledWidth, float scaledHeight) {
-        // Треугольник 1
-        vertices[0] *= scaledWidth;
-        vertices[1] *= scaledHeight;
-        vertices[3] *= scaledWidth;
-        vertices[4] *= scaledHeight;
-        vertices[6] *= scaledWidth;
-        vertices[7] *= scaledHeight;
-        // Треугольник 2
-        vertices[9] *= scaledWidth;
-        vertices[10] *= scaledHeight;
-        vertices[12] *= scaledWidth;
-        vertices[13] *= scaledHeight;
-        vertices[15] *= scaledWidth;
-        vertices[16] *= scaledHeight;
+        for (int i=0; i<18; i+=3) {
+            vertices[i] *= scaledWidth;
+            vertices[i+1] *= scaledHeight;
+        }
     }
 
 
@@ -251,46 +194,27 @@ public class Sprite {
      * @param y смещение
      */
     private void evaluateOffset(float x, float y) {
-        // Треугольник 1
-        vertices[0] += x;
-        vertices[1] += y;
-        vertices[3] += x;
-        vertices[4] += y;
-        vertices[6] += x;
-        vertices[7] += y;
-        // Треугольник 2
-        vertices[9] += x;
-        vertices[10] += y;
-        vertices[12] += x;
-        vertices[13] += y;
-        vertices[15] += x;
-        vertices[16] += y;
+        for (int i=0; i<18; i+=3) {
+            vertices[i] += x;
+            vertices[i+1] += y;
+        }
     }
 
 
+    /**
+     * Поворот вершин на заданный угол в радианах
+     * @param rotation угол поворота в радианах
+     */
     private void evaluateRotation(float rotation) {
         float cosR = (float) Math.cos(rotation);
         float sinR = (float) Math.sin(rotation);
-        // Треугольник 1
-        float X = vertices[0];
-        vertices[0] = X * cosR - vertices[1] * sinR;
-        vertices[1] = X * sinR + vertices[1] * cosR;
-        X = vertices[3];
-        vertices[3] = X * cosR - vertices[4] * sinR;
-        vertices[4] = X * sinR + vertices[4] * cosR;
-        X = vertices[6];
-        vertices[6] = X * cosR - vertices[7] * sinR;
-        vertices[7] = X * sinR + vertices[7] * cosR;
-        // Треугольник 2
-        X = vertices[9];
-        vertices[9] = X * cosR - vertices[10] * sinR;
-        vertices[10] = X * sinR + vertices[10] * cosR;
-        X = vertices[12];
-        vertices[12] = X * cosR - vertices[13] * sinR;
-        vertices[13] = X * sinR + vertices[13] * cosR;
-        X = vertices[15];
-        vertices[15] = X * cosR - vertices[16] * sinR;
-        vertices[16] = X * sinR + vertices[16] * cosR;
+        float x, y;
+        for (int i=0; i<18; i+=3) {
+            x = vertices[i];
+            y = vertices[i+1];
+            vertices[i] = x * cosR - y * sinR;
+            vertices[i+1] = x * sinR + y * cosR;
+        }
     }
 
     /**
@@ -298,7 +222,7 @@ public class Sprite {
      * @return ширина спрайта в пикселях
      */
     public float getWidth() {
-        return texture.getWidth() * spriteWidth;
+        return atlas.getRegion(activeFrame).width;
     }
 
     /**
@@ -306,7 +230,7 @@ public class Sprite {
      * @return высота спрайта в пикселях
      */
     public float getHeight() {
-        return texture.getHeight() * spriteHeight;
+        return atlas.getRegion(activeFrame).height;
     }
 
     /**
@@ -314,7 +238,6 @@ public class Sprite {
      * @return количество кадров в листе спрайтов
      */
     public int getFramesAmount() {
-        //return columns * rows;
         return atlas.size();
     }
 
@@ -460,7 +383,6 @@ public class Sprite {
 
     /**
      * Установить активную анимацию
-     * @return
      */
     public void setActiveAnimation(int index) {
         if (index<0 || index >= animations.size()) return;
@@ -470,7 +392,7 @@ public class Sprite {
     }
 
     /**
-     * Возвращает активну анимацию
+     * Возвращает активную анимацию
      * @return индекс активной анимации
      */
     public int getActiveAnimation() {
@@ -478,13 +400,68 @@ public class Sprite {
     }
 
     /**
-     * Возвращает количество раз повторение анимации
+     * Возвращает количество исполненных повторений анимации
      * @return количество повторений анимации
      */
     public int getTimesPlayed() {
         return timesPlayed;
     }
 
+
+
+    //-----------------------------------------------------------------------------------
+    // Координаты вершины прямоугольника для отрисовки спрайта
+    //-----------------------------------------------------------------------------------
+    private static float[] vertices =                 // прямоугольника спрайта
+            {      -0.5f,  0.5f,  0.0f,               // левый верхний угол
+                   -0.5f, -0.5f,  0.0f,               // левый нижний угол
+                    0.5f,  0.5f,  0.0f,               // правый верхний угол
+
+                   -0.5f, -0.5f,  0.0f,               // левый нижний угол
+                    0.5f,  0.5f,  0.0f,               // правый верхний угол
+                    0.5f, -0.5f,  0.0f,               // правый нижний угол
+            };
+
+    //-----------------------------------------------------------------------------------
+    // Текстурные координаты для отрисовки спрайта (по умолчанию)
+    //-----------------------------------------------------------------------------------
+    private float[] textureCoordinates =              // текстуры спрайта по умолчанию
+            {
+                    0.0f, 1.0f,                       // левый верхний угол
+                    0.0f, 0.0f,                       // левый нижний угол
+                    1.0f, 1.0f,                       // правый верхний угол
+
+                    0.0f, 0.0f,                       // левый нижний угол
+                    1.0f, 1.0f,                       // правый верхний угол
+                    1.0f, 0.0f                        // правый нижний угол
+            };
+
+    //-----------------------------------------------------------------------------------
+    // Код вершинного шейдера спрайта
+    //-----------------------------------------------------------------------------------
+    private final String vertexShaderCode =
+            "uniform mat4 u_MVPMatrix; " +
+                    "attribute vec4 vPosition;" +
+                    "attribute vec2 TexCoordIn;" +
+                    "varying vec2 TexCoordOut;" +
+                    "void main() { " +
+                    "    gl_Position = u_MVPMatrix * vPosition; " +
+                    "    TexCoordOut = TexCoordIn; " +
+                    "}";
+
+    //-----------------------------------------------------------------------------------
+    // Код пиксельного шейдера спрайта
+    //-----------------------------------------------------------------------------------
+    private final String fragmentShaderCode =
+            "precision mediump float; " +
+                    "uniform float alphaColor;" +
+                    "uniform sampler2D TexCoordIn; " +
+                    "varying vec2 TexCoordOut;" +
+                    "void main() {" +
+                    "  vec4 col = texture2D(TexCoordIn, TexCoordOut);" +
+                    "  col.a *= alphaColor;" +
+                    "  gl_FragColor = col; " +
+                    "}";
 
 
 }
