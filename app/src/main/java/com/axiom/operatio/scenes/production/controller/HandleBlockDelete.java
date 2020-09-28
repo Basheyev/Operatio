@@ -3,6 +3,8 @@ package com.axiom.operatio.scenes.production.controller;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.axiom.atom.R;
+import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.model.block.Block;
@@ -19,6 +21,7 @@ public class HandleBlockDelete {
     private boolean dragging = false;
     private float cursorX, cursorY;
     private int lastCol, lastRow;
+    private int blockRemoveSound;
 
     public HandleBlockDelete(InputHandler inputHandler, ProductionScene scn,
                              Production prod, ProductionRenderer prodRender) {
@@ -26,6 +29,7 @@ public class HandleBlockDelete {
         this.production = prod;
         this.productionRenderer = prodRender;
         this.scene = scn;
+        blockRemoveSound = SoundRenderer.loadSound(R.raw.block_remove_snd);
     }
 
 
@@ -51,10 +55,8 @@ public class HandleBlockDelete {
                 dragging = false;
                 if (column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
                     if (block!=null) {
-                        if (scene.modePanel.getToggledButton()!=null) {
-                            int choice = Integer.parseInt(scene.modePanel.getToggledButton());
-                            if (choice==2) production.removeBlock(block);
-                        }
+                        production.removeBlock(block);
+                        SoundRenderer.playSound(blockRemoveSound);
                         Log.i("PROD COL=" + column + ", ROW=" + row, block.toString());
                     }
                 }

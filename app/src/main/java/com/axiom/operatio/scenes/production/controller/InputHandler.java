@@ -67,5 +67,8 @@ public class InputHandler {
     }
 
 
+    public HandleBlockMove getHandleBlockMove() {
+        return handleBlockMove;
+    }
 
 }

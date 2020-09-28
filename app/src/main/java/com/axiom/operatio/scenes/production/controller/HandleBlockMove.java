@@ -51,8 +51,8 @@ public class HandleBlockMove {
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (dragging && dragBlock!=null) {
-                    Renderer renderer = dragBlock.getRenderer();
-                    renderer.draw(Camera.getInstance(), worldX - 64, worldY - 64, 128, 128);
+                    cursorX = worldX;
+                    cursorY = worldY;
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -69,4 +69,19 @@ public class HandleBlockMove {
         }
     }
 
+    public synchronized boolean isDragging() {
+        return dragging;
+    }
+
+    public float getCursorX() {
+        return cursorX;
+    }
+
+    public float getCursorY() {
+        return cursorY;
+    }
+
+    public Block getDragBlock() {
+        return dragBlock;
+    }
 }

@@ -2,12 +2,14 @@ package com.axiom.operatio.scenes.production.controller;
 
 import android.view.MotionEvent;
 
+import com.axiom.atom.R;
+import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.model.buffer.Buffer;
-import com.axiom.operatio.model.machines.Machine;
-import com.axiom.operatio.model.machines.MachineType;
+import com.axiom.operatio.model.machine.Machine;
+import com.axiom.operatio.model.machine.MachineType;
 import com.axiom.operatio.model.conveyor.Conveyor;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
@@ -21,6 +23,7 @@ public class HandleBlockAdd {
     private boolean dragging = false;
     private float cursorX, cursorY;
     private int lastCol, lastRow;
+    private int blockAddSound;
 
     public HandleBlockAdd(InputHandler inputHandler, ProductionScene scene, Production production,
                           ProductionRenderer productionRenderer) {
@@ -28,6 +31,7 @@ public class HandleBlockAdd {
         this.production = production;
         this.productionRenderer = productionRenderer;
         this.scene = scene;
+        blockAddSound = SoundRenderer.loadSound(R.raw.block_add_snd);
     }
 
 
@@ -62,8 +66,9 @@ public class HandleBlockAdd {
 
     protected void addBlockAt(String toggled, int column, int row) {
         Block block = null;
-        MachineType mt = null;
+        MachineType mt;
         int choice = Integer.parseInt(toggled);
+        SoundRenderer.playSound(blockAddSound);
         switch (choice) {
             case 0:
                 mt = MachineType.getMachineType(0);
