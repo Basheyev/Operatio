@@ -11,6 +11,9 @@ import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.ProductionBuilder;
 import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.model.Production;
+import com.axiom.operatio.model.block.Block;
+import com.axiom.operatio.model.block.Renderer;
+import com.axiom.operatio.scenes.production.controller.HandleBlockMove;
 import com.axiom.operatio.scenes.production.view.BlocksPanel;
 import com.axiom.operatio.scenes.production.controller.InputHandler;
 import com.axiom.operatio.scenes.production.view.ModePanel;
@@ -79,6 +82,17 @@ public class ProductionScene extends GameScene {
     protected StringBuffer fps = new StringBuffer(100);
     @Override
     public void postRender(Camera camera) {
+
+        HandleBlockMove hbm = inputHandler.getHandleBlockMove();
+        if (hbm.isDragging()) {
+            float cursorX = hbm.getCursorX();
+            float cursorY = hbm.getCursorY();
+            Block dragBlock = hbm.getDragBlock();
+
+            Renderer renderer = dragBlock.getRenderer();
+            renderer.draw(Camera.getInstance(), cursorX - 64, cursorY - 64, 128, 128);
+        }
+
         float x = camera.getX();
         float y = camera.getY();
         GraphicsRender.setZOrder(2000);
