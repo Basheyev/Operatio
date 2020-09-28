@@ -8,6 +8,7 @@ import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
+import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Panel;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 public class ModePanel extends Panel {
 
     public final int panelColor = 0xCC505050;
+    protected int tickSound;
     protected String toggledButton;
 
     protected ClickListener listener = new ClickListener() {
@@ -27,6 +29,8 @@ public class ModePanel extends Panel {
             if (UIBuilder.blocksPanel.getToggledButton()!=null) {
                 UIBuilder.blocksPanel.untoggleButtons();
             }
+
+            SoundRenderer.playSound(tickSound);
 
             Widget parent = w.getParent();
             if (parent!=null) {
@@ -54,6 +58,7 @@ public class ModePanel extends Panel {
         setLocalBounds(Camera.WIDTH-500,0,400,140);
         setColor(panelColor);
         buildButtons();
+        tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
     }
 
     public void untoggleButtons() {
