@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class Texture implements GLESObject {
 
     // Список всех загруженных текстур, для исключения повторной загрузки одной текстуры
-    protected static HashMap<Integer, Texture> loadedTextures = new HashMap<>();
+    protected static HashMap<Long, Texture> loadedTextures = new HashMap<>();
 
     protected int textureID;            // ID загружнной в GPU текстуры
     protected float width;              // Ширина текстуры в пикселях
@@ -39,7 +39,7 @@ public class Texture implements GLESObject {
         if (texture==null) {
             // Текстуру загружаем только один раз
             texture = new Texture(resources, resource);
-            loadedTextures.put(resource,texture);
+            loadedTextures.put((long)resource,texture);
         }
         return texture;
     }
@@ -60,8 +60,9 @@ public class Texture implements GLESObject {
         // an 8-bit Type id [bits 16-23]
         // a 16-bit Entry index [bits 0-15]
         //-------------------------------------------------------------------------
-        // Будем отсчитывать наши ID от позиции 0xFFFF0000 + [0..65535]
-        int resource = 0xFFFF0000 & (bitmap.hashCode() % 0xFFFF);
+        // Так как ключ HashMap - long (верхние 32 bit под Bitmap'ы, нижние под ресурсы)
+        // Сместим HashCode bitmap в лево на 32 bit чтобы диапазоны не пересекались
+        long resource = ((long) bitmap.hashCode()) << 32;
 
         Texture texture = loadedTextures.get(resource);
         if (texture==null) {
