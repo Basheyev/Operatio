@@ -41,7 +41,6 @@ public class TextureAtlas {
         // Уходим если не валидные параметры
         if (name==null || (x < 0) || (y < 0) || (width<1) || (height<1)) return null;
         // Сохраняем информацию о регионе
-        // TODO Тут надо переварачивать координаты
         TextureRegion region = new TextureRegion();
         region.name = name;
         region.x = x;
