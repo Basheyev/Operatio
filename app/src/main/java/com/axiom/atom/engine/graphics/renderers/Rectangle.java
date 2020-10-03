@@ -16,9 +16,9 @@ import com.axiom.atom.engine.core.geometry.AABB;
 public class Rectangle {
 
     public int zOrder;
-    public static Program program = null;
-    private static float[] vertices = new float[18];
-    private float[] color = { 0.3f, 0.5f, 0.9f, 1.0f };
+    protected static Program program = null;
+    protected static float[] vertices = new float[18];
+    protected float[] color = { 0.3f, 0.5f, 0.9f, 1.0f };
 
     private final String vertexShaderCode =
             "uniform mat4 u_MVPMatrix; " +
@@ -62,7 +62,7 @@ public class Rectangle {
         vertices[15] = 0.5f * width + sx;
         vertices[16] = -0.5f * height + sy;
 
-        BatchRender.addQuad(vertices, zOrder, color, scissor);
+        BatchRender.addQuad(program, vertices, zOrder, color, scissor);
 
     }
 

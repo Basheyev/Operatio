@@ -123,7 +123,7 @@ public class Sprite {
             evaluateScale(scaledWidth, scaledHeight);
             evaluateOffset(x, y);
             // Добавляем в список отрисовки
-            BatchRender.addTexturedQuad(texture, vertices, textureCoordinates, alpha, zOrder, scissor);
+            BatchRender.addTexturedQuad(program, texture, vertices, textureCoordinates, alpha, zOrder, scissor);
         }
         animationNextFrame();
     }
@@ -152,7 +152,7 @@ public class Sprite {
             if (rotation!=0) evaluateRotation(rotation);
             evaluateScale(width, height);
             evaluateOffset(sx, sy);
-            BatchRender.addTexturedQuad(texture, vertices, textureCoordinates, alpha, zOrder, scissor);
+            BatchRender.addTexturedQuad(program, texture, vertices, textureCoordinates, alpha, zOrder, scissor);
         }
         animationNextFrame();
     }
