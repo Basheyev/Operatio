@@ -24,6 +24,7 @@ public class Texture implements GLESObject {
     protected float width;              // Ширина текстуры в пикселях
     protected float height;             // Высота текстуры в пикселях
     private Bitmap flippedBitmap;       // Перевернутое изображения для загрузки в GPU
+    private boolean linearFiltering;    // Линейная фильтрация текстуры
 
     /**
      * Загружает текстуру, если не была загружена, и отдает её
@@ -50,7 +51,7 @@ public class Texture implements GLESObject {
      * @param bitmap изображение
      * @return текстура
      */
-    public static Texture getInstance(Bitmap bitmap) {
+    public static Texture getInstance(Bitmap bitmap, boolean linearFiltering) {
         // Так как ключом в HashMap текстур используется уникальный ResourceID
         // чтобы сгенерированный Bitmap не пересекался с ID ресурсов приложения
         // приходится использовать некоторое смещение и хэшкод объекта
@@ -69,22 +70,32 @@ public class Texture implements GLESObject {
             //----------------------------------------------------------------
             // Загружаем текстуру если она еще не была загружна
             //---------------------------------------------------------------
-            texture = new Texture(bitmap);
+            texture = new Texture(bitmap, linearFiltering);
             loadedTextures.put(resource, texture);
         }
         return texture;
     }
 
+    public static Texture getInstance(Bitmap bitmap) {
+        return getInstance(bitmap, false);
+    }
 
     private Texture(Resources resources, int resource) {
+        this(resources, resource, false);
+    }
+
+    private Texture(Resources resources, int resource, boolean linearFiltering) {
         //------------------------------------------------------------------------
         // Загружаем исходное изображение из ресурса
         //------------------------------------------------------------------------
-        this(BitmapFactory.decodeResource(resources, resource));
+        this(BitmapFactory.decodeResource(resources, resource), linearFiltering);
     }
 
-
     private Texture(Bitmap bitmap) {
+        this(bitmap, false);
+    }
+
+    private Texture(Bitmap bitmap, boolean linearFiltering) {
         //------------------------------------------------------------------------
         // Переворачиваем изображение по вертикали для загрузки в OpenGL
         //------------------------------------------------------------------------
@@ -93,6 +104,7 @@ public class Texture implements GLESObject {
         Matrix matrix = new Matrix();
         matrix.postScale(1,-1);
         flippedBitmap = Bitmap.createBitmap(bitmap,0,0,(int)width,(int)height,matrix,false);
+        this.linearFiltering = linearFiltering;
         bitmap.recycle();
         //------------------------------------------------------------------------
         // Добавляем в очередь загрузки на GPU
@@ -106,13 +118,14 @@ public class Texture implements GLESObject {
     @Override
     public void loadObjectToGPU() {
         int[] temp = new int[1];
+        int filtering = linearFiltering ? GLES20.GL_LINEAR : GLES20.GL_NEAREST;
         // Создаём текстуру
         GLES20.glGenTextures (1, temp, 0);
         textureID = temp[0];
         // Загружаем изображение в текстуру
         GLES20.glBindTexture (GLES20.GL_TEXTURE_2D, textureID);
-        GLES20.glTexParameterf (GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-        GLES20.glTexParameterf (GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
+        GLES20.glTexParameterf (GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, filtering);
+        GLES20.glTexParameterf (GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, filtering);
         GLES20.glTexParameterf (GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
         GLES20.glTexParameterf (GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
         GLUtils.texImage2D (GLES20.GL_TEXTURE_2D, 0, flippedBitmap, 0);
