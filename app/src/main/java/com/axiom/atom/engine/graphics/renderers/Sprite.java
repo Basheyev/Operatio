@@ -13,7 +13,6 @@ import com.axiom.atom.engine.graphics.gles2d.TextureRegion;
 
 import java.util.ArrayList;
 
-// TODO Добавить закрашивание спрайта нужным цветом
 /**
  * Sprite - это основной класс выполняющий работу с 2D изображениями.
  * Реализует такие функции как загрузка изображений в текстуру,

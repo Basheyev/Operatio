@@ -17,8 +17,6 @@ import com.axiom.atom.engine.graphics.gles2d.TextureRegion;
 
 import java.util.ArrayList;
 
-// TODO Сделать правильное позиционирование символов при кастомном шрифте
-// TODO Сделать управление цветом текста (через доработку Sprite)
 /**
  * Отрисовывает текст, на основе шрифта в виде спрайта
  * (C) Atom Engine, Bolat Basheyev 2020
