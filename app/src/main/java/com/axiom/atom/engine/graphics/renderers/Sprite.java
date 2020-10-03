@@ -13,6 +13,7 @@ import com.axiom.atom.engine.graphics.gles2d.TextureRegion;
 
 import java.util.ArrayList;
 
+// TODO Добавить закрашивание спрайта нужным цветом
 /**
  * Sprite - это основной класс выполняющий работу с 2D изображениями.
  * Реализует такие функции как загрузка изображений в текстуру,
@@ -23,12 +24,15 @@ import java.util.ArrayList;
  */
 public class Sprite {
 
-    protected static Program program = null;       // Программа со скомпилированными шейдерами
+    protected static Program texturedProgram = null;       // Программа со скомпилированными шейдерами
+    protected static Program coloredProgram = null;       // Программа со скомпилированными шейдерами
+
     protected Texture texture;                     // Текстура спрайта
     protected TextureAtlas atlas;                  // Атлас текстуры
-    protected float alpha = 1.0f;                  // Прозрачность спрайта
+    protected float[] color = {0,0,0,1};           // Прозрачность спрайта
     protected float rotation = 0;                  // Угол поворота в радианах
     public int zOrder = 0;                         // Порядок сортировки при отрисовке спрайта
+    public boolean useColor = false;               // Использовать ли цвет при отрисовке
 
     protected int activeFrame = -1;                // Текущий активный кадр
     protected boolean horizontalFlip = false;      // Горизонтальное отражение спрайта
@@ -62,10 +66,15 @@ public class Sprite {
         //----------------------------------------------------------------
         // Компилируем шейдеры и линкуем программы, если её еще нет
         //----------------------------------------------------------------
-        if (program==null) {
-            program = new Program(
+        if (texturedProgram ==null) {
+            texturedProgram = new Program(
                     new Shader(GLES20.GL_VERTEX_SHADER, vertexShaderCode),
                     new Shader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode));
+
+            coloredProgram = new Program(
+                    new Shader(GLES20.GL_VERTEX_SHADER, vertexShaderCode),
+                    new Shader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderColoredCode));
+
         }
         // Если не указано, то используются текстурные координаты по умолчанию
     }
@@ -123,7 +132,8 @@ public class Sprite {
             evaluateScale(scaledWidth, scaledHeight);
             evaluateOffset(x, y);
             // Добавляем в список отрисовки
-            BatchRender.addTexturedQuad(program, texture, vertices, textureCoordinates, alpha, zOrder, scissor);
+            Program program = useColor ? coloredProgram : texturedProgram;
+            BatchRender.addTexturedQuad(program, texture, vertices, textureCoordinates, color, zOrder, scissor);
         }
         animationNextFrame();
     }
@@ -152,7 +162,8 @@ public class Sprite {
             if (rotation!=0) evaluateRotation(rotation);
             evaluateScale(width, height);
             evaluateOffset(sx, sy);
-            BatchRender.addTexturedQuad(program, texture, vertices, textureCoordinates, alpha, zOrder, scissor);
+            Program program = useColor ? coloredProgram : texturedProgram;
+            BatchRender.addTexturedQuad(program, texture, vertices, textureCoordinates, color, zOrder, scissor);
         }
         animationNextFrame();
     }
@@ -252,15 +263,28 @@ public class Sprite {
         return atlas.size();
     }
 
+    //------------------------------------------------------------------------------------------
+    // Управление цветом и прозрачностью
+    //------------------------------------------------------------------------------------------
     public void setAlpha(float alpha) {
         if (alpha < 0) alpha = 0;
         if (alpha > 1) alpha = 1;
-        this.alpha = alpha;
+        color[3] = alpha;
     }
 
     public float getAlpha() {
-        return alpha;
+        return color[3];
     }
+
+    public void setColor(float r, float g, float b, float a) {
+        color[0] = r;
+        color[1] = g;
+        color[2] = b;
+        color[3] = a;
+    }
+
+    //------------------------------------------------------------------------------------------
+
 
     public void setRotation(float radians) {
         this.rotation = radians;
@@ -464,18 +488,34 @@ public class Sprite {
                     "}";
 
     //-----------------------------------------------------------------------------------
-    // Код пиксельного шейдера спрайта
+    // Код пиксельного шейдера спрайта отрисовывающего текстуру
     //-----------------------------------------------------------------------------------
     private final String fragmentShaderCode =
             "precision mediump float; " +
-                    "uniform float alphaColor;" +
+                    "uniform vec4 vColor;" +
                     "uniform sampler2D TexCoordIn; " +
                     "varying vec2 TexCoordOut;" +
                     "void main() {" +
                     "  vec4 col = texture2D(TexCoordIn, TexCoordOut);" +
-                    "  col.a *= alphaColor;" +
+                    "  col.a *= vColor.a;" +
                     "  gl_FragColor = col; " +
                     "}";
 
+    //-----------------------------------------------------------------------------------
+    // Код пиксельного шейдера спрайта отрисовывающего текстуру закрашенную цветом
+    //-----------------------------------------------------------------------------------
+    private final String fragmentShaderColoredCode =
+            "precision mediump float; " +
+                    "uniform vec4 vColor;" +
+                    "uniform sampler2D TexCoordIn; " +
+                    "varying vec2 TexCoordOut;" +
+                    "void main() {" +
+                    "  vec4 col = texture2D(TexCoordIn, TexCoordOut);" +
+                    "  col.r = vColor.r;" +
+                    "  col.g = vColor.b;" +
+                    "  col.b = vColor.b;" +
+                    "  col.a *= vColor.a;" +
+                    "  gl_FragColor = col; " +
+                    "}";
 
 }
