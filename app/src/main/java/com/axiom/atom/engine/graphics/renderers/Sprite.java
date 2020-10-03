@@ -27,14 +27,12 @@ public class Sprite {
     protected Texture texture;                     // Текстура спрайта
     protected TextureAtlas atlas;                  // Атлас текстуры
     protected float alpha = 1.0f;                  // Прозрачность спрайта
+    protected float rotation = 0;                  // Угол поворота в радианах
     public int zOrder = 0;                         // Порядок сортировки при отрисовке спрайта
 
     protected int activeFrame = -1;                // Текущий активный кадр
-//    protected float spriteWidth;                   // Ширина спрайта в текстурных координатах (0-1)
-//    protected float spriteHeight;                  // Высота спрайта в текстурных координатах (0-1)
     protected boolean horizontalFlip = false;      // Горизонтальное отражение спрайта
     protected boolean verticalFlip = false;        // Вертикальное отражение спрайта
-    protected float rotation = 0;                  // Угол поворота в радианах
 
     protected ArrayList<Animation> animations = null;  // Список анимаций спрайта
     protected int activeAnimation = -1;            // Текущая активная анимация
@@ -54,6 +52,27 @@ public class Sprite {
 
     /**
      * Конструктор спрайта
+     * @param texture текстура
+     */
+    public Sprite(Texture texture) {
+        //----------------------------------------------------------------
+        // Загружаем текстуру если она еще не была загружна
+        //----------------------------------------------------------------
+        this.texture = texture;
+        //----------------------------------------------------------------
+        // Компилируем шейдеры и линкуем программы, если её еще нет
+        //----------------------------------------------------------------
+        if (program==null) {
+            program = new Program(
+                    new Shader(GLES20.GL_VERTEX_SHADER, vertexShaderCode),
+                    new Shader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode));
+        }
+        // Если не указано, то используются текстурные координаты по умолчанию
+    }
+
+
+    /**
+     * Конструктор спрайта
      * @param resources ресурсы приложения
      * @param resource ресурс изображение
      * @param columns количество столбцов в листе спрайтов
@@ -67,28 +86,20 @@ public class Sprite {
         this(resources,resource,1,1);
     }
 
-    public Sprite(Texture texture) {
-        this(texture, 1,1);
+
+    public Sprite(Texture texture, TextureAtlas atlas) {
+        this(texture);
+        this.atlas = atlas;
+        setActiveFrame(0);
     }
 
     public Sprite(Texture texture, int columns, int rows) {
-        //----------------------------------------------------------------
-        // Загружаем текстуру если она еще не была загружна
-        //----------------------------------------------------------------
-        this.texture = texture;
-        //----------------------------------------------------------------
-        // Компилируем шейдеры и линкуем программы, если её еще нет
-        //----------------------------------------------------------------
-        if (program==null) {
-            program = new Program(
-                    new Shader(GLES20.GL_VERTEX_SHADER, vertexShaderCode),
-                    new Shader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode));
-        }
-
+        this(texture);
         // Сгенерировать текстурный атлас по количеству столбцов и строк
         atlas = new TextureAtlas(texture, columns, rows);
         setActiveFrame(0);
     }
+
 
     /**
      * Отрисовывает спрайт с соответствующими параметрами с аппаратным ускорением
@@ -408,6 +419,9 @@ public class Sprite {
     }
 
 
+    public TextureAtlas getAtlas() {
+        return atlas;
+    }
 
     //-----------------------------------------------------------------------------------
     // Координаты вершины прямоугольника для отрисовки спрайта
