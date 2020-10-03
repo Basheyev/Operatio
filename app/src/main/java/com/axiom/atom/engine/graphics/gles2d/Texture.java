@@ -39,7 +39,7 @@ public class Texture implements GLESObject {
         if (texture==null) {
             // Текстуру загружаем только один раз
             texture = new Texture(resources, resource);
-            loadedTextures.put((long)resource,texture);
+            loadedTextures.put((long)resource, texture);
         }
         return texture;
     }
@@ -60,7 +60,7 @@ public class Texture implements GLESObject {
         // an 8-bit Type id [bits 16-23]
         // a 16-bit Entry index [bits 0-15]
         //-------------------------------------------------------------------------
-        // Так как ключ HashMap - long (верхние 32 bit под Bitmap'ы, нижние под ресурсы)
+        // Ключ HashMap - это long (верхние 32 bit под Bitmap'ы, нижние под ресурсы)
         // Сместим HashCode bitmap в лево на 32 bit чтобы диапазоны не пересекались
         long resource = ((long) bitmap.hashCode()) << 32;
 
