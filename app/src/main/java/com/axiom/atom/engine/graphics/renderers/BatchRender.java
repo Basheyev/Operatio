@@ -113,7 +113,7 @@ public class BatchRender {
     //-------------------------------------------------------------------------------------------
     public static synchronized void addTexturedQuad (Program program,
                                                      Texture texture, float[] vert, float[] texcoord,
-                                                     float alpha, int zOrder, AABB scissor) {
+                                                     float[] color, int zOrder, AABB scissor) {
         // Проверяем есть ли ещё место
         if (entriesCounter + 1 >= entries.length) {
             Log.w("WARNING", "Max sprites count reached " + MAX_SPRITES);
@@ -121,10 +121,10 @@ public class BatchRender {
         }
         // Копируем данные в соответствующую запись
         Entry entry = entries[entriesCounter];
-        entry.color[0] = 1;
-        entry.color[1] = 1;
-        entry.color[2] = 1;
-        entry.color[3] = alpha;
+        entry.color[0] = color[0];
+        entry.color[1] = color[1];
+        entry.color[2] = color[2];
+        entry.color[3] = color[3];
         entry.program = program;
         entry.texture = texture;
         entry.zOrder = zOrder;
@@ -200,7 +200,7 @@ public class BatchRender {
             entry.texture.bind();
             int vertexHandler = program.setAttribVertexArray("vPosition", verticesBatch);
             int textureHandler = program.setAttribVertexArray("TexCoordIn", texCoordBatch);
-            program.setUniformFloatValue("alphaColor", entry.color[3]);
+            program.setUniformVec4Value("vColor", entry.color);
             program.setUniformIntValue("sampler", 0);
             program.setUniformMat4Value("u_MVPMatrix", cameraMatrix);
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, verticesBatch.getVertexCount());
