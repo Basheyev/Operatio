@@ -21,7 +21,7 @@ public class UIBuilder {
             }
         };
 
-        Widget exitButton = new Button("EXIT");
+        Widget exitButton = new Button("Exit");
         exitButton.setLocalBounds(1700,960,200,100);
         exitButton.setColor(0.8f, 0.5f, 0.5f, 0.9f);
         exitButton.setClickListener(exitListener);

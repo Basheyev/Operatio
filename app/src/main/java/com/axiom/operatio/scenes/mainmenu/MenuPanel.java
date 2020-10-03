@@ -60,8 +60,8 @@ public class MenuPanel extends Panel {
         String caption;
 
         for (int i =1; i<4; i++) {
-            if (i==1) caption = "START GAME"; else
-            if (i==2) caption = "OPTIONS"; else caption = "EXIT GAME";
+            if (i==1) caption = "Start Game"; else
+            if (i==2) caption = "Options"; else caption = "Exit Game";
             button = new Button(caption);
             button.setTag(""+i);
             button.setLocalBounds(50, 550 - ( i * 150), 500, 120);

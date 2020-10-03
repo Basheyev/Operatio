@@ -46,7 +46,9 @@ public class Button extends Widget {
         if (text!=null) {
             GraphicsRender.setZOrder(zOrder + 2);
             float textWidth = GraphicsRender.getTextWidth(text, 2);
-            GraphicsRender.drawText(text, bounds.center.x - textWidth/2, bounds.center.y, 2, scissors);
+            float textHeight = GraphicsRender.getTextHeight(text,2);
+            GraphicsRender.setColor(0,0,0,1);
+            GraphicsRender.drawText(text, bounds.center.x - textWidth/2, bounds.center.y - (textHeight/2), 2, scissors);
         }
 
         super.draw(camera);

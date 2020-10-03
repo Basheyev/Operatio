@@ -57,6 +57,8 @@ public class ProductionScene extends GameScene {
             snd2 = SoundRenderer.loadSound(R.raw.conveyor_snd);
             snd3 = SoundRenderer.loadSound(R.raw.buffer_snd);
             initialized = true;
+
+
         }
     }
 
@@ -99,12 +101,13 @@ public class ProductionScene extends GameScene {
 
         fps.delete(0, fps.length());
         fps.append("FPS:").append(GraphicsRender.getFPS())
-            .append(" QUADS:").append(BatchRender.getEntriesCount())
-            .append(" CALLS:").append(BatchRender.getDrawCallsCount())
-            .append(" TIME:").append(GraphicsRender.getRenderTime())
+            .append(" Quads:").append(BatchRender.getEntriesCount())
+            .append(" Calls:").append(BatchRender.getDrawCallsCount())
+            .append(" Time:").append(GraphicsRender.getRenderTime())
             .append("ms");
 
-        GraphicsRender.drawText(fps, x - 700,y + 500, 2);
+        GraphicsRender.setColor(1,1,1,1);
+        GraphicsRender.drawText(fps, x - 700,y + 500, 2f);
     }
 
     @Override
