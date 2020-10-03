@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.graphics.gles2d.Program;
 import com.axiom.atom.engine.graphics.gles2d.Texture;
 import com.axiom.atom.engine.graphics.gles2d.VertexBuffer;
 
@@ -27,6 +28,7 @@ public class BatchRender {
     //------------------------------------------------------------------------------------------
     protected static class Entry {
         public int zOrder;                          // Слой отрисовки (критерий группировки)
+        public Program program;                     // Используемая программа шейдеров
         public Texture texture;                     // Текстура спрайта (критерий группировки)
         public float[] vertices = new float[18];    // Вершины спрайта (2 треугольника - 18 коорд)
         public float[] coordinates = new float[12]; // текстурные координаты спрайта
@@ -87,7 +89,9 @@ public class BatchRender {
     }
 
     //-------------------------------------------------------------------------------------------
-    public static synchronized void addQuad(float[] vert, int zOrder, float[] color, AABB scissor) {
+    public static synchronized void addQuad(Program program,
+                                            float[] vert, int zOrder,
+                                            float[] color, AABB scissor) {
         // Проверяем есть ли ещё место
         if (entriesCounter + 1 >= entries.length) {
             Log.w("WARNING", "Max sprites count reached " + MAX_SPRITES);
@@ -99,6 +103,7 @@ public class BatchRender {
         entry.color[1] = color[1];
         entry.color[2] = color[2];
         entry.color[3] = color[3];
+        entry.program = program;
         entry.texture = null;
         entry.zOrder = zOrder;
         entry.scissor = scissor;
@@ -107,7 +112,9 @@ public class BatchRender {
     }
 
     //-------------------------------------------------------------------------------------------
-    public static synchronized void addTexturedQuad(Texture texture, float[] vert, float[] texcoord, float alpha, int zOrder, AABB scissor) {
+    public static synchronized void addTexturedQuad (Program program,
+                                                     Texture texture, float[] vert, float[] texcoord,
+                                                     float alpha, int zOrder, AABB scissor) {
         // Проверяем есть ли ещё место
         if (entriesCounter + 1 >= entries.length) {
             Log.w("WARNING", "Max sprites count reached " + MAX_SPRITES);
@@ -119,7 +126,7 @@ public class BatchRender {
         entry.color[1] = 1;
         entry.color[2] = 1;
         entry.color[3] = alpha;
-
+        entry.program = program;
         entry.texture = texture;
         entry.zOrder = zOrder;
         entry.scissor = scissor;
@@ -177,27 +184,29 @@ public class BatchRender {
 
         if (entry.scissor!=null) enableScissors(entry.scissor);
 
+        Program program = entry.program;
+        if (program==null) return;
+        program.use();
+
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
         if (entry.texture==null) {
-            Rectangle.program.use();
-            int vertexHandler = Rectangle.program.setAttribVertexArray("vPosition", verticesBatch);
-            Rectangle.program.setUniformVec4Value("vColor", entry.color);
-            Rectangle.program.setUniformMat4Value("u_MVPMatrix", cameraMatrix);
+            int vertexHandler = program.setAttribVertexArray("vPosition", verticesBatch);
+            program.setUniformVec4Value("vColor", entry.color);
+            program.setUniformMat4Value("u_MVPMatrix", cameraMatrix);
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, verticesBatch.getVertexCount());
-            Rectangle.program.disableVertexArray(vertexHandler);
+            program.disableVertexArray(vertexHandler);
         } else {
-            Sprite.program.use();
             entry.texture.bind();
-            int vertexHandler = Sprite.program.setAttribVertexArray("vPosition", verticesBatch);
-            int textureHandler = Sprite.program.setAttribVertexArray("TexCoordIn", texCoordBatch);
-            Sprite.program.setUniformFloatValue("alphaColor", entry.color[3]);
-            Sprite.program.setUniformIntValue("sampler", 0);
-            Sprite.program.setUniformMat4Value("u_MVPMatrix", cameraMatrix);
+            int vertexHandler = program.setAttribVertexArray("vPosition", verticesBatch);
+            int textureHandler = program.setAttribVertexArray("TexCoordIn", texCoordBatch);
+            program.setUniformFloatValue("alphaColor", entry.color[3]);
+            program.setUniformIntValue("sampler", 0);
+            program.setUniformMat4Value("u_MVPMatrix", cameraMatrix);
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, verticesBatch.getVertexCount());
-            Sprite.program.disableVertexArray(textureHandler);
-            Sprite.program.disableVertexArray(vertexHandler);
+            program.disableVertexArray(textureHandler);
+            program.disableVertexArray(vertexHandler);
         }
 
         GLES20.glDisable(GLES20.GL_BLEND);
@@ -258,6 +267,7 @@ public class BatchRender {
     }
 
     private static void copyEntry(Entry src, Entry dst) {
+        dst.program = src.program;
         dst.texture = src.texture;
         dst.zOrder = src.zOrder;
         dst.scissor = src.scissor;
