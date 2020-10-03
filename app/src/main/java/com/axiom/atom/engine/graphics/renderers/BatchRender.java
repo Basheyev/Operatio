@@ -12,7 +12,7 @@ import com.axiom.atom.engine.graphics.gles2d.VertexBuffer;
 import java.util.Arrays;
 import java.util.Comparator;
 
-
+// TODO Возможность рендерить кастомные шейдеры (вынести из класса явное указание программ шейдеров)
 /**
  * Многократно оптимизирует производительность рендерига графики
  * путём группировки очереди отрисовываемых спрайтов и прямоугольников
@@ -43,6 +43,8 @@ public class BatchRender {
     protected static VertexBuffer texCoordBatch;  // Текстурные координаты спрайтов пакета
     protected static EntryComparator comparator;  // Класс для сравнения элементов буфера
 
+    protected static int entriesProcessed = 0;
+    protected static int drawCallsMade = 0;
     //----------------------------------------------------------------------------------
     // Класс для сравнения элементов буфера при сортировке (по текстуре и z-order)
     //----------------------------------------------------------------------------------
@@ -80,6 +82,7 @@ public class BatchRender {
             texCoordBatch = new VertexBuffer(MAX_SPRITES * 6, 2);
             comparator = new EntryComparator();
         }
+        entriesProcessed = entriesCounter;
         entriesCounter = 0;
     }
 
@@ -162,6 +165,7 @@ public class BatchRender {
             if (lastEntry) renderBatch(camera.getCameraMatrix(), previous);
         }
 
+        drawCallsMade = drawCallsCounter;
     }
 
 
@@ -213,11 +217,11 @@ public class BatchRender {
     }
 
     public static int getEntriesCount() {
-        return entriesCounter;
+        return entriesProcessed;
     }
 
     public static int getDrawCallsCount() {
-        return drawCallsCounter;
+        return drawCallsMade;
     }
 
     protected static void enableScissors(AABB clip) {
