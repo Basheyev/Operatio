@@ -512,7 +512,7 @@ public class Sprite {
                     "void main() {" +
                     "  vec4 col = texture2D(TexCoordIn, TexCoordOut);" +
                     "  col.r = vColor.r;" +
-                    "  col.g = vColor.b;" +
+                    "  col.g = vColor.g;" +
                     "  col.b = vColor.b;" +
                     "  col.a *= vColor.a;" +
                     "  gl_FragColor = col; " +
