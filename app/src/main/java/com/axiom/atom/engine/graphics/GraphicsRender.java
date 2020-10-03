@@ -280,6 +280,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
     public static void setColor(float r, float g, float b, float alpha) {
         if (render==null) return;
         render.rectangleRender.setColor(r, g, b, alpha);
+        render.textRender.setColor(r, g, b, alpha);
     }
 
     public static void setZOrder(int zOrder) {

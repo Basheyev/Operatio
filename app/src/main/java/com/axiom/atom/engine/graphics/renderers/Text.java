@@ -18,7 +18,7 @@ import com.axiom.atom.engine.graphics.gles2d.TextureRegion;
 import java.util.ArrayList;
 
 // TODO Сделать правильное позиционирование символов при кастомном шрифте
-
+// TODO Сделать управление цветом текста (через доработку Sprite)
 /**
  * Отрисовывает текст, на основе шрифта в виде спрайта
  * (C) Atom Engine, Bolat Basheyev 2020
@@ -28,7 +28,7 @@ public class Text {
     public int zOrder = 0;
     protected Sprite fontSprite;           // Спрайт где каждый кадр это отдельный символ
     protected int totalChars = 121;        // Количество генерируемых символов
-    protected int fontSize = 20;           // Размер генерируемого шрифта в пикселях
+    protected int fontSize = 24;           // Размер генерируемого шрифта в пикселях
     protected float[] xOffset;             // Горизонтальное смещение символа относительно курсора
     protected float[] yOffset;             // Вертикальное смещение символа относительно курсора
     protected float maxLineHeight;         // Высота строки этого шрифта
@@ -49,6 +49,7 @@ public class Text {
     public Text(String fontName) {
         this();
         this.fontSprite = generateFontSprite(fontName, fontSize);
+        this.fontSprite.useColor = true;
         this.spacing = 1;
     }
 
@@ -185,6 +186,12 @@ public class Text {
         return maxHeight * scale;
     }
 
+
+
+    public void setColor(float r, float g, float b, float a) {
+        fontSprite.setColor(r, g, b, a);
+    }
+
     /**
      * Генерирует текстуру шрифта на базе указанного
      * @param fontName названией шрифта
@@ -268,7 +275,7 @@ public class Text {
             }
         }
 
-        return new Sprite(Texture.getInstance(bitmap), textureAtlas);
+        return new Sprite(Texture.getInstance(bitmap, true), textureAtlas);
     }
 
 
