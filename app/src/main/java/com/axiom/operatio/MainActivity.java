@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         gameView.onPause();
-        // TODO Нужно ли останавливать игровой цикл?
     }
 
     @Override

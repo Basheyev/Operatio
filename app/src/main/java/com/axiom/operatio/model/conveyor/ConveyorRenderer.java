@@ -3,9 +3,11 @@ package com.axiom.operatio.model.conveyor;
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.data.Channel;
+import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.operatio.model.block.Renderer;
+import com.axiom.operatio.model.block.Block;
+import com.axiom.operatio.model.block.BlockRenderer;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
@@ -14,7 +16,7 @@ import static com.axiom.operatio.model.block.Block.LEFT;
 import static com.axiom.operatio.model.block.Block.RIGHT;
 import static com.axiom.operatio.model.block.Block.UP;
 
-public class ConveyorRenderer implements Renderer {
+public class ConveyorRenderer extends BlockRenderer {
 
     protected Conveyor conveyor;
     protected Sprite sprite;
@@ -109,10 +111,15 @@ public class ConveyorRenderer implements Renderer {
 
 
     public void draw(Camera camera, float x, float y, float width, float height) {
+
         // Отрисовать сам конвейер
         sprite.draw(camera,x,y, width, height);
         // Отрисовать предметы на нём
         drawItems(camera, x, y, width, height);
+
+        drawInOut(camera, conveyor.getInputDirection(), conveyor.getOutputDirection(),
+                x, y, width, height, sprite.zOrder + 2);
+
         // Отрисовать количество предметов
       /*  String bf1 = "" + conveyor.getItemsAmount();
         GraphicsRender.setZOrder(10);

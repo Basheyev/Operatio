@@ -5,7 +5,10 @@ import android.view.MotionEvent;
 import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.model.block.Block;
+import com.axiom.operatio.model.conveyor.Conveyor;
 import com.axiom.operatio.scenes.production.ProductionScene;
+
+import java.util.HashMap;
 
 //  TODO Вращение блока производства (направлений вход-выход)
 public class HandleBlockRotate {
@@ -50,10 +53,27 @@ public class HandleBlockRotate {
 
 
     private void rotateBlock(Block block) {
-        int newInpDir = Block.nextClockwiseDirection(block.getInputDirection());
-        int newOutDir = Block.nextClockwiseDirection(block.getOutputDirection());
-        block.setInputDirection(newInpDir);
-        block.setOutputDirection(newOutDir);
+
+        int currentInpDir = block.getInputDirection();
+        int currentOutDir = block.getOutputDirection();
+
+        if (!block.blockFlipState) {
+            block.setDirections(currentOutDir, currentInpDir);
+            block.blockFlipState = true;
+        } else {
+            // TODO Выработать правила упрощенного поворота с учетом блоков рядом
+            int newInpDir = Block.nextClockwiseDirection(currentInpDir);
+            int newOutDir = Block.nextClockwiseDirection(currentOutDir);
+            if (newInpDir==currentOutDir) {
+                block.setOutputDirection(newOutDir);
+            } else {
+                block.setInputDirection(newInpDir);
+            }
+            block.blockFlipState = false;
+        }
+
+
+
     }
 
 

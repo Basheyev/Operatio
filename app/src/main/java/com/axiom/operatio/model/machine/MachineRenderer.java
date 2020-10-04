@@ -2,12 +2,11 @@ package com.axiom.operatio.model.machine;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.operatio.model.block.Renderer;
+import com.axiom.operatio.model.block.BlockRenderer;
 
-public class MachineRenderer implements Renderer {
+public class MachineRenderer extends BlockRenderer {
 
     protected Machine machine;                             // Отрисовываемая машина
     protected Sprite sprite;                               // Анимации машины
@@ -28,6 +27,10 @@ public class MachineRenderer implements Renderer {
 
     public void draw(Camera camera, float x, float y, float width, float height) {
         sprite.draw(camera, x, y, width, height);
+
+        drawInOut(camera, machine.getInputDirection(), machine.getOutputDirection(),
+                x, y, width, height, sprite.zOrder + 2);
+
         /*GraphicsRender.setZOrder(10);
         String bf1 = ""+ machine.getItemsAmount();
         GraphicsRender.drawText(bf1.toCharArray(), x + width / 2 ,y + height / 2,1);*/

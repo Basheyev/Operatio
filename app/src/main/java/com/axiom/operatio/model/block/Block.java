@@ -18,7 +18,9 @@ public abstract class Block {
     protected Channel<Item> input;                    // Буферы ввода предметов
     protected Channel<Item> output;                   // Буферы вывода предметов
     public int column, row;                           // Координаты блока в сетке карты
-    protected Renderer renderer;                      // Отрисовщик
+    protected BlockRenderer renderer;                      // Отрисовщик
+
+    public boolean blockFlipState = false;
 
     /**
      * Конструктор блока производства
@@ -45,6 +47,10 @@ public abstract class Block {
         this.inputDirection = inDir;
     }
 
+    public void setDirections(int inDir, int outDir) {
+        setInputDirection(inDir);
+        setOutputDirection(outDir);
+    }
 
     /**
      * Добавляет предмет во входную очередь блока
@@ -122,7 +128,7 @@ public abstract class Block {
         return outputDirection;
     }
 
-    public Renderer getRenderer() {
+    public BlockRenderer getRenderer() {
         return renderer;
     }
 

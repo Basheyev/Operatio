@@ -4,9 +4,9 @@ import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.operatio.model.block.Renderer;
+import com.axiom.operatio.model.block.BlockRenderer;
 
-public class BufferRenderer implements Renderer {
+public class BufferRenderer extends BlockRenderer {
 
     protected Buffer buffer;
     protected Sprite sprite;

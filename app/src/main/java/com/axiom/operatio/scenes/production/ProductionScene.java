@@ -12,7 +12,7 @@ import com.axiom.operatio.model.ProductionBuilder;
 import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.block.Block;
-import com.axiom.operatio.model.block.Renderer;
+import com.axiom.operatio.model.block.BlockRenderer;
 import com.axiom.operatio.scenes.production.controller.HandleBlockMove;
 import com.axiom.operatio.scenes.production.view.BlocksPanel;
 import com.axiom.operatio.scenes.production.controller.InputHandler;
@@ -91,7 +91,7 @@ public class ProductionScene extends GameScene {
             float cursorY = hbm.getCursorY();
             Block dragBlock = hbm.getDragBlock();
 
-            Renderer renderer = dragBlock.getRenderer();
+            BlockRenderer renderer = dragBlock.getRenderer();
             renderer.draw(Camera.getInstance(), cursorX - 64, cursorY - 64, 128, 128);
         }
 

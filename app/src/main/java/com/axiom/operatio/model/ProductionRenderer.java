@@ -2,13 +2,12 @@ package com.axiom.operatio.model;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.block.Block;
-import com.axiom.operatio.model.block.Renderer;
+import com.axiom.operatio.model.block.BlockRenderer;
 
-public class ProductionRenderer implements Renderer {
+public class ProductionRenderer extends BlockRenderer {
 
     protected Production production;
     protected Sprite tile;
@@ -28,7 +27,7 @@ public class ProductionRenderer implements Renderer {
         int columns = production.getColumns();
         int rows = production.getRows();
         Block block;
-        Renderer renderer;
+        BlockRenderer renderer;
         //GraphicsRender.clear();
         for (int row=0; row < rows; row++) {
             for (int col=0; col < columns; col++) {

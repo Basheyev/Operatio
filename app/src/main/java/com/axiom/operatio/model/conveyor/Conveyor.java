@@ -33,6 +33,12 @@ public class Conveyor extends Block {
     }
 
     @Override
+    public void setDirections(int inDir, int outDir) {
+        super.setDirections(inDir, outDir);
+        ((ConveyorRenderer)renderer).arrangeAnimation(inputDirection, outputDirection);
+    }
+
+    @Override
     public boolean push(Item item) {
         // Если на конвейере уже максимальное количество предметов
         if (getItemsAmount() >= MAX_CAPACITY) {
