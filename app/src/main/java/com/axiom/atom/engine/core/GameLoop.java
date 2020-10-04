@@ -43,14 +43,14 @@ public class GameLoop extends Thread {
 
     /**
      * Конструктор игрового цикла
-     * @param view
-     * @param sceneManager
+     * @param view панель отрисовки
+     * @param sceneManager менеджер цвен
      */
     private GameLoop(GameView view, SceneManager sceneManager)  {
         super("GameLoop");
         this.gameView = view;
         this.sceneManager = sceneManager;
-        inputEventQueue = new Channel<Parcelable>(INPUT_EVENTS_BUFFER_SIZE);
+        inputEventQueue = new Channel<>(INPUT_EVENTS_BUFFER_SIZE);
     }
 
 
@@ -89,7 +89,9 @@ public class GameLoop extends Thread {
             }
             startTime = System.nanoTime();
         }
+
         gameView.exitGame();
+
     }
 
     public void setRunning(boolean running)  {
@@ -142,7 +144,7 @@ public class GameLoop extends Thread {
         //------------------------------------------------------------------------------------------
         // Вызываем обновление сцены
         //------------------------------------------------------------------------------------------
-        deltaTime = (System.nanoTime() - lastCycleTime) / 1000000000f;
+        deltaTime = (System.nanoTime() - lastCycleTime) / 1_000_000_000f;
         scene.updateScene(deltaTime);
         lastCycleTime = System.nanoTime();
 

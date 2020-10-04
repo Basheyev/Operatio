@@ -19,7 +19,7 @@ public abstract class GameObject {
     //-------------------------------------------------------------------------------
     // Графические параметры объекта
     //-------------------------------------------------------------------------------
-    protected GameScene scene = null;         // Сцена которой принадлежит объект
+    protected GameScene scene;                // Сцена которой принадлежит объект
     public Sprite sprite = null;              // Спрайт игрового объекта
     public float scale = 1.0f;                // Масштаб спрайта игрового объекта
     public boolean active = true;             // Активен ли объект (нужна ли обработка)
@@ -54,9 +54,10 @@ public abstract class GameObject {
     //------------------------------------------------------------------------------
     private float lastX, lastY;
     private boolean localBoundsChanged = false;
+
     /**
      * Возвращает AABB в мировых координатах
-     * @return
+     * @return AABB в мировых координатах
      */
     public AABB getWorldBounds() {
         if (x!=lastX || y!=lastY || localBoundsChanged) {
@@ -75,7 +76,7 @@ public abstract class GameObject {
 
     /**
      * Возвращает AABB в локальных координатах
-     * @return
+     * @return AABB локальных границ
      */
     public AABB getLocalBounds() {
         return localBounds;
@@ -83,10 +84,10 @@ public abstract class GameObject {
 
     /**
      * Устанавливает границы в локальных координатах объекта
-     * @param minX
-     * @param minY
-     * @param maxX
-     * @param maxY
+     * @param minX левый X
+     * @param minY нижний Y
+     * @param maxX правый X
+     * @param maxY верхний Y
      */
     public void setLocalBounds(float minX, float minY, float maxX, float maxY) {
         localBounds.setBounds(minX,minY,maxX,maxY);
@@ -95,7 +96,7 @@ public abstract class GameObject {
 
     /**
      * Устанавливает границы в локальных координатах объекта
-     * @param bounds
+     * @param bounds границы в локальных координатах объекта
      */
     public void setLocalBounds(AABB bounds) {
         localBounds.setBounds(bounds.min.x,bounds.min.y,bounds.max.x,bounds.max.y);

@@ -1,4 +1,4 @@
-package com.axiom.atom.engine.tests.demotest;
+package com.axiom.atom.tests.demotest;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameObject;

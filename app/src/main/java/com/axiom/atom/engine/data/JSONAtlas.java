@@ -1,18 +1,79 @@
 package com.axiom.atom.engine.data;
 
+import android.content.res.Resources;
+
+import com.axiom.atom.engine.graphics.gles2d.Texture;
 import com.axiom.atom.engine.graphics.gles2d.TextureAtlas;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+/**
+ * Загружает TextureAtlas из JSon (поддерживает JSONArray, no trimming, no rotating)
+ */
 public class JSONAtlas {
 
-    public static TextureAtlas loadTextureAtlas(int imageResource, int jsonResource) {
-
-
-
-
-        return null;
+    public static TextureAtlas loadTextureAtlas(Resources resources, int imageID, int atlasID) {
+        Texture texture = Texture.getInstance(resources, imageID);
+        String json = loadTextFile(resources, atlasID);
+        return parseJSonArray(texture, json);
     }
 
-    // TODO Сделать сериализации/десериализацию объектов из/в JSON
+
+    protected static String loadTextFile(Resources resources, int atlasID) {
+        BufferedReader input = null;
+        StringBuilder data = new StringBuilder(16384);
+        String line;
+        try {
+            input = new BufferedReader(new InputStreamReader(resources.openRawResource(atlasID)));
+            while ((line = input.readLine()) != null) {
+                data.append(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return data.toString();
+    }
+
+
+    protected static TextureAtlas parseJSonArray(Texture texture, String jsonData) {
+        TextureAtlas atlas = new TextureAtlas(texture);
+        String name;
+        int x, y, width, height;
+
+        try {
+            JSONObject jsonAtlas = new JSONObject(jsonData);
+            JSONArray regions = jsonAtlas.getJSONArray("frames");
+            for (int i = 0; i < regions.length(); i++) {
+                JSONObject region = regions.getJSONObject(i);
+                name = region.getString("filename");
+                JSONObject frame = region.getJSONObject("frame");
+                x = frame.getInt("x");
+                y = frame.getInt("y");
+                width = frame.getInt("w");
+                height = frame.getInt("h");
+                atlas.addRegion(name, x, y, width, height);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return atlas;
+    }
+
+
 }
 
 

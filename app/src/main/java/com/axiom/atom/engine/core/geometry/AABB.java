@@ -35,15 +35,15 @@ public class AABB {
     }
 
 
-    public void copy(AABB aabb) {
-        this.min.x = aabb.min.x;
-        this.min.y = aabb.min.y;
-        this.max.x = aabb.max.x;
-        this.max.y = aabb.max.y;
-        this.center.x = aabb.center.x;
-        this.center.y = aabb.center.y;
-        this.width = aabb.width;
-        this.height = aabb.height;
+    public void copy(AABB source) {
+        this.min.x = source.min.x;
+        this.min.y = source.min.y;
+        this.max.x = source.max.x;
+        this.max.y = source.max.y;
+        this.center.x = source.center.x;
+        this.center.y = source.center.y;
+        this.width = source.width;
+        this.height = source.height;
     }
 
     /**
@@ -58,6 +58,21 @@ public class AABB {
     }
 
     /**
+     * Определяет пересекает AABB и прямоугольника указанного в координатах
+     * @param minX левый X
+     * @param minY нижний Y
+     * @param maxX правый X
+     * @param maxY верхний Y
+     * @return true - если пересекаются, false - если нет
+     */
+    public boolean collides(float minX, float minY, float maxX, float maxY) {
+        if (max.y < minY || min.y > maxY) return false;
+        if (max.x < minX || min.x > maxX) return false;
+        return true;
+    }
+
+
+    /**
      * Проверка пересечения AABB и точки
      * @param x координата
      * @param y координата
@@ -69,12 +84,6 @@ public class AABB {
         return true;
     }
 
-
-    public boolean collides(float minX, float minY, float maxX, float maxY) {
-        if (max.y < minY || min.y > maxY) return false;
-        if (max.x < minX || min.x > maxX) return false;
-        return true;
-    }
 
     /**
      * Находит область пересечения этого AABB c box и записывает область в Result
@@ -91,5 +100,6 @@ public class AABB {
         result.setBounds(minX, minY, maxX, maxY);
         return result;
     }
+
 
 }

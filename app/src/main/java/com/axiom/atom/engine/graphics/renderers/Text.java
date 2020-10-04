@@ -102,10 +102,6 @@ public class Text {
 
         char symbol, lastSymbol = 0;
         int symbolIndex;
-/*
-        GraphicsRender.setZOrder(zOrder);
-        GraphicsRender.setColor(1,0,0,1);
-        GraphicsRender.drawRectangle(x,y, getTextWidth(text,scale), 5, scissor);*/
 
         for (int i=0; i< text.length(); i++) {                // Для каждого символа в строке
 
@@ -240,35 +236,34 @@ public class Text {
                 // Конвертируем символ в строку
                 symbolIndex = symbol - ' ';
                 String symbolStr = "" + symbol;
+
                 // Отрисовываем строка на bitmap
-                paint.setColor(Color.WHITE);
                 canvas.drawText(symbolStr, 1 + x*size, 1 + y*size, paint);
 
                 // Получаем размеры символа
                 paint.getTextBounds(symbolStr,0,1, symbolRectangle);
 
+                // Рассчитываем координаты символа на bitmap
                 int x1 = 1 + x * size + symbolRectangle.left;
                 int y1 = 1 + y * size + symbolRectangle.top;
                 int x2 = 1 + x * size + symbolRectangle.right;
                 int y2 = 1 + y * size + symbolRectangle.bottom;
 
-                // Вот тут вычислить смещение по вертикали
+                // Dычисляем смещение символа по вертикали
                 yOffset[symbolIndex] = -symbolRectangle.bottom;
 
+                // Считаем высоту и ширину символа
                 int width = x2 - x1;
                 int height = y2 - y1;
 
+                // Если ширина или высота нулевая - задаем ширину и высоту
                 if (width==0) { x1 = x*size; width = size / 2;}
                 if (height==0) { y1 = y*size; height = 1;}
 
-                paint.setColor(Color.GREEN);
-                /*canvas.drawLine(x1, y1, x1, y1+height, paint);
-                canvas.drawLine(x1+width, y1, x1+width, y1+height, paint);
-                canvas.drawLine(x1, y1, x1+width, y1, paint);
-                canvas.drawLine(x1, y1+height, x1+width, y1+height, paint);*/
-
+                // Добавляем регион символа в атлас с именем символа
                 textureAtlas.addRegion(symbolStr, x1, y1, width, height);
 
+                // Переходим к следующему символу
                 symbol++;
             }
         }

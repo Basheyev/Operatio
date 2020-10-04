@@ -38,6 +38,8 @@ public class HandleBlockAdd {
     public void onMotion(MotionEvent event, float worldX, float worldY) {
         int column = productionRenderer.getProductionColumn(worldX);
         int row = productionRenderer.getProductionRow(worldY);
+        Block block = production.getBlockAt(column, row);
+        if (block!=null) inputHandler.handleLookAround.onMotion(event, worldX, worldY);
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
@@ -52,7 +54,6 @@ public class HandleBlockAdd {
             case MotionEvent.ACTION_UP:
                 dragging = false;
                 if (column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
-                    Block block = production.getBlockAt(column, row);
                     if (block==null) {
                         String toggled = scene.blocksPanel.getToggledButton();
                         if (toggled!=null) addBlockAt(toggled, column, row);

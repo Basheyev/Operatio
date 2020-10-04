@@ -1,4 +1,4 @@
-package com.axiom.atom.engine.tests.shoottest.objects;
+package com.axiom.atom.tests.shoottest.objects;
 
 
 import android.util.Log;

@@ -106,8 +106,8 @@ public class ProductionScene extends GameScene {
             .append(" Time:").append(GraphicsRender.getRenderTime())
             .append("ms");
 
-        GraphicsRender.setColor(1,1,1,1);
-        GraphicsRender.drawText(fps, x - 700,y + 500, 2f);
+        GraphicsRender.setColor(0,0,0,1);
+        GraphicsRender.drawText(fps, x - 750,y + 480, 2f);
     }
 
     @Override

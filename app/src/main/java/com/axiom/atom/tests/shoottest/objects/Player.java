@@ -1,4 +1,4 @@
-package com.axiom.atom.engine.tests.shoottest.objects;
+package com.axiom.atom.tests.shoottest.objects;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameObject;
@@ -8,7 +8,7 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.input.Input;
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.physics.PhysicsRender;
-import com.axiom.atom.engine.tests.shoottest.ShooterScene;
+import com.axiom.atom.tests.shoottest.ShooterScene;
 import com.axiom.atom.engine.core.GameScene;
 
 
@@ -150,7 +150,7 @@ public class Player extends GameObject {
     @Override
     public void update(float deltaTime) {
         if (!alive) {
-           /** if (System.nanoTime()-dieTime>60000000000l) {
+           /* if (System.nanoTime()-dieTime>60000000000l) {
                 scene.removeObject(this);
             }*/
             return;
@@ -209,7 +209,7 @@ public class Player extends GameObject {
     public void onCollision(GameObject object) {
         if (!alive) return;
         if (PhysicsRender.getCollisionNormal(this, object)== PhysicsRender.NV_BOTTOM) {
-            if (sprite.getActiveAnimation()== jump && alive==true) {
+            if (sprite.getActiveAnimation()== jump && alive) {
                 sprite.setActiveAnimation(idle);
             }
             jumping = false;

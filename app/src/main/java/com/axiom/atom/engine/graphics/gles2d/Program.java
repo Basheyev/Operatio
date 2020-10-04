@@ -5,7 +5,7 @@ import android.opengl.GLES20;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 
 /**
- * Инкапсуляция сущности программа.
+ * Программа шейдеров
  * (С) Atom Engine, Bolat Basheyev 2020
  */
 public class Program implements GLESObject {
@@ -13,7 +13,7 @@ public class Program implements GLESObject {
     protected int programID = -1;
     protected Shader vertexShader;
     protected Shader fragmentShader;
-    protected boolean initialized = false;
+    protected boolean initialized;
 
     public Program(Shader vertexShader, Shader fragmentShader) {
         this.vertexShader = vertexShader;

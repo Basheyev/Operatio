@@ -56,7 +56,7 @@ public class MenuPanel extends Panel {
 
 
     private void buildButtons() {
-        Widget button;
+        Button button;
         String caption;
 
         for (int i =1; i<4; i++) {
@@ -66,6 +66,7 @@ public class MenuPanel extends Panel {
             button.setTag(""+i);
             button.setLocalBounds(50, 550 - ( i * 150), 500, 120);
             button.setColor(Color.GRAY);
+            button.setTextColor(1,1,1,1);
             button.setClickListener(listener);
             this.addChild(button);
         }

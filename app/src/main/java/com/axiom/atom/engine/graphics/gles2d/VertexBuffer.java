@@ -13,7 +13,7 @@ public class VertexBuffer
     protected FloatBuffer buffer;            // Буфер в нативной памяти содержащий вершины
     protected float[] vertexCoord;           // Массив float в котором хранятся вершины
     protected int vertexStride;              // Шаг в байтах на одну вершину
-    protected int vertexCoordCount;               // Количество вершин
+    protected int vertexCoordCount;          // Количество вершин
     protected int coordinatesPerVertex;      // Количество координат на одну вершину
 
     private boolean resizable = false;       // Может ли буфер динамическим
@@ -88,9 +88,7 @@ public class VertexBuffer
         int freeSpace = this.vertexCoord.length - vertexCoordCount;
         if (freeSpace < (vertCoordinates.length / coordinatesPerVertex)) return false;
 
-        for (int i=0; i<vertCoordinates.length; i++) {
-            vertexCoord[vertexCoordCount + i] = vertCoordinates[i];
-        }
+        System.arraycopy(vertCoordinates, 0, vertexCoord, vertexCoordCount, vertCoordinates.length);
 
         vertexCoordCount += vertCoordinates.length;
         return true;

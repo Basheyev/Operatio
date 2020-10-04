@@ -116,7 +116,6 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
         int tasksAmount = loadQueue.size();
 
         while (loadQueue.size() > 0) {
-        //if (loadQueue.size() > 0) {
             task = loadQueue.poll();
             if (task!=null) {
                 task.loadObjectToGPU();

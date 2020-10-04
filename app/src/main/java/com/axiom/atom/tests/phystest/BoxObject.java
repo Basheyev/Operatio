@@ -1,4 +1,4 @@
-package com.axiom.atom.engine.tests.phystest;
+package com.axiom.atom.tests.phystest;
 
 import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;

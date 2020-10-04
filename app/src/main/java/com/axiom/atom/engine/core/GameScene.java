@@ -21,10 +21,10 @@ public abstract class GameScene {
     protected Resources resources;
     public boolean started = false;
 
-    protected Widget sceneWidget = new Widget() { };                      // Корневой виджет сцены
-    protected ArrayList<GameObject> objects = new ArrayList<GameObject>();         // Объекты сцены
-    protected ArrayList<GameObject> addedObjects = new ArrayList<GameObject>();    // Служебный список добавления объектов
-    protected ArrayList<GameObject> deletedObjects = new ArrayList<GameObject>();  // Служебный список удаления объектов
+    protected Widget sceneWidget = new Widget() { };                     // Корневой виджет сцены
+    protected ArrayList<GameObject> objects = new ArrayList<>();         // Объекты сцены
+    protected ArrayList<GameObject> addedObjects = new ArrayList<>();    // Служебный список добавления объектов
+    protected ArrayList<GameObject> deletedObjects = new ArrayList<>();  // Служебный список удаления объектов
 
     public abstract String getSceneName();
     public abstract void startScene();                   // Вызывается при запуск/смене сцены
@@ -38,7 +38,6 @@ public abstract class GameScene {
     public abstract void preRender(Camera camera);       // Вызывается из потока GLThread
     public abstract void postRender(Camera camera);      // Вызывается из потока GLThread
     public abstract void onMotion(MotionEvent event, float worldX, float worldY); // GameLoop
-//    public abstract void onDrag(DragEvent event, float worldX, float worldY);     // GameLoop
 
     /**
      * Возвращает объекты сцены
@@ -82,6 +81,7 @@ public abstract class GameScene {
     public Resources getResources() {
         return resources;
     }
+
     public SceneManager getSceneManager() { return sceneManager; }
 
 }

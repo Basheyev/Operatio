@@ -1,4 +1,4 @@
-package com.axiom.operatio.model.machines;
+package com.axiom.operatio.model.machine;
 
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.model.Production;

@@ -1,6 +1,5 @@
-package com.axiom.atom.engine.tests.spritetest;
+package com.axiom.atom.tests.spritetest;
 
-import android.view.DragEvent;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
@@ -57,15 +56,30 @@ public class SpriteScene extends GameScene {
         actor.draw(camera, 960, 540, 10);
     }
 
+    protected StringBuffer fps = new StringBuffer(1024);
+
     @Override
     public void postRender(Camera camera) {
+        float x = camera.getX();
+        float y = camera.getY();
+        fps.delete(0, fps.length());
+        fps.append("FPS:").append(GraphicsRender.getFPS())
+                .append(" Quads:").append(BatchRender.getEntriesCount())
+                .append(" Calls:").append(BatchRender.getDrawCallsCount())
+                .append(" Time:").append(GraphicsRender.getRenderTime())
+                .append("ms\nand Other characters that prints here ")
+                .append("\nLorem ipsum dolor sit amet, consectetur adipiscing elit,\n" +
+                        "sed do eiusmod tempor incididunt ut labore et dolore magna\n" +
+                        "aliqua. Ut enim ad minim veniam, quis nostrud exercitation\n" +
+                        "ullamco laboris nisi ut aliquip ex ea commodo consequat.\n" +
+                        "Duis aute irure dolor in reprehenderit in voluptate velit\n" +
+                        "esse cillum dolore eu fugiat nulla pariatur. Excepteur sint\n" +
+                        "occaecat cupidatat non proident, sunt in culpa qui officia\n" +
+                        "deserunt mollit anim id est laborum."
+                );
         GraphicsRender.setZOrder(100);
-        GraphicsRender.drawText(
-                ("FPS:" + GraphicsRender.getFPS() +
-                        " CALLS=" + BatchRender.getDrawCallsCount() +
-                        " QUADS=" + BatchRender.getEntriesCount() +
-                        " MS:" + GraphicsRender.getRenderTime()),
-                camera.getMinX()+50, camera.getMinY()+1040, 2);
+        GraphicsRender.setColor(0,0,0,1);
+        GraphicsRender.drawText(fps, x - 900,y + 460, 2f);
     }
 
     @Override

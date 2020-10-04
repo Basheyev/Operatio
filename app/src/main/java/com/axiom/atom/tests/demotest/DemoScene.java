@@ -1,7 +1,6 @@
-package com.axiom.atom.engine.tests.demotest;
+package com.axiom.atom.tests.demotest;
 
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
@@ -79,22 +78,22 @@ public class DemoScene extends GameScene {
         // В текстуре все кнопочки
         // A
         joystick.setActiveFrame(0);
-        joystick.draw(camera, camera.WIDTH * 0.9f,
+        joystick.draw(camera, Camera.WIDTH * 0.9f,
                 camera.HEIGHT * 0.25f,2 + (Input.AButton ? 0.5f : 0));
         // B
         joystick.setActiveFrame(1);
-        joystick.draw(camera, camera.WIDTH * 0.7f,
+        joystick.draw(camera, Camera.WIDTH * 0.7f,
                 camera.HEIGHT * 0.25f,2 + (Input.BButton ? 0.5f : 0));
 
         // Joystick border
         joystick.setActiveFrame(3);
-        joystick.draw(camera, camera.WIDTH * 0.2f, camera.HEIGHT * 0.3f,4);
+        joystick.draw(camera, Camera.WIDTH * 0.2f, Camera.HEIGHT * 0.3f,4);
 
         // Joystick
         joystick.setActiveFrame(2);
         joystick.draw(camera,
-                camera.WIDTH * 0.2f + Input.xAxis * (joystick.getWidth()),
-                camera.HEIGHT * 0.3f + Input.yAxis * (joystick.getHeight()),
+                Camera.WIDTH * 0.2f + Input.xAxis * (joystick.getWidth()),
+                Camera.HEIGHT * 0.3f + Input.yAxis * (joystick.getHeight()),
                 1);
 
         GraphicsRender.drawText(

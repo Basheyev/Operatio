@@ -16,15 +16,15 @@ import java.util.ArrayList;
 /**
  * Sprite - это основной класс выполняющий работу с 2D изображениями.
  * Реализует такие функции как загрузка изображений в текстуру,
- * поддержка листов спрайтов, покадровая анимации спрайтов с,
- * разным FPS, быстрый рендеринг спрайта и анимации.
+ * поддержка листов спрайтов и атласов, покадровая анимации спрайтов с,
+ * разным FPS, быстрый рендеринг спрайта и анимации и многое другое.
  * <br><br>
  * (С) Atom Engine, Bolat Basheyev 2020
  */
 public class Sprite {
 
-    protected static Program texturedProgram = null;       // Программа со скомпилированными шейдерами
-    protected static Program coloredProgram = null;       // Программа со скомпилированными шейдерами
+    protected static Program texturedProgram = null;  // Программа со стандартным шейдером
+    protected static Program coloredProgram = null;   // Программа со цветным шейдером
 
     protected Texture texture;                     // Текстура спрайта
     protected TextureAtlas atlas;                  // Атлас текстуры

@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.axiom.atom.engine.core.GameView;
-import com.axiom.atom.engine.tests.spritetest.SpriteScene;
 import com.axiom.operatio.scenes.mainmenu.MainMenuScene;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         gameView.onPause();
+        // TODO Нужно ли останавливать игровой цикл?
     }
 
     @Override

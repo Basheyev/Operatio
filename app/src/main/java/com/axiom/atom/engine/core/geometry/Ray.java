@@ -8,6 +8,7 @@ import static com.axiom.atom.engine.physics.PhysicsRender.*;
  * (C) Atom Engine, Bolat Basheyev 2020
  */
 public class Ray {
+
     public Vector origin = new Vector();
     public Vector direction = new Vector();
 

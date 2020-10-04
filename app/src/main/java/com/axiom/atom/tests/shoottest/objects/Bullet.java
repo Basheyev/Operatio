@@ -1,4 +1,4 @@
-package com.axiom.atom.engine.tests.shoottest.objects;
+package com.axiom.atom.tests.shoottest.objects;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameObject;
@@ -8,7 +8,7 @@ import com.axiom.atom.engine.graphics.renderers.Rectangle;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.physics.PhysicsRender;
-import com.axiom.atom.engine.tests.shoottest.ShooterScene;
+import com.axiom.atom.tests.shoottest.ShooterScene;
 
 
 /**
@@ -17,7 +17,7 @@ public class Bullet extends GameObject {
 
     public static final float bulletSpeed = 8f;
 
-    public Sprite sprite = null;
+    public Sprite sprite;
 
     private long startTime;
     private int flying, hit;
@@ -53,7 +53,7 @@ public class Bullet extends GameObject {
 
     @Override
     public void update(float deltaTime) {
-        if (System.nanoTime()-startTime > 1000000000l) {
+        if (System.nanoTime()-startTime > 1_000_000_000L) {
             active = false;
             scene.removeObject(this);
         }

@@ -9,6 +9,7 @@ public class Button extends Widget {
 
     protected Sprite background;
     protected String text;
+    protected float[] textColor = {0,0,0,1};
 
     public Button(Sprite background, String text) {
         super();
@@ -47,11 +48,19 @@ public class Button extends Widget {
             GraphicsRender.setZOrder(zOrder + 2);
             float textWidth = GraphicsRender.getTextWidth(text, 2);
             float textHeight = GraphicsRender.getTextHeight(text,2);
-            GraphicsRender.setColor(0,0,0,1);
+            GraphicsRender.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
             GraphicsRender.drawText(text, bounds.center.x - textWidth/2, bounds.center.y - (textHeight/2), 2, scissors);
         }
 
         super.draw(camera);
+    }
+
+
+    public void setTextColor(float r, float g, float b, float a) {
+        textColor[0] = r;
+        textColor[1] = g;
+        textColor[2] = b;
+        textColor[3] = a;
     }
 
 

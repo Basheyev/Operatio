@@ -3,9 +3,9 @@ package com.axiom.operatio.model;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.model.buffer.Buffer;
-import com.axiom.operatio.model.machines.Machine;
-import com.axiom.operatio.model.machines.MachineType;
-import com.axiom.operatio.model.machines.Operation;
+import com.axiom.operatio.model.machine.Machine;
+import com.axiom.operatio.model.machine.MachineType;
+import com.axiom.operatio.model.machine.Operation;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.conveyor.Conveyor;
 

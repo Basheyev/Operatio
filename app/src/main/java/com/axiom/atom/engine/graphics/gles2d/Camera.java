@@ -8,7 +8,6 @@ import android.view.WindowManager;
 
 import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.geometry.AABB;
-import com.axiom.operatio.MainActivity;
 
 /**
  * Камера - вычисляет ортогнальную матрицу для наблюдения за точкой в игровом мире.
@@ -25,7 +24,7 @@ public class Camera {
     private static Camera camera;
     private float x1, y1, x2, y2;
     private float x, y;
-    private float[] cameraMatrix = new float[16];
+    private final float[] cameraMatrix = new float[16];
     private float oldX, oldY;
     private float displayWidth;
     private float displayHeight;
@@ -63,10 +62,9 @@ public class Camera {
      * Направляет камеру в необходимую точку игрового мира
      * @param x координата в игровом мире
      * @param y координата в игровом мире
-     * @return ортогональная матрица камеры (mat4 = float 4x4)
      */
-    public float[] lookAt(float x, float y) {
-        if (x==oldX && y==oldY) return cameraMatrix;
+    public void lookAt(float x, float y) {
+        if (x==oldX && y==oldY) return;
         // Ортогональная проекция 1920x1080 (HD)
         // удостовериться, что не меняем матрицу во время отрисовки кадра
         synchronized (cameraMatrix) {
@@ -80,7 +78,6 @@ public class Camera {
             oldX = x;
             oldY = y;
         }
-        return cameraMatrix;
     }
 
     /**

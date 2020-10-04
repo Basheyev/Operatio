@@ -1,7 +1,6 @@
-package com.axiom.atom.engine.tests.phystest;
+package com.axiom.atom.tests.phystest;
 
 import android.opengl.GLES20;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 
 import com.axiom.atom.engine.core.GameObject;
@@ -111,9 +110,9 @@ public class PhysScene extends GameScene {
                 block.setLocalBounds(-bw / 2, -bh / 2, bw / 2, bh / 2);
                 addObject(block);
             }
-        } else if (action==MotionEvent.ACTION_MOVE) {
-
-        } else if (action==MotionEvent.ACTION_UP) {
+        } else /*if (action==MotionEvent.ACTION_MOVE) {
+            // DO NOTHING
+        } else*/ if (action==MotionEvent.ACTION_UP) {
             if (selectedObject!=null) {
                 selectedObject.velocity.x += (worldX - selectedX) * 0.1f;
                 selectedObject.velocity.y += (worldY - selectedY) * 0.1f;

@@ -49,29 +49,10 @@ public class MainMenuScene extends GameScene {
         background.draw(camera,0,0,1920,1080);
     }
 
-    protected StringBuffer fps = new StringBuffer(100);
+
     @Override
     public void postRender(Camera camera) {
-        float x = camera.getX();
-        float y = camera.getY();
-        fps.delete(0, fps.length());
-        fps.append("FPS:").append(GraphicsRender.getFPS())
-                .append(" Quads:").append(BatchRender.getEntriesCount())
-                .append(" Calls:").append(BatchRender.getDrawCallsCount())
-                .append(" Time:").append(GraphicsRender.getRenderTime())
-                .append("ms\nand Other characters that prints here ")
-                .append("\"Lorem ipsum dolor sit amet, consectetur adipiscing elit,\n" +
-                        "sed do eiusmod tempor incididunt ut labore et dolore magna\n" +
-                        "aliqua. Ut enim ad minim veniam, quis nostrud exercitation\n" +
-                        "ullamco laboris nisi ut aliquip ex ea commodo consequat.\n" +
-                        "Duis aute irure dolor in reprehenderit in voluptate velit\n" +
-                        "esse cillum dolore eu fugiat nulla pariatur. Excepteur sint\n" +
-                        "occaecat cupidatat non proident, sunt in culpa qui officia\n" +
-                        "deserunt mollit anim id est laborum.\""
-                );
-        GraphicsRender.setZOrder(0);
-        GraphicsRender.setColor(1,1,1,1);
-        GraphicsRender.drawText(fps, x - 900,y + 460, 2f);
+
     }
 
     @Override
