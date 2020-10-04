@@ -28,40 +28,57 @@ public class ConveyorRenderer implements Renderer {
         this.conveyor = conveyor;
         sprite = new Sprite(SceneManager.getResources(), R.drawable.conveyor_texture,4,6);
         sprite.zOrder = 1;
+        createAnimations();
         arrangeAnimation(conveyor.getInputDirection(), conveyor.getOutputDirection());
         timeStarted = System.currentTimeMillis();
     }
 
-    public void arrangeAnimation(int inputDirection, int outputDirection) {
-
+    private void createAnimations() {
         animLR = sprite.addAnimation(0,3,15,true);
         animRL = sprite.addAnimation(4,7,15,true);
         animUD = sprite.addAnimation(8,11,15,true);
         animDU = sprite.addAnimation(12,15,15,true);
         animRU = sprite.addAnimation(16,19,15,true);
         animUR = sprite.addAnimation(20,23,15,true);
+    }
+
+
+    public void arrangeAnimation(int inputDirection, int outputDirection) {
 
         if (inputDirection== LEFT && outputDirection== RIGHT) {
             sprite.setActiveAnimation(animLR);
+            sprite.flipHorizontally(false);
+            sprite.flipVertically(false);
         }
         if (inputDirection== RIGHT && outputDirection== LEFT) {
             sprite.setActiveAnimation(animRL);
+            sprite.flipHorizontally(false);
+            sprite.flipVertically(false);
         }
         if (inputDirection== DOWN && outputDirection== UP) {
             sprite.setActiveAnimation(animDU);
+            sprite.flipHorizontally(false);
+            sprite.flipVertically(false);
         }
         if (inputDirection== UP && outputDirection== DOWN) {
             sprite.setActiveAnimation(animUD);
+            sprite.flipHorizontally(false);
+            sprite.flipVertically(false);
         }
         if (inputDirection== RIGHT && outputDirection== UP) {
             sprite.setActiveAnimation(animRU);
+            sprite.flipHorizontally(false);
+            sprite.flipVertically(false);
         }
         if (inputDirection== UP && outputDirection== RIGHT) {
             sprite.setActiveAnimation(animUR);
+            sprite.flipHorizontally(false);
+            sprite.flipVertically(false);
         }
         if (inputDirection== LEFT && outputDirection== UP) {
             sprite.setActiveAnimation(animRU);
             sprite.flipHorizontally(true);
+            sprite.flipVertically(false);
         }
         if (inputDirection== DOWN && outputDirection== LEFT) {
             sprite.setActiveAnimation(animUR);
@@ -70,10 +87,12 @@ public class ConveyorRenderer implements Renderer {
         }
         if (inputDirection== RIGHT && outputDirection== DOWN) {
             sprite.setActiveAnimation(animRU);
+            sprite.flipHorizontally(false);
             sprite.flipVertically(true);
         }
         if (inputDirection== DOWN && outputDirection== RIGHT) {
             sprite.setActiveAnimation(animUR);
+            sprite.flipHorizontally(false);
             sprite.flipVertically(true);
         }
         if (inputDirection== LEFT && outputDirection== DOWN) {
@@ -84,6 +103,7 @@ public class ConveyorRenderer implements Renderer {
         if (inputDirection== UP && outputDirection== LEFT) {
             sprite.setActiveAnimation(animUR);
             sprite.flipHorizontally(true);
+            sprite.flipVertically(false);
         }
     }
 
