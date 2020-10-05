@@ -200,21 +200,61 @@ public abstract class Block {
 
         if (neighborsCount==1) {
             Block neighbor = (upper != null) ? upper : (down != null) ? down : (left != null) ? left : right;
-            Block neighborOutput = production.getBlockAt(neighbor, neighbor.getOutputDirection());
-            Block neighborInput = production.getBlockAt(neighbor, neighbor.getInputDirection());
-            if (neighborOutput==this) {
-               int newInpDir = (upper != null) ? UP : (down != null) ? DOWN : (left != null) ? LEFT : RIGHT;
-               int newOutDir = oppositeDirection(newInpDir);
-               setDirections(newInpDir, newOutDir);
-            } else if (neighborInput==this) {
-               int newOutDir = (upper != null) ? UP : (down != null) ? DOWN : (left != null) ? LEFT : RIGHT;
-               int newInpDir = oppositeDirection(newOutDir);
-               setDirections(newInpDir, newOutDir);
-            } else return;
+            int neighborSide = (upper != null) ? UP : (down != null) ? DOWN : (left != null) ? LEFT : RIGHT;
+            adjustDirectionOneNeighbor(neighbor, neighborSide);
         }
         if (neighborsCount==2) {
+            if (left!=null && right!=null) adjustDirectionTwoNeighbors(left, Block.LEFT, right, Block.RIGHT);
+            if (left!=null && upper!=null) adjustDirectionTwoNeighbors(left, Block.LEFT, upper, Block.UP);
+            if (left!=null && down!=null) adjustDirectionTwoNeighbors(left, Block.LEFT, down, Block.DOWN);
+            if (right!=null && upper!=null) adjustDirectionTwoNeighbors(right, Block.RIGHT, upper, Block.UP);
+            if (right!=null && down!=null) adjustDirectionTwoNeighbors(right, Block.RIGHT, down, Block.DOWN);
+            if (upper!=null && down!=null) adjustDirectionTwoNeighbors(upper, Block.UP, down, Block.DOWN);
+        }
 
-            // TODO доделать при установке
+
+    }
+
+
+
+    private void adjustDirectionOneNeighbor(Block neighbor, int neighborSide) {
+        Block neighborOutput = production.getBlockAt(neighbor, neighbor.getOutputDirection());
+        Block neighborInput = production.getBlockAt(neighbor, neighbor.getInputDirection());
+        if (neighborOutput==this) {
+            setDirections(neighborSide, oppositeDirection(neighborSide));
+        } else if (neighborInput==this) {
+            setDirections(oppositeDirection(neighborSide), neighborSide);
+        }
+    }
+
+
+
+    private void adjustDirectionTwoNeighbors(Block neighbor1, int neightbor1Side,
+                                            Block neighbor2, int neightbor2Side) {
+
+        Block neighbor1Output = production.getBlockAt(neighbor1, neighbor1.getOutputDirection());
+        Block neighbor1Input = production.getBlockAt(neighbor1, neighbor1.getInputDirection());
+        Block neighbor2Output = production.getBlockAt(neighbor2, neighbor2.getOutputDirection());
+        Block neighbor2Input = production.getBlockAt(neighbor2, neighbor2.getInputDirection());
+
+        // если ни один вход/выход двух соседей не направлен на это блок
+        // поворачиваем как будто соседей нет
+        if (neighbor1Input!=this && neighbor1Output!=this
+                && neighbor2Input!=this && neighbor2Output!=this) return;
+
+        // Если только первого блока вход/выход направлен на этот блок
+        // поворачиваем как будто у нас один сосед
+        if ((neighbor1Input==this || neighbor1Output==this)
+                && neighbor2Input!=this && neighbor2Output!=this) {
+            adjustDirectionOneNeighbor(neighbor1, neightbor1Side);
+        } else if (neighbor1Input!=this && neighbor1Output!=this) {
+            // Если только второго блока вход/выход направлен на этот блок
+            // поворачиваем как будто у нас один сосед
+            adjustDirectionOneNeighbor(neighbor2, neightbor2Side);
+        } else if (neighbor1Input==this && neighbor2Output==this) {
+            setDirections(neightbor2Side, neightbor1Side);
+        } else if (neighbor1Output==this && neighbor2Input==this) {
+            setDirections(neightbor1Side, neightbor2Side);
         }
 
 
@@ -388,7 +428,7 @@ public abstract class Block {
         } else if (neighbor1Input!=this && neighbor1Output!=this) {
             // Если только второго блока вход/выход направлен на этот блок
             // поворачиваем как будто у нас один сосед
-            rotateFlowDirectionOneNeighbor(neighbor1, neightbor1Side);
+            rotateFlowDirectionOneNeighbor(neighbor2, neightbor2Side);
             return;
         }
 
