@@ -3,13 +3,11 @@ package com.axiom.operatio.model.conveyor;
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.data.Channel;
-import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.operatio.model.block.Block;
+import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.block.BlockRenderer;
 import com.axiom.operatio.model.materials.Item;
-import com.axiom.operatio.scenes.production.ProductionScene;
 
 import static com.axiom.operatio.model.block.Block.DOWN;
 import static com.axiom.operatio.model.block.Block.LEFT;
@@ -32,7 +30,7 @@ public class ConveyorRenderer extends BlockRenderer {
         sprite.zOrder = 1;
         createAnimations();
         arrangeAnimation(conveyor.getInputDirection(), conveyor.getOutputDirection());
-        timeStarted = System.currentTimeMillis();
+        timeStarted = Production.getClockMilliseconds();
     }
 
     private void createAnimations() {
@@ -111,25 +109,26 @@ public class ConveyorRenderer extends BlockRenderer {
 
 
     public void draw(Camera camera, float x, float y, float width, float height) {
+        Production production = conveyor.getProduction();
+        if (production!=null) {
+            sprite.animationPaused = production.isPaused();
+        }
 
         // Отрисовать сам конвейер
         sprite.draw(camera,x,y, width, height);
         // Отрисовать предметы на нём
         drawItems(camera, x, y, width, height);
-
+        // Отрисовать вход/выход
         drawInOut(camera, conveyor.getInputDirection(), conveyor.getOutputDirection(),
                 x, y, width, height, sprite.zOrder + 2);
 
-        // Отрисовать количество предметов
-      /*  String bf1 = "" + conveyor.getItemsAmount();
-        GraphicsRender.setZOrder(10);
-        GraphicsRender.drawText(bf1.toCharArray(), x + width /2 ,y + height / 2,1);*/
     }
 
 
+    // TODO Добавить остановку движения материалов при паузе производства
     protected void drawItems(Camera camera, float x, float y, float width, float height) {
 
-        float cycleTime = ProductionScene.getCycleTimeMs();   // Длительность цикла в мс.
+        float cycleTime = Production.getCycleTimeMs();        // Длительность цикла в мс.
         float deliveryCycles = conveyor.getDeliveryCycles();  // Циклов для доставки предмета
         float capacity = conveyor.getTotalCapacity();         // Вместимость конвейера в предметах
         float stridePerItem = 1.0f / (capacity / 2.0f);       // Шаг для одного предмета
@@ -148,14 +147,14 @@ public class ConveyorRenderer extends BlockRenderer {
             finishedCounter++;
         }
 
-        // Разместим на конвейере движущиеся предмаеты
+        // Разместим на конвейере движущиеся предметы
         Channel<Item> inputQueue = conveyor.getInputQueue();
         float maxProgress = 1.0f - (finishedCounter * stridePerItem);
         long now;
         for (int k=0; k<inputQueue.size(); k++) {
             Item item = inputQueue.get(k);
             if (item==null) continue;
-            now = System.currentTimeMillis();
+            now = Production.getClockMilliseconds();
             progress = (now - item.getTimeOwned()) /  deliveryTime;
             if (progress > maxProgress) {
                 progress = maxProgress;
