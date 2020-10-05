@@ -104,6 +104,7 @@ public class HandleBlockAdd {
 
         if (block!=null) {
             production.setBlock(block, column, row);
+            block.adjustFlowDirection();
         }
 
     }

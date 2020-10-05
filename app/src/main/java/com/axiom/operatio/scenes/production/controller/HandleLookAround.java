@@ -13,6 +13,8 @@ import com.axiom.operatio.model.machine.Machine;
 import com.axiom.operatio.model.conveyor.Conveyor;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
+
+// TODO Zoom in/out
 public class HandleLookAround {
 
     private InputHandler inputHandler;
