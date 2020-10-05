@@ -16,9 +16,20 @@ public class UIBuilder {
     protected static BlocksPanel blocksPanel;
     protected static ModePanel editorPanel;
 
-    public static void buildUI(final Resources resources, Widget widget, Production prod) {
+    public static void setPausedButtonState(boolean paused) {
+        if (paused) {
+            pauseButton.setText("PAUSE");
+            pauseButton.setTextColor(1,1,1,1);
+            pauseButton.setColor(1,0,0,1);
+        } else {
+            pauseButton.setText("PLAY");
+            pauseButton.setTextColor(0,0,0,1);
+            pauseButton.setColor(0,1,0,1);
+        }
+    }
 
-        // TODO Play/Pause button
+
+    public static void buildUI(final Resources resources, Widget widget, Production prod) {
 
         production = prod;
 
@@ -27,12 +38,10 @@ public class UIBuilder {
             public void onClick(Widget w) {
                 if (production.isPaused()) {
                     production.setPaused(false);
-                    pauseButton.setText(">");
-                    pauseButton.setColor(0,1,0,1);
+                    setPausedButtonState(false);
                 } else {
                     production.setPaused(true);
-                    pauseButton.setText("| |");
-                    pauseButton.setColor(1,0,0,1);
+                    setPausedButtonState(true);
                 }
             }
         };
@@ -40,13 +49,16 @@ public class UIBuilder {
         ClickListener exitListener = new ClickListener() {
             @Override
             public void onClick(Widget w) {
-                production.setPaused(true);
+                if (!production.isPaused()) {
+                    production.setPaused(true);
+                    UIBuilder.setPausedButtonState(true);
+                }
                 SceneManager.getInstance().setActiveScene("Menu");
             }
         };
 
-        pauseButton = new Button(">");
-        pauseButton.setTextColor(1,1,1,1);
+        pauseButton = new Button("PLAY");
+        pauseButton.setTextColor(0,0,0,1);
         pauseButton.setColor(0,1,0,1);
         pauseButton.setLocalBounds(Camera.WIDTH-250, 0, 250, 140);
         pauseButton.setClickListener(pauseListener);
