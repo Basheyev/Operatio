@@ -134,7 +134,6 @@ public abstract class Block {
 
     /**
      * Обрабатывает входной поток предметов в выходной поток предметов
-     * @return true - если успешно, false - если произошел сбой
      */
     public abstract void process();
 
@@ -183,40 +182,47 @@ public abstract class Block {
 
 
     //--------------------------------------------------------------------------------------
-    // Установка и повороты направления потока материалов
+    // Установка направления потока материалов
     //--------------------------------------------------------------------------------------
 
+    /**
+     * Устанавливает направления потока материалов с учётом соседних блоков
+     */
     public void adjustFlowDirection() {
-        Block upper = production.getBlockAt(this, Block.UP);
-        Block down = production.getBlockAt(this, Block.DOWN);
-        Block left = production.getBlockAt(this, Block.LEFT);
-        Block right = production.getBlockAt(this, Block.RIGHT);
+
+        // Смотрим какие есть соседние блоки на производстве: слева, справа, сверху и снизу
+        Block upper = production.getBlockAt(this, UP);
+        Block down = production.getBlockAt(this, DOWN);
+        Block left = production.getBlockAt(this, LEFT);
+        Block right = production.getBlockAt(this, RIGHT);
+
+        // Считаем количество соседей
         int neighborsCount =
                 (upper!= null ? 1 : 0) + (down != null ? 1 : 0) +
                 (left != null ? 1 : 0) + (right != null ? 1 : 0);
-        boolean hasNeighbors = neighborsCount > 0;
 
-        if (!hasNeighbors || neighborsCount > 2) return;
-
+        // Если есть один сосед
         if (neighborsCount==1) {
             Block neighbor = (upper != null) ? upper : (down != null) ? down : (left != null) ? left : right;
             int neighborSide = (upper != null) ? UP : (down != null) ? DOWN : (left != null) ? LEFT : RIGHT;
             adjustDirectionOneNeighbor(neighbor, neighborSide);
+        // Если есть два соседа
+        } else if (neighborsCount==2) {
+            if (left!=null && right!=null) adjustDirectionTwoNeighbors(left, LEFT, right, RIGHT);
+            if (left!=null && upper!=null) adjustDirectionTwoNeighbors(left, LEFT, upper, UP);
+            if (left!=null && down!=null) adjustDirectionTwoNeighbors(left, LEFT, down, DOWN);
+            if (right!=null && upper!=null) adjustDirectionTwoNeighbors(right, RIGHT, upper, UP);
+            if (right!=null && down!=null) adjustDirectionTwoNeighbors(right, RIGHT, down, DOWN);
+            if (upper!=null && down!=null) adjustDirectionTwoNeighbors(upper, UP, down, DOWN);
         }
-        if (neighborsCount==2) {
-            if (left!=null && right!=null) adjustDirectionTwoNeighbors(left, Block.LEFT, right, Block.RIGHT);
-            if (left!=null && upper!=null) adjustDirectionTwoNeighbors(left, Block.LEFT, upper, Block.UP);
-            if (left!=null && down!=null) adjustDirectionTwoNeighbors(left, Block.LEFT, down, Block.DOWN);
-            if (right!=null && upper!=null) adjustDirectionTwoNeighbors(right, Block.RIGHT, upper, Block.UP);
-            if (right!=null && down!=null) adjustDirectionTwoNeighbors(right, Block.RIGHT, down, Block.DOWN);
-            if (upper!=null && down!=null) adjustDirectionTwoNeighbors(upper, Block.UP, down, Block.DOWN);
-        }
-
 
     }
 
-
-
+    /**
+     * Устанавливает направление потока материалов если есть один сосед
+     * @param neighbor сосдний блок
+     * @param neighborSide с какой стороны находится соседний блок
+     */
     private void adjustDirectionOneNeighbor(Block neighbor, int neighborSide) {
         Block neighborOutput = production.getBlockAt(neighbor, neighbor.getOutputDirection());
         Block neighborInput = production.getBlockAt(neighbor, neighbor.getInputDirection());
@@ -261,13 +267,18 @@ public abstract class Block {
     }
 
 
+    //--------------------------------------------------------------------------------------
+    // Поворот направления потока материалов
+    //--------------------------------------------------------------------------------------
 
-
+    /**
+     * Поворачивает направление потока материалов
+     */
     public void rotateFlowDirection() {
-        Block upper = production.getBlockAt(this, Block.UP);
-        Block down = production.getBlockAt(this, Block.DOWN);
-        Block left = production.getBlockAt(this, Block.LEFT);
-        Block right = production.getBlockAt(this, Block.RIGHT);
+        Block upper = production.getBlockAt(this, UP);
+        Block down = production.getBlockAt(this, DOWN);
+        Block left = production.getBlockAt(this, LEFT);
+        Block right = production.getBlockAt(this, RIGHT);
 
         int neighborsCount =
                 (upper!= null ? 1 : 0) + (down != null ? 1 : 0) +
@@ -275,23 +286,25 @@ public abstract class Block {
 
         boolean hasNeighbors = neighborsCount > 0;
 
-        // Если нет соседей
+        // Если нет соседних блоков
         if (!hasNeighbors) {
-            rotateFlowDirection90();
+            rotateFlowDirectionRightAngle();
         } else {
-            // Если один сосед
+            // Если один соседний блок
             if (neighborsCount==1) {
-                if (upper!=null) rotateFlowDirectionOneNeighbor(upper, Block.UP); else
-                if (down!=null) rotateFlowDirectionOneNeighbor(down, Block.DOWN); else
-                if (left!=null) rotateFlowDirectionOneNeighbor(left, Block.LEFT);
-                else rotateFlowDirectionOneNeighbor(right, Block.RIGHT);
+                if (upper!=null) rotateFlowDirectionOneNeighbor(upper, UP); else
+                if (down!=null) rotateFlowDirectionOneNeighbor(down, DOWN); else
+                if (left!=null) rotateFlowDirectionOneNeighbor(left, LEFT);
+                else rotateFlowDirectionOneNeighbor(right, RIGHT);
+            // Если два соседних блока
             } if (neighborsCount==2) {
-                if (left!=null && right!=null) rotateFlowDirectionTwoNeighbors(left, Block.LEFT, right, Block.RIGHT);
-                if (left!=null && upper!=null) rotateFlowDirectionTwoNeighbors(left, Block.LEFT, upper, Block.UP);
-                if (left!=null && down!=null) rotateFlowDirectionTwoNeighbors(left, Block.LEFT, down, Block.DOWN);
-                if (right!=null && upper!=null) rotateFlowDirectionTwoNeighbors(right, Block.RIGHT, upper, Block.UP);
-                if (right!=null && down!=null) rotateFlowDirectionTwoNeighbors(right, Block.RIGHT, down, Block.DOWN);
-                if (upper!=null && down!=null) rotateFlowDirectionTwoNeighbors(upper, Block.UP, down, Block.DOWN);
+                if (left!=null && right!=null) rotateFlowDirectionTwoNeighbors(left, LEFT, right, RIGHT);
+                if (left!=null && upper!=null) rotateFlowDirectionTwoNeighbors(left, LEFT, upper, UP);
+                if (left!=null && down!=null) rotateFlowDirectionTwoNeighbors(left, LEFT, down, DOWN);
+                if (right!=null && upper!=null) rotateFlowDirectionTwoNeighbors(right, RIGHT, upper, UP);
+                if (right!=null && down!=null) rotateFlowDirectionTwoNeighbors(right, RIGHT, down, DOWN);
+                if (upper!=null && down!=null) rotateFlowDirectionTwoNeighbors(upper, UP, down, DOWN);
+            // Если больше соседних блоков
             } if (neighborsCount>2) {
                 rotateFlowDirectionFree();
             }
@@ -304,16 +317,16 @@ public abstract class Block {
      * Проворачивает поочередно все 12 вариантов направления потока материалов
      */
     private void rotateFlowDirectionFree() {
-
         int currentInpDir = getInputDirection();
         int currentOutDir = getOutputDirection();
-
+        // Если еще не переворачивали направление потока материалов
         if (!directionFlip) {
             setDirections(currentOutDir, currentInpDir);
             directionFlip = true;
         } else {
-            int newInpDir = Block.nextClockwiseDirection(currentInpDir);
-            int newOutDir = Block.nextClockwiseDirection(currentOutDir);
+        // Если переворачивали направление потока материалов, прокручиваем по часовой стрелке
+            int newInpDir = nextClockwiseDirection(currentInpDir);
+            int newOutDir = nextClockwiseDirection(currentOutDir);
             if (newInpDir==currentOutDir) {
                 setOutputDirection(newOutDir);
             } else {
@@ -321,18 +334,17 @@ public abstract class Block {
             }
             directionFlip = false;
         }
-
     }
 
 
     /**
      * Поворачивает направление потока материалов на 90 градусов
      */
-    private void rotateFlowDirection90() {
+    private void rotateFlowDirectionRightAngle() {
         int currentInpDir = getInputDirection();
         int currentOutDir = getOutputDirection();
-        int newInpDir = Block.nextClockwiseDirection(currentInpDir);
-        int newOutDir = Block.nextClockwiseDirection(currentOutDir);
+        int newInpDir = nextClockwiseDirection(currentInpDir);
+        int newOutDir = nextClockwiseDirection(currentOutDir);
         setDirections(newInpDir, newOutDir);
     }
 
@@ -351,7 +363,7 @@ public abstract class Block {
 
         // Если входы/выходы соседа не направлены на этот блок
         if (neighborInput!=this && neighborOutput!=this) {
-            rotateFlowDirection90();
+            rotateFlowDirectionRightAngle();
             return;
         }
 
@@ -370,9 +382,9 @@ public abstract class Block {
                 // Фиксируем вход этого блока со стороны выхода соседа
                 newInpDir = neightborSide;
                 // Поворачиваем лишь выход материалов этого блока
-                newOutDir = Block.nextClockwiseDirection(currentOutDir);
+                newOutDir = nextClockwiseDirection(currentOutDir);
                 // Если выход совпал со входом, поворачиваем выход еще раз
-                if (newOutDir == newInpDir) newOutDir = Block.nextClockwiseDirection(newOutDir);
+                if (newOutDir == newInpDir) newOutDir = nextClockwiseDirection(newOutDir);
                 setDirections(newInpDir, newOutDir);
                 directionFlip = false;
             }
@@ -382,9 +394,9 @@ public abstract class Block {
                 // Фиксируем выход этого блока на сторону входа соседа
                 newOutDir = neightborSide;
                 // Поворачиваем лишь вход материалов этого блока
-                newInpDir = Block.nextClockwiseDirection(currentInpDir);
+                newInpDir = nextClockwiseDirection(currentInpDir);
                 // Если вход совпал со выходом, поворачиваем вход еще раз
-                if (newInpDir == newOutDir) newInpDir = Block.nextClockwiseDirection(newInpDir);
+                if (newInpDir == newOutDir) newInpDir = nextClockwiseDirection(newInpDir);
                 setDirections(newInpDir, newOutDir);
                 directionFlip = false;
             }
@@ -415,7 +427,7 @@ public abstract class Block {
         // поворачиваем как будто соседей нет
         if (neighbor1Input!=this && neighbor1Output!=this
         && neighbor2Input!=this && neighbor2Output!=this) {
-            rotateFlowDirection90();
+            rotateFlowDirectionRightAngle();
             return;
         }
 
