@@ -13,9 +13,15 @@ public class Production {
     protected ArrayList<Block> blocks;
     protected Block[][] grid;
     protected int columns, rows;
+
+    private long lastCycleTime;                     // Время последнего цикла (миллисекунды)
+    private static long cycleMilliseconds = 300;    // Длительносить цикла (миллисекунды)
+    protected static long clock = 0;
     protected long cycle;
 
-    private boolean paused = false;
+    private boolean isPaused = false;
+    private long pauseStart = 0;
+    private long pausedTime = 0;
 
     private boolean blockSelected = false;
     private int selectedCol, selectedRow;
@@ -36,14 +42,31 @@ public class Production {
     }
 
 
-    public void cycle() {
-        Block block;
-        int size = blocks.size();
-        for (int i=0; i<size; i++) {
-            block = blocks.get(i);
-            block.process();
+    public void process() {
+        if (!isPaused) {
+            long now = System.currentTimeMillis();
+            if (now - lastCycleTime > cycleMilliseconds) {
+                Block block;
+                int size = blocks.size();
+                for (int i = 0; i < size; i++) {
+                    block = blocks.get(i);
+                    block.process();
+                }
+                cycle++;
+                lastCycleTime = now;
+            }
+            // Учитываем время производства в миллисекундах с учетом пауз игры
+            clock = System.currentTimeMillis() - pausedTime;
         }
-        cycle++;
+    }
+
+
+    /**
+     * Возвращает время производства в миллисекундах с учетом пауз игры
+     * @return время в миллисекундах
+     */
+    public static long getClockMilliseconds() {
+        return clock;
     }
 
 
@@ -111,6 +134,10 @@ public class Production {
     }
 
 
+    public static long getCycleTimeMs() {
+        return cycleMilliseconds;
+    }
+
     public static long getCurrentCycle() {
         if (instance==null) return 0;
         return instance.cycle;
@@ -149,7 +176,20 @@ public class Production {
         blockSelected = false;
     }
 
+    public void setPaused(boolean pause) {
+        if (pause) {
+            pauseStart = System.currentTimeMillis();
+            isPaused = true;
+        } else {
+            long now = System.currentTimeMillis();
+            pausedTime += (now - pauseStart);
+            isPaused = false;
+        }
+    }
 
+    public boolean isPaused() {
+        return isPaused;
+    }
 
 
 }
