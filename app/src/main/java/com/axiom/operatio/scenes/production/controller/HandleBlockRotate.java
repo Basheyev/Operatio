@@ -7,7 +7,6 @@ import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
-//  TODO Вращение блока производства (направлений вход-выход)
 public class HandleBlockRotate {
 
     private InputHandler inputHandler;
@@ -40,7 +39,10 @@ public class HandleBlockRotate {
                 break;
             case MotionEvent.ACTION_UP:
                 if (column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
-                    if (block!=null) block.rotateFlowDirection();
+                    if (block!=null) {
+                        block.rotateFlowDirection();
+                        production.selectBlock(column, row);
+                    }
                 }
         }
 

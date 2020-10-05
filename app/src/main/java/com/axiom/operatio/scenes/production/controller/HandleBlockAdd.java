@@ -85,7 +85,7 @@ public class HandleBlockAdd {
             case 2:
                 mt = MachineType.getMachineType(2);
                 block = new Machine(production,
-                        mt, mt.getOperations()[0],
+                        mt, mt.getOperations()[1],
                         Machine.LEFT, Machine.RIGHT);
                 break;
             case 3:
@@ -105,6 +105,7 @@ public class HandleBlockAdd {
         if (block!=null) {
             production.setBlock(block, column, row);
             block.adjustFlowDirection();
+            production.selectBlock(column, row);
         }
 
     }

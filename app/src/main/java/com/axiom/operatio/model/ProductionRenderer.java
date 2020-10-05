@@ -12,13 +12,15 @@ import com.axiom.operatio.model.block.BlockRenderer;
 public class ProductionRenderer extends BlockRenderer {
 
     protected Production production;
-    protected Sprite tile;
+    protected Sprite tile, selection;
     private float cellWidth;                  // Ширина клетки
     private float cellHeight;                 // Высота клетки
 
     public ProductionRenderer(Production production, float cellWidth, float cellHeight) {
         tile = new Sprite(SceneManager.getResources(), R.drawable.tile);
         tile.zOrder = 0;
+        selection = new Sprite(SceneManager.getResources(), R.drawable.selected);
+        selection.zOrder = 500;
         this.production = production;
         this.cellWidth = cellWidth;
         this.cellHeight = cellHeight;
@@ -30,7 +32,7 @@ public class ProductionRenderer extends BlockRenderer {
         int rows = production.getRows();
         Block block;
         BlockRenderer renderer;
-        //GraphicsRender.clear();
+
         for (int row=0; row < rows; row++) {
             for (int col=0; col < columns; col++) {
                 tile.draw(camera,col * cellWidth,row * cellHeight, cellWidth, cellHeight);
@@ -39,6 +41,15 @@ public class ProductionRenderer extends BlockRenderer {
                     renderer = block.getRenderer();
                     if (renderer != null) {
                         renderer.draw(camera,
+                                col * cellWidth,
+                                row * cellHeight,
+                                cellWidth,
+                                cellHeight);
+                    }
+                }
+                if (production.isBlockSelected()) {
+                    if (row==production.getSelectedRow() && col==production.getSelectedCol()) {
+                        selection.draw(camera,
                                 col * cellWidth,
                                 row * cellHeight,
                                 cellWidth,

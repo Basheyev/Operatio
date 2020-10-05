@@ -4,6 +4,9 @@ import com.axiom.operatio.model.block.Block;
 
 import java.util.ArrayList;
 
+
+// TODO Play/Pause
+
 public class Production {
 
     protected static Production instance;
@@ -11,6 +14,11 @@ public class Production {
     protected Block[][] grid;
     protected int columns, rows;
     protected long cycle;
+
+    private boolean paused = false;
+
+    private boolean blockSelected = false;
+    private int selectedCol, selectedRow;
 
 
     public static Production getInstance(int columns, int rows) {
@@ -116,5 +124,32 @@ public class Production {
     public int getRows() {
         return rows;
     }
+
+
+    public boolean isBlockSelected() {
+        return blockSelected;
+    }
+
+    public void selectBlock(int col, int row) {
+        if (col < 0 || row < 0 || col >= columns || row >= columns) return;
+        selectedCol = col;
+        selectedRow = row;
+        blockSelected = true;
+    }
+
+    public int getSelectedCol() {
+        return selectedCol;
+    }
+
+    public int getSelectedRow() {
+        return selectedRow;
+    }
+
+    public void unselectBlock() {
+        blockSelected = false;
+    }
+
+
+
 
 }

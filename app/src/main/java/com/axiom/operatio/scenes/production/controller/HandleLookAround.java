@@ -68,9 +68,12 @@ public class HandleLookAround {
                         if (block instanceof Machine) SoundRenderer.playSound(scene.snd1);
                         if (block instanceof Conveyor) SoundRenderer.playSound(scene.snd2);
                         if (block instanceof Buffer) SoundRenderer.playSound(scene.snd3);
-                        Log.i("PROD COL=" + column + ", ROW=" + row, block.toString());
+
                     }
                 }
+                if (production.isBlockSelected() && production.getSelectedCol()==column && production.getSelectedRow()==row) {
+                    production.unselectBlock();
+                } else production.selectBlock(column, row);
 
         }
     }

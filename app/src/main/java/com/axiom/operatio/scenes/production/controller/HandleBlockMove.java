@@ -3,6 +3,8 @@ package com.axiom.operatio.scenes.production.controller;
 
 import android.view.MotionEvent;
 
+import com.axiom.atom.R;
+import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.model.block.Block;
@@ -20,9 +22,11 @@ public class HandleBlockMove {
     private boolean dragging = false;
     private float cursorX, cursorY;
     private int lastCol, lastRow;
+    private int blockPlaced;
 
     public HandleBlockMove(InputHandler inputHandler,
                            ProductionScene scn, Production prod, ProductionRenderer prodRender) {
+        blockPlaced = SoundRenderer.loadSound(R.raw.block_add_snd);
         this.inputHandler = inputHandler;
         this.production = prod;
         this.productionRenderer = prodRender;
@@ -51,6 +55,7 @@ public class HandleBlockMove {
                 if (dragging && dragBlock!=null) {
                     cursorX = worldX;
                     cursorY = worldY;
+                    production.selectBlock(column, row);
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -58,10 +63,14 @@ public class HandleBlockMove {
                     dragging = false;
                     if (column >= 0 && row >= 0) {
                         if (block == null) {
+                            SoundRenderer.playSound(blockPlaced);
                             production.setBlock(dragBlock, column, row);
+                            production.selectBlock(column, row);
                         } else {
                             production.setBlock(dragBlock, lastCol, lastRow);
+                            production.selectBlock(lastCol, lastRow);
                         }
+
                     }
                 }
         }
