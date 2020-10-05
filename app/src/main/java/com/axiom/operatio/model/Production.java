@@ -178,6 +178,10 @@ public class Production {
 
     public void setPaused(boolean pause) {
         if (pause) {
+            if (isPaused) {
+                long now = System.currentTimeMillis();
+                pausedTime += (now - pauseStart);
+            }
             pauseStart = System.currentTimeMillis();
             isPaused = true;
         } else {
