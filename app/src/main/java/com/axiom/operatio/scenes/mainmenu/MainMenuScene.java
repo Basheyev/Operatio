@@ -30,7 +30,7 @@ public class MainMenuScene extends GameScene {
             menuPanel = new MenuPanel();
             widget.addChild(menuPanel);
         }
-        Camera.getInstance().lookAt(Camera.WIDTH/2, Camera.HEIGHT/2);
+        //Camera.getInstance().lookAt(Camera.WIDTH/2, Camera.HEIGHT/2);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class MainMenuScene extends GameScene {
     @Override
     public void preRender(Camera camera) {
         background.zOrder = 0;
-        background.draw(camera,0,0,1920,1080);
+        background.draw(camera,camera.getMinX(),camera.getMinY(), Camera.WIDTH,Camera.HEIGHT);
     }
 
 
