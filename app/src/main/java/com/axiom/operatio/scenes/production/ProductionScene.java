@@ -56,7 +56,9 @@ public class ProductionScene extends GameScene {
             snd3 = SoundRenderer.loadSound(R.raw.buffer_snd);
             initialized = true;
         }
+        /*
         production.setPaused(false);
+        UIBuilder.setPausedButtonState(false);*/
     }
 
     @Override
