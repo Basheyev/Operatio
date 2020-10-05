@@ -132,6 +132,10 @@ public abstract class Block {
         return renderer;
     }
 
+    public Production getProduction() {
+        return production;
+    }
+
     /**
      * Обрабатывает входной поток предметов в выходной поток предметов
      */
