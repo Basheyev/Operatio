@@ -36,7 +36,7 @@ public class Item {
     public void setOwner(Block owner) {
         this.owner = owner;
         this.cycleOwned = Production.getCurrentCycle();
-        this.timeOwned = System.currentTimeMillis();
+        this.timeOwned = Production.getClockMilliseconds();
     }
 
 
