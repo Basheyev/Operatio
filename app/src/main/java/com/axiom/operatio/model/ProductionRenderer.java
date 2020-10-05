@@ -7,7 +7,6 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.model.block.BlockRenderer;
 
-// TODO подсветка выбранного блока
 // TODO Zoom in/out
 public class ProductionRenderer extends BlockRenderer {
 
