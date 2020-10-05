@@ -10,7 +10,6 @@ import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
-//  TODO Перемещение блока производства и отображение будущего занимаемого места (Drag & Drop)
 public class HandleBlockMove {
 
     private InputHandler inputHandler;

@@ -55,7 +55,7 @@ public class ModePanel extends Panel {
 
     public ModePanel() {
         super();
-        setLocalBounds(Camera.WIDTH-500,0,400,140);
+        setLocalBounds(Camera.WIDTH-650,0,400,140);
         setColor(panelColor);
         buildButtons();
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);

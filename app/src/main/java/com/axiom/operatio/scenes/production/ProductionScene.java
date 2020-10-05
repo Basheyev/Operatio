@@ -22,8 +22,6 @@ import com.axiom.operatio.scenes.production.view.UIBuilder;
 // TODO Zoom in/out
 public class ProductionScene extends GameScene {
 
-    private int sceneState;
-
     private Production production;
     private InputHandler inputHandler;
     private ProductionRenderer productionRenderer;
@@ -36,8 +34,7 @@ public class ProductionScene extends GameScene {
     public int snd1, snd2, snd3;
     private boolean initialized = false;
 
-    private long lastCycleTime;                     // Время последнего цикла (миллисекунды)
-    private static long cycleMilliseconds = 300;    // Длительносить цикла (миллисекунды)
+
 
     @Override
     public String getSceneName() {
@@ -51,16 +48,15 @@ public class ProductionScene extends GameScene {
             production = ProductionBuilder.createDemoProduction();
             productionRenderer = new ProductionRenderer(production, cellWidth, cellHeight);
             inputHandler = new InputHandler(this, production, productionRenderer);
-            UIBuilder.buildUI(getResources(), getSceneWidget());
+            UIBuilder.buildUI(getResources(), getSceneWidget(), production);
             blocksPanel = (BlocksPanel) UIBuilder.getBlocksPanel();
             modePanel = (ModePanel) UIBuilder.getEditorPanel();
             snd1 = SoundRenderer.loadSound(R.raw.machine_snd);
             snd2 = SoundRenderer.loadSound(R.raw.conveyor_snd);
             snd3 = SoundRenderer.loadSound(R.raw.buffer_snd);
             initialized = true;
-
-
         }
+        production.setPaused(false);
     }
 
     @Override
@@ -70,11 +66,7 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void updateScene(float deltaTimeNs) {
-        long now = System.currentTimeMillis();
-        if (now - lastCycleTime > cycleMilliseconds) {
-            production.cycle();
-            lastCycleTime = now;
-        }
+        production.process();
     }
 
     @Override
@@ -117,7 +109,4 @@ public class ProductionScene extends GameScene {
     }
 
 
-    public static long getCycleTimeMs() {
-        return cycleMilliseconds;
-    }
 }
