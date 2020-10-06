@@ -78,4 +78,20 @@ public class ProductionRenderer extends BlockRenderer {
                 cellHeight * (1.0f + fluctuation * 2));
     }
 
+    public void scale(float scaleFactor) {
+        float newCellWidth = cellWidth * scaleFactor;
+        float newCellHeight = cellHeight * scaleFactor;
+        if (newCellWidth<32 || newCellHeight<32) { newCellWidth = 32; newCellHeight = 32; }
+        if (newCellWidth>512 || newCellHeight>512) { newCellWidth = 512; newCellHeight = 512; }
+
+        Camera camera = Camera.getInstance();
+        float cx = camera.getX() * (newCellWidth / cellWidth);
+        float cy = camera.getY() * (newCellWidth / cellHeight);
+        camera.lookAt(cx, cy);
+
+        cellWidth = newCellWidth;
+        cellHeight = newCellHeight;
+
+    }
+
 }

@@ -12,7 +12,7 @@ import com.axiom.operatio.model.conveyor.Conveyor;
 public class ProductionBuilder {
     
     public static Production createDemoProduction() {
-        Production production = Production.getInstance(25,20);
+        Production production = Production.getInstance(50,50);
         circularConveyor(production, 2, 0);
         circularConveyor(production, 2, 4);
         conveyorTask(production,10,1);
