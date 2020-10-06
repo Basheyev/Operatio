@@ -5,6 +5,7 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.input.ScaleEvent;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
 
@@ -38,6 +39,8 @@ public abstract class GameScene {
     public abstract void preRender(Camera camera);       // Вызывается из потока GLThread
     public abstract void postRender(Camera camera);      // Вызывается из потока GLThread
     public abstract void onMotion(MotionEvent event, float worldX, float worldY); // GameLoop
+    public void onScale(ScaleEvent event, float worldX, float worldY) {}
+
 
     /**
      * Возвращает объекты сцены

@@ -25,7 +25,6 @@ public class GameView extends GLSurfaceView {
     protected SceneManager sceneManager;
     protected GraphicsRender renderer;
 
-
     public static GameView getInstance(Context context, GameScene gameScene) {
         if (gameView==null) gameView = new GameView(context, gameScene);
         return gameView;
@@ -53,8 +52,8 @@ public class GameView extends GLSurfaceView {
         //------------------------------------------------------------------------------------
         // Инициализация подсистемы ввода
         //------------------------------------------------------------------------------------
-        setOnTouchListener(new TouchListener());  // Добавляем обработчик событий ввода
-        Input.initialize(getContext());               // Инициализируем обработчик джойстика
+        setOnTouchListener(new TouchListener(context));  // Добавляем обработчик событий ввода
+        Input.initialize(getContext());                  // Инициализируем обработчик джойстика
         //------------------------------------------------------------------------------------
         // Инициализация звуковой подсистемы
         //------------------------------------------------------------------------------------

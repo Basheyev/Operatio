@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.input.ScaleEvent;
 
 
 /**
@@ -29,7 +30,7 @@ public class GameLoop extends Thread {
     //--------------------------------------------------------------------------------
     // Очередь событий ввода от пользователя (дополняется из UIThread)
     //--------------------------------------------------------------------------------
-    public static Channel<Parcelable> inputEventQueue;
+    public static Channel<Object> inputEventQueue;
     /**
      * Возвращает единственный экземпляр потока игрового цикла (Singleton)
      * @param view экземпляр GameView
@@ -72,6 +73,11 @@ public class GameLoop extends Thread {
                 gameCycle();
             } catch (Exception e) {
                 e.printStackTrace();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
                 break;
             }
 
@@ -158,9 +164,10 @@ public class GameLoop extends Thread {
     private void processInputEvent(GameScene scene) {
         // Если есть события ввода
         while (inputEventQueue.size() > 0) {
-            Parcelable event = inputEventQueue.poll(); // Берем очередное событие ввода
+            Object event = inputEventQueue.poll(); // Берем очередное событие ввода
             if (event!=null) {
                 if (event instanceof MotionEvent) processMotionEvent(scene, (MotionEvent) event);
+                if (event instanceof ScaleEvent) processScaleEvent(scene, (ScaleEvent) event);
                 // Здесь можно развить тему добавляя события других типов
             }
         }
@@ -178,6 +185,21 @@ public class GameLoop extends Thread {
 
         // Вызываем обработчик события игровой сцены
         if (!eventHandled) scene.onMotion(event, worldX, worldY);
+    }
+
+
+    private void processScaleEvent(GameScene scene, ScaleEvent event) {
+        Camera camera = GraphicsRender.getCamera();
+        // Вычисляем координаты игрового мира чтобы передать обработчику
+        float worldX = camera.convertScreenToWorldX(event.focusX);
+        float worldY = camera.convertScreenToWorldY(event.focusY);
+
+        // Доставляем события корневому виджету сцены
+        boolean eventHandled = scene.getSceneWidget().onScaleEvent(event, worldX, worldY);
+
+        // Вызываем обработчик события игровой сцены
+        if (!eventHandled) scene.onScale(event, worldX, worldY);
+
     }
 
 }
