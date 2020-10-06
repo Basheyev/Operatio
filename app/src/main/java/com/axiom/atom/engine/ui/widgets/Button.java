@@ -63,5 +63,8 @@ public class Button extends Widget {
         textColor[3] = a;
     }
 
+    public void setText(String caption) {
+        if (caption!=null) this.text = caption;
+    }
 
 }
