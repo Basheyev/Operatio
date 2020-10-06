@@ -5,6 +5,7 @@ import android.view.MotionEvent;
 import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.input.ScaleEvent;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 
 import java.util.ArrayList;
@@ -279,6 +280,10 @@ public abstract class Widget {
             pressed = false;
         }
         return eventHandeled;
+    }
+
+    public boolean onScaleEvent(ScaleEvent event, float worldX, float worldY) {
+        return false;
     }
 
     //---------------------------------------------------------------------------------------------
