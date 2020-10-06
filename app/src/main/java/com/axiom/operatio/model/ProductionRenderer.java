@@ -48,11 +48,7 @@ public class ProductionRenderer extends BlockRenderer {
                 }
                 if (production.isBlockSelected()) {
                     if (row==production.getSelectedRow() && col==production.getSelectedCol()) {
-                        selection.draw(camera,
-                                col * cellWidth,
-                                row * cellHeight,
-                                cellWidth,
-                                cellHeight);
+                        drawSelection(camera, col, row);
                     }
                 }
             }
@@ -70,6 +66,16 @@ public class ProductionRenderer extends BlockRenderer {
         int row = (int) (worldY / cellHeight);
         if (row >= production.columns) row = -1;
         return row;
+    }
+
+
+    private void drawSelection(Camera camera, int col, int row) {
+        float fluctuation = (float) (Math.cos(System.currentTimeMillis() / 100.0d) + 1f) / 20f;
+        selection.draw(camera,
+                col * cellWidth - (cellWidth * fluctuation),
+                row * cellHeight - (cellHeight * fluctuation),
+                cellWidth * (1.0f + fluctuation * 2),
+                cellHeight * (1.0f + fluctuation * 2));
     }
 
 }
