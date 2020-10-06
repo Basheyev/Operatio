@@ -37,6 +37,7 @@ public class Sprite {
     protected boolean horizontalFlip = false;      // Горизонтальное отражение спрайта
     protected boolean verticalFlip = false;        // Вертикальное отражение спрайта
 
+    public boolean animationPaused = false;        // Анимация на паузе
     protected ArrayList<Animation> animations = null;  // Список анимаций спрайта
     protected int activeAnimation = -1;            // Текущая активная анимация
     protected int timesPlayed = 0;                 // Сколько раз проиграна текущая анимация
@@ -392,7 +393,7 @@ public class Sprite {
      * с учётом прошедшего интервала времени и кадра
      */
     public void animationNextFrame() {
-        if (animations==null || activeAnimation==-1) return;
+        if (animations==null || activeAnimation==-1 || animationPaused) return;
         Animation anim = animations.get(activeAnimation);
         // Сколько времени прошло с переключения текущего кадра (в наносекундах)
         long timeInterval = System.nanoTime() - lastFrameTime;
