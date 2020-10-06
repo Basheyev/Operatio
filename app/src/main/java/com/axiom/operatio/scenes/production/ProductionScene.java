@@ -2,7 +2,6 @@ package com.axiom.operatio.scenes.production;
 
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameScene;
@@ -22,7 +21,7 @@ import com.axiom.operatio.scenes.production.controller.InputHandler;
 import com.axiom.operatio.scenes.production.view.ModePanel;
 import com.axiom.operatio.scenes.production.view.UIBuilder;
 
-// TODO Zoom in/out
+
 public class ProductionScene extends GameScene {
 
     private Production production;
@@ -37,8 +36,6 @@ public class ProductionScene extends GameScene {
     public int snd1, snd2, snd3;
     private boolean initialized = false;
 
-
-    private ScaleGestureDetector scaleDetector;
 
     @Override
     public String getSceneName() {
