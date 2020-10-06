@@ -94,4 +94,12 @@ public class ProductionRenderer extends BlockRenderer {
 
     }
 
+    public float getCellWidth() {
+        return cellWidth;
+    }
+
+    public float getCellHeight() {
+        return cellHeight;
+    }
+
 }
