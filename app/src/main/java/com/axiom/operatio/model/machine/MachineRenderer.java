@@ -4,6 +4,7 @@ import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
+import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.block.BlockRenderer;
 
 public class MachineRenderer extends BlockRenderer {
@@ -26,6 +27,11 @@ public class MachineRenderer extends BlockRenderer {
 
 
     public void draw(Camera camera, float x, float y, float width, float height) {
+        Production production = machine.getProduction();
+        if (production!=null) {
+            sprite.animationPaused = production.isPaused();
+        }
+
         sprite.draw(camera, x, y, width, height);
 
         drawInOut(camera, machine.getInputDirection(), machine.getOutputDirection(),
