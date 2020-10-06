@@ -7,7 +7,7 @@ import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
-public class HandleBlockRotate {
+public class BlockRotateHandler {
 
     private InputHandler inputHandler;
     private ProductionScene scene;
@@ -15,8 +15,10 @@ public class HandleBlockRotate {
     private ProductionRenderer productionRenderer;
     private int lastCol, lastRow;
 
-    public HandleBlockRotate(InputHandler inputHandler, ProductionScene scene,
-                             Production production, ProductionRenderer productionRenderer) {
+    protected boolean dragging = false;
+
+    public BlockRotateHandler(InputHandler inputHandler, ProductionScene scene,
+                              Production production, ProductionRenderer productionRenderer) {
         this.inputHandler = inputHandler;
         this.production = production;
         this.productionRenderer = productionRenderer;
@@ -28,17 +30,18 @@ public class HandleBlockRotate {
         int column = productionRenderer.getProductionColumn(worldX);
         int row = productionRenderer.getProductionRow(worldY);
         Block block = production.getBlockAt(column, row);
-        if (block==null) inputHandler.handleLookAround.onMotion(event, worldX, worldY);
+        if (block==null) inputHandler.cameraMoveHandler.onMotion(event, worldX, worldY);
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 if (block!=null) {
                     lastCol = column;
                     lastRow = row;
+                    dragging = true;
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
+                if (dragging && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
                     if (block!=null) {
                         block.rotateFlowDirection();
                         production.selectBlock(column, row);

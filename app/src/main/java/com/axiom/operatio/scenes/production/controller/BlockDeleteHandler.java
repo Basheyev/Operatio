@@ -11,20 +11,20 @@ import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
 
-public class HandleBlockDelete {
+public class BlockDeleteHandler {
 
     private InputHandler inputHandler;
     private ProductionScene scene;
     private Production production;
     private ProductionRenderer productionRenderer;
 
-    private boolean dragging = false;
+    protected boolean dragging = false;
     private float cursorX, cursorY;
     private int lastCol, lastRow;
     private int blockRemoveSound;
 
-    public HandleBlockDelete(InputHandler inputHandler, ProductionScene scn,
-                             Production prod, ProductionRenderer prodRender) {
+    public BlockDeleteHandler(InputHandler inputHandler, ProductionScene scn,
+                              Production prod, ProductionRenderer prodRender) {
         this.inputHandler = inputHandler;
         this.production = prod;
         this.productionRenderer = prodRender;
@@ -37,7 +37,7 @@ public class HandleBlockDelete {
         int column = productionRenderer.getProductionColumn(worldX);
         int row = productionRenderer.getProductionRow(worldY);
         Block block = production.getBlockAt(column, row);
-        if (block==null) inputHandler.handleLookAround.onMotion(event, worldX, worldY);
+        if (block==null) inputHandler.cameraMoveHandler.onMotion(event, worldX, worldY);
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
@@ -52,13 +52,13 @@ public class HandleBlockDelete {
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
-                dragging = false;
-                if (column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
+                if (dragging && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
                     if (block!=null) {
                         production.removeBlock(block);
                         SoundRenderer.playSound(blockRemoveSound);
                         Log.i("PROD COL=" + column + ", ROW=" + row, block.toString());
                     }
+                    dragging = false;
                 }
         }
     }

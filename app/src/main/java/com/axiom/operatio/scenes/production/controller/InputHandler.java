@@ -16,11 +16,11 @@ public class InputHandler {
     public static final int BLOCK_MOVE = 3;
     public static final int BLOCK_ROTATE = 4;
 
-    protected HandleLookAround handleLookAround;
-    private HandleBlockAdd handleBlockAdd;
-    private HandleBlockDelete handleBlockDelete;
-    private HandleBlockMove handleBlockMove;
-    private HandleBlockRotate handleBlockRotate;
+    protected CameraMoveHandler cameraMoveHandler;
+    private BlockAddHandler blockAddHandler;
+    private BlockDeleteHandler blockDeleteHandler;
+    private BlockMoveHandler blockMoveHandler;
+    private BlockRotateHandler blockRotateHandler;
 
     private ProductionScene scene;
     private Production production;
@@ -31,11 +31,11 @@ public class InputHandler {
         this.production = production;
         this.productionRenderer = productionRenderer;
         this.scene = scene;
-        handleLookAround = new HandleLookAround(this, scene, production, productionRenderer);
-        handleBlockAdd = new HandleBlockAdd(this, scene, production, productionRenderer);
-        handleBlockDelete = new HandleBlockDelete(this, scene, production, productionRenderer);
-        handleBlockMove = new HandleBlockMove(this, scene, production, productionRenderer);
-        handleBlockRotate = new HandleBlockRotate(this, scene, production, productionRenderer);
+        cameraMoveHandler = new CameraMoveHandler(this, scene, production, productionRenderer);
+        blockAddHandler = new BlockAddHandler(this, scene, production, productionRenderer);
+        blockDeleteHandler = new BlockDeleteHandler(this, scene, production, productionRenderer);
+        blockMoveHandler = new BlockMoveHandler(this, scene, production, productionRenderer);
+        blockRotateHandler = new BlockRotateHandler(this, scene, production, productionRenderer);
     }
 
 
@@ -56,19 +56,27 @@ public class InputHandler {
         }
 
         switch (state) {
-            case LOOK_AROUND: handleLookAround.onMotion(event, worldX, worldY); break;
-            case BLOCK_ADD: handleBlockAdd.onMotion(event, worldX, worldY); break;
-            case BLOCK_DELETE: handleBlockDelete.onMotion(event, worldX, worldY); break;
-            case BLOCK_MOVE: handleBlockMove.onMotion(event, worldX, worldY); break;
-            case BLOCK_ROTATE: handleBlockRotate.onMotion(event, worldX, worldY); break;
+            case LOOK_AROUND: cameraMoveHandler.onMotion(event, worldX, worldY); break;
+            case BLOCK_ADD: blockAddHandler.onMotion(event, worldX, worldY); break;
+            case BLOCK_DELETE: blockDeleteHandler.onMotion(event, worldX, worldY); break;
+            case BLOCK_MOVE: blockMoveHandler.onMotion(event, worldX, worldY); break;
+            case BLOCK_ROTATE: blockRotateHandler.onMotion(event, worldX, worldY); break;
         }
-
 
     }
 
 
-    public HandleBlockMove getHandleBlockMove() {
-        return handleBlockMove;
+    // TODO Invalidate actions correcly
+    public void invalidateActions() {
+        blockAddHandler.dragging = false;
+        blockDeleteHandler.dragging = false;
+        blockMoveHandler.dragging = false;
+        cameraMoveHandler.dragging = false;
+    }
+
+
+    public BlockMoveHandler getBlockMoveHandler() {
+        return blockMoveHandler;
     }
 
 }

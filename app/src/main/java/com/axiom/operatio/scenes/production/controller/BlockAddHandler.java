@@ -13,19 +13,19 @@ import com.axiom.operatio.model.machine.MachineType;
 import com.axiom.operatio.model.conveyor.Conveyor;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
-public class HandleBlockAdd {
+public class BlockAddHandler {
 
     private InputHandler inputHandler;
     private ProductionScene scene;
     private Production production;
     private ProductionRenderer productionRenderer;
-    private boolean dragging = false;
+    protected boolean dragging = false;
     private float cursorX, cursorY;
     private int lastCol, lastRow;
     private int blockAddSound;
 
-    public HandleBlockAdd(InputHandler inputHandler, ProductionScene scene, Production production,
-                          ProductionRenderer productionRenderer) {
+    public BlockAddHandler(InputHandler inputHandler, ProductionScene scene, Production production,
+                           ProductionRenderer productionRenderer) {
         this.inputHandler = inputHandler;
         this.production = production;
         this.productionRenderer = productionRenderer;
@@ -38,7 +38,7 @@ public class HandleBlockAdd {
         int column = productionRenderer.getProductionColumn(worldX);
         int row = productionRenderer.getProductionRow(worldY);
         Block block = production.getBlockAt(column, row);
-        if (block!=null) inputHandler.handleLookAround.onMotion(event, worldX, worldY);
+        if (block!=null) inputHandler.cameraMoveHandler.onMotion(event, worldX, worldY);
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
@@ -51,12 +51,12 @@ public class HandleBlockAdd {
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
-                dragging = false;
-                if (column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
+                if (dragging && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
                     if (block==null) {
                         String toggled = scene.blocksPanel.getToggledButton();
                         if (toggled!=null) addBlockAt(toggled, column, row);
                     }
+                    dragging = false;
                 }
 
         }

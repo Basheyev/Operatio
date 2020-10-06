@@ -10,7 +10,7 @@ import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
-public class HandleBlockMove {
+public class BlockMoveHandler {
 
     private InputHandler inputHandler;
     private ProductionScene scene;
@@ -18,13 +18,13 @@ public class HandleBlockMove {
     private ProductionRenderer productionRenderer;
 
     private Block dragBlock = null;
-    private boolean dragging = false;
+    protected boolean dragging = false;
     private float cursorX, cursorY;
     private int lastCol, lastRow;
     private int blockPlaced;
 
-    public HandleBlockMove(InputHandler inputHandler,
-                           ProductionScene scn, Production prod, ProductionRenderer prodRender) {
+    public BlockMoveHandler(InputHandler inputHandler,
+                            ProductionScene scn, Production prod, ProductionRenderer prodRender) {
         blockPlaced = SoundRenderer.loadSound(R.raw.block_add_snd);
         this.inputHandler = inputHandler;
         this.production = prod;
@@ -36,7 +36,7 @@ public class HandleBlockMove {
         int column = productionRenderer.getProductionColumn(worldX);
         int row = productionRenderer.getProductionRow(worldY);
         Block block = production.getBlockAt(column, row);;
-        if (block==null) inputHandler.handleLookAround.onMotion(event, worldX, worldY);
+        if (block==null) inputHandler.cameraMoveHandler.onMotion(event, worldX, worldY);
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
@@ -51,6 +51,7 @@ public class HandleBlockMove {
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
+                // FIXME Invalidate action case нужен
                 if (dragging && dragBlock!=null) {
                     cursorX = worldX;
                     cursorY = worldY;
