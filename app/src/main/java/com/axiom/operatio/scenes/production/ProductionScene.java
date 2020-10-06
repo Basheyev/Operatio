@@ -1,19 +1,22 @@
 package com.axiom.operatio.scenes.production;
 
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
+import com.axiom.atom.engine.input.ScaleEvent;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.ProductionBuilder;
 import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.model.block.BlockRenderer;
-import com.axiom.operatio.scenes.production.controller.HandleBlockMove;
+import com.axiom.operatio.scenes.production.controller.BlockMoveHandler;
 import com.axiom.operatio.scenes.production.view.BlocksPanel;
 import com.axiom.operatio.scenes.production.controller.InputHandler;
 import com.axiom.operatio.scenes.production.view.ModePanel;
@@ -29,12 +32,13 @@ public class ProductionScene extends GameScene {
     // Надо сделать сеттеры и геттеры
     public BlocksPanel blocksPanel;
     public ModePanel modePanel;
-    public float cellWidth = 128;                  // Ширина клетки
-    public float cellHeight = 128;                 // Высота клетки
+    public float initialCellWidth = 128;                  // Ширина клетки
+    public float initialCellHeight = 128;                 // Высота клетки
     public int snd1, snd2, snd3;
     private boolean initialized = false;
 
 
+    private ScaleGestureDetector scaleDetector;
 
     @Override
     public String getSceneName() {
@@ -43,10 +47,10 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void startScene() {
-        //Input.enabled = false;
+
         if (!initialized) {
             production = ProductionBuilder.createDemoProduction();
-            productionRenderer = new ProductionRenderer(production, cellWidth, cellHeight);
+            productionRenderer = new ProductionRenderer(production, initialCellWidth, initialCellHeight);
             inputHandler = new InputHandler(this, production, productionRenderer);
             UIBuilder.buildUI(getResources(), getSceneWidget(), production);
             blocksPanel = (BlocksPanel) UIBuilder.getBlocksPanel();
@@ -56,9 +60,7 @@ public class ProductionScene extends GameScene {
             snd3 = SoundRenderer.loadSound(R.raw.buffer_snd);
             initialized = true;
         }
-        /*
-        production.setPaused(false);
-        UIBuilder.setPausedButtonState(false);*/
+
     }
 
     @Override
@@ -80,14 +82,17 @@ public class ProductionScene extends GameScene {
     @Override
     public void postRender(Camera camera) {
 
-        HandleBlockMove hbm = inputHandler.getHandleBlockMove();
+        BlockMoveHandler hbm = inputHandler.getBlockMoveHandler();
+
         if (hbm.isDragging()) {
             float cursorX = hbm.getCursorX();
             float cursorY = hbm.getCursorY();
             Block dragBlock = hbm.getDragBlock();
 
             BlockRenderer renderer = dragBlock.getRenderer();
-            renderer.draw(Camera.getInstance(), cursorX - 64, cursorY - 64, 128, 128);
+            float cellWidth = productionRenderer.getCellWidth();
+            float cellHeight = productionRenderer.getCellHeight();
+            renderer.draw(Camera.getInstance(), cursorX - cellWidth /2, cursorY - cellHeight /2, cellWidth, cellHeight);
         }
 
         float x = camera.getX();
@@ -107,8 +112,13 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void onMotion(MotionEvent event, float worldX, float worldY) {
-        inputHandler.onMotion(event,worldX,worldY);
+        inputHandler.onMotion(event, worldX, worldY);
     }
 
-
+    @Override
+    public void onScale(ScaleEvent event, float worldX, float worldY) {
+        inputHandler.invalidateActions();
+        productionRenderer.scale(event.scaleFactor);
+        Log.i("SCALE: ", "X=" + worldX + " Y=" + worldY + " IN PROGRESS=" + event.isScalingInProgress);
+    }
 }
