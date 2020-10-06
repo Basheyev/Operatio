@@ -5,8 +5,6 @@ import com.axiom.operatio.model.block.Block;
 import java.util.ArrayList;
 
 
-// TODO Play/Pause
-
 public class Production {
 
     protected static Production instance;
@@ -194,6 +192,5 @@ public class Production {
     public boolean isPaused() {
         return isPaused;
     }
-
 
 }
