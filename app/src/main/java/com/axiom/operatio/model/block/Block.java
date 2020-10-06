@@ -219,7 +219,7 @@ public abstract class Block {
             if (right!=null && down!=null) adjustDirectionTwoNeighbors(right, RIGHT, down, DOWN);
             if (upper!=null && down!=null) adjustDirectionTwoNeighbors(upper, UP, down, DOWN);
         }
-
+        // TODO Если три/четыре соседа но входы выходы только у двух - обработать для двух
     }
 
     /**
