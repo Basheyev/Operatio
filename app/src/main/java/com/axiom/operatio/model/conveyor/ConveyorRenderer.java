@@ -125,7 +125,6 @@ public class ConveyorRenderer extends BlockRenderer {
     }
 
 
-    // TODO Добавить остановку движения материалов при паузе производства
     protected void drawItems(Camera camera, float x, float y, float width, float height) {
 
         float cycleTime = Production.getCycleTimeMs();        // Длительность цикла в мс.
