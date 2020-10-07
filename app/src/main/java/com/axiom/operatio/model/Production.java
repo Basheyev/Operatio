@@ -40,6 +40,10 @@ public class Production {
     }
 
 
+    /**
+     * Симулирует цикл производства
+     * TODO чтобы блоки имели приоритеты забирания материала
+     */
     public void process() {
         if (!isPaused) {
             long now = System.currentTimeMillis();

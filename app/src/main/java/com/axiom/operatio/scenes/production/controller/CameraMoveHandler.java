@@ -53,13 +53,7 @@ public class CameraMoveHandler {
                     Camera camera = Camera.getInstance();
                     float x = camera.getX() + (cursorX - worldX);
                     float y = camera.getY() + (cursorY - worldY);
-                    // Проверка границ карты
-                    if (x - Camera.WIDTH / 2 < 0) x = Camera.WIDTH / 2;
-                    if (y - Camera.HEIGHT / 2 < 0) y = Camera.HEIGHT / 2;
-                    if (x + Camera.WIDTH / 2 > production.getColumns() * scene.initialCellWidth)
-                        x = production.getColumns() * scene.initialCellWidth - Camera.WIDTH / 2;
-                    if (y + Camera.HEIGHT / 2 > production.getRows() * scene.initialCellHeight)
-                        y = production.getRows() * scene.initialCellHeight - Camera.HEIGHT / 2;
+                    // FIXME вот не двигать бы камеру пока не дорисуются тайлы
                     camera.lookAt(x, y);
                 }
                 break;

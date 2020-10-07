@@ -7,8 +7,8 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.model.block.BlockRenderer;
 
-// TODO Оптимизировать рендер (не рисовать того, что заранее не видно
-public class ProductionRenderer extends BlockRenderer {
+
+public class ProductionRenderer {
 
     protected Production production;
     protected Sprite tile, selection;
@@ -20,7 +20,7 @@ public class ProductionRenderer extends BlockRenderer {
 
 
     public ProductionRenderer(Production production, float cellWidth, float cellHeight) {
-        tile = new Sprite(SceneManager.getResources(), R.drawable.tile);
+        tile = new Sprite(SceneManager.getResources(), R.drawable.tile, 2, 1);
         tile.zOrder = 0;
         selection = new Sprite(SceneManager.getResources(), R.drawable.selected);
         selection.zOrder = 500;
@@ -29,17 +29,34 @@ public class ProductionRenderer extends BlockRenderer {
         this.cellHeight = cellHeight;
     }
 
-    @Override
-    public void draw(Camera camera, float x, float y, float width, float height) {
-        int columns = production.getColumns();
-        int rows = production.getRows();
+    public void draw(Camera camera) {
+
         Block block;
         BlockRenderer renderer;
 
-        for (int row=0; row < rows; row++) {
-            for (int col=0; col < columns; col++) {
-                tile.draw(camera,col * cellWidth,row * cellHeight, cellWidth, cellHeight);
+        int columns = production.getColumns();
+        int rows = production.getRows();
+        int minCol = (int) (camera.getMinX() / cellWidth) - 1;
+        int minRow = (int) (camera.getMinY() / cellHeight) - 1;
+        int maxCol = minCol + (int) (Camera.WIDTH / cellWidth) + 2;
+        int maxRow = minRow + (int) (Camera.HEIGHT / cellHeight) + 2;
+
+        for (int row=minRow; row <= maxRow; row++) {
+            for (int col=minCol; col <= maxCol; col++) {
+
+                if (col < 0 || col > columns || row < 0 || row > rows) {
+                    tile.setActiveFrame(1);
+                } else tile.setActiveFrame(0);
+
+                // FIXME появляются артефакты-линии (матрица меняется от движения пока рисуем)
+                tile.draw(camera,
+                        col * cellWidth,
+                        row * cellHeight,
+                        cellWidth,
+                        cellHeight);
+
                 block = production.getBlockAt(col, row);
+
                 if (block!=null) {
                     renderer = block.getRenderer();
                     if (renderer != null) {
@@ -50,6 +67,7 @@ public class ProductionRenderer extends BlockRenderer {
                                 cellHeight);
                     }
                 }
+
                 if (production.isBlockSelected()) {
                     if (row==production.getSelectedRow() && col==production.getSelectedCol()) {
                         drawSelection(camera, col, row);
@@ -92,9 +110,11 @@ public class ProductionRenderer extends BlockRenderer {
 
 
     public void doScale(float scaleFactor) {
+
         float newCellWidth = cellWidth * scaleFactor;
         float newCellHeight = cellHeight * scaleFactor;
-        if (newCellWidth<32 || newCellHeight<32) { newCellWidth = 32; newCellHeight = 32; }
+
+        if (newCellWidth<64 || newCellHeight<64) { newCellWidth = 64; newCellHeight = 64; }
         if (newCellWidth>512 || newCellHeight>512) { newCellWidth = 512; newCellHeight = 512; }
 
         Camera camera = Camera.getInstance();
