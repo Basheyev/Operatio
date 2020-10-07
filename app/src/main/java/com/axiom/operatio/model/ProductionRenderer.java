@@ -3,6 +3,7 @@ package com.axiom.operatio.model;
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.graphics.gles2d.Texture;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.model.block.BlockRenderer;
@@ -11,7 +12,7 @@ import com.axiom.operatio.model.block.BlockRenderer;
 public class ProductionRenderer {
 
     protected Production production;
-    protected Sprite tile, selection;
+    protected Sprite tile, tileBlocked, selection;
     private float cellWidth;                  // Ширина клетки
     private float cellHeight;                 // Высота клетки
 
@@ -20,8 +21,10 @@ public class ProductionRenderer {
 
 
     public ProductionRenderer(Production production, float cellWidth, float cellHeight) {
-        tile = new Sprite(SceneManager.getResources(), R.drawable.tile, 2, 1);
+        tile = new Sprite(SceneManager.getResources(), R.drawable.tile);
         tile.zOrder = 0;
+        tileBlocked = new Sprite(SceneManager.getResources(), R.drawable.tile_blocked);
+        tileBlocked.zOrder = 0;
         selection = new Sprite(SceneManager.getResources(), R.drawable.selected);
         selection.zOrder = 500;
         this.production = production;
@@ -44,16 +47,21 @@ public class ProductionRenderer {
         for (int row=minRow; row <= maxRow; row++) {
             for (int col=minCol; col <= maxCol; col++) {
 
-                if (col < 0 || col > columns || row < 0 || row > rows) {
-                    tile.setActiveFrame(1);
-                } else tile.setActiveFrame(0);
+                // FIXME появляются артефакты-линии - проявляется для маленького разрешения < HD
 
-                // FIXME появляются артефакты-линии (матрица меняется от движения пока рисуем)
-                tile.draw(camera,
-                        col * cellWidth,
-                        row * cellHeight,
-                        cellWidth,
-                        cellHeight);
+                if (col < 0 || col > columns || row < 0 || row > rows) {
+                    tileBlocked.draw(camera,
+                            col * cellWidth,
+                            row * cellHeight,
+                            cellWidth,
+                            cellHeight);
+                } else {
+                    tile.draw(camera,
+                            col * cellWidth,
+                            row * cellHeight,
+                            cellWidth,
+                            cellHeight);
+                }
 
                 block = production.getBlockAt(col, row);
 
