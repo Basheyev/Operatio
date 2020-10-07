@@ -66,8 +66,7 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void preRender(Camera camera) {
-        // TODO Правильно передавать данные
-        productionRenderer.draw(camera,0,0,1920,1080);
+        productionRenderer.draw(camera);
     }
 
     protected StringBuffer fps = new StringBuffer(100);
