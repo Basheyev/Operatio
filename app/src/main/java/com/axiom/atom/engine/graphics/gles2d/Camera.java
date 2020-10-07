@@ -158,7 +158,9 @@ public class Camera {
     }
 
     public void getCameraBounds(AABB dest) {
-        dest.setBounds(x1,y1,x2,y2);
+        synchronized (cameraMatrix) {
+            dest.setBounds(x1, y1, x2, y2);
+        }
     }
 
 
