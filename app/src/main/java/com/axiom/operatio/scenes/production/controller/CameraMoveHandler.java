@@ -2,6 +2,7 @@ package com.axiom.operatio.scenes.production.controller;
 
 import android.view.MotionEvent;
 
+import com.axiom.atom.R;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.Production;
@@ -13,7 +14,6 @@ import com.axiom.operatio.model.conveyor.Conveyor;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
 
-// TODO Zoom in/out
 public class CameraMoveHandler {
 
     private InputHandler inputHandler;
@@ -21,15 +21,19 @@ public class CameraMoveHandler {
     private Production production;
     private ProductionRenderer productionRenderer;
 
-    protected boolean dragging = false;
+    private boolean actionInProgress = false;
     private float cursorX, cursorY;
     private int lastCol, lastRow;
+    private int snd1, snd2, snd3;
 
     public CameraMoveHandler(InputHandler inputHandler, ProductionScene scn, Production prod, ProductionRenderer prodRender) {
         this.inputHandler = inputHandler;
         this.production = prod;
         this.productionRenderer = prodRender;
         this.scene = scn;
+        snd1 = SoundRenderer.loadSound(R.raw.machine_snd);
+        snd2 = SoundRenderer.loadSound(R.raw.conveyor_snd);
+        snd3 = SoundRenderer.loadSound(R.raw.buffer_snd);
     }
 
     public void onMotion(MotionEvent event, float worldX, float worldY) {
@@ -40,12 +44,12 @@ public class CameraMoveHandler {
             case MotionEvent.ACTION_DOWN:
                 lastCol = column;
                 lastRow = row;
-                dragging = true;
                 cursorX = worldX;
                 cursorY = worldY;
+                actionInProgress = true;
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (dragging) {
+                if (actionInProgress) {
                     Camera camera = Camera.getInstance();
                     float x = camera.getX() + (cursorX - worldX);
                     float y = camera.getY() + (cursorY - worldY);
@@ -60,21 +64,31 @@ public class CameraMoveHandler {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (dragging && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
-                    Block block = production.getBlockAt(column, row);
-                    if (block!=null) {
-                        if (block instanceof Machine) SoundRenderer.playSound(scene.snd1);
-                        if (block instanceof Conveyor) SoundRenderer.playSound(scene.snd2);
-                        if (block instanceof Buffer) SoundRenderer.playSound(scene.snd3);
+                if (actionInProgress) {
+                    if (column >= 0 && row >= 0 && lastCol == column && lastRow == row) {
+                        Block block = production.getBlockAt(column, row);
+                        if (block != null) {
+                            if (block instanceof Machine) SoundRenderer.playSound(snd1);
+                            if (block instanceof Conveyor) SoundRenderer.playSound(snd2);
+                            if (block instanceof Buffer) SoundRenderer.playSound(snd3);
 
+                        }
                     }
-                    dragging = false;
-                }
-                if (production.isBlockSelected() && production.getSelectedCol()==column && production.getSelectedRow()==row) {
-                    production.unselectBlock();
-                } else production.selectBlock(column, row);
 
+                    if (production.isBlockSelected()
+                            && production.getSelectedCol() == column
+                            && production.getSelectedRow() == row) {
+                        production.unselectBlock();
+                    } else production.selectBlock(column, row);
+                }
+                actionInProgress = false;
         }
+    }
+
+
+    public void invalidateAction() {
+        // Отменить действие
+        actionInProgress = false;
     }
 
 }

@@ -1,13 +1,16 @@
 package com.axiom.operatio.scenes.production.controller;
 
+import android.util.Log;
 import android.view.MotionEvent;
 
+import com.axiom.atom.engine.input.ScaleEvent;
 import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
 // Обработчик ввода сцены изменяющий модель Производства
 
+// TODO При движении и увеличении учитывать границы
 public class InputHandler {
 
     public static final int LOOK_AROUND = 0;
@@ -16,11 +19,13 @@ public class InputHandler {
     public static final int BLOCK_MOVE = 3;
     public static final int BLOCK_ROTATE = 4;
 
-    protected CameraMoveHandler cameraMoveHandler;
+    private CameraMoveHandler cameraMoveHandler;
+    private CameraScaleHandler cameraScaleHandler;
     private BlockAddHandler blockAddHandler;
     private BlockDeleteHandler blockDeleteHandler;
     private BlockMoveHandler blockMoveHandler;
     private BlockRotateHandler blockRotateHandler;
+
 
     private ProductionScene scene;
     private Production production;
@@ -32,6 +37,7 @@ public class InputHandler {
         this.productionRenderer = productionRenderer;
         this.scene = scene;
         cameraMoveHandler = new CameraMoveHandler(this, scene, production, productionRenderer);
+        cameraScaleHandler = new CameraScaleHandler(this, scene, production, productionRenderer);
         blockAddHandler = new BlockAddHandler(this, scene, production, productionRenderer);
         blockDeleteHandler = new BlockDeleteHandler(this, scene, production, productionRenderer);
         blockMoveHandler = new BlockMoveHandler(this, scene, production, productionRenderer);
@@ -66,17 +72,54 @@ public class InputHandler {
     }
 
 
-    // TODO Invalidate actions correcly
-    public void invalidateActions() {
-        blockAddHandler.dragging = false;
-        blockDeleteHandler.dragging = false;
-        blockMoveHandler.dragging = false;
-        cameraMoveHandler.dragging = false;
+    public void onScale(ScaleEvent event, float worldX, float worldY) {
+        cameraScaleHandler.onScale(event, worldX, worldY);
     }
 
+
+    /**
+     * Отменяет все начатые действия
+     */
+    public void invalidateAllActions() {
+        blockAddHandler.invalidateAction();
+        blockDeleteHandler.invalidateAction();
+        blockMoveHandler.invalidateAction();
+        cameraMoveHandler.invalidateAction();
+        cameraScaleHandler.invalidateAction();
+    }
+
+    /**
+     * Отменяет все начатые действия
+     */
+    public void invalidateAllActionsButScale() {
+        blockAddHandler.invalidateAction();
+        blockDeleteHandler.invalidateAction();
+        blockMoveHandler.invalidateAction();
+        cameraMoveHandler.invalidateAction();
+    }
+
+
+    public CameraMoveHandler getCameraMoveHandler() {
+        return cameraMoveHandler;
+    }
+
+    public CameraScaleHandler getCameraScaleHandler() {
+        return cameraScaleHandler;
+    }
+
+    public BlockAddHandler getBlockAddHandler() {
+        return blockAddHandler;
+    }
 
     public BlockMoveHandler getBlockMoveHandler() {
         return blockMoveHandler;
     }
 
+    public BlockDeleteHandler getBlockDeleteHandler() {
+        return blockDeleteHandler;
+    }
+
+    public BlockRotateHandler getBlockRotateHandler() {
+        return blockRotateHandler;
+    }
 }

@@ -19,7 +19,7 @@ public class BlockAddHandler {
     private ProductionScene scene;
     private Production production;
     private ProductionRenderer productionRenderer;
-    protected boolean dragging = false;
+    private boolean actionInProgress = false;
     private float cursorX, cursorY;
     private int lastCol, lastRow;
     private int blockAddSound;
@@ -38,27 +38,26 @@ public class BlockAddHandler {
         int column = productionRenderer.getProductionColumn(worldX);
         int row = productionRenderer.getProductionRow(worldY);
         Block block = production.getBlockAt(column, row);
-        if (block!=null) inputHandler.cameraMoveHandler.onMotion(event, worldX, worldY);
+        if (block!=null) inputHandler.getCameraMoveHandler().onMotion(event, worldX, worldY);
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 lastCol = column;
                 lastRow = row;
-                dragging = true;
                 cursorX = worldX;
                 cursorY = worldY;
+                actionInProgress = true;
                 break;
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
-                if (dragging && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
+                if (actionInProgress && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
                     if (block==null) {
                         String toggled = scene.blocksPanel.getToggledButton();
                         if (toggled!=null) addBlockAt(toggled, column, row);
                     }
-                    dragging = false;
                 }
-
+                actionInProgress = false;
         }
     }
 
@@ -110,6 +109,10 @@ public class BlockAddHandler {
 
     }
 
+
+    public void invalidateAction() {
+        actionInProgress = false;
+    }
 
 
 }

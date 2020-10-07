@@ -18,7 +18,7 @@ public class BlockMoveHandler {
     private ProductionRenderer productionRenderer;
 
     private Block dragBlock = null;
-    protected boolean dragging = false;
+    private boolean actionInProgress = false;
     private float cursorX, cursorY;
     private int lastCol, lastRow;
     private int blockPlaced;
@@ -32,11 +32,11 @@ public class BlockMoveHandler {
         this.scene = scn;
     }
 
-    public void onMotion(MotionEvent event, float worldX, float worldY) {
+    public synchronized void onMotion(MotionEvent event, float worldX, float worldY) {
         int column = productionRenderer.getProductionColumn(worldX);
         int row = productionRenderer.getProductionRow(worldY);
-        Block block = production.getBlockAt(column, row);;
-        if (block==null) inputHandler.cameraMoveHandler.onMotion(event, worldX, worldY);
+        Block block = production.getBlockAt(column, row);
+        if (block==null) inputHandler.getCameraMoveHandler().onMotion(event, worldX, worldY);
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
@@ -47,20 +47,20 @@ public class BlockMoveHandler {
                     cursorY = worldY;
                     dragBlock = block;
                     production.removeBlock(block);
-                    dragging = true;
+                    actionInProgress = true;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                // FIXME Invalidate action case нужен
-                if (dragging && dragBlock!=null) {
+                if (actionInProgress && dragBlock!=null) {
                     cursorX = worldX;
                     cursorY = worldY;
+                    productionRenderer.startBlockMoving(dragBlock, cursorX, cursorY);
                     production.selectBlock(column, row);
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (dragging) {
-                    dragging = false;
+                if (actionInProgress) {
+                    productionRenderer.stopBlockMoving();
                     if (column >= 0 && row >= 0) {
                         if (block == null) {
                             SoundRenderer.playSound(blockPlaced);
@@ -72,23 +72,34 @@ public class BlockMoveHandler {
                         }
 
                     }
+                    actionInProgress = false;
                 }
         }
     }
 
-    public synchronized boolean isDragging() {
-        return dragging;
+    public synchronized boolean isActionInProgress() {
+        return actionInProgress;
     }
 
-    public float getCursorX() {
+    public synchronized float getCursorX() {
         return cursorX;
     }
 
-    public float getCursorY() {
+    public synchronized float getCursorY() {
         return cursorY;
     }
 
-    public Block getDragBlock() {
+    public synchronized Block getDragBlock() {
         return dragBlock;
+    }
+
+    public synchronized void invalidateAction() {
+        // Вернуть блок на место
+        if (actionInProgress) {
+            productionRenderer.stopBlockMoving();
+            production.setBlock(dragBlock, lastCol, lastRow);
+        }
+        // Отменить действие
+        actionInProgress = false;
     }
 }

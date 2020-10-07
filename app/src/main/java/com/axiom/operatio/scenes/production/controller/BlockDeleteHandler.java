@@ -18,7 +18,7 @@ public class BlockDeleteHandler {
     private Production production;
     private ProductionRenderer productionRenderer;
 
-    protected boolean dragging = false;
+    private boolean actionInProgress = false;
     private float cursorX, cursorY;
     private int lastCol, lastRow;
     private int blockRemoveSound;
@@ -37,7 +37,7 @@ public class BlockDeleteHandler {
         int column = productionRenderer.getProductionColumn(worldX);
         int row = productionRenderer.getProductionRow(worldY);
         Block block = production.getBlockAt(column, row);
-        if (block==null) inputHandler.cameraMoveHandler.onMotion(event, worldX, worldY);
+        if (block==null) inputHandler.getCameraMoveHandler().onMotion(event, worldX, worldY);
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
@@ -46,22 +46,25 @@ public class BlockDeleteHandler {
                     lastRow = row;
                     cursorX = worldX;
                     cursorY = worldY;
-                    dragging = true;
+                    actionInProgress = true;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
-                if (dragging && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
+                if (actionInProgress && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
                     if (block!=null) {
                         production.removeBlock(block);
                         SoundRenderer.playSound(blockRemoveSound);
                         Log.i("PROD COL=" + column + ", ROW=" + row, block.toString());
                     }
-                    dragging = false;
                 }
+                actionInProgress = false;
         }
     }
 
+    public void invalidateAction() {
+        actionInProgress = false;
+    }
 
 }

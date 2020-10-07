@@ -33,7 +33,6 @@ public class ProductionScene extends GameScene {
     public ModePanel modePanel;
     public float initialCellWidth = 128;                  // Ширина клетки
     public float initialCellHeight = 128;                 // Высота клетки
-    public int snd1, snd2, snd3;
     private boolean initialized = false;
 
 
@@ -44,7 +43,6 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void startScene() {
-
         if (!initialized) {
             production = ProductionBuilder.createDemoProduction();
             productionRenderer = new ProductionRenderer(production, initialCellWidth, initialCellHeight);
@@ -52,12 +50,8 @@ public class ProductionScene extends GameScene {
             UIBuilder.buildUI(getResources(), getSceneWidget(), production);
             blocksPanel = (BlocksPanel) UIBuilder.getBlocksPanel();
             modePanel = (ModePanel) UIBuilder.getEditorPanel();
-            snd1 = SoundRenderer.loadSound(R.raw.machine_snd);
-            snd2 = SoundRenderer.loadSound(R.raw.conveyor_snd);
-            snd3 = SoundRenderer.loadSound(R.raw.buffer_snd);
             initialized = true;
         }
-
     }
 
     @Override
@@ -72,37 +66,23 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void preRender(Camera camera) {
+        // TODO Правильно передавать данные
         productionRenderer.draw(camera,0,0,1920,1080);
     }
 
     protected StringBuffer fps = new StringBuffer(100);
+
     @Override
     public void postRender(Camera camera) {
-
-        BlockMoveHandler hbm = inputHandler.getBlockMoveHandler();
-
-        if (hbm.isDragging()) {
-            float cursorX = hbm.getCursorX();
-            float cursorY = hbm.getCursorY();
-            Block dragBlock = hbm.getDragBlock();
-
-            BlockRenderer renderer = dragBlock.getRenderer();
-            float cellWidth = productionRenderer.getCellWidth();
-            float cellHeight = productionRenderer.getCellHeight();
-            renderer.draw(Camera.getInstance(), cursorX - cellWidth /2, cursorY - cellHeight /2, cellWidth, cellHeight);
-        }
-
-        float x = camera.getX();
-        float y = camera.getY();
-        GraphicsRender.setZOrder(2000);
-
         fps.delete(0, fps.length());
         fps.append("FPS:").append(GraphicsRender.getFPS())
             .append(" Quads:").append(BatchRender.getEntriesCount())
             .append(" Calls:").append(BatchRender.getDrawCallsCount())
             .append(" Time:").append(GraphicsRender.getRenderTime())
             .append("ms");
-
+        float x = camera.getX();
+        float y = camera.getY();
+        GraphicsRender.setZOrder(2000);
         GraphicsRender.setColor(0,0,0,1);
         GraphicsRender.drawText(fps, x - 750,y + 480, 2f);
     }
@@ -114,8 +94,6 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void onScale(ScaleEvent event, float worldX, float worldY) {
-        inputHandler.invalidateActions();
-        productionRenderer.scale(event.scaleFactor);
-        Log.i("SCALE: ", "X=" + worldX + " Y=" + worldY + " IN PROGRESS=" + event.isScalingInProgress);
+        inputHandler.onScale(event, worldX, worldY);
     }
 }

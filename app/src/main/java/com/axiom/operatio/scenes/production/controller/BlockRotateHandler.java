@@ -15,7 +15,7 @@ public class BlockRotateHandler {
     private ProductionRenderer productionRenderer;
     private int lastCol, lastRow;
 
-    protected boolean dragging = false;
+    private boolean actionInProgress = false;
 
     public BlockRotateHandler(InputHandler inputHandler, ProductionScene scene,
                               Production production, ProductionRenderer productionRenderer) {
@@ -30,18 +30,18 @@ public class BlockRotateHandler {
         int column = productionRenderer.getProductionColumn(worldX);
         int row = productionRenderer.getProductionRow(worldY);
         Block block = production.getBlockAt(column, row);
-        if (block==null) inputHandler.cameraMoveHandler.onMotion(event, worldX, worldY);
+        if (block==null) inputHandler.getCameraMoveHandler().onMotion(event, worldX, worldY);
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 if (block!=null) {
                     lastCol = column;
                     lastRow = row;
-                    dragging = true;
+                    actionInProgress = true;
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (dragging && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
+                if (actionInProgress && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
                     if (block!=null) {
                         block.rotateFlowDirection();
                         production.selectBlock(column, row);
@@ -52,6 +52,10 @@ public class BlockRotateHandler {
     }
 
 
+    public void invalidateAction() {
+        // Отменить действие
+        actionInProgress = false;
+    }
 
 
 }

@@ -7,13 +7,17 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.model.block.BlockRenderer;
 
-// TODO Zoom in/out
+// TODO Оптимизировать рендер (не рисовать того, что заранее не видно
 public class ProductionRenderer extends BlockRenderer {
 
     protected Production production;
     protected Sprite tile, selection;
     private float cellWidth;                  // Ширина клетки
     private float cellHeight;                 // Высота клетки
+
+    private Block movingBlock;
+    private float cursorX, cursorY;
+
 
     public ProductionRenderer(Production production, float cellWidth, float cellHeight) {
         tile = new Sprite(SceneManager.getResources(), R.drawable.tile);
@@ -53,6 +57,14 @@ public class ProductionRenderer extends BlockRenderer {
                 }
             }
         }
+
+        // Отрисовываем передвигаемый блок
+        if (movingBlock!=null) {
+            BlockRenderer blockRenderer = movingBlock.getRenderer();
+            blockRenderer.draw(Camera.getInstance(),
+                    cursorX - cellWidth / 2, cursorY - cellHeight / 2,
+                    cellWidth, cellHeight);
+        }
     }
 
 
@@ -78,7 +90,8 @@ public class ProductionRenderer extends BlockRenderer {
                 cellHeight * (1.0f + fluctuation * 2));
     }
 
-    public void scale(float scaleFactor) {
+
+    public void doScale(float scaleFactor) {
         float newCellWidth = cellWidth * scaleFactor;
         float newCellHeight = cellHeight * scaleFactor;
         if (newCellWidth<32 || newCellHeight<32) { newCellWidth = 32; newCellHeight = 32; }
@@ -100,6 +113,16 @@ public class ProductionRenderer extends BlockRenderer {
 
     public float getCellHeight() {
         return cellHeight;
+    }
+
+    public void startBlockMoving(Block block, float cursorX, float cursorY) {
+        movingBlock = block;
+        this.cursorX = cursorX;
+        this.cursorY = cursorY;
+    }
+
+    public void stopBlockMoving() {
+        movingBlock = null;
     }
 
 }
