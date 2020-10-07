@@ -93,7 +93,7 @@ public class BatchRender {
                                             float[] color, AABB scissor) {
         // Проверяем есть ли ещё место
         if (entriesCounter + 1 >= entries.length) {
-            Log.w("WARNING", "Max sprites count reached " + MAX_SPRITES);
+            Log.e("BATCH RENDERER", "Max sprites count reached " + MAX_SPRITES);
             return;
         }
         // Копируем данные в соответствующую запись
