@@ -45,6 +45,19 @@ public class Texture implements GLESObject {
         return texture;
     }
 
+    public static Texture getInstance(Resources resources, int resource, boolean linearFiltering) {
+        //----------------------------------------------------------------
+        // Загружаем текстуру если она еще не была загружна
+        //---------------------------------------------------------------
+        Texture texture = loadedTextures.get((long)resource);
+        if (texture==null) {
+            // Текстуру загружаем только один раз
+            texture = new Texture(resources, resource, linearFiltering);
+            loadedTextures.put((long)resource, texture);
+        }
+        return texture;
+    }
+
 
     /**
      * Загружает текстуру на основе Bitmap
