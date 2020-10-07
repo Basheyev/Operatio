@@ -33,8 +33,11 @@ public class BlockMoveHandler {
     }
 
     public synchronized void onMotion(MotionEvent event, float worldX, float worldY) {
+        int cols = production.getColumns();
+        int rows = production.getRows();
         int column = productionRenderer.getProductionColumn(worldX);
         int row = productionRenderer.getProductionRow(worldY);
+
         Block block = production.getBlockAt(column, row);
         if (block==null) inputHandler.getCameraMoveHandler().onMotion(event, worldX, worldY);
 
@@ -61,7 +64,7 @@ public class BlockMoveHandler {
             case MotionEvent.ACTION_UP:
                 if (actionInProgress) {
                     productionRenderer.stopBlockMoving();
-                    if (column >= 0 && row >= 0) {
+                    if (column >= 0 && row >= 0 && column < cols && row < rows) {
                         if (block == null) {
                             SoundRenderer.playSound(blockPlaced);
                             production.setBlock(dragBlock, column, row);
@@ -70,7 +73,9 @@ public class BlockMoveHandler {
                             production.setBlock(dragBlock, lastCol, lastRow);
                             production.selectBlock(lastCol, lastRow);
                         }
-
+                    } else {
+                        production.setBlock(dragBlock, lastCol, lastRow);
+                        production.selectBlock(lastCol, lastRow);
                     }
                     actionInProgress = false;
                 }
