@@ -15,9 +15,6 @@ import com.axiom.atom.engine.core.GameLoop;
  */
 public class TouchListener implements View.OnTouchListener {
 
-
-    // FIXME не отправлять события нажатия если идет масштабирование
-
     protected ScaleGestureDetector scaleDetector;
     protected boolean scaling = false;
 
