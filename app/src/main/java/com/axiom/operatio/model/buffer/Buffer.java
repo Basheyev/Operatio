@@ -30,5 +30,19 @@ public class Buffer extends Block {
        // do nothing
     }
 
+    @Override
+    public void setOutputDirection(int outDir) {
+        super.setOutputDirection(NONE);
+    }
+
+    @Override
+    public void setInputDirection(int inDir) {
+        super.setInputDirection(NONE);
+    }
+
+    @Override
+    public void setDirections(int inDir, int outDir) {
+        super.setDirections(NONE, NONE);
+    }
 
 }
