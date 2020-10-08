@@ -19,14 +19,13 @@ public class ConveyorRenderer extends BlockRenderer {
     protected Conveyor conveyor;
     protected Sprite sprite;
 
-    protected int animLR, animRL;
-    protected int animUD, animDU;
-    protected int animRU, animUR;
+    protected int animStraight, animUpToRight, animRightToUp;
+
     protected long timeStarted;
 
     public ConveyorRenderer(Conveyor conveyor) {
         this.conveyor = conveyor;
-        sprite = new Sprite(SceneManager.getResources(), R.drawable.conveyor_texture,4,6);
+        sprite = new Sprite(SceneManager.getResources(), R.drawable.conveyor,4,6);
         sprite.zOrder = 1;
         createAnimations();
         arrangeAnimation(conveyor.getInputDirection(), conveyor.getOutputDirection());
@@ -34,74 +33,83 @@ public class ConveyorRenderer extends BlockRenderer {
     }
 
     private void createAnimations() {
-        animLR = sprite.addAnimation(0,3,15,true);
-        animRL = sprite.addAnimation(4,7,15,true);
-        animUD = sprite.addAnimation(8,11,15,true);
-        animDU = sprite.addAnimation(12,15,15,true);
-        animRU = sprite.addAnimation(16,19,15,true);
-        animUR = sprite.addAnimation(20,23,15,true);
+        animStraight = sprite.addAnimation(0,7, 15, true);
+        animUpToRight = sprite.addAnimation(8,15, 15, true);
+        animRightToUp = sprite.addAnimation(16,23, 15, true);
     }
 
 
     public void arrangeAnimation(int inputDirection, int outputDirection) {
 
         if (inputDirection== LEFT && outputDirection== RIGHT) {
-            sprite.setActiveAnimation(animLR);
+            sprite.setActiveAnimation(animStraight);
+            sprite.setRotation(0);
             sprite.flipHorizontally(false);
             sprite.flipVertically(false);
         }
         if (inputDirection== RIGHT && outputDirection== LEFT) {
-            sprite.setActiveAnimation(animRL);
-            sprite.flipHorizontally(false);
+            sprite.setActiveAnimation(animStraight);
+            sprite.setRotation(0);
+            sprite.flipHorizontally(true);
             sprite.flipVertically(false);
         }
         if (inputDirection== DOWN && outputDirection== UP) {
-            sprite.setActiveAnimation(animDU);
+            sprite.setActiveAnimation(animStraight);
+            sprite.setRotation((float) Math.PI / 2);
             sprite.flipHorizontally(false);
             sprite.flipVertically(false);
         }
         if (inputDirection== UP && outputDirection== DOWN) {
-            sprite.setActiveAnimation(animUD);
-            sprite.flipHorizontally(false);
-            sprite.flipVertically(false);
-        }
-        if (inputDirection== RIGHT && outputDirection== UP) {
-            sprite.setActiveAnimation(animRU);
+            sprite.setActiveAnimation(animStraight);
+            sprite.setRotation((float) -Math.PI / 2);
             sprite.flipHorizontally(false);
             sprite.flipVertically(false);
         }
         if (inputDirection== UP && outputDirection== RIGHT) {
-            sprite.setActiveAnimation(animUR);
+            sprite.setActiveAnimation(animUpToRight);
+            sprite.setRotation(0);
+            sprite.flipHorizontally(false);
+            sprite.flipVertically(false);
+        }
+        if (inputDirection== RIGHT && outputDirection== UP) {
+            sprite.setActiveAnimation(animRightToUp);
+            sprite.setRotation(0);
             sprite.flipHorizontally(false);
             sprite.flipVertically(false);
         }
         if (inputDirection== LEFT && outputDirection== UP) {
-            sprite.setActiveAnimation(animRU);
+            sprite.setActiveAnimation(animRightToUp);
+            sprite.setRotation(0);
             sprite.flipHorizontally(true);
             sprite.flipVertically(false);
         }
-        if (inputDirection== DOWN && outputDirection== LEFT) {
-            sprite.setActiveAnimation(animUR);
-            sprite.flipVertically(true);
+        if (inputDirection== LEFT && outputDirection== DOWN) {
+            sprite.setActiveAnimation(animRightToUp);
+            sprite.setRotation(0);
             sprite.flipHorizontally(true);
+            sprite.flipVertically(true);
+        }
+        if (inputDirection== DOWN && outputDirection== LEFT) {
+            sprite.setActiveAnimation(animUpToRight);
+            sprite.setRotation(0);
+            sprite.flipHorizontally(true);
+            sprite.flipVertically(true);
         }
         if (inputDirection== RIGHT && outputDirection== DOWN) {
-            sprite.setActiveAnimation(animRU);
+            sprite.setActiveAnimation(animRightToUp);
+            sprite.setRotation(0);
             sprite.flipHorizontally(false);
             sprite.flipVertically(true);
         }
         if (inputDirection== DOWN && outputDirection== RIGHT) {
-            sprite.setActiveAnimation(animUR);
+            sprite.setActiveAnimation(animUpToRight);
+            sprite.setRotation(0);
             sprite.flipHorizontally(false);
             sprite.flipVertically(true);
         }
-        if (inputDirection== LEFT && outputDirection== DOWN) {
-            sprite.setActiveAnimation(animRU);
-            sprite.flipVertically(true);
-            sprite.flipHorizontally(true);
-        }
         if (inputDirection== UP && outputDirection== LEFT) {
-            sprite.setActiveAnimation(animUR);
+            sprite.setActiveAnimation(animUpToRight);
+            sprite.setRotation(0);
             sprite.flipHorizontally(true);
             sprite.flipVertically(false);
         }

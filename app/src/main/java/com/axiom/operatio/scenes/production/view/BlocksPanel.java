@@ -96,8 +96,8 @@ public class BlocksPanel extends Panel {
         this.addChild(button);
 
         i = 5;
-        sprite = new Sprite(SceneManager.getResources(), R.drawable.conveyor_texture, 4, 6);
-        animation = sprite.addAnimation(0, 3, 8,true);
+        sprite = new Sprite(SceneManager.getResources(), R.drawable.conveyor, 4, 6);
+        animation = sprite.addAnimation(0, 7, 15,true);
         sprite.setActiveAnimation(animation);
         button = new Button(sprite);
         button.setTag(""+i);
