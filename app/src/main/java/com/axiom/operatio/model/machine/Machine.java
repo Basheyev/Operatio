@@ -3,6 +3,7 @@ package com.axiom.operatio.model.machine;
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.buffer.Buffer;
+import com.axiom.operatio.model.conveyor.ConveyorRenderer;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.conveyor.Conveyor;
@@ -138,4 +139,22 @@ public class Machine extends Block {
         return type;
     }
 
+
+    @Override
+    public void setOutputDirection(int outDir) {
+        super.setOutputDirection(outDir);
+        ((MachineRenderer)renderer).arrangeAnimation(inputDirection, outputDirection);
+    }
+
+    @Override
+    public void setInputDirection(int inDir) {
+        super.setInputDirection(inDir);
+        ((MachineRenderer)renderer).arrangeAnimation(inputDirection, outputDirection);
+    }
+
+    @Override
+    public void setDirections(int inDir, int outDir) {
+        super.setDirections(inDir, outDir);
+        ((MachineRenderer)renderer).arrangeAnimation(inputDirection, outputDirection);
+    }
 }

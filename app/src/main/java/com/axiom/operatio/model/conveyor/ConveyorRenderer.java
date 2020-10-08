@@ -6,6 +6,7 @@ import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.Production;
+import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.model.block.BlockRenderer;
 import com.axiom.operatio.model.materials.Item;
 
@@ -16,19 +17,19 @@ import static com.axiom.operatio.model.block.Block.UP;
 
 public class ConveyorRenderer extends BlockRenderer {
 
-    protected Conveyor conveyor;
+    protected Block block;
     protected Sprite sprite;
 
     protected int animStraight, animUpToRight, animRightToUp;
 
     protected long timeStarted;
 
-    public ConveyorRenderer(Conveyor conveyor) {
-        this.conveyor = conveyor;
+    public ConveyorRenderer(Block block) {
+        this.block = block;
         sprite = new Sprite(SceneManager.getResources(), R.drawable.conveyor,4,6);
         sprite.zOrder = 1;
         createAnimations();
-        arrangeAnimation(conveyor.getInputDirection(), conveyor.getOutputDirection());
+        arrangeAnimation(block.getInputDirection(), block.getOutputDirection());
         timeStarted = Production.getClockMilliseconds();
     }
 
@@ -117,24 +118,28 @@ public class ConveyorRenderer extends BlockRenderer {
 
 
     public void draw(Camera camera, float x, float y, float width, float height) {
-        Production production = conveyor.getProduction();
+        Production production = block.getProduction();
         if (production!=null) {
             sprite.animationPaused = production.isPaused();
         }
 
         // Отрисовать сам конвейер
         sprite.draw(camera,x,y, width, height);
-        // Отрисовать предметы на нём
-        drawItems(camera, x, y, width, height);
-        // Отрисовать вход/выход
-        drawInOut(camera, conveyor.getInputDirection(), conveyor.getOutputDirection(),
-                x, y, width, height, sprite.zOrder + 2);
+
+        if (block instanceof Conveyor) {
+            // Отрисовать предметы на нём
+            drawItems(camera, x, y, width, height);
+
+            // Отрисовать вход/выход
+            drawInOut(camera, block.getInputDirection(), block.getOutputDirection(),
+                    x, y, width, height, sprite.zOrder + 2);
+        }
 
     }
 
 
     protected void drawItems(Camera camera, float x, float y, float width, float height) {
-
+        Conveyor conveyor = (Conveyor) block;
         float cycleTime = Production.getCycleTimeMs();        // Длительность цикла в мс.
         float deliveryCycles = conveyor.getDeliveryCycles();  // Циклов для доставки предмета
         float capacity = conveyor.getTotalCapacity();         // Вместимость конвейера в предметах
@@ -177,8 +182,8 @@ public class ConveyorRenderer extends BlockRenderer {
                             Item item, float progress) {
         float xpos = 0, ypos = 0;
 
-        int inputDirection = conveyor.getInputDirection();
-        int outputDirection = conveyor.getOutputDirection();
+        int inputDirection = block.getInputDirection();
+        int outputDirection = block.getOutputDirection();
 
         if (inputDirection==LEFT && outputDirection==RIGHT) {
             xpos = progress - 0.5f;

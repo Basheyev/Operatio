@@ -6,6 +6,7 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.block.BlockRenderer;
+import com.axiom.operatio.model.conveyor.ConveyorRenderer;
 
 public class MachineRenderer extends BlockRenderer {
 
@@ -13,7 +14,7 @@ public class MachineRenderer extends BlockRenderer {
     protected Sprite sprite;                               // Анимации машины
     protected int idleAnimation;                           // Код анимации простоя
     protected int busyAnimation;                           // Код анимации занятости
-
+    protected ConveyorRenderer conveyorRenderer;
 
     public MachineRenderer(Machine machine) {
         this.machine = machine;
@@ -23,6 +24,7 @@ public class MachineRenderer extends BlockRenderer {
         idleAnimation = sprite.addAnimation(ID * 8, ID * 8, 8, true);
         busyAnimation = sprite.addAnimation(ID * 8, ID * 8 + 7, 8, true);
         sprite.setActiveAnimation(idleAnimation);
+        conveyorRenderer = new ConveyorRenderer(machine);
     }
 
 
@@ -32,14 +34,20 @@ public class MachineRenderer extends BlockRenderer {
             sprite.animationPaused = production.isPaused();
         }
 
+        // Рисуем конвейер
+        conveyorRenderer.draw(camera, x, y, width, height);
+
+        // Рисуем машину
         sprite.draw(camera, x, y, width, height);
 
+        // Рисуем вход-выход
         drawInOut(camera, machine.getInputDirection(), machine.getOutputDirection(),
                 x, y, width, height, sprite.zOrder + 2);
 
-        /*GraphicsRender.setZOrder(10);
-        String bf1 = ""+ machine.getItemsAmount();
-        GraphicsRender.drawText(bf1.toCharArray(), x + width / 2 ,y + height / 2,1);*/
+    }
+
+    public void arrangeAnimation(int inputDirection, int outputDirection) {
+        conveyorRenderer.arrangeAnimation(inputDirection, outputDirection);
     }
 
     public void setIdleAnimation() {
