@@ -6,6 +6,7 @@ import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 
+// TODO Добавить режим прокручивания обзора внутри панели (Scroll)
 public class Panel extends Widget {
 
 

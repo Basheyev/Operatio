@@ -5,6 +5,7 @@ import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 
+// TODO Сделать более удобные для кастомизации кнопки (размер шрифта, форма, иконки)
 public class Button extends Widget {
 
     protected Sprite background;
@@ -61,6 +62,13 @@ public class Button extends Widget {
         textColor[1] = g;
         textColor[2] = b;
         textColor[3] = a;
+    }
+
+    public void setTextColor(int rgba) {
+        setTextColor(((rgba >> 24) & 0xff) / 255.0f,
+                    ((rgba >> 16) & 0xff) / 255.0f,
+                    ((rgba >>  8) & 0xff) / 255.0f,
+                    ((rgba      ) & 0xff) / 255.0f);
     }
 
     public void setText(String caption) {

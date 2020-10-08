@@ -105,10 +105,10 @@ public abstract class Widget {
     }
 
     public int getColor() {
-        return ((int)(color[3] * 255.0f)) << 24 |
-                ((int)(color[0] * 255.0f)) << 16 |
-                ((int)(color[1] * 255.0f)) << 8 |
-                ((int)(color[2] * 255.0f));
+        return ((int)(color[3]  * 255.0f) & 0xff) << 24 |
+                ((int)(color[0] * 255.0f) & 0xff) << 16 |
+                ((int)(color[1] * 255.0f) & 0xff) << 8 |
+                ((int)(color[2] * 255.0f) & 0xff);
     }
 
     //--------------------------------------------------------------------------------------------
