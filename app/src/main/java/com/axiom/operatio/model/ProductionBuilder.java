@@ -23,7 +23,7 @@ public class ProductionBuilder {
 
     protected static void addStorage(Production production, int col, int row) {
         Buffer storage1 = new Buffer( production, 100);
-        for (int i=0; i<64; i++) storage1.push(new Item(Material.getMaterial(0)));
+        for (int i=0; i<100; i++) storage1.push(new Item(Material.getMaterial(0)));
         production.setBlock(storage1, col,row);
     }
 
