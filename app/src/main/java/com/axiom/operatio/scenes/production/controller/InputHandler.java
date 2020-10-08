@@ -8,9 +8,9 @@ import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
-// Обработчик ввода сцены изменяющий модель Производства
-
-// TODO При движении и увеличении учитывать границы
+/**
+ * Обработчик ввода сцены изменяющий модель Производства
+ */
 public class InputHandler {
 
     public static final int LOOK_AROUND = 0;

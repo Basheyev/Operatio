@@ -53,7 +53,6 @@ public class CameraMoveHandler {
                     Camera camera = Camera.getInstance();
                     float x = camera.getX() + (cursorX - worldX);
                     float y = camera.getY() + (cursorY - worldY);
-                    // FIXME вот не двигать бы камеру пока не дорисуются тайлы
                     camera.lookAt(x, y);
                 }
                 break;
