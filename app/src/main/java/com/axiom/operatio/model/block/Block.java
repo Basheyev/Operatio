@@ -5,7 +5,7 @@ import com.axiom.atom.engine.data.Channel;
 import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.materials.Item;
 
-// TODO Рендерить под блоком конвейер - как основу движения материалов
+// TODO учитывать направление источника и приёмника
 /**
  * Базовый блок производства реализующий примитивную механику
  */
@@ -200,6 +200,12 @@ public abstract class Block {
         Block left = production.getBlockAt(this, LEFT);
         Block right = production.getBlockAt(this, RIGHT);
 
+        // Исключаем соседние блоки выходы/входы которых смотрят не на этот блок
+        upper = this.hasInOutFrom(upper) ? upper : null;
+        down  = this.hasInOutFrom(down) ? down : null;
+        left  = this.hasInOutFrom(left) ? left : null;
+        right = this.hasInOutFrom(right) ? right : null;
+
         // Считаем количество соседей
         int neighborsCount =
                 (upper!= null ? 1 : 0) + (down != null ? 1 : 0) +
@@ -219,8 +225,17 @@ public abstract class Block {
             if (right!=null && down!=null) adjustDirectionTwoNeighbors(right, RIGHT, down, DOWN);
             if (upper!=null && down!=null) adjustDirectionTwoNeighbors(upper, UP, down, DOWN);
         }
-        // TODO Если три/четыре соседа но входы выходы только у двух - обработать для двух
+
     }
+
+
+
+    protected boolean hasInOutFrom(Block block) {
+        if (block==null) return false;
+        return (production.getBlockAt(block, block.getInputDirection())==this) ||
+               (production.getBlockAt(block, block.getOutputDirection())==this);
+    }
+
 
     /**
      * Устанавливает направление потока материалов если есть один сосед
@@ -283,6 +298,12 @@ public abstract class Block {
         Block down = production.getBlockAt(this, DOWN);
         Block left = production.getBlockAt(this, LEFT);
         Block right = production.getBlockAt(this, RIGHT);
+
+        // Исключаем соседние блоки выходы/входы которых смотрят не на этот блок
+        upper = this.hasInOutFrom(upper) ? upper : null;
+        down  = this.hasInOutFrom(down) ? down : null;
+        left  = this.hasInOutFrom(left) ? left : null;
+        right = this.hasInOutFrom(right) ? right : null;
 
         int neighborsCount =
                 (upper!= null ? 1 : 0) + (down != null ? 1 : 0) +

@@ -3,6 +3,7 @@ package com.axiom.operatio.model.block;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 
+// TODO Рендерить под блоком конвейер - как основу движения материалов
 public abstract class BlockRenderer {
 
     public abstract void draw(Camera camera, float x, float y, float width, float height);
