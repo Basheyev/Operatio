@@ -5,7 +5,6 @@ import com.axiom.atom.engine.data.Channel;
 import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.materials.Item;
 
-// TODO учитывать направление источника и приёмника
 /**
  * Базовый блок производства реализующий примитивную механику
  */
