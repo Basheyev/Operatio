@@ -6,7 +6,6 @@ import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.model.materials.Item;
 
-// TODO учитывать направление источника и приёмника
 public class Conveyor extends Block {
 
     public static final int MAX_CAPACITY = 4;
