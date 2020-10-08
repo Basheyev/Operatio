@@ -86,9 +86,13 @@ public class Conveyor extends Block {
             if (outputBlock != null) {
                 // Если выходной блок буфер/конвейер - заталкиваем сами
                 if (outputBlock instanceof Buffer || outputBlock instanceof Conveyor) {
-                    if (outputBlock.push(item)) {
-                        output.remove(item);
-                        // Надо поставить временную метку
+                    // Если вход выходного блока смотрит на наш выход
+                    int neightInputDirection = outputBlock.getInputDirection();
+                    Block neighborInput = production.getBlockAt(outputBlock, neightInputDirection);
+                    if (neightInputDirection==NONE || neighborInput==this) {
+                        if (outputBlock.push(item)) {
+                            output.remove(item);
+                        }
                     }
                 }
             }
