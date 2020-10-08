@@ -23,7 +23,7 @@ import java.util.Comparator;
  */
 public class BatchRender {
     //------------------------------------------------------------------------------------------
-    // Единица хранения очереди отрисовки: спрайт или прямоугольник
+    // Единица хранения очереди отрисовки: прямоугольник с шейдером, текстурой, вершинами и т.д.
     //------------------------------------------------------------------------------------------
     protected static class Entry {
         public int zOrder;                          // Слой отрисовки (критерий группировки)
@@ -89,8 +89,7 @@ public class BatchRender {
 
     //-------------------------------------------------------------------------------------------
     public static synchronized void addQuad(Program program,
-                                            float[] vert, int zOrder,
-                                            float[] color, AABB scissor) {
+                                            float[] vert, float[] color, int zOrder, AABB scissor) {
         // Проверяем есть ли ещё место
         if (entriesCounter + 1 >= entries.length) {
             Log.e("BATCH RENDERER", "Max sprites count reached " + MAX_SPRITES);
@@ -137,6 +136,11 @@ public class BatchRender {
     //-------------------------------------------------------------------------------------------
     private static Entry previous = new Entry();
 
+    /**
+     * Сортирует список всех прямоугольников в очереди на отрисовку (текстуре, слою, цвету и т.д)
+     * и генерирует меш из однородных прямоугольников для минимизации количества вызовов OpenGL
+     * @param camera камера
+     */
     public static synchronized void finishBatching(Camera camera) {
         if (entriesCounter==0) return;
 
@@ -175,6 +179,11 @@ public class BatchRender {
     }
 
 
+    /**
+     * Отрисовываем сгруппированную партию (меш) однородных прямоугольников одним разом
+     * @param cameraMatrix матрица камеры для передачи в шейдер
+     * @param entry свойства для отрисовки меша берем из этой записи
+     */
     private static void renderBatch(float[] cameraMatrix, Entry entry) {
 
         loadBatchToBuffer();
