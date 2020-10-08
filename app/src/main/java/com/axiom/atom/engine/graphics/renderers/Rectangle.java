@@ -40,6 +40,13 @@ public class Rectangle {
         color[3] = a;
     }
 
+    public void setColor(int rgba) {
+        setColor(((rgba >> 24) & 0xff) / 255.0f,
+                ((rgba >> 16) & 0xff) / 255.0f,
+                ((rgba >>  8) & 0xff) / 255.0f,
+                ((rgba      ) & 0xff) / 255.0f);
+    }
+
 
     public void draw(Camera camera, float x, float y, float width, float height, AABB scissor) {
         if (!camera.isVisible(x,y, x+width,y+height)) return;

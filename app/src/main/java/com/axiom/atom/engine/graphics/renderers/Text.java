@@ -181,6 +181,12 @@ public class Text {
     }
 
 
+    public void setColor(int rgba) {
+        setColor(((rgba >> 24) & 0xff) / 255.0f,
+                ((rgba >> 16) & 0xff) / 255.0f,
+                ((rgba >>  8) & 0xff) / 255.0f,
+                ((rgba      ) & 0xff) / 255.0f);
+    }
 
     public void setColor(float r, float g, float b, float a) {
         fontSprite.setColor(r, g, b, a);
