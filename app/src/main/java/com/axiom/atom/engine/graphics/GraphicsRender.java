@@ -276,6 +276,13 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
         return render.textRender.getTextHeight(text, scale);
     }
 
+    public static void setColor(int rgba) {
+        setColor(((rgba >> 24) & 0xff) / 255.0f,
+                 ((rgba >> 16) & 0xff) / 255.0f,
+                 ((rgba >>  8) & 0xff) / 255.0f,
+              ((rgba      ) & 0xff) / 255.0f);
+    }
+
     public static void setColor(float r, float g, float b, float alpha) {
         if (render==null) return;
         render.rectangleRender.setColor(r, g, b, alpha);
