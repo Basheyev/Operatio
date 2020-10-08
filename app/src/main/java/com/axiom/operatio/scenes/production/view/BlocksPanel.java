@@ -16,6 +16,8 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 
 import java.util.ArrayList;
 
+// TODO Добавить все типы машин
+// TODO Добавить выбор операций
 public class BlocksPanel extends Panel {
 
     public final int panelColor = 0xCC505050;

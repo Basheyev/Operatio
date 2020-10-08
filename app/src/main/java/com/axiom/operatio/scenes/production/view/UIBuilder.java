@@ -11,6 +11,7 @@ import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.Production;
 
+// TODO Панель просмотра свойств блока
 public class UIBuilder {
 
     protected static Production production;

@@ -4,7 +4,8 @@ import com.axiom.operatio.model.block.Block;
 
 import java.util.ArrayList;
 
-
+// TODO Добавить сохранение уровня
+// TODO Добавить импорт/экспорт материалов (выбор)
 public class Production {
 
     protected static Production instance;

@@ -47,8 +47,6 @@ public class ProductionRenderer {
         for (int row=minRow; row <= maxRow; row++) {
             for (int col=minCol; col <= maxCol; col++) {
 
-                // FIXME появляются артефакты-линии - проявляется для маленького разрешения < HD
-
                 if (col < 0 || col > columns || row < 0 || row > rows) {
                     tileBlocked.draw(camera,
                             col * cellWidth,
