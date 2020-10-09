@@ -94,9 +94,15 @@ public class BlockAddHandler {
                         Machine.LEFT, Machine.RIGHT);
                 break;
             case 4:
-                block = new Buffer(production, 100);
+                mt = MachineType.getMachineType(4);
+                block = new Machine(production,
+                        mt, mt.getOperations()[0],
+                        Machine.LEFT, Machine.RIGHT);
                 break;
             case 5:
+                block = new Buffer(production, 100);
+                break;
+            case 6:
                 block = new Conveyor(production, Block.LEFT, Block.RIGHT, 5);
                 break;
         }

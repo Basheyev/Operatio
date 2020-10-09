@@ -16,7 +16,6 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 
 import java.util.ArrayList;
 
-// TODO Добавить все типы машин
 // TODO Добавить выбор операций
 public class BlocksPanel extends Panel {
 
@@ -72,7 +71,7 @@ public class BlocksPanel extends Panel {
         Widget button;
         int animation;
 
-        for (int i =0; i<4; i++) {
+        for (int i =0; i<5; i++) {
             sprite = new Sprite(SceneManager.getResources(), R.drawable.machines, 8, 8);
             animation = sprite.addAnimation(i * 8, i * 8 + 7, 8, true);
             sprite.setActiveAnimation(animation);
@@ -84,7 +83,7 @@ public class BlocksPanel extends Panel {
             this.addChild(button);
         }
 
-        int i = 4;
+        int i = 5;
         sprite = new Sprite(SceneManager.getResources(), R.drawable.buffer_texture, 4, 4);
         animation = sprite.addAnimation(0, 8, 8,true);
         sprite.setActiveAnimation(animation);
@@ -95,7 +94,7 @@ public class BlocksPanel extends Panel {
         button.setClickListener(listener);
         this.addChild(button);
 
-        i = 5;
+        i = 6;
         sprite = new Sprite(SceneManager.getResources(), R.drawable.conveyor, 4, 6);
         animation = sprite.addAnimation(0, 7, 15,true);
         sprite.setActiveAnimation(animation);
