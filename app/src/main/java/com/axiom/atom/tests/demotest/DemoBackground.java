@@ -13,7 +13,7 @@ public class DemoBackground extends GameObject {
 
     public DemoBackground(GameScene gameScene) {
         super(gameScene);
-        sprite = new Sprite(gameScene.getResources(), R.drawable.bitmap);
+        sprite = new Sprite(gameScene.getResources(), R.drawable.background);
         r = new Rectangle();
         r.setColor(0.9f,0.8f,0.1f,1.0f);
     }

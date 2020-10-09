@@ -23,7 +23,7 @@ public class SpriteScene extends GameScene {
         box = new Sprite(getResources(), R.drawable.material);
         actor = new Sprite(getResources(), R.drawable.player, 6, 3);
         actor.setActiveAnimation(actor.addAnimation( 0, 16,6, true));
-        background = new Sprite(getResources(), R.drawable.bitmap);
+        background = new Sprite(getResources(), R.drawable.background);
     }
 
     @Override

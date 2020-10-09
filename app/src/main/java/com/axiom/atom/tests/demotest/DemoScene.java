@@ -28,7 +28,7 @@ public class DemoScene extends GameScene {
     public void startScene() {
 
         long startTime = System.currentTimeMillis();
-        background = new Sprite(getResources(), R.drawable.bitmap);
+        background = new Sprite(getResources(), R.drawable.background);
         background.zOrder = 0;
         joystick = new Sprite(getResources(), R.drawable.joystick, 2,2);
         joystick.zOrder = 10;
