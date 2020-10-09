@@ -26,7 +26,8 @@ public class ConveyorRenderer extends BlockRenderer {
 
     public ConveyorRenderer(Block block) {
         this.block = block;
-        sprite = new Sprite(SceneManager.getResources(), R.drawable.conveyor,4,6);
+        //sprite = new Sprite(SceneManager.getResources(), R.drawable.conveyor,4,6);
+        sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks,8,8);
         sprite.zOrder = 1;
         createAnimations();
         arrangeAnimation(block.getInputDirection(), block.getOutputDirection());
@@ -34,9 +35,9 @@ public class ConveyorRenderer extends BlockRenderer {
     }
 
     private void createAnimations() {
-        animStraight = sprite.addAnimation(0,7, 15, true);
-        animUpToRight = sprite.addAnimation(8,15, 15, true);
-        animRightToUp = sprite.addAnimation(16,23, 15, true);
+        animStraight = sprite.addAnimation(40,47, 15, true);
+        animUpToRight = sprite.addAnimation(48,55, 15, true);
+        animRightToUp = sprite.addAnimation(56,63, 15, true);
     }
 
 

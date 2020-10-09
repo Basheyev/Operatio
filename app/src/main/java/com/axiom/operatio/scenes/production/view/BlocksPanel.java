@@ -72,7 +72,7 @@ public class BlocksPanel extends Panel {
         int animation;
 
         for (int i =0; i<5; i++) {
-            sprite = new Sprite(SceneManager.getResources(), R.drawable.machines, 8, 8);
+            sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 8);
             animation = sprite.addAnimation(i * 8, i * 8 + 7, 8, true);
             sprite.setActiveAnimation(animation);
             button = new Button(sprite);
@@ -95,8 +95,8 @@ public class BlocksPanel extends Panel {
         this.addChild(button);
 
         i = 6;
-        sprite = new Sprite(SceneManager.getResources(), R.drawable.conveyor, 4, 6);
-        animation = sprite.addAnimation(0, 7, 15,true);
+        sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 8);
+        animation = sprite.addAnimation(40, 47, 15,true);
         sprite.setActiveAnimation(animation);
         button = new Button(sprite);
         button.setTag(""+i);
