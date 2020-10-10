@@ -16,11 +16,9 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 
 import java.util.ArrayList;
 
-// TODO Добавить выбор операций
 public class BlocksPanel extends Panel {
 
     public final int panelColor = 0xCC505050;
-    protected int tickSound;
     protected String toggledButton;
 
     public BlocksPanel() {
@@ -28,7 +26,6 @@ public class BlocksPanel extends Panel {
         setLocalBounds(0,0,180,1080);
         setColor(panelColor);
         buildButtons();
-        tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
     }
 
     public void untoggleButtons() {
@@ -38,75 +35,13 @@ public class BlocksPanel extends Panel {
         toggledButton = null;
     }
 
-    protected ClickListener listener = new ClickListener() {
-        @Override
-        public void onClick(Widget w) {
-            if (UIBuilder.editorPanel.getToggledButton()!=null) {
-                UIBuilder.editorPanel.untoggleButtons();
-            }
-            SoundRenderer.playSound(tickSound);
-            Widget parent = w.getParent();
-            if (parent!=null) {
-                ArrayList<Widget> children = parent.getChildren();
-                if (children!=null) {
-                    for (Widget widget:children) {
-                        if (widget!=w) widget.setColor(Color.GRAY);
-                    }
-                }
-            }
-            if (w.getColor()==Color.GRAY) {
-                w.setColor(Color.RED);
-                toggledButton = w.getTag();
-                Log.i("BUTTON", toggledButton);
-            } else {
-                w.setColor(Color.GRAY);
-                toggledButton = null;
-            }
-        }
-    };
-
-
     private void buildButtons() {
-        Sprite sprite;
-        Widget button;
-        int animation;
-
-        for (int i =0; i<5; i++) {
-            sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 8);
-            animation = sprite.addAnimation(i * 8, i * 8 + 7, 8, true);
-            sprite.setActiveAnimation(animation);
-            button = new Button(sprite);
-            button.setTag(""+i);
-            button.setLocalBounds(30, 940 - i * 140, 120, 120);
-            button.setColor(Color.GRAY);
-            button.setClickListener(listener);
-            this.addChild(button);
+        BlockButton button;
+        for (int id =0; id<7; id++) {
+            button = new BlockButton(this, id);
+            button.setLocalBounds(30, 940 - id * 140, 120, 120);
         }
-
-        int i = 5;
-        sprite = new Sprite(SceneManager.getResources(), R.drawable.buffer_texture, 4, 4);
-        animation = sprite.addAnimation(0, 8, 8,true);
-        sprite.setActiveAnimation(animation);
-        button = new Button(sprite);
-        button.setTag(""+i);
-        button.setLocalBounds(30, 940 - i * 140, 120, 120);
-        button.setColor(Color.GRAY);
-        button.setClickListener(listener);
-        this.addChild(button);
-
-        i = 6;
-        sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 8);
-        animation = sprite.addAnimation(40, 47, 15,true);
-        sprite.setActiveAnimation(animation);
-        button = new Button(sprite);
-        button.setTag(""+i);
-        button.setLocalBounds(30, 940 - i * 140, 120, 120);
-        button.setColor(Color.GRAY);
-        button.setClickListener(listener);
-        this.addChild(button);
-
     }
-
 
     public String getToggledButton() {
         return toggledButton;
