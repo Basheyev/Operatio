@@ -11,8 +11,9 @@ import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.Production;
 
-// TODO Панель просмотра свойств блока
-// TODO Выбор операции машины
+// TODO Виджет просмотра описания машины (при выборе на панели блоков)
+// TODO Выбор операции машины (операция, выход, входы до 4)
+// TODO Панель просмотра свойств выбранного блока
 // TODO Просмотр материалов
 public class UIBuilder {
 
@@ -67,13 +68,6 @@ public class UIBuilder {
             }
         };
 
-        pauseButton = new Button("PLAY");
-        pauseButton.setTextColor(0,0,0,1);
-        pauseButton.setColor(0,1,0,1);
-        pauseButton.setLocalBounds(Camera.WIDTH-250, 0, 250, 140);
-        pauseButton.setClickListener(pauseListener);
-        widget.addChild(pauseButton);
-
         Button exitButton = new Button("Exit");
         exitButton.setTextColor(1,1,1,1);
         exitButton.setLocalBounds(1700,960,200,100);
@@ -86,6 +80,15 @@ public class UIBuilder {
 
         editorPanel = new ModePanel();
         widget.addChild(editorPanel);
+
+        pauseButton = new Button("PLAY");
+        pauseButton.setTextColor(0,0,0,1);
+        pauseButton.setColor(0,1,0,1);
+        pauseButton.setLocalBounds(Camera.WIDTH-250, 0, 250, 140);
+        pauseButton.setClickListener(pauseListener);
+        production.setPaused(true);
+        setPausedButtonState(true);
+        widget.addChild(pauseButton);
     }
 
     public static Widget getBlocksPanel() {
