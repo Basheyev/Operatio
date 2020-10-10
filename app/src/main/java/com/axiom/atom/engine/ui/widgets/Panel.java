@@ -17,7 +17,7 @@ public class Panel extends Widget {
 
     @Override
     public void draw(Camera camera) {
-        if (parent==null) return;
+        if (parent==null || !visible) return;
 
         if (opaque) {
             GraphicsRender.setZOrder(zOrder);

@@ -12,11 +12,16 @@ public class Button extends Widget {
     protected String text;
     protected float[] textColor = {0,0,0,1};
 
+    public Button() {
+        text = "";
+        setColor(0.5f, 0.7f, 0.5f, 0.9f);
+    }
+
     public Button(Sprite background, String text) {
         super();
         this.background = background;
         this.text = text;
-        setColor(0.5f, 0.7f, 0.5f, 0.9f);
+
     }
 
     public Button(String text) {
@@ -29,7 +34,7 @@ public class Button extends Widget {
 
     @Override
     public void draw(Camera camera) {
-        if (parent==null) return;
+        if (parent==null || !visible) return;
         AABB bounds = getWorldBounds();
         AABB scissors = getScissors();
         AABB parentScissor = parent.getScissors();
@@ -56,6 +61,9 @@ public class Button extends Widget {
         super.draw(camera);
     }
 
+    public void setBackground(Sprite background) {
+        this.background = background;
+    }
 
     public void setTextColor(float r, float g, float b, float a) {
         textColor[0] = r;

@@ -216,11 +216,13 @@ public abstract class Widget {
     public void draw(Camera camera) {
         // Если нет родителя двигать за камерой
         if (parent==null) camera.getCameraBounds(localBounds);
-        Widget child;
-        int size = children.size();
-        for (int i=0; i<size; i++) {
-            child = children.get(i);
-            child.draw(camera);
+        if (visible) {
+            Widget child;
+            int size = children.size();
+            for (int i = 0; i < size; i++) {
+                child = children.get(i);
+                child.draw(camera);
+            }
         }
     }
 
