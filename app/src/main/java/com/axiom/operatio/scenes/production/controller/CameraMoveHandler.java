@@ -24,16 +24,21 @@ public class CameraMoveHandler {
     private boolean actionInProgress = false;
     private float cursorX, cursorY;
     private int lastCol, lastRow;
-    private int snd1, snd2, snd3;
+    private int snd1, snd2, snd3, snd4, snd5;
+    private int sndConveyor, sndBuffer;
 
     public CameraMoveHandler(InputHandler inputHandler, ProductionScene scn, Production prod, ProductionRenderer prodRender) {
         this.inputHandler = inputHandler;
         this.production = prod;
         this.productionRenderer = prodRender;
         this.scene = scn;
-        snd1 = SoundRenderer.loadSound(R.raw.machine_snd);
-        snd2 = SoundRenderer.loadSound(R.raw.conveyor_snd);
-        snd3 = SoundRenderer.loadSound(R.raw.buffer_snd);
+        snd1 = SoundRenderer.loadSound(R.raw.machine_press);
+        snd2 = SoundRenderer.loadSound(R.raw.machine_roller);
+        snd3 = SoundRenderer.loadSound(R.raw.machine_cutter);
+        snd4 = SoundRenderer.loadSound(R.raw.machine_extruder);
+        snd5 = SoundRenderer.loadSound(R.raw.machine_assembly);
+        sndConveyor = SoundRenderer.loadSound(R.raw.conveyor_snd);
+        sndBuffer = SoundRenderer.loadSound(R.raw.buffer_snd);
     }
 
     public void onMotion(MotionEvent event, float worldX, float worldY) {
@@ -61,9 +66,17 @@ public class CameraMoveHandler {
                     if (column >= 0 && row >= 0 && lastCol == column && lastRow == row) {
                         Block block = production.getBlockAt(column, row);
                         if (block != null) {
-                            if (block instanceof Machine) SoundRenderer.playSound(snd1);
-                            if (block instanceof Conveyor) SoundRenderer.playSound(snd2);
-                            if (block instanceof Buffer) SoundRenderer.playSound(snd3);
+                            if (block instanceof Machine) {
+                                switch (((Machine) block).getType().getID()) {
+                                    case 0: SoundRenderer.playSound(snd1); break;
+                                    case 1: SoundRenderer.playSound(snd2); break;
+                                    case 2: SoundRenderer.playSound(snd3); break;
+                                    case 3: SoundRenderer.playSound(snd4); break;
+                                    case 4: SoundRenderer.playSound(snd5); break;
+                                }
+                            }
+                            if (block instanceof Conveyor) SoundRenderer.playSound(sndConveyor);
+                            if (block instanceof Buffer) SoundRenderer.playSound(sndBuffer);
 
                         }
                     }
