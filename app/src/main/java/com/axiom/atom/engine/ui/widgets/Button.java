@@ -13,15 +13,16 @@ public class Button extends Widget {
     protected float[] textColor = {0,0,0,1};
 
     public Button() {
+        super();
         text = "";
+        setSize(64, 64);
         setColor(0.5f, 0.7f, 0.5f, 0.9f);
     }
 
     public Button(Sprite background, String text) {
-        super();
+        this();
         this.background = background;
         this.text = text;
-
     }
 
     public Button(String text) {
