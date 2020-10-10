@@ -10,6 +10,7 @@ import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.Production;
+import com.axiom.operatio.scenes.production.ProductionScene;
 
 // TODO Виджет просмотра описания машины (при выборе на панели блоков)
 // TODO Выбор операции машины (операция, выход, входы до 4)
@@ -20,7 +21,7 @@ public class UIBuilder {
     protected static Production production;
     protected static Button pauseButton;
     protected static BlocksPanel blocksPanel;
-    protected static ModePanel editorPanel;
+    protected static ModePanel modePanel;
     protected static int tickSound;
 
     public static void setPausedButtonState(boolean paused) {
@@ -36,7 +37,7 @@ public class UIBuilder {
     }
 
 
-    public static void buildUI(final Resources resources, Widget widget, Production prod) {
+    public static void buildUI(ProductionScene scene, final Resources resources, Widget widget, Production prod) {
 
         production = prod;
 
@@ -75,11 +76,11 @@ public class UIBuilder {
         exitButton.setClickListener(exitListener);
         widget.addChild(exitButton);
 
-        blocksPanel = new BlocksPanel();
+        blocksPanel = new BlocksPanel(scene);
         widget.addChild(blocksPanel);
 
-        editorPanel = new ModePanel();
-        widget.addChild(editorPanel);
+        modePanel = new ModePanel();
+        widget.addChild(modePanel);
 
         pauseButton = new Button("PLAY");
         pauseButton.setTextColor(0,0,0,1);
@@ -91,12 +92,12 @@ public class UIBuilder {
         widget.addChild(pauseButton);
     }
 
-    public static Widget getBlocksPanel() {
+    public static BlocksPanel getBlocksPanel() {
         return blocksPanel;
     }
 
-    public static Widget getEditorPanel() {
-        return editorPanel;
+    public static ModePanel getModePanel() {
+        return modePanel;
     }
 
 }

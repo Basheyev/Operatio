@@ -1,21 +1,15 @@
 package com.axiom.operatio.scenes.production;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
-import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.input.ScaleEvent;
-import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.ProductionBuilder;
 import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.model.Production;
-import com.axiom.operatio.model.block.Block;
-import com.axiom.operatio.model.block.BlockRenderer;
-import com.axiom.operatio.scenes.production.controller.BlockMoveHandler;
 import com.axiom.operatio.scenes.production.view.BlocksPanel;
 import com.axiom.operatio.scenes.production.controller.InputHandler;
 import com.axiom.operatio.scenes.production.view.ModePanel;
@@ -47,9 +41,9 @@ public class ProductionScene extends GameScene {
             production = ProductionBuilder.createDemoProduction();
             productionRenderer = new ProductionRenderer(production, initialCellWidth, initialCellHeight);
             inputHandler = new InputHandler(this, production, productionRenderer);
-            UIBuilder.buildUI(getResources(), getSceneWidget(), production);
+            UIBuilder.buildUI(this, getResources(), getSceneWidget(), production);
             blocksPanel = (BlocksPanel) UIBuilder.getBlocksPanel();
-            modePanel = (ModePanel) UIBuilder.getEditorPanel();
+            modePanel = (ModePanel) UIBuilder.getModePanel();
             initialized = true;
         }
     }
@@ -94,5 +88,14 @@ public class ProductionScene extends GameScene {
     @Override
     public void onScale(ScaleEvent event, float worldX, float worldY) {
         inputHandler.onScale(event, worldX, worldY);
+    }
+
+
+    public Production getProduction() {
+        return production;
+    }
+
+    public InputHandler getInputHandler() {
+        return inputHandler;
     }
 }

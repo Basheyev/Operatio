@@ -9,8 +9,9 @@ import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.scenes.production.ProductionScene;
+import com.axiom.operatio.scenes.production.view.UIBuilder;
 
-public class BlockMoveHandler {
+public class BlockAddMoveHandler {
 
     private InputHandler inputHandler;
     private ProductionScene scene;
@@ -23,8 +24,8 @@ public class BlockMoveHandler {
     private int lastCol, lastRow;
     private int blockPlaced;
 
-    public BlockMoveHandler(InputHandler inputHandler,
-                            ProductionScene scn, Production prod, ProductionRenderer prodRender) {
+    public BlockAddMoveHandler(InputHandler inputHandler,
+                               ProductionScene scn, Production prod, ProductionRenderer prodRender) {
         blockPlaced = SoundRenderer.loadSound(R.raw.block_add_snd);
         this.inputHandler = inputHandler;
         this.production = prod;
@@ -68,6 +69,7 @@ public class BlockMoveHandler {
                         if (block == null) {
                             SoundRenderer.playSound(blockPlaced);
                             production.setBlock(dragBlock, column, row);
+                            dragBlock.adjustFlowDirection();
                             production.selectBlock(column, row);
                         } else {
                             production.setBlock(dragBlock, lastCol, lastRow);
@@ -77,31 +79,33 @@ public class BlockMoveHandler {
                         production.setBlock(dragBlock, lastCol, lastRow);
                         production.selectBlock(lastCol, lastRow);
                     }
+                    // Если это было добавление то отжимаем кнопки
+                    if (lastCol==-1 && lastRow==-1) {
+                        UIBuilder.getBlocksPanel().untoggleButtons();
+                    }
                     actionInProgress = false;
                 }
         }
     }
 
-    public synchronized boolean isActionInProgress() {
-        return actionInProgress;
+    // Используется для добавления
+    public synchronized void startAction(Block block, float worldX, float worldY) {
+        if (actionInProgress) return;
+        // TODO Специально ошибочное значение (нормально сделаить)
+        lastCol = -1;  // Помечаем что это вновь созданные блок
+        lastRow = -1;  // Помечаем что это вновь созданный блок
+        cursorX = worldX;
+        cursorY = worldY;
+        dragBlock = block;
+        actionInProgress = true;
     }
 
-    public synchronized float getCursorX() {
-        return cursorX;
-    }
-
-    public synchronized float getCursorY() {
-        return cursorY;
-    }
-
-    public synchronized Block getDragBlock() {
-        return dragBlock;
-    }
 
     public synchronized void invalidateAction() {
         // Вернуть блок на место
         if (actionInProgress) {
             productionRenderer.stopBlockMoving();
+            // Если lastCol==lastRow==-1 значит удалить блок
             production.setBlock(dragBlock, lastCol, lastRow);
         }
         // Отменить действие

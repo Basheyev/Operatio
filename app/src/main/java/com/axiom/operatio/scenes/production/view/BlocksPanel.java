@@ -13,16 +13,21 @@ import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
+import com.axiom.operatio.model.Production;
+import com.axiom.operatio.scenes.production.ProductionScene;
 
 import java.util.ArrayList;
 
 public class BlocksPanel extends Panel {
 
+
     public final int panelColor = 0xCC505050;
+    protected ProductionScene productionScene;
     protected String toggledButton;
 
-    public BlocksPanel() {
+    public BlocksPanel(ProductionScene scene) {
         super();
+        this.productionScene = scene;
         setLocalBounds(0,0,180,1080);
         setColor(panelColor);
         buildButtons();
@@ -38,7 +43,7 @@ public class BlocksPanel extends Panel {
     private void buildButtons() {
         BlockButton button;
         for (int id =0; id<7; id++) {
-            button = new BlockButton(this, id);
+            button = new BlockButton(productionScene,this, id);
             button.setLocalBounds(30, 940 - id * 140, 120, 120);
         }
     }
