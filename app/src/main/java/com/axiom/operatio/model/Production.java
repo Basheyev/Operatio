@@ -4,26 +4,27 @@ import com.axiom.operatio.model.block.Block;
 
 import java.util.ArrayList;
 
-// TODO Добавить сохранение уровня
+// TODO Добавить сохранение уровня (сериализацию JSon)
 // TODO Добавить импорт/экспорт материалов (выбор)
 public class Production {
 
-    protected static Production instance;
-    protected ArrayList<Block> blocks;
-    protected Block[][] grid;
-    protected int columns, rows;
+    protected static Production instance;           // Синглтон объекта производства
+
+    protected ArrayList<Block> blocks;              // Список блоков производства
+    protected Block[][] grid;                       // Блоки привязанные к координатной сетке
+    protected int columns, rows;                    // Количество столбцеов и строк
 
     private long lastCycleTime;                     // Время последнего цикла (миллисекунды)
     private static long cycleMilliseconds = 300;    // Длительносить цикла (миллисекунды)
-    protected static long clock = 0;
-    protected long cycle;
+    protected static long clock = 0;                // Часы производства (с вычетом пауз игры)
+    protected long cycle;                           // Счётчик циклов производства
 
-    private boolean isPaused = false;
-    private long pauseStart = 0;
-    private long pausedTime = 0;
+    private boolean isPaused = false;               // Флаг паузы игры
+    private long pauseStart = 0;                    // Время начала паузы в системном времени
+    private long pausedTime = 0;                    // Сумма времени на паузы
 
-    private boolean blockSelected = false;
-    private int selectedCol, selectedRow;
+    private boolean blockSelected = false;          // Выбрал ли блок
+    private int selectedCol, selectedRow;           // Столбец и строка выбранного блока
 
 
     public static Production getInstance(int columns, int rows) {
@@ -108,10 +109,13 @@ public class Production {
     }
 
 
-    public boolean removeBlock(Block block) {
-        grid[block.row][block.column] = null;
+    public void removeBlock(Block block) {
+        if (block==null) return;
+        int col = block.column;
+        int row = block.row;
+        if (col < 0 || row < 0 || col >= columns || row >= columns) return;
+        grid[row][col] = null;
         blocks.remove(block);
-        return true;
     }
 
 
