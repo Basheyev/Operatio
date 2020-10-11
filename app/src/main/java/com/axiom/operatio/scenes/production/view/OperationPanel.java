@@ -51,8 +51,8 @@ public class OperationPanel extends Panel {
             }
         };
 
-        Caption caption = new Caption("Block info");
-        caption.setLocalBounds(50,600,300, 100);
+        Caption caption = new Caption("Block information");
+        caption.setLocalBounds(50,599,300, 100);
         caption.setScale(1.5f);
         caption.setTextColor(WHITE);
         addChild(caption);
