@@ -1,10 +1,12 @@
 package com.axiom.operatio.scenes.production.view;
 
 import com.axiom.atom.R;
+import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
+import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.block.Block;
@@ -13,7 +15,6 @@ import com.axiom.operatio.model.materials.Material;
 import static android.graphics.Color.GRAY;
 import static android.graphics.Color.WHITE;
 
-// TODO Много небезопасных обращений где может быть NULL
 public class OperationPanel extends Panel {
 
     public final int panelColor = 0xCC505050;
@@ -50,8 +51,14 @@ public class OperationPanel extends Panel {
             }
         };
 
+        Caption caption = new Caption("Block info");
+        caption.setLocalBounds(50,600,300, 100);
+        caption.setScale(1.5f);
+        caption.setTextColor(WHITE);
+        addChild(caption);
+
         leftButton = new Button("<");
-        leftButton.setLocalBounds( 50, 550, 75, 100);
+        leftButton.setLocalBounds( 50, 500, 75, 100);
         leftButton.setTag("<");
         leftButton.setColor(GRAY);
         leftButton.setTextColor(WHITE);
@@ -59,14 +66,14 @@ public class OperationPanel extends Panel {
         addChild(leftButton);
 
         materialButton = new Button(m.getImage());
-        materialButton.setLocalBounds( 150, 550, 100, 100);
+        materialButton.setLocalBounds( 150, 500, 100, 100);
         materialButton.setColor(GRAY);
         materialButton.setTextColor(WHITE);
         addChild(materialButton);
 
         rightButton = new Button(">");
         rightButton.setTag(">");
-        rightButton.setLocalBounds( 275, 550, 75, 100);
+        rightButton.setLocalBounds( 275, 500, 75, 100);
         rightButton.setColor(GRAY);
         rightButton.setTextColor(WHITE);
         rightButton.setClickListener(clickListener);
