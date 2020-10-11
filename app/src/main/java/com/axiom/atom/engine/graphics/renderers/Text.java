@@ -16,12 +16,15 @@ import com.axiom.atom.engine.graphics.gles2d.TextureAtlas;
 import com.axiom.atom.engine.graphics.gles2d.TextureRegion;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Отрисовывает текст, на основе шрифта в виде спрайта
  * (C) Atom Engine, Bolat Basheyev 2020
  */
 public class Text {
+
+    protected static HashMap<String, Sprite> generatedFonts = new HashMap<>();
 
     public int zOrder = 0;
     protected Sprite fontSprite;           // Спрайт где каждый кадр это отдельный символ
@@ -199,6 +202,10 @@ public class Text {
      * @return спрайт где каждому региону соответствует символ
      */
     protected Sprite generateFontSprite(String fontName, int size) {
+
+        Sprite generatedFont = generatedFonts.get(fontName);
+        if (generatedFont!=null) return generatedFont;
+
         // Чтобы генерируемая текстура была квадратная
         // считаем сколько символов по вертикали/горизонтали будет
         int matrixSize = (int) Math.ceil(Math.sqrt(totalChars));
@@ -274,7 +281,10 @@ public class Text {
             }
         }
 
-        return new Sprite(Texture.getInstance(bitmap, true), textureAtlas);
+        generatedFont = new Sprite(Texture.getInstance(bitmap, true), textureAtlas);
+        generatedFonts.put(fontName, generatedFont);
+
+        return generatedFont;
     }
 
 
