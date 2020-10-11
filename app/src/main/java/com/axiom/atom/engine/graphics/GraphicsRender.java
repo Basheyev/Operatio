@@ -83,7 +83,6 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
 
 
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-      //  textRender = new Text(new Sprite(gameView.getResources(), R.drawable.font, 15,8), 0.75f);
         textRender = new Text("sans-serif");
         rectangleRender = new Rectangle();
     }
