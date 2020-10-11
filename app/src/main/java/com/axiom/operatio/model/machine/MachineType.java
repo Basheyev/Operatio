@@ -128,9 +128,9 @@ public class MachineType {
             System.out.println("Machine:" + m.name);
             for (int j=0; j<m.operations.length; j++) {
                 op = m.operations[j];
-                System.out.print (op.outputMaterials[0].name + " = ");
+                System.out.print (op.outputMaterials[0].getName() + " = ");
                 for (int k=0; k<op.inputMaterials.length; k++) {
-                    System.out.print (op.inputMaterials[k].name +
+                    System.out.print (op.inputMaterials[k].getName() +
                             " x " + op.inputAmount[k] + " ");
                 }
                 System.out.println();

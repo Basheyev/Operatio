@@ -12,12 +12,12 @@ import com.axiom.atom.engine.data.CSVTable;
  */
 public class Material {
 
-    protected static boolean initialized;     // Флаг инициализации системы материалов
-    protected static Sprite[] images;         // Изображения всех материалов
-    protected static Material[] materials;    // Перечень всех материалов
+    protected static boolean initialized;      // Флаг инициализации системы материалов
+    protected static Material[] materials;     // Перечень всех материалов
 
-    public int materialID;                    // Код материала
-    public String name;                       // Наименование материала
+    private int materialID;                    // Код материала
+    private Sprite image;                      // Изображения всех материалов
+    private String name;                       // Наименование материала
 
 
     /**
@@ -38,9 +38,15 @@ public class Material {
      * @param ID   код материала
      * @param name название материала
      */
-    private Material(int ID, String name) {
+    private Material(int ID, Sprite image, String name) {
         materialID = ID;
+        this.image = image;
         this.name = name;
+    }
+
+
+    public int getMaterialID() {
+        return materialID;
     }
 
     /**
@@ -49,7 +55,7 @@ public class Material {
      * @return спрайт с выставленным кадром материала
      */
     public Sprite getImage() {
-        return images[materialID];
+        return image;
     }
 
     /**
@@ -60,7 +66,6 @@ public class Material {
     public String getName() {
         return name;
     }
-
 
 
     public static int getMaterialsAmount() {
@@ -76,15 +81,14 @@ public class Material {
         // Загружаем массив материалов
         CSVTable csv = new CSVTable(resources, R.raw.materials);
         int ID, totalMaterials = csv.getRowCount();
-        images = new Sprite[totalMaterials];
         materials = new Material[totalMaterials];
         for (int i = 0; i < totalMaterials; i++) {
             ID = csv.getIntValue(i, 0);
             if (ID >= 0 && ID < materials.length) {
                 // TODO Можно более экономно создавать спрайт не делая атлас каждый раз
-                images[ID] = new Sprite(resources, R.drawable.materials, 8, 8);
-                images[ID].setActiveFrame(ID);
-                materials[ID] = new Material(ID, csv.getValue(i, 1).trim());
+                Sprite image = new Sprite(resources, R.drawable.materials, 8, 8);
+                image.setActiveFrame(ID);
+                materials[ID] = new Material(ID,  image, csv.getValue(i, 1).trim());
             }
         }
         initialized = true;

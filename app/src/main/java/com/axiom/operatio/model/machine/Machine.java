@@ -81,12 +81,12 @@ public class Machine extends Block {
             Item item = input.get(k);
             if (item==null) continue;
             // Берем код очередного материала из входящей очереди
-            int materialID = item.getMaterial().materialID;
+            int materialID = item.getMaterial().getMaterialID();
 
             for (int i=0; i<operation.inputMaterials.length; i++) {
                 // Если нашли такой же материал, то уменьшаем счетчик необходимых материалов
 
-                if (operation.inputMaterials[i].materialID==materialID) {
+                if (operation.inputMaterials[i].getMaterialID()==materialID) {
                     matCounter[i]--;
                     break;
                 }
