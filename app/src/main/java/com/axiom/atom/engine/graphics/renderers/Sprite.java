@@ -77,9 +77,9 @@ public class Sprite extends Quad {
 
 
     /**
-     * Конструктор спрайта
+     * Конструктор спрайта с автоматическим созданиям текстурного атласа на базе листа спрайтов
      * @param resources ресурсы приложения
-     * @param resource ресурс изображение
+     * @param resource ресурс изображения
      * @param columns количество столбцов в листе спрайтов
      * @param rows количество строк в листе спрайтов
      */
@@ -87,17 +87,33 @@ public class Sprite extends Quad {
         this(Texture.getInstance(resources, resource), columns, rows);
     }
 
+    /**
+     * Конструктор спрайта
+     * @param resources ресурсы приложения
+     * @param resource ресурс изображения
+     */
     public Sprite(Resources resources, int resource) {
         this(resources,resource,1,1);
     }
 
 
+    /**
+     * Конструктор спрайта на базе текстуры и текстурного атласа
+     * @param texture уже созданная текстура
+     * @param atlas уже созданный текстурный атлас
+     */
     public Sprite(Texture texture, TextureAtlas atlas) {
         this(texture);
         this.atlas = atlas;
         setActiveFrame(0);
     }
 
+    /**
+     * Конструктор спрайта на базе текстуры с генерацией текстурного атласа
+     * @param texture уже созданная текстура
+     * @param columns количество столбцов в листе спрайтов
+     * @param rows количество строк в листе спрайтов
+     */
     public Sprite(Texture texture, int columns, int rows) {
         this(texture);
         // Сгенерировать текстурный атлас по количеству столбцов и строк
@@ -107,11 +123,11 @@ public class Sprite extends Quad {
 
 
     /**
-     * Отрисовывает спрайт с соответствующими параметрами с аппаратным ускорением
-     * @param camera матрица с проекцией камеры
+     * Отрисовывает спрайт с соответствующими параметрами
+     * @param camera камера с матрицей проекции камеры
      * @param x положение центра спрайта по x
      * @param y положение центра спрайта по y
-     * @param scale масштабирование размера спрайта, 1 - исходный
+     * @param scale масштабирование размера спрайта (множитель), 1.0 - исходный
      * @param scissor область обрезки в физических экранных координатах
      */
     public void draw(Camera camera, float x, float y, float scale, AABB scissor) {
@@ -134,17 +150,14 @@ public class Sprite extends Quad {
         animationNextFrame();
     }
 
-    public void draw(Camera camera, float x, float y, float scale) {
-        draw(camera,x,y,scale,null);
-    }
-
     /**
-     * Отрисовывает спрайт с соответствующими параметрами с аппаратным ускорением
-     * @param camera матрица с проекцией камеры
+     * Отрисовывает спрайт с соответствующими параметрами
+     * @param camera камера с матрицей проекции камеры
      * @param x положение центра спрайта по x
      * @param y положение центра спрайта по y
      * @param width ширина спрайта
      * @param height ширина спрайта
+     * @param scissor область обрезки в физических экранных координатах
      */
     public void draw(Camera camera, float x, float y, float width, float height, AABB scissor) {
         //-------------------------------------------------------------------------------
@@ -164,12 +177,37 @@ public class Sprite extends Quad {
         animationNextFrame();
     }
 
+    /**
+     * Отрисовывает спрайт с соответствующими параметрами
+     * @param camera камера с матрицей проекции камеры
+     * @param x положение центра спрайта по x
+     * @param y положение центра спрайта по y
+     * @param scale  масштабирование размера спрайта (множитель), 1.0 - исходный
+     */
+    public void draw(Camera camera, float x, float y, float scale) {
+        draw(camera,x,y,scale,null);
+    }
+
+    /**
+     * Отрисовывает спрайт с соответствующими параметрами
+     * @param camera камера с матрицей проекции камеры
+     * @param x положение центра спрайта по x
+     * @param y положение центра спрайта по y
+     * @param width ширина спрайта
+     * @param height ширина спрайта
+     */
     public void draw(Camera camera, float x, float y, float width, float height) {
         draw(camera, x,y,width,height,null);
     }
 
-    public void draw(Camera camera, AABB bounds, AABB scissors) {
-        draw(camera, bounds.min.x, bounds.min.y, bounds.width, bounds.height,scissors);
+    /**
+     * Отрисовывает спрайт с соответствующими параметрами
+     * @param camera камера с матрицей проекции камеры
+     * @param bounds AABB прямоугольник
+     * @param scissor область обрезки в физических экранных координатах
+     */
+    public void draw(Camera camera, AABB bounds, AABB scissor) {
+        draw(camera, bounds.min.x, bounds.min.y, bounds.width, bounds.height,scissor);
     }
 
 
@@ -230,6 +268,26 @@ public class Sprite extends Quad {
     // Горизонтальное / вертикальное отражение спрайта (отражение текстурных координат)
     //-------------------------------------------------------------------------------------------
 
+    /**
+     * Перевернут ли спрайт по горизонтали
+     * @return true - перевернут, false - не перевернут
+     */
+    public boolean isFlippedHorizontally() {
+        return horizontalFlip;
+    }
+
+    /**
+     * Перевернут ли спрайт по вертикали
+     * @return true - перевернут, false - не перевернут
+     */
+    public boolean isFlippedVertically() {
+        return verticalFlip;
+    }
+
+    /**
+     * Переворачивает изображение спрайта по горизонтали
+     * @param flipped false - не перевернут, true - перевёрнут
+     */
     public void flipHorizontally(boolean flipped) {
         if (horizontalFlip != flipped) {
             flipHorizontally();
@@ -237,6 +295,10 @@ public class Sprite extends Quad {
         }
     }
 
+    /**
+     * Переворачивает изображение спрайта по вертикали
+     * @param flipped false - не перевернут, true - перевёрнут
+     */
     public void flipVertically(boolean flipped) {
         if (verticalFlip != flipped) {
             flipVertically();
@@ -244,6 +306,9 @@ public class Sprite extends Quad {
         }
     }
 
+    /**
+     * Переворачивает текстурные координаты по горизонтали
+     */
     private void flipHorizontally() {
          // Поменять местами X координаты
         float tmp = texCoords[0];        // tmp = x1
@@ -256,6 +321,9 @@ public class Sprite extends Quad {
         texCoords[8] = texCoords[4];     // трегуольник с общим ребром
     }
 
+    /**
+     * Переворачивает текстурные координаты по вертикали
+     */
     private void flipVertically() {
          // Поменять местами Y координаты
         float tmp = texCoords[1];        // tmp = y1
@@ -348,6 +416,10 @@ public class Sprite extends Quad {
     }
 
 
+    /**
+     * Возвращает текстурный атлас для возможности его изменения
+     * @return текстурный атлас
+     */
     public TextureAtlas getAtlas() {
         return atlas;
     }

@@ -5,7 +5,9 @@ import com.axiom.atom.engine.graphics.gles2d.Program;
 import com.axiom.atom.engine.graphics.gles2d.Texture;
 
 /**
- * Единица хранения очереди отрисовки: прямоугольник с шейдером, текстурой, вершинами и т.д.
+ * Базовый класс для всей 2D графики - четырехугольник.
+ * Содержит информацию о шейдере, текстуре, вершинах, текстурных координатах, цвете,
+ * слою отрисовке и экранной области обрезки.
  */
 public class Quad {
 
@@ -83,6 +85,13 @@ public class Quad {
     }
 
 
+    /**
+     * Применяет цвет по компоннетам
+     * @param r красный
+     * @param g зеленый
+     * @param b синий
+     * @param a альфа-канал
+     */
     public void setColor(float r, float g, float b, float a) {
         color[0] = r;
         color[1] = g;
@@ -90,6 +99,10 @@ public class Quad {
         color[3] = a;
     }
 
+    /**
+     * Возвращает текущий цвет
+     * @param dstColor куда будет записан четыре компонента цвета (float)
+     */
     public void getColor(float[] dstColor) {
         dstColor[0] = color[0];
         dstColor[1] = color[1];
@@ -97,6 +110,10 @@ public class Quad {
         dstColor[3] = color[3];
     }
 
+    /**
+     * Применяет цвет в виде целого числа
+     * @param rgba цвет в виде целого числа
+     */
     public void setColor(int rgba) {
         setColor(((rgba >> 24) & 0xff) / 255.0f,
                 ((rgba >> 16) & 0xff) / 255.0f,
@@ -106,6 +123,10 @@ public class Quad {
         int x = getColor();
     }
 
+    /**
+     * Возвращает цвет в виде целого числа
+     * @return цвет в виде целого числа
+     */
     public int getColor() {
         int r = (int) (color[0] * 255.0f) & 0xff;
         int g = (int) (color[1] * 255.0f) & 0xff;
@@ -114,12 +135,20 @@ public class Quad {
         return (r << 24 | g << 16 | b << 8 | a);
     }
 
+    /**
+     * Устанавливает уровень прозрачности цвета 0.0-1.0 (альфа-канал)
+     * @param alpha 0 - полностью прозрачный, 1 - полностью не прозрачный
+     */
     public void setAlpha(float alpha) {
         if (alpha < 0) alpha = 0;
         if (alpha > 1) alpha = 1;
         color[3] = alpha;
     }
 
+    /**
+     * Возвращает уровень прозрачности цвета 0.0-1.0 (альфа канал)
+     * @return 0 - полностью прозрачный, 1 - полностью не прозрачный
+     */
     public float getAlpha() {
         return color[3];
     }
@@ -195,10 +224,19 @@ public class Quad {
     //----------------------------------------------------------------------------------------
     // Управление углом поворота
     //----------------------------------------------------------------------------------------
+
+    /**
+     * Установить угол вращение вокруг центра
+     * @param radians угол вращения в радианах
+     */
     public void setRotation(float radians) {
         this.rotation = radians;
     }
 
+    /**
+     * Вернуть угол вращения
+     * @return угол вращения в радианах
+     */
     public float getRotation() {
         return rotation;
     }
