@@ -77,11 +77,11 @@ public class OperationPanel extends Panel {
         inpBtn = new Button[4];
         outBtn = new Button[4];
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
-        snd1 = SoundRenderer.loadSound(R.raw.machine_press);
+        /*snd1 = SoundRenderer.loadSound(R.raw.machine_press);
         snd2 = SoundRenderer.loadSound(R.raw.machine_roller);
         snd3 = SoundRenderer.loadSound(R.raw.machine_cutter);
         snd4 = SoundRenderer.loadSound(R.raw.machine_extruder);
-        snd5 = SoundRenderer.loadSound(R.raw.machine_assembly);
+        snd5 = SoundRenderer.loadSound(R.raw.machine_assembly);*/
         sndConveyor = SoundRenderer.loadSound(R.raw.conveyor_snd);
         sndBuffer = SoundRenderer.loadSound(R.raw.buffer_snd);
         buildButtons();
@@ -195,11 +195,11 @@ public class OperationPanel extends Panel {
         }
         if (block instanceof Conveyor) {
             showConveyorInfo((Conveyor) block);
-            SoundRenderer.playSound(sndConveyor);
+          //  SoundRenderer.playSound(sndConveyor);
         }
         if (block instanceof Buffer) {
             showBufferInfo((Buffer) block);
-            SoundRenderer.playSound(sndBuffer);
+          //  SoundRenderer.playSound(sndBuffer);
         }
         visible = true;
     }
@@ -259,7 +259,14 @@ public class OperationPanel extends Panel {
         rightButton.visible = false;
     }
 
+
     private void showConveyorInfo(Conveyor conveyor) {
+        caption.setText("Conveyor contains");
+        operationButton.setText("" + (conveyor.getItemsAmount()) + "/" + (conveyor.getCapacity()-1));
+        operationButton.setLocation(30, 500);
+        operationButton.setSize(300,100);
+        leftButton.visible = false;
+        rightButton.visible = false;
 
     }
 

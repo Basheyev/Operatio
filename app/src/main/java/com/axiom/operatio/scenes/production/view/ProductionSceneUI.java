@@ -12,7 +12,6 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.Production;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
-// TODO Панель просмотра свойств выбранного блока
 // TODO Просмотр материалов при выборе с Буффером (для быстрого добавления)
 public class ProductionSceneUI {
 
@@ -88,7 +87,6 @@ public class ProductionSceneUI {
         operationPanel.hideBlockInfo();
         widget.addChild(operationPanel);
 
-        // FIXME BUG после нажатия кнопки PLAY/PAUSE добавление блока глючит с позиционированием
         pauseButton = new Button("PLAY");
         pauseButton.setTextColor(0,0,0,1);
         pauseButton.setColor(0,1,0,1);
