@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.axiom.atom.engine.core.GameView;
+import com.axiom.atom.tests.demotest.DemoScene;
 import com.axiom.atom.tests.shoottest.ShooterScene;
+import com.axiom.atom.tests.spritetest.SpriteScene;
 import com.axiom.operatio.scenes.mainmenu.MainMenuScene;
 
 public class MainActivity extends AppCompatActivity {
