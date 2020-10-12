@@ -44,7 +44,7 @@ public class BlocksPanel extends Panel {
         BlockButton button;
         for (int id =0; id<7; id++) {
             button = new BlockButton(productionScene,this, id);
-            button.setLocalBounds(30, 940 - id * 140, 120, 120);
+            button.setLocalBounds(30, 900 - id * 140, 120, 120);
         }
     }
 
