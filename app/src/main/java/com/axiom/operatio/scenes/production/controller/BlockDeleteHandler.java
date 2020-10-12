@@ -9,6 +9,8 @@ import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.scenes.production.ProductionScene;
+import com.axiom.operatio.scenes.production.view.OperationPanel;
+import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 
 
 public class BlockDeleteHandler {
@@ -55,6 +57,9 @@ public class BlockDeleteHandler {
                 if (actionInProgress && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
                     if (block!=null) {
                         production.removeBlock(block);
+                        production.unselectBlock();
+                        OperationPanel opsPanel = ProductionSceneUI.getOperationPanel();
+                        opsPanel.hideBlockInfo();
                         SoundRenderer.playSound(blockRemoveSound);
                         Log.i("PROD COL=" + column + ", ROW=" + row, block.toString());
                     }

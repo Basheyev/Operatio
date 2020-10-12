@@ -9,7 +9,8 @@ import com.axiom.operatio.model.Production;
 import com.axiom.operatio.model.ProductionRenderer;
 import com.axiom.operatio.model.block.Block;
 import com.axiom.operatio.scenes.production.ProductionScene;
-import com.axiom.operatio.scenes.production.view.UIBuilder;
+import com.axiom.operatio.scenes.production.view.OperationPanel;
+import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 
 public class BlockAddMoveHandler {
 
@@ -66,14 +67,16 @@ public class BlockAddMoveHandler {
                 if (actionInProgress) {
                     productionRenderer.stopBlockMoving();
                     if (column >= 0 && row >= 0 && column < cols && row < rows) {
+                        OperationPanel opsPanel = ProductionSceneUI.getOperationPanel();
                         if (block == null) {
                             SoundRenderer.playSound(blockPlaced);
                             production.setBlock(dragBlock, column, row);
                             dragBlock.adjustFlowDirection();
+                            opsPanel.showBlockInfo(dragBlock, false);
                             production.selectBlock(column, row);
                         } else {
                             production.setBlock(dragBlock, lastCol, lastRow);
-                            production.selectBlock(lastCol, lastRow);
+                            production.selectBlock(column, row);
                         }
                     } else {
                         production.setBlock(dragBlock, lastCol, lastRow);
@@ -81,7 +84,7 @@ public class BlockAddMoveHandler {
                     }
                     // Если это было добавление то отжимаем кнопки
                     if (lastCol==-1 && lastRow==-1) {
-                        UIBuilder.getBlocksPanel().untoggleButtons();
+                        ProductionSceneUI.getBlocksPanel().untoggleButtons();
                     }
                     actionInProgress = false;
                 }
@@ -91,7 +94,7 @@ public class BlockAddMoveHandler {
     // Используется для добавления
     public synchronized void startAction(Block block, float worldX, float worldY) {
         if (actionInProgress) return;
-        // TODO Специально ошибочное значение (нормально сделаить)
+        // TODO Специально ошибочное значение (нормально сделать)
         lastCol = -1;  // Помечаем что это вновь созданные блок
         lastRow = -1;  // Помечаем что это вновь созданный блок
         cursorX = worldX;
