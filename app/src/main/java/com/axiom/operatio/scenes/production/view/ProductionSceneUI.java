@@ -19,6 +19,7 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 public class ProductionSceneUI {
 
     protected static Production production;
+    protected static ProductionScene productionScene;
     protected static Button pauseButton;
     protected static BlocksPanel blocksPanel;
     protected static ModePanel modePanel;
@@ -41,7 +42,7 @@ public class ProductionSceneUI {
     public static void buildUI(ProductionScene scene, final Resources resources, Widget widget, Production prod) {
 
         production = prod;
-
+        productionScene = scene;
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
 
         ClickListener pauseListener = new ClickListener() {
@@ -49,9 +50,11 @@ public class ProductionSceneUI {
             public void onClick(Widget w) {
                 SoundRenderer.playSound(tickSound);
                 if (production.isPaused()) {
+                    productionScene.getInputHandler().invalidateAllActions();
                     production.setPaused(false);
                     setPausedButtonState(false);
                 } else {
+                    productionScene.getInputHandler().invalidateAllActions();
                     production.setPaused(true);
                     setPausedButtonState(true);
                 }
@@ -87,6 +90,7 @@ public class ProductionSceneUI {
         operationPanel.hideBlockInfo();
         widget.addChild(operationPanel);
 
+        // FIXME BUG после нажатия кнопки PLAY/PAUSE добавление блока глючит с позиционированием
         pauseButton = new Button("PLAY");
         pauseButton.setTextColor(0,0,0,1);
         pauseButton.setColor(0,1,0,1);
