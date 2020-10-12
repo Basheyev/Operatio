@@ -16,7 +16,7 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 // TODO Выбор операции машины (операция, выход, входы до 4)
 // TODO Панель просмотра свойств выбранного блока
 // TODO Просмотр материалов при выборе с Буффером (для быстрого добавления)
-public class UIBuilder {
+public class ProductionSceneUI {
 
     protected static Production production;
     protected static Button pauseButton;
@@ -64,7 +64,7 @@ public class UIBuilder {
                 SoundRenderer.playSound(tickSound);
                 if (!production.isPaused()) {
                     production.setPaused(true);
-                    UIBuilder.setPausedButtonState(true);
+                    ProductionSceneUI.setPausedButtonState(true);
                 }
                 SceneManager.getInstance().setActiveScene("Menu");
             }
@@ -84,6 +84,7 @@ public class UIBuilder {
         widget.addChild(modePanel);
 
         operationPanel = new OperationPanel();
+        operationPanel.hideBlockInfo();
         widget.addChild(operationPanel);
 
         pauseButton = new Button("PLAY");
@@ -103,5 +104,7 @@ public class UIBuilder {
     public static ModePanel getModePanel() {
         return modePanel;
     }
+
+    public static OperationPanel getOperationPanel() { return operationPanel; }
 
 }
