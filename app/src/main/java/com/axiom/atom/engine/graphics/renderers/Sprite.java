@@ -30,6 +30,8 @@ public class Sprite extends Quad {
     public boolean useColor = false;                  // Использовать ли цвет при отрисовке
 
     protected int activeFrame = -1;                   // Текущий активный кадр
+    protected float activeFrameWidth = 0;             // Ширина активного кадра
+    protected float activeFrameHeight = 0;            // Высота активного кадра
     protected boolean horizontalFlip = false;         // Горизонтальное отражение спрайта
     protected boolean verticalFlip = false;           // Вертикальное отражение спрайта
 
@@ -54,7 +56,7 @@ public class Sprite extends Quad {
      * Конструктор спрайта
      * @param texture текстура
      */
-    public Sprite(Texture texture) {
+    private Sprite(Texture texture) {
         //----------------------------------------------------------------
         // Загружаем текстуру если она еще не была загружна
         //----------------------------------------------------------------
@@ -216,7 +218,7 @@ public class Sprite extends Quad {
      * @return ширина спрайта в пикселях
      */
     public float getWidth() {
-        return atlas.getRegion(activeFrame).width;
+        return activeFrameWidth;
     }
 
     /**
@@ -224,7 +226,7 @@ public class Sprite extends Quad {
      * @return высота спрайта в пикселях
      */
     public float getHeight() {
-        return atlas.getRegion(activeFrame).height;
+        return activeFrameHeight;
     }
 
     /**
@@ -248,8 +250,10 @@ public class Sprite extends Quad {
     public void setActiveFrame(int frame) {
         if (activeFrame==frame) return;
         if (frame < 0 || frame >= atlas.size()) return;
+        TextureRegion region = atlas.getRegion(frame);
         activeFrame = frame;
-        TextureRegion region = atlas.getRegion(activeFrame);
+        activeFrameWidth = region.width;
+        activeFrameHeight = region.height;
         System.arraycopy(region.texCoords, 0, texCoords, 0, 12);
         if (horizontalFlip) flipHorizontally();
         if (verticalFlip) flipVertically();

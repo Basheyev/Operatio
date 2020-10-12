@@ -119,8 +119,6 @@ public class Quad {
                 ((rgba >> 16) & 0xff) / 255.0f,
                 ((rgba >>  8) & 0xff) / 255.0f,
                 ((rgba      ) & 0xff) / 255.0f);
-
-        int x = getColor();
     }
 
     /**
