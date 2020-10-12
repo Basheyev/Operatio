@@ -11,6 +11,7 @@ public class Button extends Widget {
     protected Sprite background;
     protected String text;
     protected float[] textColor = {0,0,0,1};
+    protected float textScale = 2.0f;
 
     public Button() {
         super();
@@ -53,10 +54,10 @@ public class Button extends Widget {
 
         if (text!=null) {
             GraphicsRender.setZOrder(zOrder + 2);
-            float textWidth = GraphicsRender.getTextWidth(text, 2);
-            float textHeight = GraphicsRender.getTextHeight(text,2);
+            float textWidth = GraphicsRender.getTextWidth(text, textScale);
+            float textHeight = GraphicsRender.getTextHeight(text,textScale);
             GraphicsRender.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
-            GraphicsRender.drawText(text, bounds.center.x - textWidth/2, bounds.center.y - (textHeight/2), 2, scissors);
+            GraphicsRender.drawText(text, bounds.center.x - textWidth/2, bounds.center.y - (textHeight/2), textScale, scissors);
         }
 
         super.draw(camera);
@@ -78,6 +79,10 @@ public class Button extends Widget {
                     ((rgba >> 16) & 0xff) / 255.0f,
                     ((rgba >>  8) & 0xff) / 255.0f,
                     ((rgba      ) & 0xff) / 255.0f);
+    }
+
+    public void setTextScale(float scale) {
+        this.textScale = scale;
     }
 
     public void setText(String caption) {
