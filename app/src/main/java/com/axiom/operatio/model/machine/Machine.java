@@ -9,7 +9,6 @@ import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.conveyor.Conveyor;
 
 // TODO Добавить для Сборщика возможность забирать нужные материалы из буфера
-// TODO Добавить сортировщик (уточнить нужен ли он)
 public class Machine extends Block {
 
     protected MachineType type;
