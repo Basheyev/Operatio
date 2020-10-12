@@ -61,7 +61,7 @@ public class BlockButton extends Button {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 SoundRenderer.playSound(tickSound);
-                UIBuilder.getModePanel().untoggleButtons();
+                ProductionSceneUI.getModePanel().untoggleButtons();
                 panel.toggledButton = getTag();
                 Block block = createBlock(scene.getProduction(), getTag());
                 moveHandler.startAction(block, worldX, worldY);

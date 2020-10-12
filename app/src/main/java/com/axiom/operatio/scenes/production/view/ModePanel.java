@@ -1,6 +1,5 @@
 package com.axiom.operatio.scenes.production.view;
 
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.util.Log;
 
@@ -26,8 +25,8 @@ public class ModePanel extends Panel {
         @Override
         public void onClick(Widget w) {
 
-            if (UIBuilder.blocksPanel.getToggledButton()!=null) {
-                UIBuilder.blocksPanel.untoggleButtons();
+            if (ProductionSceneUI.blocksPanel.getToggledButton()!=null) {
+                ProductionSceneUI.blocksPanel.untoggleButtons();
             }
 
             SoundRenderer.playSound(tickSound);
