@@ -47,7 +47,7 @@ public class TextureAtlas {
         region.y = y;
         region.width = width;
         region.height = height;
-        region.textureCoordinates = new float[12];
+        region.texCoords = new float[12];
         // Нормируем координаты на текстурные координаты - единицу (0.0-1.0)
         // и переворачиваем (в Bitmap Y=0 сверху, а в текстуре Y=0 снизу)
         float x1 = x / textureWidth;
@@ -55,19 +55,19 @@ public class TextureAtlas {
         float x2 = (x + width) / textureWidth;
         float y2 = 1.0f - (y / textureHeight);
         // ===== Треугольник 1
-        region.textureCoordinates[0] = x1;  // левый верхний угол
-        region.textureCoordinates[1] = y2;
-        region.textureCoordinates[2] = x1;  // левый нижний угол
-        region.textureCoordinates[3] = y1;
-        region.textureCoordinates[4] = x2;  // правый верхний угол
-        region.textureCoordinates[5] = y2;
+        region.texCoords[0] = x1;  // левый верхний угол
+        region.texCoords[1] = y2;
+        region.texCoords[2] = x1;  // левый нижний угол
+        region.texCoords[3] = y1;
+        region.texCoords[4] = x2;  // правый верхний угол
+        region.texCoords[5] = y2;
         // ===== Треугольник 2
-        region.textureCoordinates[6] = x1;  // левый нижний угол
-        region.textureCoordinates[7] = y1;
-        region.textureCoordinates[8] = x2;  // правый верхний угол
-        region.textureCoordinates[9] = y2;
-        region.textureCoordinates[10] = x2; // правый нижний угол
-        region.textureCoordinates[11] = y1;
+        region.texCoords[6] = x1;  // левый нижний угол
+        region.texCoords[7] = y1;
+        region.texCoords[8] = x2;  // правый верхний угол
+        region.texCoords[9] = y2;
+        region.texCoords[10] = x2; // правый нижний угол
+        region.texCoords[11] = y1;
         // Добавляем в список
         regions.add(region);
         return region;

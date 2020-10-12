@@ -4,5 +4,5 @@ public class TextureRegion {
     public String name;
     public int x, y;
     public int width, height;
-    public float[] textureCoordinates;
+    public float[] texCoords;
 }
