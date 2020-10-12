@@ -37,6 +37,7 @@ public class Rectangle extends Quad {
         float sx = x + width * 0.5f;
         float sy = y + height * 0.5f;
         initializeVertices();
+        if (rotation!=0) evaluateRotation(rotation);
         evaluateScale(width, height);
         evaluateOffset(sx, sy);
         BatchRender.addQuad(program, vertices, color, zOrder, scissor);
