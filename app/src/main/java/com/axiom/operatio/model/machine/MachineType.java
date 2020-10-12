@@ -107,12 +107,17 @@ public class MachineType {
         return operations;
     }
 
-    public boolean isOperationAvailable(Operation op) {
+    public Operation getOperation(int ID) {
+        if (ID < 0 || ID >= operations.length) return null;
+        return operations[ID];
+    }
+
+    public int getOperationID(Operation op) {
         int size = operations.length;
         for (int i=0; i<size; i++) {
-            if (operations[i].equals(op)) return true;
+            if (operations[i].equals(op)) return i;
         }
-        return false;
+        return -1;
     }
 
     //--------------------------------------------------------------------------------

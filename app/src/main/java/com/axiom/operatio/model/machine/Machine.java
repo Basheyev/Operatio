@@ -141,6 +141,22 @@ public class Machine extends Block {
         return type;
     }
 
+    public Operation getOperation() { return operation; }
+
+
+    /**
+     * Переналадка машины на новую операцию
+     * @param ID номер операции для данного типа машины
+     */
+    public void setOperation(int ID) {
+        operation = type.getOperation(ID);
+        // обнулить машину
+        input.clear();
+        output.clear();
+        cyclesLeft = 0;
+        setState(IDLE);
+    }
+
 
     @Override
     public void setOutputDirection(int outDir) {
