@@ -143,6 +143,9 @@ public class Machine extends Block {
 
     public Operation getOperation() { return operation; }
 
+    public int getOperationID() {
+        return type.getOperationID(operation);
+    }
 
     /**
      * Переналадка машины на новую операцию
