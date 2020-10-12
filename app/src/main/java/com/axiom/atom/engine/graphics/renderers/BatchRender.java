@@ -11,7 +11,6 @@ import com.axiom.atom.engine.graphics.gles2d.Texture;
 import com.axiom.atom.engine.graphics.gles2d.VertexBuffer;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 /**
  * Многократно оптимизирует производительность рендерига графики
@@ -22,53 +21,19 @@ import java.util.Comparator;
  * (С) Atom Engine, Bolat Basheyev 2020
  */
 public class BatchRender {
-    //------------------------------------------------------------------------------------------
-    // Единица хранения очереди отрисовки: прямоугольник с шейдером, текстурой, вершинами и т.д.
-    //------------------------------------------------------------------------------------------
-    protected static class Entry {
-        public int zOrder;                          // Слой отрисовки (критерий группировки)
-        public Program program;                     // Используемая программа шейдеров
-        public Texture texture;                     // Текстура спрайта (критерий группировки)
-        public float[] vertices = new float[18];    // Вершины спрайта (2 треугольника - 18 коорд)
-        public float[] coordinates = new float[12]; // текстурные координаты спрайта
-        public float[] color = new float[4];        // цвет примитива если нет текстуры
-        public AABB scissor;                        // Область отсечения в физических координатах экрана
-    }
+
     //------------------------------------------------------------------------------------------
     public static final int MAX_SPRITES = 2048;   // Максимальное количество спрайтов на экране
     protected static int drawCallsCounter = 0;    // Счётчик вызовов отрисовки (меньше лучше)
     //------------------------------------------------------------------------------------------
-    protected static Entry[] entries;             // Буфер всех элементов на отрисовку
+    protected static Quad[] quads;                // Буфер всех элементов на отрисовку
+    protected static Quad.Comparator comparator;  // Класс для сравнения элементов буфера
     protected static int entriesCounter = 0;      // Количество элементов на отрисовку
     protected static VertexBuffer verticesBatch;  // Вершинные координаты спрайтов пакета
     protected static VertexBuffer texCoordBatch;  // Текстурные координаты спрайтов пакета
-    protected static EntryComparator comparator;  // Класс для сравнения элементов буфера
 
-    protected static int entriesProcessed = 0;
+    protected static int quadsProcessed = 0;
     protected static int drawCallsMade = 0;
-    //----------------------------------------------------------------------------------
-    // Класс для сравнения элементов буфера при сортировке (по текстуре и z-order)
-    //----------------------------------------------------------------------------------
-    protected static class EntryComparator implements Comparator<Entry> {
-        @Override
-        public int compare(Entry a, Entry b) {
-            // Сравниваем по слою
-            if (a.zOrder==b.zOrder) {
-                // сравиваем по текстуре
-                if (a.texture==b.texture) {
-                    // сравниваем по цвету
-                    if (a.texture==null) return compareColor(a.color, b.color);
-                    return 0;
-                }
-                if (a.texture==null) return -1;
-                if (b.texture==null) return 1;
-                if (a.texture.getTextureID() < b.texture.getTextureID())
-                    return -1;
-                else
-                    return 1;
-            } else if (a.zOrder < b.zOrder) return -1; else return 1;
-        }
-    }
 
     //-------------------------------------------------------------------------------------------
     // Методы для пакетирования
@@ -76,14 +41,14 @@ public class BatchRender {
 
     public static synchronized void beginBatching() {
         // Если ещё не инициализировались
-        if (entries==null) {
-            entries = new Entry[MAX_SPRITES];
-            for (int i=0; i<entries.length; i++) entries[i] = new Entry();
+        if (quads == null) {
+            quads = new Quad[MAX_SPRITES];
+            for (int i = 0; i< quads.length; i++) quads[i] = new Quad();
             verticesBatch = new VertexBuffer(MAX_SPRITES * 6, 3);
             texCoordBatch = new VertexBuffer(MAX_SPRITES * 6, 2);
-            comparator = new EntryComparator();
+            comparator = new Quad.Comparator();
         }
-        entriesProcessed = entriesCounter;
+        quadsProcessed = entriesCounter;
         entriesCounter = 0;
     }
 
@@ -91,21 +56,21 @@ public class BatchRender {
     public static synchronized void addQuad(Program program,
                                             float[] vert, float[] color, int zOrder, AABB scissor) {
         // Проверяем есть ли ещё место
-        if (entriesCounter + 1 >= entries.length) {
+        if (entriesCounter + 1 >= quads.length) {
             Log.e("BATCH RENDERER", "Max sprites count reached " + MAX_SPRITES);
             return;
         }
         // Копируем данные в соответствующую запись
-        Entry entry = entries[entriesCounter];
-        entry.color[0] = color[0];
-        entry.color[1] = color[1];
-        entry.color[2] = color[2];
-        entry.color[3] = color[3];
-        entry.program = program;
-        entry.texture = null;
-        entry.zOrder = zOrder;
-        entry.scissor = scissor;
-        System.arraycopy(vert, 0, entry.vertices, 0, 18);
+        Quad quad = quads[entriesCounter];
+        quad.color[0] = color[0];
+        quad.color[1] = color[1];
+        quad.color[2] = color[2];
+        quad.color[3] = color[3];
+        quad.program = program;
+        quad.texture = null;
+        quad.zOrder = zOrder;
+        quad.scissor = scissor;
+        System.arraycopy(vert, 0, quad.vertices, 0, 18);
         entriesCounter++;
     }
 
@@ -114,27 +79,27 @@ public class BatchRender {
                                                      Texture texture, float[] vert, float[] texcoord,
                                                      float[] color, int zOrder, AABB scissor) {
         // Проверяем есть ли ещё место
-        if (entriesCounter + 1 >= entries.length) {
+        if (entriesCounter + 1 >= quads.length) {
             Log.w("WARNING", "Max sprites count reached " + MAX_SPRITES);
             return;
         }
         // Копируем данные в соответствующую запись
-        Entry entry = entries[entriesCounter];
-        entry.color[0] = color[0];
-        entry.color[1] = color[1];
-        entry.color[2] = color[2];
-        entry.color[3] = color[3];
-        entry.program = program;
-        entry.texture = texture;
-        entry.zOrder = zOrder;
-        entry.scissor = scissor;
-        System.arraycopy(vert, 0, entry.vertices, 0, 18);
-        System.arraycopy(texcoord, 0, entry.coordinates, 0, 12);
+        Quad quad = quads[entriesCounter];
+        quad.color[0] = color[0];
+        quad.color[1] = color[1];
+        quad.color[2] = color[2];
+        quad.color[3] = color[3];
+        quad.program = program;
+        quad.texture = texture;
+        quad.zOrder = zOrder;
+        quad.scissor = scissor;
+        System.arraycopy(vert, 0, quad.vertices, 0, 18);
+        System.arraycopy(texcoord, 0, quad.texCoords, 0, 12);
         entriesCounter++;
     }
 
     //-------------------------------------------------------------------------------------------
-    private static Entry previous = new Entry();
+    private static Quad previous = new Quad();
 
     /**
      * Сортирует список всех прямоугольников в очереди на отрисовку (текстуре, слою, цвету и т.д)
@@ -145,31 +110,31 @@ public class BatchRender {
         if (entriesCounter==0) return;
 
         // Сортируем всё, чтобы подготовить к группировке в пакеты
-        Arrays.sort(entries,0, entriesCounter, comparator);
+        Arrays.sort(quads,0, entriesCounter, comparator);
 
         // Начинаем новый пакет
         clearBatch();
-        Entry entry = entries[0];
-        addEntryToBatch(entry);
-        copyEntry(entry, previous);
+        Quad quad = quads[0];
+        addQuadToBatch(quad);
+        copyQuad(quad, previous);
 
         drawCallsCounter = 0;
         boolean equals, lastEntry;
 
         for (int i=0; i<entriesCounter; i++) {
-            entry = entries[i];
+            quad = quads[i];
             // Сравниваем текстуру, z order, цвет и ножницы с предыдущей
-            equals = comparator.compare(entry, previous) == 0 && entry.scissor == previous.scissor;
+            equals = comparator.compare(quad, previous) == 0 && quad.scissor == previous.scissor;
             // Если текущий и предыдущий элемент равны добавляем в один пакет
             if (equals) {
-                addEntryToBatch(entry);
-                copyEntry(entry, previous);
+                addQuadToBatch(quad);
+                copyQuad(quad, previous);
             } else {
                 renderBatch(camera.getCameraMatrix(), previous);
                 // начинаем новый пакет
                 clearBatch();
-                addEntryToBatch(entry);
-                copyEntry(entry, previous);
+                addQuadToBatch(quad);
+                copyQuad(quad, previous);
             }
             lastEntry = (i == entriesCounter - 1);
             if (lastEntry) renderBatch(camera.getCameraMatrix(), previous);
@@ -182,34 +147,34 @@ public class BatchRender {
     /**
      * Отрисовываем сгруппированную партию (меш) однородных прямоугольников одним разом
      * @param cameraMatrix матрица камеры для передачи в шейдер
-     * @param entry свойства для отрисовки меша берем из этой записи
+     * @param quad свойства для отрисовки меша берем из этой записи
      */
-    private static void renderBatch(float[] cameraMatrix, Entry entry) {
+    private static void renderBatch(float[] cameraMatrix, Quad quad) {
 
         loadBatchToBuffer();
 
         if (verticesBatch.getVertexCount()==0) return;
 
-        if (entry.scissor!=null) enableScissors(entry.scissor);
+        if (quad.scissor!=null) enableScissors(quad.scissor);
 
-        Program program = entry.program;
+        Program program = quad.program;
         if (program==null) return;
         program.use();
 
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
-        if (entry.texture==null) {
+        if (quad.texture==null) {
             int vertexHandler = program.setAttribVertexArray("vPosition", verticesBatch);
-            program.setUniformVec4Value("vColor", entry.color);
+            program.setUniformVec4Value("vColor", quad.color);
             program.setUniformMat4Value("u_MVPMatrix", cameraMatrix);
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, verticesBatch.getVertexCount());
             program.disableVertexArray(vertexHandler);
         } else {
-            entry.texture.bind();
+            quad.texture.bind();
             int vertexHandler = program.setAttribVertexArray("vPosition", verticesBatch);
             int textureHandler = program.setAttribVertexArray("TexCoordIn", texCoordBatch);
-            program.setUniformVec4Value("vColor", entry.color);
+            program.setUniformVec4Value("vColor", quad.color);
             program.setUniformIntValue("sampler", 0);
             program.setUniformMat4Value("u_MVPMatrix", cameraMatrix);
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, verticesBatch.getVertexCount());
@@ -219,22 +184,15 @@ public class BatchRender {
 
         GLES20.glDisable(GLES20.GL_BLEND);
 
-        if (entry.scissor!=null) disableScissor();
+        if (quad.scissor!=null) disableScissor();
 
         drawCallsCounter++;
     }
 
-    //----------------------------------------------------------------------------
-    public static int compareColor(float[] a, float[] b) {
-        for (int i=0; i<4; i++) {
-            if (a[i] > b[i]) return 1;
-            if (a[i] < b[i]) return -1;
-        }
-        return 0;
-    }
+
 
     public static int getEntriesCount() {
-        return entriesProcessed;
+        return quadsProcessed;
     }
 
     public static int getDrawCallsCount() {
@@ -264,9 +222,9 @@ public class BatchRender {
         texCoordBatch.clear();
     }
 
-    private static void addEntryToBatch(Entry entry) {
-        verticesBatch.pushVertices(entry.vertices);
-        texCoordBatch.pushVertices(entry.coordinates);
+    private static void addQuadToBatch(Quad quad) {
+        verticesBatch.pushVertices(quad.vertices);
+        texCoordBatch.pushVertices(quad.texCoords);
     }
 
     private static void loadBatchToBuffer() {
@@ -274,7 +232,7 @@ public class BatchRender {
         texCoordBatch.prepare();
     }
 
-    private static void copyEntry(Entry src, Entry dst) {
+    private static void copyQuad(Quad src, Quad dst) {
         dst.program = src.program;
         dst.texture = src.texture;
         dst.zOrder = src.zOrder;

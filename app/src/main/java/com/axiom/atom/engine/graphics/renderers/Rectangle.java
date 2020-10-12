@@ -13,12 +13,10 @@ import com.axiom.atom.engine.core.geometry.AABB;
  * Отрисовывает прямоугольник
  * (С) Atom Engine, Bolat Basheyev 2020
  */
-public class Rectangle {
+public class Rectangle extends Quad {
 
     public int zOrder;
     protected static Program program = null;
-    protected static float[] vertices = new float[18];
-    protected float[] color = { 0.3f, 0.5f, 0.9f, 1.0f };
 
     private final String vertexShaderCode =
             "uniform mat4 u_MVPMatrix; " +
@@ -33,44 +31,15 @@ public class Rectangle {
                 new Shader(GLES20.GL_FRAGMENT_SHADER, Shader.DEFAULT_FRAGMENT_SHADER_CODE));
     }
 
-    public void setColor(float r, float g, float b, float a) {
-        color[0] = r;
-        color[1] = g;
-        color[2] = b;
-        color[3] = a;
-    }
-
-    public void setColor(int rgba) {
-        setColor(((rgba >> 24) & 0xff) / 255.0f,
-                ((rgba >> 16) & 0xff) / 255.0f,
-                ((rgba >>  8) & 0xff) / 255.0f,
-                ((rgba      ) & 0xff) / 255.0f);
-    }
-
 
     public void draw(Camera camera, float x, float y, float width, float height, AABB scissor) {
         if (!camera.isVisible(x,y, x+width,y+height)) return;
-
-        float sx = x + width / 2;
-        float sy = y + height / 2;
-
-        // Triangle 1
-        vertices[0] = -0.5f * width + sx;
-        vertices[1] = 0.5f * height + sy;
-        vertices[3] = -0.5f * width + sx;
-        vertices[4] = -0.5f * height + sy;
-        vertices[6] = 0.5f * width + sx;
-        vertices[7] = 0.5f * height + sy;
-        // Triangle 2
-        vertices[9] = -0.5f * width + sx;
-        vertices[10] = -0.5f * height + sy;
-        vertices[12] = 0.5f * width + sx;
-        vertices[13] = 0.5f * height + sy;
-        vertices[15] = 0.5f * width + sx;
-        vertices[16] = -0.5f * height + sy;
-
+        float sx = x + width * 0.5f;
+        float sy = y + height * 0.5f;
+        initializeVertices();
+        evaluateScale(width, height);
+        evaluateOffset(sx, sy);
         BatchRender.addQuad(program, vertices, color, zOrder, scissor);
-
     }
 
     public void draw(Camera camera, float x, float y, float width, float height) {
