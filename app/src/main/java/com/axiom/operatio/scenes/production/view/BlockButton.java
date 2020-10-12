@@ -70,6 +70,7 @@ public class BlockButton extends Button {
                 break;
             case MotionEvent.ACTION_UP:
                 panel.toggledButton = "";
+                scene.getProduction().unselectBlock();
                 moveHandler.invalidateAction();
                 break;
         }

@@ -12,8 +12,6 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.Production;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
-// TODO Виджет просмотра описания машины (при выборе на панели блоков)
-// TODO Выбор операции машины (операция, выход, входы до 4)
 // TODO Панель просмотра свойств выбранного блока
 // TODO Просмотр материалов при выборе с Буффером (для быстрого добавления)
 public class ProductionSceneUI {

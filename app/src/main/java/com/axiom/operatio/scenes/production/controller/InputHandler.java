@@ -83,7 +83,7 @@ public class InputHandler {
     }
 
     /**
-     * Отменяет все начатые действия
+     * Отменяет все начатые действия кроме масштабирования
      */
     public void invalidateAllActionsButScale() {
         blockDeleteHandler.invalidateAction();

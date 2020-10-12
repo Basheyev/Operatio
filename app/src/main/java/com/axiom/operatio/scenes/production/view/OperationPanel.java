@@ -51,7 +51,7 @@ public class OperationPanel extends Panel {
                         showMachineInfo(machine, operationID);
                         if (operationID==machine.getOperationID()) {
                             changeoverButton.setColor(GRAY);
-                        } else changeoverButton.setColor(0, 1, 0, 1);
+                        } else changeoverButton.setColor(0.5f, 1, 0.5f, 1);
                     } else if (button.getTag().equals(">")) {
                         int operationsCount = machine.getType().getOperations().length;
                         operationID++;
@@ -59,7 +59,7 @@ public class OperationPanel extends Panel {
                         showMachineInfo(machine, operationID);
                         if (operationID==machine.getOperationID()) {
                             changeoverButton.setColor(GRAY);
-                        } else changeoverButton.setColor(0, 1, 0, 1);
+                        } else changeoverButton.setColor(0.5f, 1, 0.5f, 1);
                     } else if (button.getTag().equals("Changeover")) {
                         machine.setOperation(operationID);
                         changeoverButton.setColor(GRAY);
@@ -171,7 +171,7 @@ public class OperationPanel extends Panel {
         changeoverButton.setColor(GRAY);
         if (block instanceof Machine) {
             Machine machine = (Machine) block;
-            if (playSound) {
+            /*if (playSound) {
                 switch (machine.getType().getID()) {
                     case 0:
                         SoundRenderer.playSound(snd1);
@@ -189,7 +189,7 @@ public class OperationPanel extends Panel {
                         SoundRenderer.playSound(snd5);
                         break;
                 }
-            }
+            }*/
             operationID = machine.getOperationID();
             showMachineInfo(machine, operationID);
         }
@@ -222,6 +222,10 @@ public class OperationPanel extends Panel {
         Material[] inputMaterials = currentOperation.getInputMaterials();
         Material[] outputMaterials = currentOperation.getOutputMaterials();
 
+        leftButton.visible = true;
+        operationButton.setLocation(130, 500);
+        operationButton.setSize(100,100);
+        rightButton.visible = true;
 
         caption.setText(machineType.getName() + " operation");
 
@@ -246,8 +250,13 @@ public class OperationPanel extends Panel {
     }
 
 
-    private void showBufferInfo(Buffer machine) {
-
+    private void showBufferInfo(Buffer buffer) {
+        caption.setText("Buffer contains");
+        operationButton.setText("" + (buffer.getItemsAmount()) + "/" + (buffer.getCapacity()-1));
+        operationButton.setLocation(30, 500);
+        operationButton.setSize(300,100);
+        leftButton.visible = false;
+        rightButton.visible = false;
     }
 
     private void showConveyorInfo(Conveyor conveyor) {
