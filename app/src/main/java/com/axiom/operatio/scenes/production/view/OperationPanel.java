@@ -10,32 +10,34 @@ import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.model.block.Block;
-import com.axiom.operatio.model.buffer.Buffer;
-import com.axiom.operatio.model.conveyor.Conveyor;
-import com.axiom.operatio.model.machine.Machine;
-import com.axiom.operatio.model.machine.MachineType;
-import com.axiom.operatio.model.machine.Operation;
+import com.axiom.operatio.model.production.block.Block;
+import com.axiom.operatio.model.production.buffer.Buffer;
+import com.axiom.operatio.model.production.conveyor.Conveyor;
+import com.axiom.operatio.model.production.machine.Machine;
+import com.axiom.operatio.model.production.machine.MachineType;
+import com.axiom.operatio.model.production.machine.Operation;
 import com.axiom.operatio.model.materials.Material;
 
 import static android.graphics.Color.DKGRAY;
 import static android.graphics.Color.GRAY;
 import static android.graphics.Color.WHITE;
 
+// TODO Добавить отображение информации буфера
+// TODO Добавить отображение информации конвейера
 public class OperationPanel extends Panel {
 
     public final int panelColor = 0xCC505050;
-    protected Caption caption;
+    protected Caption caption, inputsCaption, outputsCaption;
     protected Button leftButton, operationButton, rightButton;
     protected Button changeoverButton;
     protected Block choosenBlock = null;
     protected int operationID = 0;
 
-    private Button inpBtn[];
-    private Button outBtn[];
+    private ItemWidget inpBtn[];
+    private ItemWidget outBtn[];
     private int tickSound;
-    private int snd1, snd2, snd3, snd4, snd5;
-    private int sndConveyor, sndBuffer;
+ /*   private int snd1, snd2, snd3, snd4, snd5;
+    private int sndConveyor, sndBuffer;*/
 
     protected ClickListener clickListener = new ClickListener() {
         @Override
@@ -74,16 +76,9 @@ public class OperationPanel extends Panel {
         super();
         setLocalBounds(Camera.WIDTH - 400,200,400, 700);
         setColor(panelColor);
-        inpBtn = new Button[4];
-        outBtn = new Button[4];
+        inpBtn = new ItemWidget[4];
+        outBtn = new ItemWidget[4];
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
-        /*snd1 = SoundRenderer.loadSound(R.raw.machine_press);
-        snd2 = SoundRenderer.loadSound(R.raw.machine_roller);
-        snd3 = SoundRenderer.loadSound(R.raw.machine_cutter);
-        snd4 = SoundRenderer.loadSound(R.raw.machine_extruder);
-        snd5 = SoundRenderer.loadSound(R.raw.machine_assembly);*/
-        sndConveyor = SoundRenderer.loadSound(R.raw.conveyor_snd);
-        sndBuffer = SoundRenderer.loadSound(R.raw.buffer_snd);
         buildButtons();
     }
 
@@ -121,22 +116,23 @@ public class OperationPanel extends Panel {
         addChild(rightButton);
 
         // Список входных материалов
-        Caption inputsCaption = new Caption("Input materials:");
+        inputsCaption = new Caption("Input materials:");
         inputsCaption.setLocalBounds(30,400,300, 100);
         inputsCaption.setScale(1.5f);
         inputsCaption.setTextColor(WHITE);
         addChild(inputsCaption);
 
         for (int i=0; i<4; i++) {
-            inpBtn[i] = new Button("");
+            inpBtn[i] = new ItemWidget("");
             inpBtn[i].setLocalBounds(30 + i*80, 350, 64, 64);
             inpBtn[i].setColor(DKGRAY);
             inpBtn[i].setTextColor(WHITE);
+            inpBtn[i].setTextScale(1);
             addChild(inpBtn[i]);
         }
 
         // Список выходных материалов
-        Caption outputsCaption = new Caption("Output materials:");
+        outputsCaption = new Caption("Output materials:");
         outputsCaption.setLocalBounds(30,250,300, 100);
         outputsCaption.setScale(1.5f);
         outputsCaption.setTextColor(WHITE);
@@ -144,10 +140,11 @@ public class OperationPanel extends Panel {
 
 
         for (int i=0; i<4; i++) {
-            outBtn[i] = new Button("");
+            outBtn[i] = new ItemWidget("");
             outBtn[i].setLocalBounds(30 + i*80, 200, 64, 64);
             outBtn[i].setColor(DKGRAY);
             outBtn[i].setTextColor(WHITE);
+            outBtn[i].setTextScale(1);
             addChild(outBtn[i]);
         }
 
@@ -171,35 +168,14 @@ public class OperationPanel extends Panel {
         changeoverButton.setColor(GRAY);
         if (block instanceof Machine) {
             Machine machine = (Machine) block;
-            /*if (playSound) {
-                switch (machine.getType().getID()) {
-                    case 0:
-                        SoundRenderer.playSound(snd1);
-                        break;
-                    case 1:
-                        SoundRenderer.playSound(snd2);
-                        break;
-                    case 2:
-                        SoundRenderer.playSound(snd3);
-                        break;
-                    case 3:
-                        SoundRenderer.playSound(snd4);
-                        break;
-                    case 4:
-                        SoundRenderer.playSound(snd5);
-                        break;
-                }
-            }*/
             operationID = machine.getOperationID();
             showMachineInfo(machine, operationID);
         }
         if (block instanceof Conveyor) {
             showConveyorInfo((Conveyor) block);
-          //  SoundRenderer.playSound(sndConveyor);
         }
         if (block instanceof Buffer) {
             showBufferInfo((Buffer) block);
-          //  SoundRenderer.playSound(sndBuffer);
         }
         visible = true;
     }
@@ -231,20 +207,26 @@ public class OperationPanel extends Panel {
 
         operationButton.setText("" + (opID+1) + "/" + allOperations.length);
 
+        inputsCaption.setText("Inputs:");
         for (int i=0; i<4; i++) {
             if (i < inputMaterials.length) {
                 inpBtn[i].setBackground(inputMaterials[i].getImage());
             } else {
                 inpBtn[i].setBackground(null);
             }
+            inpBtn[i].setText("");
+            inpBtn[i].visible = true;
         }
 
+        outputsCaption.setText("Outputs:");
         for (int i=0; i<4; i++) {
             if (i < outputMaterials.length) {
                 outBtn[i].setBackground(outputMaterials[i].getImage());
             } else {
                 outBtn[i].setBackground(null);
             }
+            outBtn[i].setText("");
+            outBtn[i].visible = true;
         }
 
     }
@@ -257,6 +239,21 @@ public class OperationPanel extends Panel {
         operationButton.setSize(300,100);
         leftButton.visible = false;
         rightButton.visible = false;
+
+        inputsCaption.setText("Stored materials");
+        for (int i=0; i<4; i++) {
+            Material material = buffer.getSKUMaterial(i);
+            if (material!=null) {
+                inpBtn[i].setBackground(material.getImage());
+                inpBtn[i].setText("" + buffer.getSKUTotal(i));
+            } else {
+                inpBtn[i].setBackground(null);
+            }
+            inpBtn[i].visible = true;
+            outBtn[i].visible = false;
+        }
+
+        outputsCaption.setText("");
     }
 
 
@@ -268,6 +265,13 @@ public class OperationPanel extends Panel {
         leftButton.visible = false;
         rightButton.visible = false;
 
+        inputsCaption.setText("Inputs:");
+        outputsCaption.setText("Outputs:");
+
+        for (int i=0; i<4; i++) {
+            inpBtn[i].visible = false;
+            outBtn[i].visible = false;
+        }
     }
 
 }

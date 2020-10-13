@@ -9,7 +9,7 @@ import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.model.Production;
+import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
 // TODO Просмотр материалов при выборе с Буффером (для быстрого добавления)

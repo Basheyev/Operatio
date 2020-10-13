@@ -8,12 +8,12 @@ import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.widgets.Button;
-import com.axiom.operatio.model.Production;
-import com.axiom.operatio.model.block.Block;
-import com.axiom.operatio.model.buffer.Buffer;
-import com.axiom.operatio.model.conveyor.Conveyor;
-import com.axiom.operatio.model.machine.Machine;
-import com.axiom.operatio.model.machine.MachineType;
+import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.model.production.block.Block;
+import com.axiom.operatio.model.production.buffer.Buffer;
+import com.axiom.operatio.model.production.conveyor.Conveyor;
+import com.axiom.operatio.model.production.machine.Machine;
+import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.scenes.production.ProductionScene;
 import com.axiom.operatio.scenes.production.controller.BlockAddMoveHandler;
 
