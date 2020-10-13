@@ -1,14 +1,15 @@
-package com.axiom.operatio.model.machine;
+package com.axiom.operatio.model.production.machine;
 
-import com.axiom.operatio.model.block.Block;
-import com.axiom.operatio.model.Production;
-import com.axiom.operatio.model.buffer.Buffer;
-import com.axiom.operatio.model.conveyor.ConveyorRenderer;
+import com.axiom.atom.engine.data.Channel;
+import com.axiom.operatio.model.production.block.Block;
+import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
-import com.axiom.operatio.model.conveyor.Conveyor;
+import com.axiom.operatio.model.production.conveyor.Conveyor;
 
-// TODO Добавить для Сборщика возможность забирать нужные материалы из буфера
+// TODO 1. Добавить для Сборщика возможность забирать нужные материалы из буфера
+// TODO 2. Добавить характеристики машины как: скорость работы, стоимость операции и износ
 public class Machine extends Block {
 
     protected MachineType type;
@@ -17,11 +18,12 @@ public class Machine extends Block {
     private int[] matCounter;
     private int cyclesLeft = 0;
 
+    // FIXME операция передается и больше не меняется (хотя меняется...)
     public Machine(Production production, MachineType type, Operation op, int inDir, int outDir) {
         super(production, inDir, op.totalInputAmount(), outDir, op.totalOutputAmount());
         this.type = type;
         this.operation = op;
-        this.matCounter = new int[operation.inputMaterials.length];
+        this.matCounter = new int[4];
         this.renderer = new MachineRenderer(this);
     }
 
@@ -52,12 +54,12 @@ public class Machine extends Block {
         // пытаемся самостоятельно взять из направления входа (блок)
         int totalAmount = operation.totalInputAmount();
         if (input.size() < totalAmount) {
-            getItemFromInputDirection();
+            grabItemsFromInputDirection();
             return;
         }
 
         // Подтверждаем, что есть необходимое количество каждого предмета по Операции
-        if (operationInputVerified()) {              // Начинаем работу машины
+        if (operationInputVerified(matCounter)) {    // Начинаем работу машины
             setState(BUSY);                          // Устанавливаем состояние - BUSY
             cyclesLeft = operation.operationTime;    // Указываем количество циклов работы
         }
@@ -65,17 +67,55 @@ public class Machine extends Block {
     }
 
 
+    /**
+     * Забирает предметы из блока по направлению входа
+     */
+    @Override
+    protected void grabItemsFromInputDirection() {
+        Block inputBlock = production.getBlockAt(this, inputDirection);
+        if (inputBlock==null) return;     // Если на входящем направление ничего нет
+
+        // Если выход входного блока смотрит на наш вход или он не имеет направления (буфер)
+        int neighborOutputDirection = inputBlock.getOutputDirection();
+        Block neighborOutput = production.getBlockAt(inputBlock, neighborOutputDirection);
+        if (neighborOutputDirection==NONE || neighborOutput==this) {
+
+            // Считаем сколько не хватает еще материалов и какого вида, если хватает уходим
+            if (operationInputVerified(matCounter)) return;
+
+            // Пытаемся взять материалы по списку входящих материалов
+            for (int i=0; i<operation.inputMaterials.length; i++) {
+                Material material = operation.inputMaterials[i];
+                for (int j=0; j<matCounter[i]; j++) {       // По количеству недостающих
+                    if (inputBlock instanceof Buffer) {
+                        Buffer inputBuffer = (Buffer) inputBlock;
+                        Item item = inputBuffer.peek(material);      // Пытаемся взять предмет из блока входа
+                        if (item == null) continue;          // Если ничего нет возвращаем false
+                        if (!push(item)) continue;           // Если не получилось добавить к себе - false
+                        inputBuffer.poll(material);          // Если получилось - удаляем из блока входа
+                    } else {
+                        Item item = inputBlock.peek();       // Пытаемся взять предмет из блока входа
+                        if (item == null) continue;          // Если ничего нет возвращаем false
+                        if (!push(item)) continue;           // Если не получилось добавить к себе - false
+                        inputBlock.poll();                   // Если получилось - удаляем из блока входа
+                    }
+                }
+            }
+
+        }
+
+    }
 
 
     /**
      * Проверяет, есть ли все предметы для получения выходного предмета (по операции)
+     * @param matCounter записывает сколько и каких материалов не хватает
      * @return true - если есть, false - если нет
      */
-    protected boolean operationInputVerified() {
+    protected boolean operationInputVerified(int[] matCounter) {
         // Копируем количество необходимого входного материала из описания операции в matCounter
-        System.arraycopy(operation.inputAmount, 0, matCounter,0, matCounter.length);
+        System.arraycopy(operation.inputAmount, 0, matCounter,0, operation.inputAmount.length);
         // Алгоритм построен с учтом того, что все входящие материалы входят в рецепт
-        //for (Item item:input) {
         for (int k=0; k<input.size(); k++) {
             Item item = input.get(k);
             if (item==null) continue;
@@ -152,6 +192,10 @@ public class Machine extends Block {
      */
     public void setOperation(int ID) {
         operation = type.getOperation(ID);
+        inputCapacity = operation.totalInputAmount();
+        outputCapacity = operation.totalOutputAmount();
+        input = new Channel<Item>(inputCapacity);
+        output = new Channel<Item>(outputCapacity);
         // обнулить машину
         input.clear();
         output.clear();

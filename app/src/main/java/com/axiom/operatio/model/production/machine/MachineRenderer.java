@@ -1,12 +1,12 @@
-package com.axiom.operatio.model.machine;
+package com.axiom.operatio.model.production.machine;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.operatio.model.Production;
-import com.axiom.operatio.model.block.BlockRenderer;
-import com.axiom.operatio.model.conveyor.ConveyorRenderer;
+import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.model.production.block.BlockRenderer;
+import com.axiom.operatio.model.production.conveyor.ConveyorRenderer;
 
 public class MachineRenderer extends BlockRenderer {
 

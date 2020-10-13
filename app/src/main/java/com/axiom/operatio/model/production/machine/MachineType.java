@@ -1,4 +1,4 @@
-package com.axiom.operatio.model.machine;
+package com.axiom.operatio.model.production.machine;
 
 import android.content.res.Resources;
 import android.util.Log;

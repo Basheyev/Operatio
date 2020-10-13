@@ -1,29 +1,31 @@
-package com.axiom.operatio.model;
+package com.axiom.operatio.model.production;
 
 import com.axiom.operatio.model.materials.Item;
-import com.axiom.operatio.model.block.Block;
-import com.axiom.operatio.model.buffer.Buffer;
-import com.axiom.operatio.model.machine.Machine;
-import com.axiom.operatio.model.machine.MachineType;
-import com.axiom.operatio.model.machine.Operation;
+import com.axiom.operatio.model.production.block.Block;
+import com.axiom.operatio.model.production.buffer.Buffer;
+import com.axiom.operatio.model.production.machine.Machine;
+import com.axiom.operatio.model.production.machine.MachineType;
+import com.axiom.operatio.model.production.machine.Operation;
 import com.axiom.operatio.model.materials.Material;
-import com.axiom.operatio.model.conveyor.Conveyor;
+import com.axiom.operatio.model.production.conveyor.Conveyor;
 
 public class ProductionBuilder {
     
     public static Production createDemoProduction() {
         Production production = Production.getInstance(50,50);
-        addStorage(production, 3,4);
-        addStorage(production, 3,2);
+
+        for (int i=0; i<8; i++) {
+            addStorage(production, 3, 2 + i * 2, i);
+        }
         //circularConveyor(production, 2, 0);
         //circularConveyor(production, 2, 4);
         //conveyorTask(production,10,1);
         return production;
     }
 
-    protected static void addStorage(Production production, int col, int row) {
+    protected static void addStorage(Production production, int col, int row, int materialID) {
         Buffer storage1 = new Buffer( production, 100);
-        for (int i=0; i<100; i++) storage1.push(new Item(Material.getMaterial(0)));
+        for (int i=0; i<100; i++) storage1.push(new Item(Material.getMaterial(materialID)));
         production.setBlock(storage1, col,row);
     }
 

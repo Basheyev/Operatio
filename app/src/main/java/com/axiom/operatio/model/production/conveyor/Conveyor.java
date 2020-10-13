@@ -1,11 +1,12 @@
-package com.axiom.operatio.model.conveyor;
+package com.axiom.operatio.model.production.conveyor;
 
 import com.axiom.atom.engine.data.Channel;
-import com.axiom.operatio.model.buffer.Buffer;
-import com.axiom.operatio.model.Production;
-import com.axiom.operatio.model.block.Block;
+import com.axiom.operatio.model.production.buffer.Buffer;
+import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.materials.Item;
 
+// TODO 1. Добавить характеристики конвейера как: скорость работы, стоимость операции и износ
 public class Conveyor extends Block {
 
     public static final int MAX_CAPACITY = 4;
@@ -62,7 +63,7 @@ public class Conveyor extends Block {
         // Если еще можем забрать предмет, забираем с входящего направления
         if (getItemsAmount() < MAX_CAPACITY) {
             state = IDLE;
-            getItemFromInputDirection();
+            grabItemsFromInputDirection();
         } else state = BUSY;
 
         // Перемещаем на вывод все предметы время доставки которых подошло

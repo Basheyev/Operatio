@@ -1,12 +1,11 @@
-package com.axiom.operatio.model;
+package com.axiom.operatio.model.production;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.atom.engine.graphics.gles2d.Texture;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.operatio.model.block.Block;
-import com.axiom.operatio.model.block.BlockRenderer;
+import com.axiom.operatio.model.production.block.Block;
+import com.axiom.operatio.model.production.block.BlockRenderer;
 
 
 public class ProductionRenderer {

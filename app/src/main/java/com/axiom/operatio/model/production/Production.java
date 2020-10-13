@@ -1,11 +1,13 @@
-package com.axiom.operatio.model;
+package com.axiom.operatio.model.production;
 
-import com.axiom.operatio.model.block.Block;
+import com.axiom.operatio.model.production.block.Block;
 
 import java.util.ArrayList;
 
-// TODO Добавить сохранение уровня (сериализацию JSon)
-// TODO Добавить импорт/экспорт материалов (выбор)
+// TODO 1. Добавить экономику: баланс, цена материала, цена хранения, цена операции (стоимость компании)
+// TODO 2. Добавить зона погрузки и выгрузки со склада
+// TODO 3. Добавить машину контроля качества (сортировки)
+// TODO 4. Добавить сохранение уровня (сериализацию JSon)
 public class Production {
 
     protected static Production instance;           // Синглтон объекта производства
@@ -44,7 +46,6 @@ public class Production {
 
     /**
      * Симулирует цикл производства
-     * TODO чтобы блоки имели приоритеты забирания материала
      */
     public void process() {
         if (!isPaused) {

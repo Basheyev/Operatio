@@ -1,19 +1,19 @@
-package com.axiom.operatio.model.conveyor;
+package com.axiom.operatio.model.production.conveyor;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.operatio.model.Production;
-import com.axiom.operatio.model.block.Block;
-import com.axiom.operatio.model.block.BlockRenderer;
+import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.model.production.block.Block;
+import com.axiom.operatio.model.production.block.BlockRenderer;
 import com.axiom.operatio.model.materials.Item;
 
-import static com.axiom.operatio.model.block.Block.DOWN;
-import static com.axiom.operatio.model.block.Block.LEFT;
-import static com.axiom.operatio.model.block.Block.RIGHT;
-import static com.axiom.operatio.model.block.Block.UP;
+import static com.axiom.operatio.model.production.block.Block.DOWN;
+import static com.axiom.operatio.model.production.block.Block.LEFT;
+import static com.axiom.operatio.model.production.block.Block.RIGHT;
+import static com.axiom.operatio.model.production.block.Block.UP;
 
 public class ConveyorRenderer extends BlockRenderer {
 

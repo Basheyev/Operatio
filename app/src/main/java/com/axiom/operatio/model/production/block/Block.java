@@ -1,12 +1,14 @@
-package com.axiom.operatio.model.block;
+package com.axiom.operatio.model.production.block;
 
 
 import com.axiom.atom.engine.data.Channel;
-import com.axiom.operatio.model.Production;
+import com.axiom.operatio.model.materials.Material;
+import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.materials.Item;
 
 /**
  * Базовый блок производства реализующий примитивную механику
+ * TODO Делать повороты и Adjustment с учетом Buffer (который имеет вход/выход NONE)
  */
 public abstract class Block {
 
@@ -17,7 +19,7 @@ public abstract class Block {
     protected Channel<Item> input;                    // Буферы ввода предметов
     protected Channel<Item> output;                   // Буферы вывода предметов
     public int column, row;                           // Координаты блока в сетке карты
-    protected BlockRenderer renderer;                      // Отрисовщик
+    protected BlockRenderer renderer;                 // Отрисовщик
 
     public boolean directionFlip = false;
 
@@ -84,27 +86,25 @@ public abstract class Block {
         if (item==null) return null;
         return output.poll();
     }
-
+    
 
     /**
      * Забирает один предмет из блока по направлению входа
      * @return true - если получилось забрать, false - если нет
      */
-    protected Item getItemFromInputDirection() {
+    protected void grabItemsFromInputDirection() {
         Block inputBlock = production.getBlockAt(this, inputDirection);
-        if (inputBlock==null) return null;   // Если на входящем направление ничего нет
+        if (inputBlock==null) return;         // Если на входящем направление ничего нет
 
         // Если выход входного блока смотрит на наш вход
         int neighborOutputDirection = inputBlock.outputDirection;
         Block neighborOutput = production.getBlockAt(inputBlock, neighborOutputDirection);
         if (neighborOutputDirection==NONE || neighborOutput==this) {
             Item item = inputBlock.peek();       // Пытаемся взять предмет из блока входа
-            if (item == null) return null;       // Если ничего нет возвращаем false
-            if (!push(item)) return null;        // Если не получилось добавить к себе - false
-            return inputBlock.poll();            // Если получилось - удаляем из блока входа
+            if (item == null) return;            // Если ничего нет возвращаем false
+            if (!push(item)) return;             // Если не получилось добавить к себе - false
+            inputBlock.poll();                   // Если получилось - удаляем из блока входа
         }
-
-        return null;
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.axiom.operatio.model.machine;
+package com.axiom.operatio.model.production.machine;
 
 import com.axiom.operatio.model.materials.Material;
 
