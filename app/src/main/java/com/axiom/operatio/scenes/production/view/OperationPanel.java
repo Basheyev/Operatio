@@ -171,7 +171,9 @@ public class OperationPanel extends Panel {
         super.draw(camera);
         long currentCycle = Production.getCurrentCycle();
         if (currentCycle > lastProductionCycle) {
-            if (choosenBlock!=null) showBlockInfo(choosenBlock, false);
+            if (choosenBlock!=null) {
+                showBlockInfo(choosenBlock, false);
+            }
             lastProductionCycle = currentCycle;
         }
     }
@@ -181,11 +183,17 @@ public class OperationPanel extends Panel {
      * @param block
      */
     public void showBlockInfo(Block block, boolean playSound) {
-        choosenBlock = block;
-        changeoverButton.setColor(GRAY);
+        boolean blockChanged = false;
+
+        if (block!=choosenBlock) {
+            blockChanged = true;
+            choosenBlock = block;
+            changeoverButton.setColor(GRAY);
+        }
+
         if (block instanceof Machine) {
             Machine machine = (Machine) block;
-            operationID = machine.getOperationID();
+            if (blockChanged) operationID = machine.getOperationID();
             showMachineInfo(machine, operationID);
         }
         if (block instanceof Conveyor) {
