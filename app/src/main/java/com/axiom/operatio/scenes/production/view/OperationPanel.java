@@ -3,6 +3,7 @@ package com.axiom.operatio.scenes.production.view;
 import android.graphics.Color;
 
 import com.axiom.atom.R;
+import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
@@ -10,6 +11,7 @@ import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
+import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
@@ -17,6 +19,7 @@ import com.axiom.operatio.model.production.machine.Machine;
 import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
 import com.axiom.operatio.model.materials.Material;
+import com.axiom.operatio.scenes.production.ProductionScene;
 
 import static android.graphics.Color.DKGRAY;
 import static android.graphics.Color.GRAY;
@@ -32,6 +35,8 @@ public class OperationPanel extends Panel {
     protected Button changeoverButton;
     protected Block choosenBlock = null;
     protected int operationID = 0;
+
+    private long lastProductionCycle;
 
     private ItemWidget inpBtn[];
     private ItemWidget outBtn[];
@@ -158,6 +163,18 @@ public class OperationPanel extends Panel {
         addChild(changeoverButton);
     }
 
+
+    private int productionCycle;
+
+    @Override
+    public void draw(Camera camera) {
+        super.draw(camera);
+        long currentCycle = Production.getCurrentCycle();
+        if (currentCycle > lastProductionCycle) {
+            if (choosenBlock!=null) showBlockInfo(choosenBlock, false);
+            lastProductionCycle = currentCycle;
+        }
+    }
 
     /**
      * Отображение информации о блоке на панели
