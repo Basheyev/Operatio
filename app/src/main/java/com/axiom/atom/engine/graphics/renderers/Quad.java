@@ -130,7 +130,7 @@ public class Quad {
         int g = (int) (color[1] * 255.0f) & 0xff;
         int b = (int) (color[2] * 255.0f) & 0xff;
         int a = (int) (color[3] * 255.0f) & 0xff;
-        return (r << 24 | g << 16 | b << 8 | a);
+        return (a << 24 | r << 16 | g << 8 | b);
     }
 
     /**
