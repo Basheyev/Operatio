@@ -115,10 +115,10 @@ public class Quad {
      * @param rgba цвет в виде целого числа
      */
     public void setColor(int rgba) {
-        setColor(((rgba >> 24) & 0xff) / 255.0f,
-                ((rgba >> 16) & 0xff) / 255.0f,
+        setColor(((rgba      ) & 0xff) / 255.0f,
                 ((rgba >>  8) & 0xff) / 255.0f,
-                ((rgba      ) & 0xff) / 255.0f);
+                ((rgba >> 16) & 0xff) / 255.0f,
+                ((rgba >> 24) & 0xff) / 255.0f);
     }
 
     /**

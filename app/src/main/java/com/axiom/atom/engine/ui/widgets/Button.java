@@ -74,10 +74,10 @@ public class Button extends Widget {
     }
 
     public void setTextColor(int rgba) {
-        setTextColor(((rgba >> 24) & 0xff) / 255.0f,
-                    ((rgba >> 16) & 0xff) / 255.0f,
-                    ((rgba >>  8) & 0xff) / 255.0f,
-                    ((rgba      ) & 0xff) / 255.0f);
+        setTextColor(((rgba      ) & 0xff) / 255.0f,
+                     ((rgba >>  8) & 0xff) / 255.0f,
+                     ((rgba >> 16) & 0xff) / 255.0f,
+                     ((rgba >> 24) & 0xff) / 255.0f);
     }
 
     public void setTextScale(float scale) {
