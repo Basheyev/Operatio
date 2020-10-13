@@ -3,8 +3,8 @@ package com.axiom.operatio.scenes.production.controller;
 import android.view.MotionEvent;
 
 import com.axiom.atom.engine.input.ScaleEvent;
-import com.axiom.operatio.model.Production;
-import com.axiom.operatio.model.ProductionRenderer;
+import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
 /**

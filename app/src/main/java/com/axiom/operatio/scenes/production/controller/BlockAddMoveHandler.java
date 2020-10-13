@@ -5,9 +5,9 @@ import android.view.MotionEvent;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.sound.SoundRenderer;
-import com.axiom.operatio.model.Production;
-import com.axiom.operatio.model.ProductionRenderer;
-import com.axiom.operatio.model.block.Block;
+import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.model.production.ProductionRenderer;
+import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.scenes.production.ProductionScene;
 import com.axiom.operatio.scenes.production.view.OperationPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;

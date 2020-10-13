@@ -2,15 +2,10 @@ package com.axiom.operatio.scenes.production.controller;
 
 import android.view.MotionEvent;
 
-import com.axiom.atom.R;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.atom.engine.sound.SoundRenderer;
-import com.axiom.operatio.model.Production;
-import com.axiom.operatio.model.ProductionRenderer;
-import com.axiom.operatio.model.block.Block;
-import com.axiom.operatio.model.buffer.Buffer;
-import com.axiom.operatio.model.machine.Machine;
-import com.axiom.operatio.model.conveyor.Conveyor;
+import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.model.production.ProductionRenderer;
+import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.scenes.production.ProductionScene;
 import com.axiom.operatio.scenes.production.view.OperationPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
