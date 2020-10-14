@@ -4,10 +4,8 @@ import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.materials.Item;
+import com.axiom.operatio.model.warehouse.StockKeepingUnit;
 
-// TODO 1. Может хранить до 4 видов материалов
-// TODO 2. Добавить типы материалов и пропорции хранения в буфере (чтобы сборщик мог работать ритмично)
-// TODO 3. Добавить возможность брать из буфера необходимый тип материала (для сборщика)
 
 /**
  * Представляет собой мини-склад, который может хранить до 4 видов материалов
@@ -60,6 +58,19 @@ public class Buffer extends Block {
         return input.peek();
     }
 
+
+    public Item peek(Material material) {
+        if (input.size()==0) return null;
+        for (int i=input.size()-1; i>=0; i--) {
+            Item item = input.get(i);
+            if (item.getMaterial().equals(material)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+
     @Override
     public Item poll() {
         Item item = input.peek();
@@ -73,26 +84,15 @@ public class Buffer extends Block {
         return null;
     }
 
-
-    public Item peek(Material material) {
-        if (input.size()==0) return null;
-        for (int i=input.size()-1; i>=0; i--) {
-            Item item = input.get(i);
-            if (item.getMaterial().equals(material)) {
-                return item;
-            }
-        }
-        return null;
-    }
-
+    // TODO не обнуляется список SKU
     public Item poll(Material material) {
         if (input.size()==0) return null;
         for (int i=input.size()-1; i>=0; i--) {
             Item item = input.get(i);
             if (item.getMaterial().equals(material)) {
                 int skuID = getMaterialSKU(item.getMaterial());
-                stockKeepingUnit[skuID].total--;
                 input.remove(item);
+                stockKeepingUnit[skuID].total--;
                 return item;
             }
         }
@@ -141,6 +141,7 @@ public class Buffer extends Block {
             // Если такого материала нет и есть свободные ячейки - создаём такую ячейку
             if (stockKeepingUnit[i].material==null) {
                 stockKeepingUnit[i].material = material;
+                stockKeepingUnit[i].total = 0;
                 return i;
             // Если ячейка с таким материалом есть, то возвращаем её номер
             } else if (stockKeepingUnit[i].material.equals(material)) {
@@ -148,7 +149,7 @@ public class Buffer extends Block {
             }
         }
         // Говорим что такой ячейки нет
-        return -1;
+        return NO_SKU;
     }
 
 }

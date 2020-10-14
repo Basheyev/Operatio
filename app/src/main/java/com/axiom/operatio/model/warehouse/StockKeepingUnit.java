@@ -1,4 +1,4 @@
-package com.axiom.operatio.model.production.buffer;
+package com.axiom.operatio.model.warehouse;
 
 import com.axiom.operatio.model.materials.Material;
 
