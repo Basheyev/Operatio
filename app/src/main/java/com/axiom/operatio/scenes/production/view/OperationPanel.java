@@ -3,7 +3,6 @@ package com.axiom.operatio.scenes.production.view;
 import android.graphics.Color;
 
 import com.axiom.atom.R;
-import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
@@ -19,7 +18,6 @@ import com.axiom.operatio.model.production.machine.Machine;
 import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
 import com.axiom.operatio.model.materials.Material;
-import com.axiom.operatio.scenes.production.ProductionScene;
 
 import static android.graphics.Color.DKGRAY;
 import static android.graphics.Color.GRAY;
@@ -267,12 +265,13 @@ public class OperationPanel extends Panel {
 
         inputsCaption.setText("Stored materials");
         for (int i=0; i<4; i++) {
-            Material material = buffer.getSKUMaterial(i);
+            Material material = buffer.getKeepingUnitMaterial(i);
             if (material!=null) {
                 inpBtn[i].setBackground(material.getImage());
-                inpBtn[i].setText("" + buffer.getSKUTotal(i));
+                inpBtn[i].setText("" + buffer.getKeepingUnitTotal(i));
             } else {
                 inpBtn[i].setBackground(null);
+                inpBtn[i].setText("");
             }
             inpBtn[i].visible = true;
             outBtn[i].visible = false;
