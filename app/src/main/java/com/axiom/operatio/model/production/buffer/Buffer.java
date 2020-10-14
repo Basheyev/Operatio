@@ -4,27 +4,27 @@ import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.materials.Item;
-import com.axiom.operatio.model.warehouse.StockKeepingUnit;
 
 
 /**
  * Представляет собой мини-склад, который может хранить до 4 видов материалов
+ * TODO освобождать BKU если материалов по BKU больше нет
  */
 public class Buffer extends Block {
 
-    public static final int NO_SKU = -1;             // Константа отсутствия такой ячейки хранения
-    protected StockKeepingUnit[] stockKeepingUnit;   // Ячейки хранения материалов
+    public static final int NO_KEEPING_UNIT = -1;      // Константа отсутствия такой ячейки хранения
+    protected BufferKeepingUnit[] bufferKeepingUnit;   // Ячейки хранения материалов
 
     public Buffer(Production production, int capacity) {
         super(production, Block.NONE, capacity, Block.NONE, 1);
         renderer = new BufferRenderer(this);
         // Сформировать список материалов который может хранить (null - любой)
-        stockKeepingUnit = new StockKeepingUnit[4];
+        bufferKeepingUnit = new BufferKeepingUnit[4];
         for (int i=0; i<4; i++) {
-            stockKeepingUnit[i] = new StockKeepingUnit();
-            stockKeepingUnit[i].material = null;
-            stockKeepingUnit[i].capacity = capacity / 4;
-            stockKeepingUnit[i].total = 0;
+            bufferKeepingUnit[i] = new BufferKeepingUnit();
+            bufferKeepingUnit[i].material = null;
+            bufferKeepingUnit[i].capacity = capacity / 4;
+            bufferKeepingUnit[i].total = 0;
         }
     }
 
@@ -39,15 +39,15 @@ public class Buffer extends Block {
         if (input.size()>=inputCapacity) return false;
 
         // Узнаем есть ли ячейка под такой материал
-        int materialSKU = getMaterialSKU(item.getMaterial());
+        int materialBKU = getMaterialKeepingUnit(item.getMaterial());
         // Если её нет и создать её нельзя - уходим
-        if (materialSKU == NO_SKU) return false;
+        if (materialBKU == NO_KEEPING_UNIT) return false;
 
-        StockKeepingUnit sku = stockKeepingUnit[materialSKU];
+        BufferKeepingUnit bku = bufferKeepingUnit[materialBKU];
         // Если для добавления предмета в ячейке нет места уходим
-        if (sku.total >= sku.capacity) return false;
+        if (bku.total >= bku.capacity) return false;
 
-        sku.total++;
+        bku.total++;
         item.setOwner(this);
         input.add(item);
         return true;
@@ -77,22 +77,22 @@ public class Buffer extends Block {
         if (item==null) return null;
         item = input.poll();
         if (item!=null) {
-            int skuID = getMaterialSKU(item.getMaterial());
-            stockKeepingUnit[skuID].total--;
+            int keepingUnitID = getMaterialKeepingUnit(item.getMaterial());
+            bufferKeepingUnit[keepingUnitID].total--;
             return item;
         }
         return null;
     }
 
-    // TODO не обнуляется список SKU
+
     public Item poll(Material material) {
         if (input.size()==0) return null;
         for (int i=input.size()-1; i>=0; i--) {
             Item item = input.get(i);
             if (item.getMaterial().equals(material)) {
-                int skuID = getMaterialSKU(item.getMaterial());
+                int keepingUnitID = getMaterialKeepingUnit(item.getMaterial());
                 input.remove(item);
-                stockKeepingUnit[skuID].total--;
+                bufferKeepingUnit[keepingUnitID].total--;
                 return item;
             }
         }
@@ -121,35 +121,35 @@ public class Buffer extends Block {
 
     //------------------------------------------------------------------------------------------
 
-    public Material getSKUMaterial(int id) {
+    public Material getKeepingUnitMaterial(int id) {
         if (id < 0 || id > 3) return null;
-        return stockKeepingUnit[id].material;
+        return bufferKeepingUnit[id].material;
     }
 
-    public int getSKUTotal(int id) {
-        if (id < 0 || id > 3) return NO_SKU;
-        return stockKeepingUnit[id].total;
+    public int getKeepingUnitTotal(int id) {
+        if (id < 0 || id > 3) return NO_KEEPING_UNIT;
+        return bufferKeepingUnit[id].total;
     }
 
     /**
-     * Возвращает номер SKU (ячейки) хранения
+     * Возвращает номер BKU (ячейки) хранения
      * @param material материал
      * @return возвращает номер ячейки или -1 если такой ячейки нет
      */
-    private int getMaterialSKU(Material material) {
+    private int getMaterialKeepingUnit(Material material) {
         for (int i=0; i<4; i++) {
             // Если такого материала нет и есть свободные ячейки - создаём такую ячейку
-            if (stockKeepingUnit[i].material==null) {
-                stockKeepingUnit[i].material = material;
-                stockKeepingUnit[i].total = 0;
+            if (bufferKeepingUnit[i].material==null) {
+                bufferKeepingUnit[i].material = material;
+                bufferKeepingUnit[i].total = 0;
                 return i;
             // Если ячейка с таким материалом есть, то возвращаем её номер
-            } else if (stockKeepingUnit[i].material.equals(material)) {
+            } else if (bufferKeepingUnit[i].material.equals(material)) {
                 return i;
             }
         }
         // Говорим что такой ячейки нет
-        return NO_SKU;
+        return NO_KEEPING_UNIT;
     }
 
 }
