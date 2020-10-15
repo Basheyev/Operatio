@@ -72,10 +72,17 @@ public class ProductionSceneUI {
 
         Button exitButton = new Button("Menu");
         exitButton.setTextColor(1,1,1,1);
-        exitButton.setLocalBounds(1700,960,200,100);
+        exitButton.setLocalBounds(0,960,340,100);
         exitButton.setColor(0.8f, 0.5f, 0.5f, 0.9f);
         exitButton.setClickListener(exitListener);
         widget.addChild(exitButton);
+
+        Button warehouseButton = new Button("Warehouse");
+        warehouseButton.setTextColor(1,1,1,1);
+        warehouseButton.setLocalBounds(Camera.WIDTH - 375,960,375,100);
+        warehouseButton.setColor(0.8f, 0.5f, 0.5f, 0.9f);
+        warehouseButton.setClickListener(exitListener);
+        widget.addChild(warehouseButton);
 
         blocksPanel = new BlocksPanel(scene);
         widget.addChild(blocksPanel);
@@ -90,7 +97,7 @@ public class ProductionSceneUI {
         pauseButton = new Button("PLAY");
         pauseButton.setTextColor(0,0,0,1);
         pauseButton.setColor(0,1,0,1);
-        pauseButton.setLocalBounds(Camera.WIDTH-250, 0, 250, 140);
+        pauseButton.setLocalBounds(Camera.WIDTH-375, 0, 375, 140);
         pauseButton.setClickListener(pauseListener);
         production.setPaused(true);
         setPausedButtonState(true);

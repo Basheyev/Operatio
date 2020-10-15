@@ -76,11 +76,11 @@ public class ProductionScene extends GameScene {
             .append(" Calls:").append(BatchRender.getDrawCallsCount())
             .append(" Time:").append(GraphicsRender.getRenderTime())
             .append("ms");
-        float x = camera.getX();
-        float y = camera.getY();
+        float x = camera.getMinX();
+        float y = camera.getMinY();
         GraphicsRender.setZOrder(2000);
         GraphicsRender.setColor(0,0,0,1);
-        GraphicsRender.drawText(fps, x - 750,y + 480, 2f);
+        GraphicsRender.drawText(fps, x + 600,y + 1020, 2f);
     }
 
     @Override

@@ -39,8 +39,24 @@ public class OperationPanel extends Panel {
     private ItemWidget inpBtn[];
     private ItemWidget outBtn[];
     private int tickSound;
+    private boolean collapsed = false;
  /*   private int snd1, snd2, snd3, snd4, snd5;
     private int sndConveyor, sndBuffer;*/
+
+
+    public static ClickListener panelListener = new ClickListener() {
+        @Override
+        public void onClick(Widget w) {
+            OperationPanel panel = (OperationPanel) w;
+            if (!panel.collapsed) {
+                panel.setLocation(Camera.WIDTH - 40,200);
+                panel.collapsed = true;
+            } else {
+                panel.setLocation(Camera.WIDTH - 375,200);
+                panel.collapsed = false;
+            }
+        }
+    };
 
     protected ClickListener clickListener = new ClickListener() {
         @Override
@@ -77,12 +93,13 @@ public class OperationPanel extends Panel {
 
     public OperationPanel() {
         super();
-        setLocalBounds(Camera.WIDTH - 400,200,400, 700);
+        setLocalBounds(Camera.WIDTH - 375,200,375, 700);
         setColor(panelColor);
         inpBtn = new ItemWidget[4];
         outBtn = new ItemWidget[4];
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
         buildButtons();
+        setClickListener(panelListener);
     }
 
 
@@ -90,13 +107,13 @@ public class OperationPanel extends Panel {
         Material m = Material.getMaterial(operationID);
 
         caption = new Caption("Block information");
-        caption.setLocalBounds(30,599,300, 100);
+        caption.setLocalBounds(40,599,300, 100);
         caption.setScale(1.5f);
         caption.setTextColor(WHITE);
         addChild(caption);
 
         leftButton = new Button("<");
-        leftButton.setLocalBounds( 30, 500, 75, 100);
+        leftButton.setLocalBounds( 40, 500, 75, 100);
         leftButton.setTag("<");
         leftButton.setColor(GRAY);
         leftButton.setTextColor(WHITE);
@@ -105,14 +122,14 @@ public class OperationPanel extends Panel {
 
         operationButton = new Button("");
         operationButton.setTextScale(1.5f);
-        operationButton.setLocalBounds( 130, 500, 100, 100);
+        operationButton.setLocalBounds( 140, 500, 100, 100);
         operationButton.setColor(GRAY);
         operationButton.setTextColor(WHITE);
         addChild(operationButton);
 
         rightButton = new Button(">");
         rightButton.setTag(">");
-        rightButton.setLocalBounds( 255, 500, 75, 100);
+        rightButton.setLocalBounds( 265, 500, 75, 100);
         rightButton.setColor(GRAY);
         rightButton.setTextColor(WHITE);
         rightButton.setClickListener(clickListener);
@@ -120,14 +137,14 @@ public class OperationPanel extends Panel {
 
         // Список входных материалов
         inputsCaption = new Caption("Input materials:");
-        inputsCaption.setLocalBounds(30,400,300, 100);
+        inputsCaption.setLocalBounds(40,400,300, 100);
         inputsCaption.setScale(1.5f);
         inputsCaption.setTextColor(WHITE);
         addChild(inputsCaption);
 
         for (int i=0; i<4; i++) {
             inpBtn[i] = new ItemWidget("");
-            inpBtn[i].setLocalBounds(30 + i*80, 350, 64, 64);
+            inpBtn[i].setLocalBounds(40 + i*80, 350, 64, 64);
             inpBtn[i].setColor(DKGRAY);
             inpBtn[i].setTextColor(WHITE);
             inpBtn[i].setTextScale(1);
@@ -136,7 +153,7 @@ public class OperationPanel extends Panel {
 
         // Список выходных материалов
         outputsCaption = new Caption("Output materials:");
-        outputsCaption.setLocalBounds(30,250,300, 100);
+        outputsCaption.setLocalBounds(40,250,300, 100);
         outputsCaption.setScale(1.5f);
         outputsCaption.setTextColor(WHITE);
         addChild(outputsCaption);
@@ -144,7 +161,7 @@ public class OperationPanel extends Panel {
 
         for (int i=0; i<4; i++) {
             outBtn[i] = new ItemWidget("");
-            outBtn[i].setLocalBounds(30 + i*80, 200, 64, 64);
+            outBtn[i].setLocalBounds(40 + i*80, 200, 64, 64);
             outBtn[i].setColor(DKGRAY);
             outBtn[i].setTextColor(WHITE);
             outBtn[i].setTextScale(1);
@@ -154,7 +171,7 @@ public class OperationPanel extends Panel {
         changeoverButton = new Button("Changeover");
         changeoverButton.setTextScale(1.5f);
         changeoverButton.setTag("Changeover");
-        changeoverButton.setLocalBounds( 30, 50, 300, 100);
+        changeoverButton.setLocalBounds( 40, 50, 300, 100);
         changeoverButton.setColor(Color.GRAY);
         changeoverButton.setTextColor(WHITE);
         changeoverButton.setClickListener(clickListener);
@@ -200,13 +217,13 @@ public class OperationPanel extends Panel {
         if (block instanceof Buffer) {
             showBufferInfo((Buffer) block);
         }
-        visible = true;
+       // visible = true;
     }
 
 
     public void hideBlockInfo() {
         choosenBlock = null;
-        visible = false;
+      //  visible = false;
     }
 
     /**
@@ -258,7 +275,7 @@ public class OperationPanel extends Panel {
     private void showBufferInfo(Buffer buffer) {
         caption.setText("Buffer contains");
         operationButton.setText("" + (buffer.getItemsAmount()) + "/" + (buffer.getCapacity()-1));
-        operationButton.setLocation(30, 500);
+        operationButton.setLocation(40, 500);
         operationButton.setSize(300,100);
         leftButton.visible = false;
         rightButton.visible = false;
@@ -284,7 +301,7 @@ public class OperationPanel extends Panel {
     private void showConveyorInfo(Conveyor conveyor) {
         caption.setText("Conveyor contains");
         operationButton.setText("" + (conveyor.getItemsAmount()) + "/" + (conveyor.getCapacity()-1));
-        operationButton.setLocation(30, 500);
+        operationButton.setLocation(40, 500);
         operationButton.setSize(300,100);
         leftButton.visible = false;
         rightButton.visible = false;
