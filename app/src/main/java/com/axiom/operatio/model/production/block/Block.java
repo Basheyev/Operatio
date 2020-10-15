@@ -5,6 +5,7 @@ import com.axiom.atom.engine.data.Channel;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.materials.Item;
+import com.axiom.operatio.model.production.buffer.Buffer;
 
 /**
  * Базовый блок производства реализующий примитивную механику
@@ -239,8 +240,10 @@ public abstract class Block {
 
     protected boolean hasInOutFrom(Block block) {
         if (block==null) return false;
-        return (production.getBlockAt(block, block.getInputDirection())==this) ||
-               (production.getBlockAt(block, block.getOutputDirection())==this);
+        boolean hasInput = (production.getBlockAt(block, block.getInputDirection())==this);
+        boolean hasOutput = (production.getBlockAt(block, block.getOutputDirection())==this);
+        boolean itsBuffer = block instanceof Buffer;
+        return hasInput || hasOutput || itsBuffer;
     }
 
 
@@ -252,7 +255,7 @@ public abstract class Block {
     private void adjustDirectionOneNeighbor(Block neighbor, int neighborSide) {
         Block neighborOutput = production.getBlockAt(neighbor, neighbor.getOutputDirection());
         Block neighborInput = production.getBlockAt(neighbor, neighbor.getInputDirection());
-        if (neighborOutput==this) {
+        if (neighborOutput==this || (neighbor instanceof Buffer)) {
             setDirections(neighborSide, oppositeDirection(neighborSide));
         } else if (neighborInput==this) {
             setDirections(oppositeDirection(neighborSide), neighborSide);
@@ -266,26 +269,29 @@ public abstract class Block {
 
         Block neighbor1Output = production.getBlockAt(neighbor1, neighbor1.getOutputDirection());
         Block neighbor1Input = production.getBlockAt(neighbor1, neighbor1.getInputDirection());
+        boolean neighbor1IsBuffer = neighbor1 instanceof Buffer;
         Block neighbor2Output = production.getBlockAt(neighbor2, neighbor2.getOutputDirection());
         Block neighbor2Input = production.getBlockAt(neighbor2, neighbor2.getInputDirection());
+        boolean neighbor2IsBuffer = neighbor2 instanceof Buffer;
 
         // если ни один вход/выход двух соседей не направлен на это блок
-        // поворачиваем как будто соседей нет
+        // и ни один из них не является буфером - уходим ничего не делаем
         if (neighbor1Input!=this && neighbor1Output!=this
-                && neighbor2Input!=this && neighbor2Output!=this) return;
+                && neighbor2Input!=this && neighbor2Output!=this &&
+                !neighbor1IsBuffer && !neighbor2IsBuffer) return;
 
         // Если только первого блока вход/выход направлен на этот блок
         // поворачиваем как будто у нас один сосед
-        if ((neighbor1Input==this || neighbor1Output==this)
-                && neighbor2Input!=this && neighbor2Output!=this) {
+        if ((neighbor1Input==this || neighbor1Output==this || neighbor1IsBuffer) &&
+                (neighbor2Input!=this && neighbor2Output!=this && !neighbor2IsBuffer)) {
             adjustDirectionOneNeighbor(neighbor1, neightbor1Side);
-        } else if (neighbor1Input!=this && neighbor1Output!=this) {
+        } else if (neighbor1Input!=this && neighbor1Output!=this && !neighbor1IsBuffer) {
             // Если только второго блока вход/выход направлен на этот блок
             // поворачиваем как будто у нас один сосед
             adjustDirectionOneNeighbor(neighbor2, neightbor2Side);
-        } else if (neighbor1Input==this && neighbor2Output==this) {
+        } else if (neighbor1Input==this && neighbor2Output==this || neighbor1IsBuffer) {
             setDirections(neightbor2Side, neightbor1Side);
-        } else if (neighbor1Output==this && neighbor2Input==this) {
+        } else if (neighbor1Output==this && neighbor2Input==this || neighbor2IsBuffer) {
             setDirections(neightbor1Side, neightbor2Side);
         }
 
@@ -376,7 +382,7 @@ public abstract class Block {
         int currentInpDir = getInputDirection();
         int currentOutDir = getOutputDirection();
         int newInpDir = nextClockwiseDirection(currentInpDir);
-        int newOutDir = nextClockwiseDirection(currentOutDir);
+        int newOutDir = nextClockwiseDirection(currentOutDir); // TODO opposite direction
         setDirections(newInpDir, newOutDir);
     }
 
@@ -392,9 +398,10 @@ public abstract class Block {
 
         Block neighborOutput = production.getBlockAt(neighbor, neighbor.getOutputDirection());
         Block neighborInput = production.getBlockAt(neighbor, neighbor.getInputDirection());
+        boolean neighborIsBuffer = neighbor instanceof Buffer;
 
         // Если входы/выходы соседа не направлены на этот блок
-        if (neighborInput!=this && neighborOutput!=this) {
+        if (neighborInput!=this && neighborOutput!=this && !neighborIsBuffer) {
             rotateFlowDirectionRightAngle();
             return;
         }
@@ -410,7 +417,7 @@ public abstract class Block {
             currentOutDir = tmp;
 
             // Если направление выхода соседа направлено на этот блок
-            if (neighborOutput == this) {
+            if (neighborOutput == this || neighborIsBuffer) {
                 // Фиксируем вход этого блока со стороны выхода соседа
                 newInpDir = neightborSide;
                 // Поворачиваем лишь выход материалов этого блока
@@ -419,9 +426,9 @@ public abstract class Block {
                 if (newOutDir == newInpDir) newOutDir = nextClockwiseDirection(newOutDir);
                 setDirections(newInpDir, newOutDir);
                 directionFlip = false;
+            // Если направление входа соседа направлено на этот блок
             }
 
-            // Если направление входа соседа направлено на этот блок
             if (neighborInput == this) {
                 // Фиксируем выход этого блока на сторону входа соседа
                 newOutDir = neightborSide;
@@ -452,24 +459,26 @@ public abstract class Block {
 
         Block neighbor1Output = production.getBlockAt(neighbor1, neighbor1.getOutputDirection());
         Block neighbor1Input = production.getBlockAt(neighbor1, neighbor1.getInputDirection());
+        boolean neighbor1IsBuffer = neighbor1 instanceof Buffer;
         Block neighbor2Output = production.getBlockAt(neighbor2, neighbor2.getOutputDirection());
         Block neighbor2Input = production.getBlockAt(neighbor2, neighbor2.getInputDirection());
+        boolean neighbor2IsBuffer = neighbor2 instanceof Buffer;
 
         // если ни один вход/выход двух соседей не направлен на это блок
         // поворачиваем как будто соседей нет
         if (neighbor1Input!=this && neighbor1Output!=this
-        && neighbor2Input!=this && neighbor2Output!=this) {
+        && neighbor2Input!=this && neighbor2Output!=this && !neighbor1IsBuffer && !neighbor2IsBuffer) {
             rotateFlowDirectionRightAngle();
             return;
         }
 
         // Если только первого блока вход/выход направлен на этот блок
         // поворачиваем как будто у нас один сосед
-        if ((neighbor1Input==this || neighbor1Output==this)
+        if ((neighbor1Input==this || neighbor1Output==this || neighbor1IsBuffer)
                 && neighbor2Input!=this && neighbor2Output!=this) {
             rotateFlowDirectionOneNeighbor(neighbor1, neightbor1Side);
             return;
-        } else if (neighbor1Input!=this && neighbor1Output!=this) {
+        } else if (neighbor1Input!=this && neighbor1Output!=this && neighbor2IsBuffer) {
             // Если только второго блока вход/выход направлен на этот блок
             // поворачиваем как будто у нас один сосед
             rotateFlowDirectionOneNeighbor(neighbor2, neightbor2Side);
