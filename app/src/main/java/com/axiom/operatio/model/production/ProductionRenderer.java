@@ -20,11 +20,14 @@ public class ProductionRenderer {
 
 
     public ProductionRenderer(Production production, float cellWidth, float cellHeight) {
-        tile = new Sprite(SceneManager.getResources(), R.drawable.tile);
+        tile = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+        tile.setActiveFrame(65);
         tile.zOrder = 0;
-        tileBlocked = new Sprite(SceneManager.getResources(), R.drawable.tile_blocked);
+        tileBlocked = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+        tileBlocked.setActiveFrame(67);
         tileBlocked.zOrder = 0;
-        selection = new Sprite(SceneManager.getResources(), R.drawable.selected);
+        selection = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+        selection.setActiveFrame(66);
         selection.zOrder = 500;
         this.production = production;
         this.cellWidth = cellWidth;

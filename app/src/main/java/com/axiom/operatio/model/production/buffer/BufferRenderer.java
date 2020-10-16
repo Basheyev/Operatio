@@ -14,14 +14,14 @@ public class BufferRenderer extends BlockRenderer {
 
     public BufferRenderer(Buffer buffer) {
         this.buffer = buffer;
-        sprite = new Sprite(SceneManager.getResources(), R.drawable.buffer_texture,4,4);
+        sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks,8,11);
         sprite.zOrder = 1;
     }
 
     public void draw(Camera camera, float x, float y, float width, float height) {
         float load = (float) buffer.getItemsAmount() / ((float) buffer.getCapacity());
         int frame = (int) Math.ceil(load * 8);  // всего кадров 8, поэтому нормируем время на кадры
-        sprite.setActiveFrame(frame);
+        sprite.setActiveFrame(72 + frame);
         sprite.draw(camera,x,y, width, height);
     }
 

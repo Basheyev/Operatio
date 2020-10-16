@@ -8,8 +8,7 @@ import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
 
-// TODO 1. Добавить для Сборщика возможность забирать нужные материалы из буфера
-// TODO 2. Добавить характеристики машины как: скорость работы, стоимость операции и износ
+// TODO Добавить характеристики машины как: скорость работы, стоимость операции и износ
 public class Machine extends Block {
 
     protected MachineType type;

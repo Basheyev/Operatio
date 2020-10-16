@@ -80,7 +80,7 @@ public class ProductionScene extends GameScene {
         float y = camera.getMinY();
         GraphicsRender.setZOrder(2000);
         GraphicsRender.setColor(0,0,0,1);
-        GraphicsRender.drawText(fps, x + 600,y + 1020, 2f);
+        GraphicsRender.drawText(fps, x + 600,y + 20, 2f);
     }
 
     @Override

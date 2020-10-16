@@ -26,8 +26,7 @@ public class ConveyorRenderer extends BlockRenderer {
 
     public ConveyorRenderer(Block block) {
         this.block = block;
-        //sprite = new Sprite(SceneManager.getResources(), R.drawable.conveyor,4,6);
-        sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks,8,8);
+        sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks,8,11);
         sprite.zOrder = 1;
         createAnimations();
         arrangeAnimation(block.getInputDirection(), block.getOutputDirection());

@@ -31,15 +31,15 @@ public class BlockButton extends Button {
 
         int animation;
         if (id>=0 && id<5) { // Если это машины 0-4
-            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 8);
+            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
             animation = background.addAnimation(id * 8, id * 8 + 7, 8, true);
             background.setActiveAnimation(animation);
         } else if (id==5) { // Если это буфер
-            background = new Sprite(SceneManager.getResources(), R.drawable.buffer_texture, 4, 4);
-            animation = background.addAnimation(0, 8, 8,true);
+            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+            animation = background.addAnimation(72, 79, 8,true);
             background.setActiveAnimation(animation);
         } else if (id==6) { // Если это конвейер
-            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 8);
+            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
             animation = background.addAnimation(40, 47, 15,true);
             background.setActiveAnimation(animation);
         }
@@ -96,7 +96,7 @@ public class BlockButton extends Button {
                 break;
             case 2:
                 mt = MachineType.getMachineType(2);
-                block = new Machine(production, mt, mt.getOperations()[1], Machine.LEFT, Machine.RIGHT);
+                block = new Machine(production, mt, mt.getOperations()[0], Machine.LEFT, Machine.RIGHT);
                 break;
             case 3:
                 mt = MachineType.getMachineType(3);
