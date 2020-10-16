@@ -12,6 +12,7 @@ public class Item {
     protected Block owner;                  // Блок владелец
     protected long cycleOwned;              // Цикл производства (захват)
     protected long timeOwned;               // Время в миллисекундах (захват)
+    protected long price;                   // Стоимость предмета
 
     //----------------------------------------------------------------------------
 

@@ -32,6 +32,10 @@ public class Material {
         return materials[ID];
     }
 
+    public static Material[] getMaterials() {
+        return materials;
+    }
+
     /**
      * Конструктор материала
      *
