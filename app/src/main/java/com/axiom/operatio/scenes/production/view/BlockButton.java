@@ -29,19 +29,31 @@ public class BlockButton extends Button {
 
         this.scene = scene;
 
+        // TODO Добавить машины Перекретов, Покгрузка, Выгрузка
         int animation;
-        if (id>=0 && id<5) { // Если это машины 0-4
-            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-            animation = background.addAnimation(id * 8, id * 8 + 7, 8, true);
-            background.setActiveAnimation(animation);
-        } else if (id==5) { // Если это буфер
-            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-            animation = background.addAnimation(72, 79, 8,true);
-            background.setActiveAnimation(animation);
-        } else if (id==6) { // Если это конвейер
+
+        if (id==0) { // Если это конвейер
             background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
             animation = background.addAnimation(40, 47, 15,true);
             background.setActiveAnimation(animation);
+        } else if (id==1) { // Если это буфер
+            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+            animation = background.addAnimation(72, 79, 8,true);
+            background.setActiveAnimation(animation);
+        } else if (id>=2 && id<7) { // Если это машины 0-4
+            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+            int startFrame = (id - 2) * 8;
+            animation = background.addAnimation(startFrame, startFrame + 7, 8, true);
+            background.setActiveAnimation(animation);
+        } else if (id==7) {
+            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+            background.setActiveFrame(64);
+        } else if (id==8) {
+            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+            background.setActiveFrame(65);
+        } else if (id==9) {
+            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+            background.setActiveFrame(66);
         }
 
         setColor(0.5f, 0.7f, 0.5f, 0.9f);
@@ -87,30 +99,30 @@ public class BlockButton extends Button {
         int choice = Integer.parseInt(toggled);
         switch (choice) {
             case 0:
+                block = new Conveyor(production, Block.LEFT, Block.RIGHT, 5);
+                break;
+            case 1:
+                block = new Buffer(production, 100);
+                break;
+            case 2:
                 mt = MachineType.getMachineType(0);
                 block = new Machine(production, mt, mt.getOperations()[0], Machine.LEFT, Machine.RIGHT);
                 break;
-            case 1:
+            case 3:
                 mt = MachineType.getMachineType(1);
                 block = new Machine(production, mt, mt.getOperations()[0], Machine.LEFT, Machine.RIGHT);
                 break;
-            case 2:
+            case 4:
                 mt = MachineType.getMachineType(2);
                 block = new Machine(production, mt, mt.getOperations()[0], Machine.LEFT, Machine.RIGHT);
                 break;
-            case 3:
+            case 5:
                 mt = MachineType.getMachineType(3);
                 block = new Machine(production, mt, mt.getOperations()[0], Machine.LEFT, Machine.RIGHT);
                 break;
-            case 4:
+            case 6:
                 mt = MachineType.getMachineType(4);
                 block = new Machine(production, mt, mt.getOperations()[0], Machine.LEFT, Machine.RIGHT);
-                break;
-            case 5:
-                block = new Buffer(production, 100);
-                break;
-            case 6:
-                block = new Conveyor(production, Block.LEFT, Block.RIGHT, 5);
                 break;
         }
 

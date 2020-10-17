@@ -21,13 +21,13 @@ public class ProductionRenderer {
 
     public ProductionRenderer(Production production, float cellWidth, float cellHeight) {
         tile = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-        tile.setActiveFrame(65);
+        tile.setActiveFrame(68);
         tile.zOrder = 0;
         tileBlocked = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-        tileBlocked.setActiveFrame(67);
+        tileBlocked.setActiveFrame(70);
         tileBlocked.zOrder = 0;
         selection = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-        selection.setActiveFrame(66);
+        selection.setActiveFrame(67);
         selection.zOrder = 500;
         this.production = production;
         this.cellWidth = cellWidth;
