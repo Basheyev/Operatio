@@ -1,16 +1,21 @@
 package com.axiom.operatio.model.production;
 
+import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.block.Block;
+import com.axiom.operatio.model.warehouse.Warehouse;
 
 import java.util.ArrayList;
 
+// TODO Добавить симуляцию склада и рынка
 // TODO 1. Добавить экономику: баланс, цена материала, цена хранения, цена операции (стоимость компании)
 // TODO 2. Добавить зона погрузки и выгрузки со склада
 // TODO 3. Добавить машину контроля качества (сортировки)
 // TODO 4. Добавить сохранение уровня (сериализацию JSon)
 public class Production {
 
-    protected static Production instance;           // Синглтон объекта производства
+    protected static Production instance;           // Синглтон объекта - производство
+    protected static Warehouse warehouse;           // Синглтон объекта - склад
+    protected static Market market;                 // Синллтон объекта - рынок
 
     protected ArrayList<Block> blocks;              // Список блоков производства
     protected Block[][] grid;                       // Блоки привязанные к координатной сетке
@@ -36,11 +41,15 @@ public class Production {
 
 
     private Production(int columns, int rows) {
+
         this.columns = columns;
         this.rows = rows;
         grid = new Block[rows][columns];
-
         blocks = new ArrayList<Block>(100);
+
+        warehouse = Warehouse.getInstance();
+        market = Market.getInstance();
+
     }
 
 
@@ -63,6 +72,11 @@ public class Production {
             // Учитываем время производства в миллисекундах с учетом пауз игры
             clock = System.currentTimeMillis() - pausedTime;
         }
+
+        // Выполнить симуляцию склада
+        warehouse.process();
+        // Выполнить симуляцию рынка
+        market.process();
     }
 
 
@@ -139,6 +153,14 @@ public class Production {
             total += block.getItemsAmount();
         }
         return total;
+    }
+
+    public Warehouse getWarehouse() {
+        return null;
+    }
+
+    public Market getMarket() {
+        return null;
     }
 
 

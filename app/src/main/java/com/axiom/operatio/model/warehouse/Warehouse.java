@@ -57,6 +57,11 @@ public class Warehouse {
     }
 
 
+    /**
+     * Возвращает остатки по позиции на складе
+     * @param material тип материала
+     * @return количество единиц (остатки)
+     */
     public int getBalance(Material material) {
         if (material==null) return 0;
         int ID = material.getMaterialID();

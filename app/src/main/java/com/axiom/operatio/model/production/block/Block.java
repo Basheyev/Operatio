@@ -9,7 +9,6 @@ import com.axiom.operatio.model.production.buffer.Buffer;
 
 /**
  * Базовый блок производства реализующий примитивную механику
- * TODO Делать повороты и Adjustment с учетом Buffer (который имеет вход/выход NONE)
  */
 public abstract class Block {
 

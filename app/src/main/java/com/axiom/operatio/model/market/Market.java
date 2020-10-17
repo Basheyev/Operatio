@@ -11,8 +11,16 @@ public class Market {
 
     // TODO Buy Order / Sell Order
 
-    public Market(Warehouse warehouse) {
+    protected static Market market;
+    protected static boolean initialized;
 
+    public static Market getInstance() {
+        if (!initialized) market = new Market();
+        return market;
+    }
+
+    private Market() {
+        initialized = true;
     }
 
     public boolean sellOrder(Material material, int quantity, long price) {
