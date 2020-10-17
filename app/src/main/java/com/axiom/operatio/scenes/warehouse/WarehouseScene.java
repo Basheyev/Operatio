@@ -1,5 +1,6 @@
 package com.axiom.operatio.scenes.warehouse;
 
+import android.graphics.Color;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
@@ -18,7 +19,9 @@ import com.axiom.operatio.model.warehouse.Warehouse;
 import com.axiom.operatio.scenes.production.view.ItemWidget;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 
+import static android.graphics.Color.BLACK;
 import static android.graphics.Color.DKGRAY;
+import static android.graphics.Color.WHITE;
 
 
 // TODO 1. Добавить сцену склад: хранение материалов и машин
@@ -28,6 +31,7 @@ public class WarehouseScene extends GameScene {
     protected static boolean initialized = false;
     protected static int tickSound;
     protected static Sprite background;
+    protected static ItemWidget[] itemWidget;
 
     @Override
     public String getSceneName() {
@@ -37,7 +41,12 @@ public class WarehouseScene extends GameScene {
     @Override
     public void startScene() {
         if (!initialized) buildUI();
-
+        Warehouse warehouse = Warehouse.getInstance();
+        for (int i=0; i< Material.getMaterialsAmount(); i++) {
+            Material material = Material.getMaterial(i);
+            int balance = warehouse.getBalance(material);
+            itemWidget[i].setText("" + balance);
+        }
     }
 
     @Override
@@ -93,16 +102,18 @@ public class WarehouseScene extends GameScene {
         panel.setColor(0xCC505050);
 
         Warehouse warehouse = Warehouse.getInstance();
+        itemWidget = new ItemWidget[Material.getMaterialsAmount()];
         float x = 30, y = 700;
         for (int i=0; i< Material.getMaterialsAmount(); i++) {
             Material material = Material.getMaterial(i);
             int balance = warehouse.getBalance(material);
-            ItemWidget itemWidget = new ItemWidget("" + balance);
-            itemWidget.setColor(0x10101050);
-            itemWidget.setBackground(material.getImage());
-            itemWidget.setTextScale(1);
-            itemWidget.setLocalBounds(x, y, 80, 80);
-            panel.addChild(itemWidget);
+            itemWidget[i] = new ItemWidget("" + balance);
+            itemWidget[i].setColor(BLACK);
+            itemWidget[i].setBackground(material.getImage());
+            itemWidget[i].setTextScale(1);
+            itemWidget[i].setTextColor(WHITE);
+            itemWidget[i].setLocalBounds(x, y, 80, 80);
+            panel.addChild(itemWidget[i]);
             x += 96;
             if (x + 96 > panel.getWidth()) {
                 x = 30;
