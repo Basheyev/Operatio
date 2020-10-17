@@ -6,7 +6,7 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.scenes.production.ProductionScene;
-import com.axiom.operatio.scenes.production.view.OperationPanel;
+import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 
 public class BlockRotateHandler {
@@ -46,7 +46,7 @@ public class BlockRotateHandler {
                 if (actionInProgress && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
                     if (block!=null) {
                         block.rotateFlowDirection();
-                        OperationPanel opsPanel = ProductionSceneUI.getOperationPanel();
+                        AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
                         opsPanel.showBlockInfo(block, false);
                         production.selectBlock(column, row);
                     }

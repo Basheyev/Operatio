@@ -9,7 +9,7 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.scenes.production.ProductionScene;
-import com.axiom.operatio.scenes.production.view.OperationPanel;
+import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 
 public class BlockAddMoveHandler {
@@ -67,7 +67,7 @@ public class BlockAddMoveHandler {
                 if (actionInProgress) {
                     productionRenderer.stopBlockMoving();
                     if (column >= 0 && row >= 0 && column < cols && row < rows) {
-                        OperationPanel opsPanel = ProductionSceneUI.getOperationPanel();
+                        AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
                         if (block == null) {
                             SoundRenderer.playSound(blockPlaced);
                             production.setBlock(dragBlock, column, row);

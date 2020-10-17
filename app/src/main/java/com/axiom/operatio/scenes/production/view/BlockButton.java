@@ -8,9 +8,11 @@ import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.widgets.Button;
+import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.buffer.Buffer;
+import com.axiom.operatio.model.production.buffer.ImportBuffer;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
 import com.axiom.operatio.model.production.machine.Machine;
 import com.axiom.operatio.model.production.machine.MachineType;
@@ -98,7 +100,7 @@ public class BlockButton extends Button {
         MachineType mt;
         int choice = Integer.parseInt(toggled);
         switch (choice) {
-            case 0:
+            case 0: // КОн
                 block = new Conveyor(production, Block.LEFT, Block.RIGHT, 5);
                 break;
             case 1:
@@ -123,6 +125,13 @@ public class BlockButton extends Button {
             case 6:
                 mt = MachineType.getMachineType(4);
                 block = new Machine(production, mt, mt.getOperations()[0], Machine.LEFT, Machine.RIGHT);
+                break;
+            case 7:
+                break;
+            case 8:
+                block = new ImportBuffer(production, Material.getMaterial(0));
+                break;
+            case 9:
                 break;
         }
 

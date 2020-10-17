@@ -17,7 +17,6 @@ public class ItemWidget extends Button {
     public void draw(Camera camera) {
         if (parent==null || !visible) return;
         AABB bounds = getWorldBounds();
-        AABB scissors = getScissors();
         AABB parentScissor = parent.getScissors();
 
         if (opaque) {

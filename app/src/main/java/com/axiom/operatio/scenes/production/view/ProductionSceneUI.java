@@ -20,7 +20,7 @@ public class ProductionSceneUI {
     protected static Button pauseButton;
     protected static BlocksPanel blocksPanel;
     protected static ModePanel modePanel;
-    protected static OperationPanel operationPanel;
+    protected static AdjustmentPanel adjustmentPanel;
     protected static int tickSound;
 
     public static void setPausedButtonState(boolean paused) {
@@ -61,16 +61,27 @@ public class ProductionSceneUI {
         ClickListener exitListener = new ClickListener() {
             @Override
             public void onClick(Widget w) {
-                SoundRenderer.playSound(tickSound);
-                if (!production.isPaused()) {
-                    production.setPaused(true);
-                    ProductionSceneUI.setPausedButtonState(true);
+                if (w.getTag().equals("Menu")) {
+                    SoundRenderer.playSound(tickSound);
+                    if (!production.isPaused()) {
+                        production.setPaused(true);
+                        ProductionSceneUI.setPausedButtonState(true);
+                    }
+                    SceneManager.getInstance().setActiveScene("Menu");
+                } else if (w.getTag().equals("Warehouse")) {
+                    SoundRenderer.playSound(tickSound);
+                    if (!production.isPaused()) {
+                        production.setPaused(true);
+                        ProductionSceneUI.setPausedButtonState(true);
+                    }
+                    SceneManager.getInstance().setActiveScene("Warehouse");
+
                 }
-                SceneManager.getInstance().setActiveScene("Menu");
             }
         };
 
         Button exitButton = new Button("Menu");
+        exitButton.setTag("Menu");
         exitButton.setTextColor(1,1,1,1);
         exitButton.setLocalBounds(0,960,340,100);
         exitButton.setColor(0.8f, 0.5f, 0.5f, 0.9f);
@@ -78,6 +89,7 @@ public class ProductionSceneUI {
         widget.addChild(exitButton);
 
         Button warehouseButton = new Button("Warehouse");
+        warehouseButton.setTag("Warehouse");
         warehouseButton.setTextColor(1,1,1,1);
         warehouseButton.setLocalBounds(Camera.WIDTH - 375,960,375,100);
         warehouseButton.setColor(0.8f, 0.5f, 0.5f, 0.9f);
@@ -90,9 +102,9 @@ public class ProductionSceneUI {
         modePanel = new ModePanel();
         widget.addChild(modePanel);
 
-        operationPanel = new OperationPanel();
-        operationPanel.hideBlockInfo();
-        widget.addChild(operationPanel);
+        adjustmentPanel = new AdjustmentPanel();
+        adjustmentPanel.hideBlockInfo();
+        widget.addChild(adjustmentPanel);
 
         pauseButton = new Button("PLAY");
         pauseButton.setTextColor(0,0,0,1);
@@ -112,6 +124,6 @@ public class ProductionSceneUI {
         return modePanel;
     }
 
-    public static OperationPanel getOperationPanel() { return operationPanel; }
+    public static AdjustmentPanel getAdjustmentPanel() { return adjustmentPanel; }
 
 }

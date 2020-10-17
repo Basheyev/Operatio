@@ -13,8 +13,9 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.production.view.BlocksPanel;
 import com.axiom.operatio.scenes.production.controller.InputHandler;
 import com.axiom.operatio.scenes.production.view.ModePanel;
-import com.axiom.operatio.scenes.production.view.OperationPanel;
+import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
+import com.axiom.operatio.scenes.warehouse.WarehouseScene;
 
 
 public class ProductionScene extends GameScene {
@@ -26,7 +27,7 @@ public class ProductionScene extends GameScene {
     // Надо сделать сеттеры и геттеры
     public BlocksPanel blocksPanel;
     public ModePanel modePanel;
-    public OperationPanel operationPanel;
+    public AdjustmentPanel adjustmentPanel;
     public float initialCellWidth = 128;                  // Ширина клетки
     public float initialCellHeight = 128;                 // Высота клетки
     private boolean initialized = false;
@@ -41,12 +42,13 @@ public class ProductionScene extends GameScene {
     public void startScene() {
         if (!initialized) {
             production = ProductionBuilder.createDemoProduction();
+            sceneManager.addGameScene(new WarehouseScene());
             productionRenderer = new ProductionRenderer(production, initialCellWidth, initialCellHeight);
             inputHandler = new InputHandler(this, production, productionRenderer);
             ProductionSceneUI.buildUI(this, getResources(), getSceneWidget(), production);
             blocksPanel = (BlocksPanel) ProductionSceneUI.getBlocksPanel();
             modePanel = (ModePanel) ProductionSceneUI.getModePanel();
-            operationPanel = (OperationPanel) ProductionSceneUI.getOperationPanel();
+            adjustmentPanel = (AdjustmentPanel) ProductionSceneUI.getAdjustmentPanel();
             initialized = true;
         }
     }

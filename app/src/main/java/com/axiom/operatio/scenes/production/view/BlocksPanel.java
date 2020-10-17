@@ -34,7 +34,7 @@ public class BlocksPanel extends Panel {
         this.productionScene = scene;
         setLocalBounds(0,200,340,700);
         setColor(panelColor);
-        setClickListener(clickListener);
+      //  setClickListener(clickListener);
         buildButtons();
     }
 

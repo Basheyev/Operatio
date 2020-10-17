@@ -13,6 +13,7 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.buffer.Buffer;
+import com.axiom.operatio.model.production.buffer.ImportBuffer;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
 import com.axiom.operatio.model.production.machine.Machine;
 import com.axiom.operatio.model.production.machine.MachineType;
@@ -25,11 +26,14 @@ import static android.graphics.Color.WHITE;
 
 // TODO Добавить отображение информации буфера
 // TODO Добавить отображение информации конвейера
-public class OperationPanel extends Panel {
+// TODO Добавить отображение информации импортера
+// TODO Добавить отображение информации экспортера
+// TODO Добавить отображение информации перкрестка конвейера
+public class AdjustmentPanel extends Panel {
 
     public final int panelColor = 0xCC505050;
     protected Caption caption, inputsCaption, outputsCaption;
-    protected Button leftButton, operationButton, rightButton;
+    protected Button leftButton, centerButton, rightButton;
     protected Button changeoverButton;
     protected Block choosenBlock = null;
     protected int operationID = 0;
@@ -47,7 +51,7 @@ public class OperationPanel extends Panel {
     public static ClickListener panelListener = new ClickListener() {
         @Override
         public void onClick(Widget w) {
-            OperationPanel panel = (OperationPanel) w;
+            AdjustmentPanel panel = (AdjustmentPanel) w;
             if (!panel.collapsed) {
                 panel.setLocation(Camera.WIDTH - 40,200);
                 panel.collapsed = true;
@@ -91,7 +95,7 @@ public class OperationPanel extends Panel {
     };
 
 
-    public OperationPanel() {
+    public AdjustmentPanel() {
         super();
         setLocalBounds(Camera.WIDTH - 375,200,375, 700);
         setColor(panelColor);
@@ -99,7 +103,7 @@ public class OperationPanel extends Panel {
         outBtn = new ItemWidget[4];
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
         buildButtons();
-        setClickListener(panelListener);
+       // setClickListener(panelListener);
     }
 
 
@@ -120,12 +124,12 @@ public class OperationPanel extends Panel {
         leftButton.setClickListener(clickListener);
         addChild(leftButton);
 
-        operationButton = new Button("");
-        operationButton.setTextScale(1.5f);
-        operationButton.setLocalBounds( 140, 500, 100, 100);
-        operationButton.setColor(GRAY);
-        operationButton.setTextColor(WHITE);
-        addChild(operationButton);
+        centerButton = new Button("");
+        centerButton.setTextScale(1.5f);
+        centerButton.setLocalBounds( 140, 500, 100, 100);
+        centerButton.setColor(GRAY);
+        centerButton.setTextColor(WHITE);
+        addChild(centerButton);
 
         rightButton = new Button(">");
         rightButton.setTag(">");
@@ -217,6 +221,9 @@ public class OperationPanel extends Panel {
         if (block instanceof Buffer) {
             showBufferInfo((Buffer) block);
         }
+        if (block instanceof ImportBuffer) {
+            showImporterInfo((ImportBuffer) block);
+        }
        // visible = true;
     }
 
@@ -239,13 +246,13 @@ public class OperationPanel extends Panel {
         Material[] outputMaterials = currentOperation.getOutputMaterials();
 
         leftButton.visible = true;
-        operationButton.setLocation(130, 500);
-        operationButton.setSize(100,100);
+        centerButton.setLocalBounds( 140, 500, 100, 100);
+        centerButton.setBackground(null);
         rightButton.visible = true;
 
         caption.setText(machineType.getName() + " operation");
 
-        operationButton.setText("" + (opID+1) + "/" + allOperations.length);
+        centerButton.setText("" + (opID+1) + "/" + allOperations.length);
 
         inputsCaption.setText("Inputs:");
         for (int i=0; i<4; i++) {
@@ -269,14 +276,16 @@ public class OperationPanel extends Panel {
             outBtn[i].visible = true;
         }
 
+        changeoverButton.visible = true;
     }
 
 
     private void showBufferInfo(Buffer buffer) {
         caption.setText("Buffer contains");
-        operationButton.setText("" + (buffer.getItemsAmount()) + "/" + (buffer.getCapacity()-1));
-        operationButton.setLocation(40, 500);
-        operationButton.setSize(300,100);
+        centerButton.setText("" + (buffer.getItemsAmount()) + "/" + (buffer.getCapacity()-1));
+        centerButton.setBackground(null);
+        centerButton.setLocation(40, 500);
+        centerButton.setSize(300,100);
         leftButton.visible = false;
         rightButton.visible = false;
 
@@ -295,14 +304,16 @@ public class OperationPanel extends Panel {
         }
 
         outputsCaption.setText("");
+        changeoverButton.visible = false;
     }
 
 
     private void showConveyorInfo(Conveyor conveyor) {
         caption.setText("Conveyor contains");
-        operationButton.setText("" + (conveyor.getItemsAmount()) + "/" + (conveyor.getCapacity()-1));
-        operationButton.setLocation(40, 500);
-        operationButton.setSize(300,100);
+        centerButton.setText("" + (conveyor.getItemsAmount()) + "/" + (conveyor.getCapacity()-1));
+        centerButton.setBackground(null);
+        centerButton.setLocation(40, 500);
+        centerButton.setSize(300,100);
         leftButton.visible = false;
         rightButton.visible = false;
 
@@ -313,6 +324,30 @@ public class OperationPanel extends Panel {
             inpBtn[i].visible = false;
             outBtn[i].visible = false;
         }
+
+        changeoverButton.visible = false;
+    }
+
+
+    // TODO Сделать переключение материала
+    private void showImporterInfo(ImportBuffer importBuffer) {
+        caption.setText("Importer");
+        centerButton.setText("");
+        centerButton.setBackground(importBuffer.getImportMaterial().getImage());
+
+        leftButton.visible = true;
+        centerButton.setLocalBounds( 140, 500, 100, 100);
+        rightButton.visible = true;
+
+        inputsCaption.setText("");
+        outputsCaption.setText("");
+
+        for (int i=0; i<4; i++) {
+            inpBtn[i].visible = true;
+            outBtn[i].visible = true;
+        }
+
+        changeoverButton.visible = true;
     }
 
 }
