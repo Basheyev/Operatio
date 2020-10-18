@@ -2,7 +2,7 @@ package com.axiom.operatio.model.production;
 
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.block.Block;
-import com.axiom.operatio.model.warehouse.Warehouse;
+import com.axiom.operatio.model.inventory.Inventory;
 
 import java.util.ArrayList;
 
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Production {
 
     protected static Production instance;           // Синглтон объекта - производство
-    protected static Warehouse warehouse;           // Синглтон объекта - склад
+    protected static Inventory inventory;           // Синглтон объекта - склад
     protected static Market market;                 // Синллтон объекта - рынок
 
     protected ArrayList<Block> blocks;              // Список блоков производства
@@ -47,7 +47,7 @@ public class Production {
         grid = new Block[rows][columns];
         blocks = new ArrayList<Block>(100);
 
-        warehouse = Warehouse.getInstance();
+        inventory = Inventory.getInstance();
         market = Market.getInstance();
 
     }
@@ -74,7 +74,7 @@ public class Production {
         }
 
         // Выполнить симуляцию склада
-        warehouse.process();
+        inventory.process();
         // Выполнить симуляцию рынка
         market.process();
     }
@@ -155,12 +155,12 @@ public class Production {
         return total;
     }
 
-    public Warehouse getWarehouse() {
-        return null;
+    public Inventory getInventory() {
+        return inventory;
     }
 
     public Market getMarket() {
-        return null;
+        return market;
     }
 
 

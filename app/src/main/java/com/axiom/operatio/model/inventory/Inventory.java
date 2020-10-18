@@ -1,34 +1,33 @@
-package com.axiom.operatio.model.warehouse;
+package com.axiom.operatio.model.inventory;
 
 import com.axiom.atom.engine.data.Channel;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
-import com.axiom.operatio.model.production.buffer.BufferKeepingUnit;
 
 import java.util.ArrayList;
 
 /**
  * Модель склада материалов
  */
-public class Warehouse {
+public class Inventory {
 
-    protected static Warehouse warehouse;
+    protected static Inventory inventory;
     protected static boolean initialized = false;
     protected ArrayList<Channel<Item>> stockKeepingUnit;
 
 
-    public static Warehouse getInstance() {
-        if (!initialized) warehouse = new Warehouse();
-        return warehouse;
+    public static Inventory getInstance() {
+        if (!initialized) inventory = new Inventory();
+        return inventory;
     }
 
-    private Warehouse() {
+    private Inventory() {
         int materialsAmount = Material.getMaterialsAmount();
         stockKeepingUnit = new ArrayList<Channel<Item>>();
         Material[] materials = Material.getMaterials();
         for (int i=0; i<materialsAmount; i++) {
-            Channel<Item> sku = new Channel<Item>(100);
-            for (int j=0; j<100; j++) sku.add(new Item(materials[i]));
+            Channel<Item> sku = new Channel<Item>(500);
+            for (int j=0; j<300; j++) sku.add(new Item(materials[i]));
             stockKeepingUnit.add(sku);
         }
         initialized = true;
@@ -39,10 +38,21 @@ public class Warehouse {
      * @param item предмет
      * @return true если положили, false если места нет
      */
-    public boolean put(Item item) {
+    public boolean push(Item item) {
         if (item==null) return false;
         int ID = item.getMaterial().getMaterialID();
         return stockKeepingUnit.get(ID).add(item);
+    }
+
+    /**
+     * Вернуть предмет требуемого материала со склада, но не забирать
+     * @param material тип материала
+     * @return предмет указанного материала
+     */
+    public Item peek(Material material) {
+        if (material==null) return null;
+        int ID = material.getMaterialID();
+        return stockKeepingUnit.get(ID).peek();
     }
 
     /**
@@ -50,7 +60,7 @@ public class Warehouse {
      * @param material тип материала
      * @return предмет указанного материала
      */
-    public Item get(Material material) {
+    public Item poll(Material material) {
         if (material==null) return null;
         int ID = material.getMaterialID();
         return stockKeepingUnit.get(ID).poll();

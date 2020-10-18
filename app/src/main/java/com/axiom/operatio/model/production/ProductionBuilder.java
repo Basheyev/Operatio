@@ -13,10 +13,10 @@ public class ProductionBuilder {
     
     public static Production createDemoProduction() {
         Production production = Production.getInstance(50,50);
-
+/*
         for (int i=0; i<8; i++) {
             addStorage(production, 3, 2 + i * 2, i);
-        }
+        }*/
         //circularConveyor(production, 2, 0);
         //circularConveyor(production, 2, 4);
         //conveyorTask(production,10,1);

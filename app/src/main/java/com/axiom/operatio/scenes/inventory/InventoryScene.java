@@ -1,32 +1,31 @@
-package com.axiom.operatio.scenes.warehouse;
+package com.axiom.operatio.scenes.inventory;
 
-import android.graphics.Color;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.SceneManager;
+import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
+import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.materials.Material;
-import com.axiom.operatio.model.production.Production;
-import com.axiom.operatio.model.warehouse.Warehouse;
+import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.scenes.production.view.ItemWidget;
-import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 
 import static android.graphics.Color.BLACK;
-import static android.graphics.Color.DKGRAY;
 import static android.graphics.Color.WHITE;
 
 
 // TODO 1. Добавить сцену склад: хранение материалов и машин
 // TODO 2. Добавить сцену склад: правила покупки и продажи со склада (симуляция рынка цен)
-public class WarehouseScene extends GameScene {
+public class InventoryScene extends GameScene {
 
     protected static boolean initialized = false;
     protected static int tickSound;
@@ -35,16 +34,16 @@ public class WarehouseScene extends GameScene {
 
     @Override
     public String getSceneName() {
-        return "Warehouse";
+        return "Inventory";
     }
 
     @Override
     public void startScene() {
         if (!initialized) buildUI();
-        Warehouse warehouse = Warehouse.getInstance();
+        Inventory inventory = Inventory.getInstance();
         for (int i=0; i< Material.getMaterialsAmount(); i++) {
             Material material = Material.getMaterial(i);
-            int balance = warehouse.getBalance(material);
+            int balance = inventory.getBalance(material);
             itemWidget[i].setText("" + balance);
         }
     }
@@ -65,9 +64,21 @@ public class WarehouseScene extends GameScene {
         background.draw(camera,camera.getMinX(),camera.getMinY(), Camera.WIDTH,Camera.HEIGHT);
     }
 
+    protected StringBuffer fps = new StringBuffer(100);
+
     @Override
     public void postRender(Camera camera) {
-
+        fps.delete(0, fps.length());
+        fps.append("FPS:").append(GraphicsRender.getFPS())
+                .append(" Quads:").append(BatchRender.getEntriesCount())
+                .append(" Calls:").append(BatchRender.getDrawCallsCount())
+                .append(" Time:").append(GraphicsRender.getRenderTime())
+                .append("ms");
+        float x = camera.getMinX();
+        float y = camera.getMinY();
+        GraphicsRender.setZOrder(2000);
+        GraphicsRender.setColor(1,1,1,1);
+        GraphicsRender.drawText(fps, x + 600,y + 20, 2f);
     }
 
     @Override
@@ -87,7 +98,6 @@ public class WarehouseScene extends GameScene {
                 SceneManager.getInstance().setActiveScene("Production");
             }
         };
-
         Widget widget = getSceneWidget();
         Button exitButton = new Button("Production");
         exitButton.setTextColor(1,1,1,1);
@@ -98,15 +108,21 @@ public class WarehouseScene extends GameScene {
 
 
         Panel panel = new Panel();
-        panel.setLocalBounds(50,50, Camera.WIDTH - 600, Camera.HEIGHT - 200);
+        panel.setLocalBounds(50,100, 820, Camera.HEIGHT - 200);
         panel.setColor(0xCC505050);
 
-        Warehouse warehouse = Warehouse.getInstance();
+        Caption caption = new Caption("Inventory");
+        caption.setScale(1.5f);
+        caption.setTextColor(WHITE);
+        caption.setLocalBounds(30, panel.getHeight() - 100, 300, 100);
+        panel.addChild(caption);
+
+        Inventory inventory = Inventory.getInstance();
         itemWidget = new ItemWidget[Material.getMaterialsAmount()];
         float x = 30, y = 700;
         for (int i=0; i< Material.getMaterialsAmount(); i++) {
             Material material = Material.getMaterial(i);
-            int balance = warehouse.getBalance(material);
+            int balance = inventory.getBalance(material);
             itemWidget[i] = new ItemWidget("" + balance);
             itemWidget[i].setColor(BLACK);
             itemWidget[i].setBackground(material.getImage());

@@ -19,6 +19,7 @@ import com.axiom.operatio.model.production.machine.Machine;
 import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
 import com.axiom.operatio.model.materials.Material;
+import com.axiom.operatio.model.inventory.Inventory;
 
 import static android.graphics.Color.DKGRAY;
 import static android.graphics.Color.GRAY;
@@ -36,7 +37,9 @@ public class AdjustmentPanel extends Panel {
     protected Button leftButton, centerButton, rightButton;
     protected Button changeoverButton;
     protected Block choosenBlock = null;
-    protected int operationID = 0;
+
+    protected int choosenOperationID = 0;
+    protected int materialID = 0;
 
     private long lastProductionCycle;
 
@@ -71,24 +74,46 @@ public class AdjustmentPanel extends Panel {
                 if (choosenBlock instanceof Machine) {
                     Machine machine = (Machine) choosenBlock;
                     if (button.getTag().equals("<")) {
-                        operationID--;
-                        if (operationID < 0) operationID = 0;
-                        showMachineInfo(machine, operationID);
-                        if (operationID==machine.getOperationID()) {
+                        choosenOperationID--;
+                        if (choosenOperationID < 0) choosenOperationID = 0;
+                        showMachineInfo(machine, choosenOperationID);
+                        if (choosenOperationID ==machine.getOperationID()) {
                             changeoverButton.setColor(GRAY);
                         } else changeoverButton.setColor(0.5f, 1, 0.5f, 1);
                     } else if (button.getTag().equals(">")) {
                         int operationsCount = machine.getType().getOperations().length;
-                        operationID++;
-                        if (operationID >= operationsCount) operationID = operationsCount - 1;
-                        showMachineInfo(machine, operationID);
-                        if (operationID==machine.getOperationID()) {
+                        choosenOperationID++;
+                        if (choosenOperationID >= operationsCount) choosenOperationID = operationsCount - 1;
+                        showMachineInfo(machine, choosenOperationID);
+                        if (choosenOperationID ==machine.getOperationID()) {
                             changeoverButton.setColor(GRAY);
                         } else changeoverButton.setColor(0.5f, 1, 0.5f, 1);
                     } else if (button.getTag().equals("Changeover")) {
-                        machine.setOperation(operationID);
+                        machine.setOperation(choosenOperationID);
                         changeoverButton.setColor(GRAY);
                     }
+                } else if (choosenBlock instanceof ImportBuffer) {
+                    ImportBuffer importBuffer = (ImportBuffer) choosenBlock;
+                    if (button.getTag().equals("<")) {
+                        materialID--;
+                        if (materialID < 0) materialID = 0;
+                        showImporterInfo(importBuffer, materialID);
+                        if (materialID == importBuffer.getImportMaterial().getMaterialID()) {
+                            changeoverButton.setColor(GRAY);
+                        } else changeoverButton.setColor(0.5f, 1, 0.5f, 1);
+                    } else if (button.getTag().equals(">")) {
+                        int materialsAmount = Material.getMaterialsAmount();
+                        materialID++;
+                        if (materialID >= materialsAmount) materialID = materialsAmount - 1;
+                        showImporterInfo(importBuffer, materialID);
+                        if (materialID == importBuffer.getImportMaterial().getMaterialID()) {
+                            changeoverButton.setColor(GRAY);
+                        } else changeoverButton.setColor(0.5f, 1, 0.5f, 1);
+                    } else if (button.getTag().equals("Changeover")) {
+                        importBuffer.setImportMaterial(Material.getMaterial(materialID));
+                        changeoverButton.setColor(GRAY);
+                    }
+
                 }
             }
         }
@@ -108,7 +133,7 @@ public class AdjustmentPanel extends Panel {
 
 
     protected void buildButtons() {
-        Material m = Material.getMaterial(operationID);
+        Material m = Material.getMaterial(choosenOperationID);
 
         caption = new Caption("Block information");
         caption.setLocalBounds(40,599,300, 100);
@@ -212,8 +237,8 @@ public class AdjustmentPanel extends Panel {
 
         if (block instanceof Machine) {
             Machine machine = (Machine) block;
-            if (blockChanged) operationID = machine.getOperationID();
-            showMachineInfo(machine, operationID);
+            if (blockChanged) choosenOperationID = machine.getOperationID();
+            showMachineInfo(machine, choosenOperationID);
         }
         if (block instanceof Conveyor) {
             showConveyorInfo((Conveyor) block);
@@ -222,7 +247,9 @@ public class AdjustmentPanel extends Panel {
             showBufferInfo((Buffer) block);
         }
         if (block instanceof ImportBuffer) {
-            showImporterInfo((ImportBuffer) block);
+            ImportBuffer importBuffer = (ImportBuffer) block;
+            if (blockChanged) materialID = importBuffer.getImportMaterial().getMaterialID();
+            showImporterInfo(importBuffer, materialID);
         }
        // visible = true;
     }
@@ -329,22 +356,24 @@ public class AdjustmentPanel extends Panel {
     }
 
 
-    // TODO Сделать переключение материала
-    private void showImporterInfo(ImportBuffer importBuffer) {
+    private void showImporterInfo(ImportBuffer importBuffer, int materialID) {
+        Material material = Material.getMaterial(materialID);
+
         caption.setText("Importer");
         centerButton.setText("");
-        centerButton.setBackground(importBuffer.getImportMaterial().getImage());
+        centerButton.setBackground(material.getImage());
+
 
         leftButton.visible = true;
         centerButton.setLocalBounds( 140, 500, 100, 100);
         rightButton.visible = true;
 
-        inputsCaption.setText("");
-        outputsCaption.setText("");
+        inputsCaption.setText(material.getName());
+        outputsCaption.setText("" + Inventory.getInstance().getBalance(material));
 
         for (int i=0; i<4; i++) {
-            inpBtn[i].visible = true;
-            outBtn[i].visible = true;
+            inpBtn[i].visible = false;
+            outBtn[i].visible = false;
         }
 
         changeoverButton.visible = true;

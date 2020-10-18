@@ -67,14 +67,16 @@ public class ProductionSceneUI {
                         production.setPaused(true);
                         ProductionSceneUI.setPausedButtonState(true);
                     }
+                    productionScene.getInputHandler().invalidateAllActions();
                     SceneManager.getInstance().setActiveScene("Menu");
-                } else if (w.getTag().equals("Warehouse")) {
+                } else if (w.getTag().equals("Inventory")) {
                     SoundRenderer.playSound(tickSound);
                     if (!production.isPaused()) {
                         production.setPaused(true);
                         ProductionSceneUI.setPausedButtonState(true);
                     }
-                    SceneManager.getInstance().setActiveScene("Warehouse");
+                    productionScene.getInputHandler().invalidateAllActions();
+                    SceneManager.getInstance().setActiveScene("Inventory");
 
                 }
             }
@@ -88,13 +90,13 @@ public class ProductionSceneUI {
         exitButton.setClickListener(exitListener);
         widget.addChild(exitButton);
 
-        Button warehouseButton = new Button("Warehouse");
-        warehouseButton.setTag("Warehouse");
-        warehouseButton.setTextColor(1,1,1,1);
-        warehouseButton.setLocalBounds(Camera.WIDTH - 375,960,375,100);
-        warehouseButton.setColor(0.8f, 0.5f, 0.5f, 0.9f);
-        warehouseButton.setClickListener(exitListener);
-        widget.addChild(warehouseButton);
+        Button inventoryButton = new Button("Inventory");
+        inventoryButton.setTag("Inventory");
+        inventoryButton.setTextColor(1,1,1,1);
+        inventoryButton.setLocalBounds(Camera.WIDTH - 375,960,375,100);
+        inventoryButton.setColor(0.8f, 0.5f, 0.5f, 0.9f);
+        inventoryButton.setClickListener(exitListener);
+        widget.addChild(inventoryButton);
 
         blocksPanel = new BlocksPanel(scene);
         widget.addChild(blocksPanel);

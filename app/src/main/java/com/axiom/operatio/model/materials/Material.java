@@ -33,6 +33,7 @@ public class Material {
     }
 
     public static Material[] getMaterials() {
+        if (!initialized) loadMaterialsData(SceneManager.getResources());
         return materials;
     }
 
@@ -73,6 +74,7 @@ public class Material {
 
 
     public static int getMaterialsAmount() {
+        if (!initialized) loadMaterialsData(SceneManager.getResources());
         return materials.length;
     }
 
