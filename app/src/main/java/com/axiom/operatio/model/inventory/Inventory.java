@@ -27,8 +27,9 @@ public class Inventory {
         Material[] materials = Material.getMaterials();
         for (int i=0; i<materialsAmount; i++) {
             Channel<Item> sku = new Channel<Item>(500);
-            for (int j=0; j<300; j++) sku.add(new Item(materials[i]));
             stockKeepingUnit.add(sku);
+            if (!materials[i].getName().equals("reserved"))
+            for (int j=0; j<500; j++) sku.add(new Item(materials[i]));
         }
         initialized = true;
     }
