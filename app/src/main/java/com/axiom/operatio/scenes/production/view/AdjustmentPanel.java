@@ -356,9 +356,8 @@ public class AdjustmentPanel extends Panel {
         // Отобразить материалы внутри конвейера
         for (int i=0; i<4; i++) {
             inpBtn[i].visible = true;
-
-
-
+            inpBtn[i].setBackground(null);
+            inpBtn[i].setText("");
             outBtn[i].visible = false;
         }
 
