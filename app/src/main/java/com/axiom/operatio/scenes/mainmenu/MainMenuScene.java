@@ -34,6 +34,11 @@ public class MainMenuScene extends GameScene {
     }
 
     @Override
+    public void changeScene() {
+
+    }
+
+    @Override
     public void disposeScene() {
 
     }

@@ -4,7 +4,6 @@ import android.content.res.Resources;
 import android.util.Log;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * <b>Менеджер игровых сцен</b><br>
@@ -94,6 +93,7 @@ public class SceneManager {
         gameScene.resources = resources;
         gameScene.startScene();
         gameScene.started = true;
+        if (activeGameScene!=null) activeGameScene.changeScene();
         activeGameScene = gameScene;
         return true;
     }

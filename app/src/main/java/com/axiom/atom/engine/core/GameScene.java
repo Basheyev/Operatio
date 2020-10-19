@@ -28,8 +28,9 @@ public abstract class GameScene {
     protected ArrayList<GameObject> deletedObjects = new ArrayList<>();  // Служебный список удаления объектов
 
     public abstract String getSceneName();
-    public abstract void startScene();                   // Вызывается при запуск/смене сцены
-    public abstract void disposeScene();                 // Вызывается из потока GameLoop
+    public abstract void startScene();                // Вызывается при запуске сцены
+    public abstract void disposeScene();              // Вызывается из потока GameLoop
+    public abstract void changeScene();               // Вызывается при смене сцены на другую
 
     //----------------------------------------------------------------------------------------
     // Важно: избегайте создание объектов в этих методах, так они вызываются 60 раз в секунду

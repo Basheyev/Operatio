@@ -27,6 +27,11 @@ public class SpriteScene extends GameScene {
     }
 
     @Override
+    public void changeScene() {
+
+    }
+
+    @Override
     public void updateScene(float deltaTime) {
 
     }

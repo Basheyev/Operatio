@@ -1,5 +1,6 @@
 package com.axiom.operatio.scenes.production;
 
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.axiom.atom.engine.core.GameScene;
@@ -16,6 +17,7 @@ import com.axiom.operatio.scenes.production.view.ModePanel;
 import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 import com.axiom.operatio.scenes.inventory.InventoryScene;
+import com.google.gson.Gson;
 
 
 public class ProductionScene extends GameScene {
@@ -46,11 +48,16 @@ public class ProductionScene extends GameScene {
             productionRenderer = new ProductionRenderer(production, initialCellWidth, initialCellHeight);
             inputHandler = new InputHandler(this, production, productionRenderer);
             ProductionSceneUI.buildUI(this, getResources(), getSceneWidget(), production);
-            blocksPanel = (BlocksPanel) ProductionSceneUI.getBlocksPanel();
-            modePanel = (ModePanel) ProductionSceneUI.getModePanel();
-            adjustmentPanel = (AdjustmentPanel) ProductionSceneUI.getAdjustmentPanel();
+            blocksPanel = ProductionSceneUI.getBlocksPanel();
+            modePanel = ProductionSceneUI.getModePanel();
+            adjustmentPanel = ProductionSceneUI.getAdjustmentPanel();
             initialized = true;
         }
+    }
+
+    @Override
+    public void changeScene() {
+
     }
 
     @Override

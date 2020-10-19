@@ -1,12 +1,14 @@
 package com.axiom.atom.engine.data;
 
+import java.io.Serializable;
+
 /**
  * Очередь для многопоточной работы
  * Эта очередь реализована чтобы решить проблему доступа к элементам очереди
  * при многопоточном доступе и при том чтобы работать на API 16 (без forEach)
  * @param <T>
  */
-public class Channel<T> {
+public class Channel<T> implements Serializable {
 
     public static final int MIN_CAPACITY = 64;
     private int front, rear, capacity;

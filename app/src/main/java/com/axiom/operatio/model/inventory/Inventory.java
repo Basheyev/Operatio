@@ -4,12 +4,13 @@ import com.axiom.atom.engine.data.Channel;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Модель склада материалов
  */
-public class Inventory {
+public class Inventory implements Serializable {
 
     protected static Inventory inventory;
     protected static boolean initialized = false;

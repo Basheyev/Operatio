@@ -4,14 +4,15 @@ import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-// TODO Добавить симуляцию склада и рынка
+// TODO Добавить симуляцию рынка
 // TODO 1. Добавить экономику: баланс, цена материала, цена хранения, цена операции (стоимость компании)
-// TODO 2. Добавить зона погрузки и выгрузки со склада
+// TODO 2. Добавить выгрузки со склада
 // TODO 3. Добавить машину контроля качества (сортировки)
 // TODO 4. Добавить сохранение уровня (сериализацию JSon)
-public class Production {
+public class Production implements Serializable {
 
     protected static Production instance;           // Синглтон объекта - производство
     protected static Inventory inventory;           // Синглтон объекта - склад

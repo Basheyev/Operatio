@@ -47,6 +47,11 @@ public class ShooterScene extends GameScene {
     }
 
     @Override
+    public void changeScene() {
+
+    }
+
+    @Override
     public void updateScene(float deltaTime) {
 
         Camera camera = GraphicsRender.getCamera();

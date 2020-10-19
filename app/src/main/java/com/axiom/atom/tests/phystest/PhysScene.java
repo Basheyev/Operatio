@@ -62,6 +62,11 @@ public class PhysScene extends GameScene {
       }
 
     @Override
+    public void changeScene() {
+
+    }
+
+    @Override
     public void updateScene(float deltaTime) {
 
         //camera.x = (int) player.x;

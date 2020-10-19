@@ -37,6 +37,11 @@ public class InventoryScene extends GameScene {
     }
 
     @Override
+    public void changeScene() {
+
+    }
+
+    @Override
     public void disposeScene() {
 
     }

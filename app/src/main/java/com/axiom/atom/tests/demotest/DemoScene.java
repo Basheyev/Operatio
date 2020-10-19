@@ -45,6 +45,10 @@ public class DemoScene extends GameScene {
 
     }
 
+    @Override
+    public void changeScene() {
+
+    }
 
     public void updateScene(float deltaTime) {
         person.x += Input.xAxis * 3;  // * delta time (render time)
