@@ -12,11 +12,7 @@ import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.production.ProductionScene;
-import com.google.gson.Gson;
-
-import java.util.ArrayList;
 
 public class MenuPanel extends Panel {
 

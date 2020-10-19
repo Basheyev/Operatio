@@ -1,6 +1,5 @@
 package com.axiom.operatio.scenes.production;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.axiom.atom.engine.core.GameScene;
@@ -8,7 +7,6 @@ import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.input.ScaleEvent;
-import com.axiom.operatio.model.production.ProductionBuilder;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.production.view.BlocksPanel;
@@ -17,7 +15,6 @@ import com.axiom.operatio.scenes.production.view.ModePanel;
 import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 import com.axiom.operatio.scenes.inventory.InventoryScene;
-import com.google.gson.Gson;
 
 
 public class ProductionScene extends GameScene {
@@ -43,7 +40,7 @@ public class ProductionScene extends GameScene {
     @Override
     public void startScene() {
         if (!initialized) {
-            production = ProductionBuilder.createDemoProduction();
+            production = Production.getInstance(25,20);
             sceneManager.addGameScene(new InventoryScene());
             productionRenderer = new ProductionRenderer(production, initialCellWidth, initialCellHeight);
             inputHandler = new InputHandler(this, production, productionRenderer);

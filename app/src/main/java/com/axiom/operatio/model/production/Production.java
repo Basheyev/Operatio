@@ -7,11 +7,7 @@ import com.axiom.operatio.model.inventory.Inventory;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-// TODO Добавить симуляцию рынка
-// TODO 1. Добавить экономику: баланс, цена материала, цена хранения, цена операции (стоимость компании)
-// TODO 2. Добавить выгрузки со склада
-// TODO 3. Добавить машину контроля качества (сортировки)
-// TODO 4. Добавить сохранение уровня (сериализацию JSon)
+// TODO Добавить экономику: баланс, цена материала, цена хранения, цена операции (стоимость компании)
 public class Production implements Serializable {
 
     protected static Production instance;           // Синглтон объекта - производство
@@ -22,17 +18,17 @@ public class Production implements Serializable {
     protected Block[][] grid;                       // Блоки привязанные к координатной сетке
     protected int columns, rows;                    // Количество столбцеов и строк
 
-    private long lastCycleTime;                     // Время последнего цикла (миллисекунды)
-    private static long cycleMilliseconds = 300;    // Длительносить цикла (миллисекунды)
+    protected long lastCycleTime;                   // Время последнего цикла (миллисекунды)
+    protected static long cycleMilliseconds = 300;  // Длительносить цикла (миллисекунды)
     protected static long clock = 0;                // Часы производства (с вычетом пауз игры)
     protected long cycle;                           // Счётчик циклов производства
 
-    private boolean isPaused = false;               // Флаг паузы игры
-    private long pauseStart = 0;                    // Время начала паузы в системном времени
-    private long pausedTime = 0;                    // Сумма времени на паузы
+    protected boolean isPaused = false;             // Флаг паузы игры
+    protected long pauseStart = 0;                  // Время начала паузы в системном времени
+    protected long pausedTime = 0;                  // Сумма времени на паузы
 
-    private boolean blockSelected = false;          // Выбрал ли блок
-    private int selectedCol, selectedRow;           // Столбец и строка выбранного блока
+    protected boolean blockSelected = false;        // Выбрал ли блок
+    protected int selectedCol, selectedRow;         // Столбец и строка выбранного блока
 
 
     public static Production getInstance(int columns, int rows) {
