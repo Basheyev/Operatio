@@ -50,9 +50,21 @@ public class MainMenuScene extends GameScene {
     }
 
 
+    protected StringBuffer fps = new StringBuffer(100);
+
     @Override
     public void postRender(Camera camera) {
-
+        fps.delete(0, fps.length());
+        fps.append("FPS:").append(GraphicsRender.getFPS())
+                .append(" Quads:").append(BatchRender.getEntriesCount())
+                .append(" Calls:").append(BatchRender.getDrawCallsCount())
+                .append(" Time:").append(GraphicsRender.getRenderTime())
+                .append("ms");
+        float x = camera.getMinX();
+        float y = camera.getMinY();
+        GraphicsRender.setZOrder(2000);
+        GraphicsRender.setColor(1,1,1,1);
+        GraphicsRender.drawText(fps, x + 600,y + 20, 2f);
     }
 
     @Override
