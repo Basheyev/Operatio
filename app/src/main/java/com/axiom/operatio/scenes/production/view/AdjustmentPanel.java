@@ -306,7 +306,10 @@ public class AdjustmentPanel extends Panel {
         changeoverButton.visible = true;
     }
 
-
+    /**
+     * Отображает информацию буфере
+     * @param buffer буфер
+     */
     private void showBufferInfo(Buffer buffer) {
         caption.setText("Buffer contains");
         centerButton.setText("" + (buffer.getItemsAmount()) + "/" + (buffer.getCapacity()-1));
@@ -334,21 +337,28 @@ public class AdjustmentPanel extends Panel {
         changeoverButton.visible = false;
     }
 
-
+    /**
+     * Отображает информацию о конвейере
+     * @param conveyor конвейер
+     */
     private void showConveyorInfo(Conveyor conveyor) {
         caption.setText("Conveyor contains");
-        centerButton.setText("" + (conveyor.getItemsAmount()) + "/" + (conveyor.getCapacity()-1));
+        centerButton.setText("" + (conveyor.getItemsAmount()));
         centerButton.setBackground(null);
         centerButton.setLocation(40, 500);
         centerButton.setSize(300,100);
         leftButton.visible = false;
         rightButton.visible = false;
 
-        inputsCaption.setText("Inputs:");
-        outputsCaption.setText("Outputs:");
+        inputsCaption.setText("Processing:");
+        outputsCaption.setText("");
 
+        // Отобразить материалы внутри конвейера
         for (int i=0; i<4; i++) {
-            inpBtn[i].visible = false;
+            inpBtn[i].visible = true;
+
+
+
             outBtn[i].visible = false;
         }
 
@@ -356,6 +366,11 @@ public class AdjustmentPanel extends Panel {
     }
 
 
+    /**
+     * Отображает информацию об импортере со склада
+     * @param importBuffer буфер импорта
+     * @param materialID номер импортируемого материала
+     */
     private void showImporterInfo(ImportBuffer importBuffer, int materialID) {
         Material material = Material.getMaterial(materialID);
 
@@ -368,8 +383,9 @@ public class AdjustmentPanel extends Panel {
         centerButton.setLocalBounds( 140, 500, 100, 100);
         rightButton.visible = true;
 
-        inputsCaption.setText(material.getName());
-        outputsCaption.setText("" + Inventory.getInstance().getBalance(material));
+        inputsCaption.setText(material.getName() + "\n\n"
+                + "Balance: " + Inventory.getInstance().getBalance(material) + " items");
+        outputsCaption.setText("");
 
         for (int i=0; i<4; i++) {
             inpBtn[i].visible = false;

@@ -7,8 +7,7 @@ import com.axiom.operatio.model.materials.Material;
  */
 public class Market {
 
-    // TODO Buy Order / Sell Order
-
+    // TODO Buy Order / Sell Order - правила покупки и продажи
     protected static Market market;
     protected static boolean initialized;
 

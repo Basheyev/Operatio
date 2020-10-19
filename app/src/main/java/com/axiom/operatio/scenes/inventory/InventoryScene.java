@@ -12,25 +12,17 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
-import com.axiom.atom.engine.ui.widgets.Caption;
-import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.model.materials.Material;
-import com.axiom.operatio.model.inventory.Inventory;
-import com.axiom.operatio.scenes.production.view.ItemWidget;
 
-import static android.graphics.Color.BLACK;
-import static android.graphics.Color.WHITE;
-
-
-// TODO 1. Добавить сцену склад: хранение материалов и машин
-// TODO 2. Добавить сцену склад: правила покупки и продажи со склада (симуляция рынка цен)
+/**
+ * Сцена склада
+ */
 public class InventoryScene extends GameScene {
 
     protected static boolean initialized = false;
-    protected static int tickSound;
+    protected MaterialsPanel materialsPanel;
     protected static Sprite background;
-    protected static ItemWidget[] itemWidget;
+    protected static int tickSound;
 
     @Override
     public String getSceneName() {
@@ -40,12 +32,7 @@ public class InventoryScene extends GameScene {
     @Override
     public void startScene() {
         if (!initialized) buildUI();
-        Inventory inventory = Inventory.getInstance();
-        for (int i=0; i< Material.getMaterialsAmount(); i++) {
-            Material material = Material.getMaterial(i);
-            int balance = inventory.getBalance(material);
-            itemWidget[i].setText("" + balance);
-        }
+        materialsPanel.updateData();
     }
 
     @Override
@@ -88,6 +75,7 @@ public class InventoryScene extends GameScene {
 
 
     protected void buildUI() {
+
         background = new Sprite(SceneManager.getResources(), R.drawable.background);
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
 
@@ -98,7 +86,9 @@ public class InventoryScene extends GameScene {
                 SceneManager.getInstance().setActiveScene("Production");
             }
         };
+
         Widget widget = getSceneWidget();
+
         Button exitButton = new Button("Production");
         exitButton.setTextColor(1,1,1,1);
         exitButton.setLocalBounds(Camera.WIDTH - 375,960,375,100);
@@ -106,39 +96,12 @@ public class InventoryScene extends GameScene {
         exitButton.setClickListener(exitListener);
         widget.addChild(exitButton);
 
-
-        Panel panel = new Panel();
-        panel.setLocalBounds(50,100, 820, Camera.HEIGHT - 200);
-        panel.setColor(0xCC505050);
-
-        Caption caption = new Caption("Inventory");
-        caption.setScale(1.5f);
-        caption.setTextColor(WHITE);
-        caption.setLocalBounds(30, panel.getHeight() - 100, 300, 100);
-        panel.addChild(caption);
-
-        Inventory inventory = Inventory.getInstance();
-        itemWidget = new ItemWidget[Material.getMaterialsAmount()];
-        float x = 30, y = 700;
-        for (int i=0; i< Material.getMaterialsAmount(); i++) {
-            Material material = Material.getMaterial(i);
-            int balance = inventory.getBalance(material);
-            itemWidget[i] = new ItemWidget("" + balance);
-            itemWidget[i].setColor(BLACK);
-            itemWidget[i].setBackground(material.getImage());
-            itemWidget[i].setTextScale(1);
-            itemWidget[i].setTextColor(WHITE);
-            itemWidget[i].setLocalBounds(x, y, 80, 80);
-            panel.addChild(itemWidget[i]);
-            x += 96;
-            if (x + 96 > panel.getWidth()) {
-                x = 30;
-                y -= 96;
-            }
-        }
-        widget.addChild(panel);
+        materialsPanel = new MaterialsPanel();
+        widget.addChild(materialsPanel);
 
         initialized = true;
 
     }
+
+
 }

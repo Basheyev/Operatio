@@ -54,7 +54,6 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
     private long averageRenderTime;                    // Среднее время рендеринга одного кадра
     private long fpsLastEvaluationTime = 0;            // Последнее время расчёта FPS (нс)
 
-
     /**
      * Возвращает единственный экземпляр графического рендера (Singleton)
      * @param gameView экземпляр GameView (где рисуем и откуда забираем ввод)
