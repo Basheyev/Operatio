@@ -274,7 +274,7 @@ public class Text {
                 int height = y2 - y1;
 
                 // Если ширина или высота нулевая - задаем ширину и высоту
-                if (width==0) { x1 = x*size; width = size / 2;}
+                if (width==0) { x1 = x*size; width = size / 3;}
                 if (height==0) { y1 = y*size; height = 1;}
 
                 // Добавляем регион символа в атлас с именем символа
