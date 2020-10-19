@@ -1,12 +1,9 @@
 package com.axiom.operatio.scenes.inventory;
 
-import com.axiom.atom.R;
-import com.axiom.atom.engine.core.SceneManager;
+import android.util.Log;
+
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
-import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
@@ -14,7 +11,10 @@ import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.scenes.production.view.ItemWidget;
 
+import java.util.ArrayList;
+
 import static android.graphics.Color.BLACK;
+import static android.graphics.Color.RED;
 import static android.graphics.Color.WHITE;
 
 /**
@@ -22,10 +22,13 @@ import static android.graphics.Color.WHITE;
  */
 public class MaterialsPanel extends Panel {
 
-    protected static ItemWidget[] itemWidget;
+    protected InventoryScene inventoryScene;
+    protected ItemWidget[] itemWidget;
+    protected Material selectedMaterial;
 
-    public MaterialsPanel() {
+    public MaterialsPanel(InventoryScene scene) {
         super();
+        inventoryScene = scene;
         buildUI();
     }
 
@@ -61,6 +64,8 @@ public class MaterialsPanel extends Panel {
             itemWidget[i].setTextScale(1);
             itemWidget[i].setTextColor(WHITE);
             itemWidget[i].setLocalBounds(x, y, 80, 80);
+            itemWidget[i].setClickListener(clickListener);
+            itemWidget[i].setTag("" + material.getMaterialID());
             panel.addChild(itemWidget[i]);
             x += 96;
             if (x + 96 > panel.getWidth()) {
@@ -68,6 +73,42 @@ public class MaterialsPanel extends Panel {
                 y -= 96;
             }
         }
+        selectedMaterial = null;
     }
+
+    public Material getSelectedMaterial() {
+        return selectedMaterial;
+    }
+
+    protected static ClickListener clickListener = new ClickListener() {
+
+        @Override
+        public void onClick(Widget w) {
+            if (w.getTag()==null) return;
+            int materialID = Integer.parseInt(w.getTag());
+            Material material = Material.getMaterial(materialID);
+            MaterialsPanel materialsPanel = (MaterialsPanel) w.getParent();
+            if (w.getColor()==BLACK) {
+                unselectAllButtons(w);
+                w.setColor(RED);
+                materialsPanel.selectedMaterial = material;
+                materialsPanel.inventoryScene.technologyPanel.updateData();
+            } else {
+                unselectAllButtons(w);
+                materialsPanel.selectedMaterial = null;
+                materialsPanel.inventoryScene.technologyPanel.updateData();
+            }
+        }
+
+        public void unselectAllButtons(Widget w) {
+            ArrayList<Widget> children = w.getParent().getChildren();
+            for (int i=0; i<children.size(); i++) {
+                children.get(i).setColor(BLACK);
+            }
+            MaterialsPanel materialsPanel = (MaterialsPanel) w.getParent();
+            materialsPanel.selectedMaterial = null;
+        }
+
+    };
 
 }

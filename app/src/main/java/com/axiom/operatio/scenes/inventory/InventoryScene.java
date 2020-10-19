@@ -21,6 +21,7 @@ public class InventoryScene extends GameScene {
 
     protected static boolean initialized = false;
     protected MaterialsPanel materialsPanel;
+    protected TechnologyPanel technologyPanel;
     protected static Sprite background;
     protected static int tickSound;
 
@@ -96,8 +97,11 @@ public class InventoryScene extends GameScene {
         exitButton.setClickListener(exitListener);
         widget.addChild(exitButton);
 
-        materialsPanel = new MaterialsPanel();
+        materialsPanel = new MaterialsPanel(this);
         widget.addChild(materialsPanel);
+
+        technologyPanel = new TechnologyPanel(materialsPanel);
+        widget.addChild(technologyPanel);
 
         initialized = true;
 
