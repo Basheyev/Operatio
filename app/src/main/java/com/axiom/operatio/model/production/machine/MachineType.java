@@ -6,6 +6,7 @@ import android.util.Log;
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.data.CSVTable;
+import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.materials.Material;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class MachineType {
     protected int ID;                                      // Код машины
     protected String name;                                 // Название
     protected Operation[] operations;                      // Доступные операции
-
+    protected Sprite image;                                // Изображение машины
     //---------------------------------------------------------------------------------
 
     /**
@@ -37,6 +38,10 @@ public class MachineType {
         return machineTypes.get(ID);
     }
 
+    public static int getMachineTypesCount() {
+        if (!initialized) loadMachinesData(SceneManager.getResources());
+        return machineTypes.size();
+    }
 
     /**
      * Загружает данные о машинах и операциях (пока без защиты от некорректных данных)
@@ -91,6 +96,16 @@ public class MachineType {
                 e.printStackTrace();
             }
         }
+
+        // Load machine sprites
+        for (int i=0; i < machineTypes.size(); i++) {
+            Sprite image = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+            int startFrame = i * 8;
+            int animation = image.addAnimation(startFrame, startFrame + 7, 8, true);
+            image.setActiveAnimation(animation);
+            machineTypes.get(i).image = image;
+        }
+
         initialized = true;
     }
 
@@ -118,6 +133,10 @@ public class MachineType {
             if (operations[i].equals(op)) return i;
         }
         return -1;
+    }
+
+    public Sprite getImage() {
+        return image;
     }
 
     //--------------------------------------------------------------------------------
