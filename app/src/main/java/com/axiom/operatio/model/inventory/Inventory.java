@@ -4,13 +4,17 @@ import com.axiom.atom.engine.data.Channel;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Модель склада материалов
  */
-public class Inventory implements Serializable {
+public class Inventory {
 
     protected static Inventory inventory;
     protected static boolean initialized = false;
@@ -83,6 +87,14 @@ public class Inventory implements Serializable {
 
     public void process() {
         
+    }
+
+    public JSONArray serialize() {
+        JSONArray jsonArray = new JSONArray();
+        for (int i=0; i<stockKeepingUnit.size(); i++) {
+            jsonArray.put(stockKeepingUnit.get(i).size());
+        }
+        return jsonArray;
     }
 
 }
