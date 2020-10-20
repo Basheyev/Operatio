@@ -5,10 +5,14 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.materials.Item;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 /**
  * Представляет собой мини-склад, который может хранить до 4 видов материалов
- * TODO освобождать BKU если материалов по BKU больше нет
+ * TODO сериализация
  */
 public class Buffer extends Block {
 
@@ -152,4 +156,20 @@ public class Buffer extends Block {
         return NO_KEEPING_UNIT;
     }
 
+    @Override
+    public JSONObject serialize() {
+        JSONObject jsonObject = super.serialize();
+        try {
+            jsonObject.put("class", "Buffer");
+            JSONArray jsonArray = new JSONArray();
+            for (int i=0; i<4; i++) {
+                jsonArray.put(bufferKeepingUnit[i].serialize());
+            }
+            jsonObject.put("bufferKeepingUnit", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return jsonObject;
+    }
 }

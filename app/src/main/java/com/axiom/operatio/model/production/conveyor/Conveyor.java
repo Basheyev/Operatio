@@ -6,7 +6,11 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.materials.Item;
 
-// TODO 1. Добавить характеристики конвейера как: скорость работы, стоимость операции и износ
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+// TODO Сериализация
 public class Conveyor extends Block {
 
     public static final int MAX_CAPACITY = 4;
@@ -117,6 +121,21 @@ public class Conveyor extends Block {
 
     public Channel<Item> getOutputQueue() {
         return output;
+    }
+
+
+    public JSONObject serialize() {
+        JSONObject jsonObject = super.serialize();
+        try {
+            jsonObject.put("class", "Conveyor");
+            jsonObject.put("deliveryCycles", deliveryCycles);
+            jsonObject.put("lastInputCycle", lastInputCycle);
+            jsonObject.put("inputCycleTime", inputCycleTime);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return jsonObject;
     }
 
 }

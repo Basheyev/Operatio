@@ -4,6 +4,10 @@ import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -222,4 +226,42 @@ public class Production implements Serializable {
         return isPaused;
     }
 
+
+    public JSONObject serialize() {
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("columns", columns);
+            jsonObject.put("rows", rows);
+            jsonObject.put("lastCycleTime", lastCycleTime);
+            jsonObject.put("cycleMilliseconds", cycleMilliseconds);
+            jsonObject.put("clock", clock);
+            jsonObject.put("cycle", cycle);
+            jsonObject.put("isPaused", isPaused);
+            jsonObject.put("pauseStart", pauseStart);
+            jsonObject.put("pausedTime", pausedTime);
+            jsonObject.put("blockSelected", blockSelected);
+            jsonObject.put("selectedCol", selectedCol);
+            jsonObject.put("selectedRow", selectedRow);
+            /*
+                protected static Inventory inventory;           // Синглтон объекта - склад
+                protected static Market market;                 // Синллтон объекта - рынок
+            */
+
+            JSONArray jsonArray = new JSONArray();
+            for (int i=0; i<blocks.size(); i++) {
+                JSONObject jsonBlock = blocks.get(i).serialize();
+                jsonArray.put(jsonBlock);
+            }
+            jsonObject.put("blocks", jsonArray);
+
+
+            return jsonObject;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

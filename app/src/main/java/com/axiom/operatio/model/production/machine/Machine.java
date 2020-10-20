@@ -8,7 +8,11 @@ import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
 
-// TODO Добавить характеристики машины как: скорость работы, стоимость операции и износ
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+// TODO Сериализация
 public class Machine extends Block {
 
     protected MachineType type;
@@ -17,7 +21,6 @@ public class Machine extends Block {
     private int[] matCounter;
     private int cyclesLeft = 0;
 
-    // FIXME операция передается и больше не меняется (хотя меняется...)
     public Machine(Production production, MachineType type, Operation op, int inDir, int outDir) {
         super(production, inDir, op.totalInputAmount(), outDir, op.totalOutputAmount());
         this.type = type;
@@ -220,4 +223,20 @@ public class Machine extends Block {
         super.setDirections(inDir, outDir);
         ((MachineRenderer)renderer).arrangeAnimation(inputDirection, outputDirection);
     }
+
+
+    public JSONObject serialize() {
+        JSONObject jsonObject = super.serialize();
+        try {
+            jsonObject.put("class", "Machine");
+            jsonObject.put("machineType", type.getID());
+            jsonObject.put("operation", getOperationID());
+            jsonObject.put("cyclesLeft", cyclesLeft);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return jsonObject;
+    }
+
 }

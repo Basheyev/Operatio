@@ -7,12 +7,20 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.production.buffer.Buffer;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Базовый блок производства реализующий примитивную механику
  */
 public abstract class Block {
 
     protected Production production;                  // Производство к которомуо относится блок
+
+    protected static int blockCounter = 0;
+
+    protected int ID;                                 // ID блока
     protected int state = IDLE;                       // Текущее состояние блока
     protected int inputDirection, outputDirection;    // Направление ввода и вывода
     protected int inputCapacity, outputCapacity;      // Максимальая вместимость блока в предметах
@@ -30,6 +38,7 @@ public abstract class Block {
      * @param outCapacity размер буфера вывода в количестве предметов
      */
     public Block(Production production, int inDir, int inCapacity, int outDir, int outCapacity) {
+        this.ID = blockCounter++;
         this.production = production;
         this.inputDirection = inDir;
         this.inputCapacity = inCapacity;
@@ -141,6 +150,45 @@ public abstract class Block {
 
     public Production getProduction() {
         return production;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public JSONObject serialize() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("ID", ID);
+            jsonObject.put("state", state);
+            jsonObject.put("inputDirection", inputDirection);
+            jsonObject.put("outputDirection", outputDirection);
+            jsonObject.put("inputCapacity", inputCapacity);
+            jsonObject.put("outputCapacity", outputCapacity);
+            jsonObject.put("column", column);
+            jsonObject.put("row", row);
+
+            JSONArray jsonInputArray = new JSONArray();
+            for (int i=0; i<input.size(); i++) {
+                JSONObject item = input.get(i).serialize();
+                jsonInputArray.put(item);
+            }
+            jsonObject.put("input", jsonInputArray);
+
+            JSONArray jsonOutputArray = new JSONArray();
+            for (int i=0; i<output.size(); i++) {
+                JSONObject item = output.get(i).serialize();
+                jsonOutputArray.put(item);
+            }
+            jsonObject.put("output", jsonOutputArray);
+
+            return jsonObject;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     /**

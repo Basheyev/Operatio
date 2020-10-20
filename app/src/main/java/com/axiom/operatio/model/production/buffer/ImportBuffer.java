@@ -6,6 +6,10 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Импортер материалов со склада на производство
  */
@@ -65,6 +69,19 @@ public class ImportBuffer extends Block {
     @Override
     public void setDirections(int inDir, int outDir) {
         super.setDirections(NONE, NONE);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject jsonObject = super.serialize();
+        try {
+            jsonObject.put("class", "ImportBuffer");
+            jsonObject.put("material", importMaterial.getMaterialID());
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return jsonObject;
     }
 
 }
