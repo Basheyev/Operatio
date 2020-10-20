@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 // TODO Добавить экономику: баланс, цена материала, цена хранения, цена операции (стоимость компании)
-public class Production implements Serializable {
+public class Production {
 
     protected static Production instance;           // Синглтон объекта - производство
     protected static Inventory inventory;           // Синглтон объекта - склад
@@ -231,6 +231,7 @@ public class Production implements Serializable {
 
         try {
             JSONObject jsonObject = new JSONObject();
+
             jsonObject.put("columns", columns);
             jsonObject.put("rows", rows);
             jsonObject.put("lastCycleTime", lastCycleTime);
@@ -244,7 +245,6 @@ public class Production implements Serializable {
             jsonObject.put("selectedCol", selectedCol);
             jsonObject.put("selectedRow", selectedRow);
             /*
-                protected static Inventory inventory;           // Синглтон объекта - склад
                 protected static Market market;                 // Синллтон объекта - рынок
             */
 
@@ -254,7 +254,7 @@ public class Production implements Serializable {
                 jsonArray.put(jsonBlock);
             }
             jsonObject.put("blocks", jsonArray);
-
+            jsonObject.put("inventory", inventory.serialize());
 
             return jsonObject;
 
