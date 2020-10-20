@@ -12,6 +12,7 @@ import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.buffer.Buffer;
+import com.axiom.operatio.model.production.buffer.ExportBuffer;
 import com.axiom.operatio.model.production.buffer.ImportBuffer;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
 import com.axiom.operatio.model.production.machine.Machine;
@@ -31,7 +32,6 @@ public class BlockButton extends Button {
 
         this.scene = scene;
 
-        // TODO Добавить машины Перекретов, Покгрузка, Выгрузка
         int animation;
 
         if (id==0) { // Если это конвейер
@@ -135,6 +135,7 @@ public class BlockButton extends Button {
                 block = new ImportBuffer(production, Material.getMaterial(0));
                 break;
             case 9:
+                block = new ExportBuffer(production);
                 break;
         }
 

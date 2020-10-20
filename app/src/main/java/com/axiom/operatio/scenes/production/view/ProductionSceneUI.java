@@ -1,6 +1,7 @@
 package com.axiom.operatio.scenes.production.view;
 
 import android.content.res.Resources;
+import android.util.Log;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
@@ -11,6 +12,8 @@ import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.production.ProductionScene;
+
+import org.json.JSONException;
 
 // TODO Просмотр материалов при выборе с Буффером (для быстрого добавления)
 public class ProductionSceneUI {
@@ -68,6 +71,13 @@ public class ProductionSceneUI {
                         ProductionSceneUI.setPausedButtonState(true);
                     }
                     productionScene.getInputHandler().invalidateAllActions();
+
+                    try {
+                        System.out.println( production.serialize().toString(4));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                     SceneManager.getInstance().setActiveScene("Menu");
                 } else if (w.getTag().equals("Inventory")) {
                     SoundRenderer.playSound(tickSound);
