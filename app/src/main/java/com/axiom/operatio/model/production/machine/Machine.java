@@ -6,6 +6,7 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
+import com.axiom.operatio.model.production.buffer.ExportBuffer;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
 
 import org.json.JSONArray;
@@ -155,7 +156,9 @@ public class Machine extends Block {
                 // Если приёмник буфер или конвейер - затолкать самостоятельно
                 Block outputBlock = production.getBlockAt(this,outputDirection);
                 if (outputBlock!=null) {
-                    if (outputBlock instanceof Buffer || outputBlock instanceof Conveyor) {
+                    if (outputBlock instanceof Buffer
+                            || outputBlock instanceof ExportBuffer
+                            || outputBlock instanceof Conveyor) {
                         if (outputBlock.push(item)) output.remove(item);
                     }
                 }

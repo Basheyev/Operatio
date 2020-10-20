@@ -5,6 +5,7 @@ import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.materials.Item;
+import com.axiom.operatio.model.production.buffer.ExportBuffer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -88,8 +89,10 @@ public class Conveyor extends Block {
         if (item!=null) {
             Block outputBlock = production.getBlockAt(this, outputDirection);
             if (outputBlock != null) {
-                // Если выходной блок буфер/конвейер - заталкиваем сами
-                if (outputBlock instanceof Buffer || outputBlock instanceof Conveyor) {
+                // Если выходной блок буфер/экспорт/конвейер - заталкиваем сами
+                if (outputBlock instanceof Buffer
+                        || outputBlock instanceof ExportBuffer
+                        || outputBlock instanceof Conveyor) {
                     // Если вход выходного блока смотрит на наш выход
                     int neightInputDirection = outputBlock.getInputDirection();
                     Block neighborInput = production.getBlockAt(outputBlock, neightInputDirection);
