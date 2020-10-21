@@ -2,6 +2,7 @@ package com.axiom.operatio.model.production.block;
 
 
 import com.axiom.atom.engine.data.Channel;
+import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.materials.Item;
@@ -159,6 +160,17 @@ public abstract class Block {
 
     public int getID() {
         return ID;
+    }
+
+    public void returnItemsTo(Inventory inventory) {
+        int inputItemsCount = input.size();
+        for (int i=0; i<inputItemsCount; i++) {
+            inventory.push(input.poll());
+        }
+        int outputItemsCount = output.size();
+        for (int i=0; i<outputItemsCount; i++) {
+            inventory.push(output.poll());
+        }
     }
 
     /**
@@ -506,7 +518,7 @@ public abstract class Block {
         int currentInpDir = getInputDirection();
         int currentOutDir = getOutputDirection();
         int newInpDir = nextClockwiseDirection(currentInpDir);
-        int newOutDir = nextClockwiseDirection(currentOutDir); // TODO opposite direction
+        int newOutDir = nextClockwiseDirection(currentOutDir);
         setDirections(newInpDir, newOutDir);
     }
 
