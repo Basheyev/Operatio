@@ -71,13 +71,6 @@ public class ProductionSceneUI {
                         ProductionSceneUI.setPausedButtonState(true);
                     }
                     productionScene.getInputHandler().invalidateAllActions();
-
-                    try {
-                        System.out.println( production.serialize().toString(4));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
                     SceneManager.getInstance().setActiveScene("Menu");
                 } else if (w.getTag().equals("Inventory")) {
                     SoundRenderer.playSound(tickSound);

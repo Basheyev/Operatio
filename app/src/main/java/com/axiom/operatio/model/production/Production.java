@@ -49,6 +49,9 @@ public class Production {
         return instance;
     }
 
+    public static Production getInstance() {
+        return instance;
+    }
 
     private Production(int columns, int rows) {
         this.columns = columns;
@@ -90,6 +93,7 @@ public class Production {
      * @return время в миллисекундах
      */
     public static long getClockMilliseconds() {
+        if (instance==null) return System.currentTimeMillis();
         return instance.clock;
     }
 

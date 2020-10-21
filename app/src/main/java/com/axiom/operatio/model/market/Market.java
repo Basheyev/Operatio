@@ -2,12 +2,10 @@ package com.axiom.operatio.model.market;
 
 import com.axiom.operatio.model.materials.Material;
 
-import java.io.Serializable;
-
 /**
  * Модель рынка
  */
-public class Market implements Serializable {
+public class Market {
 
     // TODO Buy Order / Sell Order - правила покупки и продажи
     protected static Market market;

@@ -16,6 +16,8 @@ import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 import com.axiom.operatio.scenes.inventory.InventoryScene;
 
+import org.json.JSONObject;
+
 
 public class ProductionScene extends GameScene {
 
@@ -31,6 +33,13 @@ public class ProductionScene extends GameScene {
     public float initialCellHeight = 128;                 // Высота клетки
     private boolean initialized = false;
 
+    public ProductionScene() {
+        production = Production.getInstance(25,20);
+    }
+
+    public ProductionScene(JSONObject jsonProduction) {
+        production = Production.getInstance(jsonProduction);
+    }
 
     @Override
     public String getSceneName() {
@@ -40,7 +49,6 @@ public class ProductionScene extends GameScene {
     @Override
     public void startScene() {
         if (!initialized) {
-            production = Production.getInstance(25,20);
             sceneManager.addGameScene(new InventoryScene());
             productionRenderer = new ProductionRenderer(production, initialCellWidth, initialCellHeight);
             inputHandler = new InputHandler(this, production, productionRenderer);

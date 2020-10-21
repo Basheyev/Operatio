@@ -1,10 +1,13 @@
 package com.axiom.operatio.scenes.mainmenu;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
+import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
@@ -12,7 +15,14 @@ import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
+import com.axiom.operatio.MainActivity;
+import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.production.ProductionScene;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Map;
 
 public class MenuPanel extends Panel {
 
@@ -30,7 +40,22 @@ public class MenuPanel extends Panel {
                 case 1:
                     SceneManager sm = SceneManager.getInstance();
                     if (pc==null) {
-                        pc = new ProductionScene();
+                        // Добавить загрузку
+                        MainActivity mainActivity = MainActivity.getActivity();
+                        SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
+                        Map<String,?> map = sharedPref.getAll();
+                        String savedGame = sharedPref.getString("Game", null);
+                        if (savedGame==null) {
+                            pc = new ProductionScene();
+                        } else {
+                            try {
+                                System.out.println("LOADING GAME:\n " + savedGame);
+                                pc = new ProductionScene(new JSONObject(savedGame));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                break;
+                            }
+                        }
                         sm.addGameScene(pc);
                     }
                     sm.setActiveScene(pc.getSceneName());
@@ -38,6 +63,17 @@ public class MenuPanel extends Panel {
                 case 2:
                     break;
                 default:
+                    // Добавить сохранение
+                    MainActivity mainActivity = MainActivity.getActivity();
+                    SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    String savedGame = Production.getInstance().serialize().toString();
+                    System.out.println("SAVING GAME:\n " + savedGame);
+                    editor.remove("Game");
+                    editor.putString("Game", savedGame);
+                    editor.apply();
+                    editor.commit();
+                    // FIXME Не успевает сохранить
                     SceneManager.exitGame();
             }
         }

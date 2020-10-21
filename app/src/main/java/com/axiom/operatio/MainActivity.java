@@ -13,10 +13,12 @@ import com.axiom.operatio.scenes.mainmenu.MainMenuScene;
 public class MainActivity extends AppCompatActivity {
 
     private GameView gameView;
+    private static MainActivity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity = this;
         gameView = GameView.getInstance(this, new MainMenuScene());
         setContentView(gameView);
     }
@@ -36,5 +38,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    public static MainActivity getActivity() {
+        return activity;
     }
 }
