@@ -1,5 +1,6 @@
 package com.axiom.operatio.model.production.buffer;
 
+import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
 
 import org.json.JSONException;
@@ -13,7 +14,7 @@ public class BufferKeepingUnit {
     public JSONObject serialize() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("material", material!=null ? material.getMaterialID() : null);
+            jsonObject.put("material", material!=null ? material.getMaterialID() : -1);
             jsonObject.put("capacity", capacity);
             jsonObject.put("total", total);
         } catch (JSONException e) {
@@ -22,4 +23,19 @@ public class BufferKeepingUnit {
         }
         return jsonObject;
     }
+
+    public static BufferKeepingUnit deserialize(JSONObject jsonObject) {
+        try {
+            BufferKeepingUnit bufferKeepingUnit = new BufferKeepingUnit();
+            int materialID = jsonObject.getInt("material");
+            bufferKeepingUnit.material = (materialID>0) ? Material.getMaterial(materialID) : null;
+            bufferKeepingUnit.capacity = jsonObject.getInt("capacity");
+            bufferKeepingUnit.total = jsonObject.getInt("total");
+            return bufferKeepingUnit;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

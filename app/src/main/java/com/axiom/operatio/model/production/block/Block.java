@@ -6,6 +6,11 @@ import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.production.buffer.Buffer;
+import com.axiom.operatio.model.production.buffer.BufferKeepingUnit;
+import com.axiom.operatio.model.production.buffer.ExportBuffer;
+import com.axiom.operatio.model.production.buffer.ImportBuffer;
+import com.axiom.operatio.model.production.conveyor.Conveyor;
+import com.axiom.operatio.model.production.machine.Machine;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -156,6 +161,10 @@ public abstract class Block {
         return ID;
     }
 
+    /**
+     * Сериализует блок в JSONObject
+     * @return JSONObject
+     */
     public JSONObject serialize() {
         try {
             JSONObject jsonObject = new JSONObject();
@@ -190,6 +199,74 @@ public abstract class Block {
 
         return null;
     }
+
+
+    public static Block deserialize(Production production, JSONObject jsonObject) {
+        Block block = null;
+        try {
+            String type = jsonObject.getString("class");
+            int inputDirection = jsonObject.getInt("inputDirection");
+            int outputDirection = jsonObject.getInt("outputDirection");
+            int inputCapacity = jsonObject.getInt("inputCapacity");
+            int outputCapacity = jsonObject.getInt("outputCapacity");
+
+            switch (type) {
+                case "Buffer":
+                    block = new Buffer(production, jsonObject, inputCapacity);
+                    break;
+                case "Conveyor":
+                    block = new Conveyor(production, jsonObject, inputDirection, outputDirection);
+                    break;
+                case "Machine":
+                    block = new Machine(production, jsonObject, inputDirection, inputCapacity, outputDirection, outputCapacity);
+                    break;
+                case "ImportBuffer":
+                    block = new ImportBuffer(production, jsonObject);
+                    break;
+                case "ExportBuffer":
+                    block = new ExportBuffer(production, jsonObject);
+                    break;
+                default:
+                    throw new JSONException("Unknown block");
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return block;
+    }
+
+
+    protected static void deserializeCommonFields(Block block, JSONObject jsonObject) {
+        try {
+            block.ID = jsonObject.getInt("ID");
+            block.state = jsonObject.getInt("state");
+            block.inputDirection = jsonObject.getInt("inputDirection");
+            block.outputDirection = jsonObject.getInt("outputDirection");
+            block.inputCapacity = jsonObject.getInt("inputCapacity");
+            block.outputCapacity = jsonObject.getInt("outputCapacity");
+            block.column = jsonObject.getInt("column");
+            block.row = jsonObject.getInt("row");
+
+            JSONArray jsonInputArray = jsonObject.getJSONArray("input");
+            for (int i = jsonInputArray.length() - 1; i >= 0; i--) {
+                JSONObject jsonItem = (JSONObject) jsonInputArray.get(i);
+                Item item = Item.deserialize(jsonItem, block);
+                block.input.add(item);
+            }
+
+            JSONArray jsonOutputArray = jsonObject.getJSONArray("output");
+            for (int i = jsonOutputArray.length() - 1; i >= 0; i--) {
+                JSONObject jsonItem = (JSONObject) jsonOutputArray.get(i);
+                Item item = Item.deserialize(jsonItem, block);
+                block.output.add(item);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     /**
      * Обрабатывает входной поток предметов в выходной поток предметов

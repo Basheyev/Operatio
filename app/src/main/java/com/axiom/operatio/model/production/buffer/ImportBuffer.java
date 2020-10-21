@@ -16,13 +16,22 @@ import org.json.JSONObject;
 public class ImportBuffer extends Block {
 
     protected Material importMaterial;
-    protected Inventory inventory;
 
     public ImportBuffer(Production production, Material material) {
         super(production, Block.NONE, 1, Block.NONE, 4);
         renderer = new ImportBufferRenderer(this);
         importMaterial = material;
-        inventory = Inventory.getInstance();
+
+    }
+
+    public ImportBuffer(Production production, JSONObject jsonObject) {
+        super(production, Block.NONE, 1, Block.NONE, 4);
+        deserializeCommonFields(this, jsonObject);
+        try {
+            importMaterial = Material.getMaterial(jsonObject.getInt("material"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean setImportMaterial(Material material) {
@@ -37,11 +46,13 @@ public class ImportBuffer extends Block {
 
     @Override
     public Item peek() {
+        Inventory inventory = Inventory.getInstance();
         return inventory.peek(importMaterial);
     }
 
     @Override
     public Item poll() {
+        Inventory inventory = Inventory.getInstance();
         return inventory.poll(importMaterial);
     }
 

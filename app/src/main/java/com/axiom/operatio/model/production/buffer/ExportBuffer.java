@@ -14,17 +14,21 @@ import org.json.JSONObject;
  */
 public class ExportBuffer extends Block {
 
-    protected Inventory inventory;
-
     public ExportBuffer(Production production) {
         super(production, Block.NONE, 1, Block.NONE, 1);
         renderer = new ExportBufferRenderer(this);
-        inventory = Inventory.getInstance();
+    }
+
+    public ExportBuffer(Production production, JSONObject jsonObject) {
+        super(production, Block.NONE, 1, Block.NONE, 1);
+        renderer = new ExportBufferRenderer(this);
+        deserializeCommonFields(this, jsonObject);
     }
 
 
     @Override
     public boolean push(Item item) {
+        Inventory inventory = Inventory.getInstance();
         return inventory.push(item);
     }
 

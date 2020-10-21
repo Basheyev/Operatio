@@ -48,7 +48,6 @@ public class Item {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("material", material.getMaterialID());
-            jsonObject.put("owner", owner.getID());
             jsonObject.put("cycleOwned", cycleOwned);
             jsonObject.put("timeOwned", timeOwned);
         } catch (JSONException e) {
@@ -56,6 +55,22 @@ public class Item {
             return null;
         }
         return jsonObject;
+    }
+
+
+    public static Item deserialize(JSONObject jsonObject, Block owner) {
+        try {
+            int materialID = jsonObject.getInt("material");
+            Material material = Material.getMaterial(materialID);
+            Item item = new Item(material);
+            item.owner = owner;
+            item.cycleOwned = jsonObject.getLong("cycleOwned");
+            item.timeOwned = jsonObject.getLong("timeOwned");
+            return item;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 

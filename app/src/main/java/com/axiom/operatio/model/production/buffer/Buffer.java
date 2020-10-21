@@ -32,6 +32,21 @@ public class Buffer extends Block {
         }
     }
 
+
+    public Buffer(Production production, JSONObject jsonObject, int capacity) {
+        super(production, Block.NONE, capacity, Block.NONE, 1);
+        deserializeCommonFields(this, jsonObject);
+        try {
+            JSONArray jsonArray = jsonObject.getJSONArray("bufferKeepingUnit");
+            bufferKeepingUnit = new BufferKeepingUnit[4];
+            for (int i=0; i<4; i++) {
+                bufferKeepingUnit[i] = BufferKeepingUnit.deserialize(jsonArray.getJSONObject(i));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Добавляет предмет во входную очередь буфера
      * @param item предмет
@@ -125,6 +140,14 @@ public class Buffer extends Block {
 
     //------------------------------------------------------------------------------------------
 
+    public boolean setBufferKeepingUnit(int index, Material material, int capacity, int total) {
+        if (index < 0 || index > 3 || material==null || capacity < 0 || total < 0) return false;
+        bufferKeepingUnit[index].material = material;
+        bufferKeepingUnit[index].capacity = capacity;
+        bufferKeepingUnit[index].total = total;
+        return true;
+    }
+
     public Material getKeepingUnitMaterial(int id) {
         if (id < 0 || id > 3) return null;
         return bufferKeepingUnit[id].material;
@@ -172,4 +195,7 @@ public class Buffer extends Block {
         }
         return jsonObject;
     }
+
+
+
 }
