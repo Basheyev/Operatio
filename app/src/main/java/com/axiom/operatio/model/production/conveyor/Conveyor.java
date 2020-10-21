@@ -12,7 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-// TODO Сериализация
 public class Conveyor extends Block {
 
     public static final int MAX_CAPACITY = 4;
@@ -68,7 +67,7 @@ public class Conveyor extends Block {
         }
 
         // Если не прошло необходимое время (циклов) уходим
-        long currentCycle = Production.getCurrentCycle();
+        long currentCycle = production.getCurrentCycle();
         if ((currentCycle - lastInputCycle) < inputCycleTime) return false;
 
         lastInputCycle = currentCycle;
@@ -91,7 +90,7 @@ public class Conveyor extends Block {
             Item item = input.peek();
             if (item==null) break;
 
-            long cyclesPassed = Production.getCurrentCycle() - item.getCycleOwned();
+            long cyclesPassed = production.getCurrentCycle() - item.getCycleOwned();
             if (cyclesPassed >= deliveryCycles) {
                 item = input.poll();  // Удалаем из входящей очереди
                 output.add(item);     // Добавляем в выходящую очередь

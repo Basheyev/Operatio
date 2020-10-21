@@ -67,7 +67,7 @@ public class Buffer extends Block {
         if (bku.total >= bku.capacity) return false;
 
         bku.total++;
-        item.setOwner(this);
+        item.setOwner(production, this);
         input.add(item);
         return true;
     }

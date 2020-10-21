@@ -13,7 +13,7 @@ import java.util.ArrayList;
 // TODO Добавить экономику: баланс, цена материала, цена хранения, цена операции (стоимость компании)
 public class Production {
 
-    protected static Production instance;           // Синглтон объекта - производство
+    //protected static Production instance;           // Синглтон объекта - производство
     protected Inventory inventory;                  // Объект - склад
     protected Market market;                        // Объект - рынок
 
@@ -33,7 +33,7 @@ public class Production {
     protected boolean blockSelected = false;        // Выбрал ли блок
     protected int selectedCol, selectedRow;         // Столбец и строка выбранного блока
 
-
+/*
     public static Production getInstance(int columns, int rows) {
         if (instance==null) {
             instance = new Production(columns, rows);
@@ -42,22 +42,59 @@ public class Production {
         }
         return instance;
     }
+*/
 
-    public static Production getInstance(JSONObject jsonObject) {
-        instance = deserialize(jsonObject);
-        return instance;
-    }
-
-    public static Production getInstance() {
-        return instance;
-    }
-
-    private Production(int columns, int rows) {
+    public Production(int columns, int rows) {
         this.columns = columns;
         this.rows = rows;
         grid = new Block[rows][columns];
         blocks = new ArrayList<Block>(100);
+        inventory = new Inventory(this);
+        market = new Market();
     }
+
+
+    public Production(JSONObject jsonObject) {
+        try {
+            int columns = jsonObject.getInt("columns");
+            int rows = jsonObject.getInt("rows");
+
+            this.columns = columns;
+            this.rows = rows;
+            grid = new Block[rows][columns];
+
+            lastCycleTime = jsonObject.getLong("lastCycleTime");
+            cycleMilliseconds = jsonObject.getLong("cycleMilliseconds");
+            clock = jsonObject.getLong("clock");
+            cycle = jsonObject.getLong("cycle");
+            isPaused = jsonObject.getBoolean("isPaused");
+            pauseStart = jsonObject.getLong("pauseStart");
+            pausedTime = jsonObject.getLong("pausedTime");
+            blockSelected = jsonObject.getBoolean("blockSelected");
+            selectedCol = jsonObject.getInt("selectedCol");
+            selectedRow = jsonObject.getInt("selectedRow");
+
+            JSONArray jsonArray = jsonObject.getJSONArray("blocks");
+            blocks = new ArrayList<Block>(jsonArray.length());
+            for (int i=0; i<jsonArray.length(); i++) {
+                JSONObject jsonBlock = jsonArray.getJSONObject(i);
+                Block block = Block.deserialize(this, jsonBlock);
+                setBlock(block, block.column, block.row);
+            }
+
+            JSONArray jsonInventory = jsonObject.getJSONArray("inventory");
+            inventory = new Inventory(this, jsonInventory);
+            market = new Market();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+/*
+    public static Production getInstance() {
+        return instance;
+    }
+*/
+
 
 
     /**
@@ -91,9 +128,8 @@ public class Production {
      * Возвращает время производства в миллисекундах с учетом пауз игры
      * @return время в миллисекундах
      */
-    public static long getClockMilliseconds() {
-        if (instance==null) return System.currentTimeMillis();
-        return instance.clock;
+    public long getClockMilliseconds() {
+        return clock;
     }
 
 
@@ -173,13 +209,12 @@ public class Production {
     }
 
 
-    public static long getCycleTimeMs() {
-        return instance.cycleMilliseconds;
+    public long getCycleTimeMs() {
+        return cycleMilliseconds;
     }
 
-    public static long getCurrentCycle() {
-        if (instance==null) return 0;
-        return instance.cycle;
+    public long getCurrentCycle() {
+        return cycle;
     }
 
 
@@ -281,7 +316,7 @@ public class Production {
         return null;
     }
 
-
+/*
     protected static Production deserialize(JSONObject jsonObject) {
         try {
             int columns = jsonObject.getInt("columns");
@@ -308,8 +343,8 @@ public class Production {
             }
 
             JSONArray jsonInventory = jsonObject.getJSONArray("inventory");
-            production.inventory = Inventory.getInstance(jsonInventory);
-            production.market = Market.getInstance();
+            production.inventory = new Inventory(jsonInventory);
+            production.market = new Market();
 
             return production;
         } catch (JSONException e) {
@@ -317,6 +352,6 @@ public class Production {
             return null;
         }
 
-    }
+    }*/
 
 }

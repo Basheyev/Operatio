@@ -36,10 +36,10 @@ public class Item {
 
     public long getTimeOwned() { return timeOwned; }
 
-    public void setOwner(Block owner) {
+    public void setOwner(Production production, Block owner) {
         this.owner = owner;
-        this.cycleOwned = Production.getCurrentCycle();
-        this.timeOwned = Production.getClockMilliseconds();
+        this.cycleOwned = production.getCurrentCycle();
+        this.timeOwned = production.getClockMilliseconds();
     }
 
     //---------------------------------------------------------------------------

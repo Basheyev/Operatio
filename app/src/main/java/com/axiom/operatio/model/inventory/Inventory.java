@@ -3,6 +3,7 @@ package com.axiom.operatio.model.inventory;
 import com.axiom.atom.engine.data.Channel;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
+import com.axiom.operatio.model.production.Production;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,35 +18,44 @@ import java.util.ArrayList;
 public class Inventory {
 
     public static final int MAX_SKU_CAPACITY = 999;
-    protected static Inventory inventory;
-    protected static boolean initialized = false;
+
+    protected Production production;
     protected ArrayList<Channel<Item>> stockKeepingUnit;
 
 
-    public static Inventory getInstance() {
-        if (!initialized) {
-            inventory = new Inventory();
-            int materialsAmount = Material.getMaterialsAmount();
-            Material[] materials = Material.getMaterials();
-            for (int i=0; i<materialsAmount; i++) {
-                Channel<Item> sku = inventory.stockKeepingUnit.get(i);
-                if (!materials[i].getName().equals("reserved") && i < 8) {
-                    for (int j = 0; j < 300; j++) {
-                        sku.add(new Item(materials[i]));
-                    }
+    public Inventory(Production production) {
+        this.production = production;
+        int materialsAmount = Material.getMaterialsAmount();
+        stockKeepingUnit = new ArrayList<Channel<Item>>();
+        for (int i=0; i<materialsAmount; i++) {
+            Channel<Item> sku = new Channel<Item>(MAX_SKU_CAPACITY);
+            stockKeepingUnit.add(sku);
+        }
+        Material[] materials = Material.getMaterials();
+        for (int i=0; i<materialsAmount; i++) {
+            Channel<Item> sku = stockKeepingUnit.get(i);
+            if (!materials[i].getName().equals("reserved") && i < 8) {
+                for (int j = 0; j < 300; j++) {
+                    sku.add(new Item(materials[i]));
                 }
             }
         }
-        return inventory;
+
     }
 
 
-    public static Inventory getInstance(JSONArray jsonArray) {
+    public Inventory(Production production, JSONArray jsonArray) {
         try {
-            inventory = new Inventory();
+            this.production = production;
+            int materialsAmount = Material.getMaterialsAmount();
+            stockKeepingUnit = new ArrayList<Channel<Item>>();
+            for (int i=0; i<materialsAmount; i++) {
+                Channel<Item> sku = new Channel<Item>(MAX_SKU_CAPACITY);
+                stockKeepingUnit.add(sku);
+            }
             Material[] materials = Material.getMaterials();
             for (int i = jsonArray.length() - 1; i >= 0; i--) {
-                Channel<Item> sku = inventory.stockKeepingUnit.get(i);
+                Channel<Item> sku = stockKeepingUnit.get(i);
                 int skuBalance = jsonArray.getInt(i);
                 for (int j=0; j<skuBalance; j++) {
                     sku.add(new Item(materials[i]));
@@ -54,19 +64,8 @@ public class Inventory {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return inventory;
     }
 
-
-    private Inventory() {
-        int materialsAmount = Material.getMaterialsAmount();
-        stockKeepingUnit = new ArrayList<Channel<Item>>();
-        for (int i=0; i<materialsAmount; i++) {
-            Channel<Item> sku = new Channel<Item>(MAX_SKU_CAPACITY);
-            stockKeepingUnit.add(sku);
-        }
-        initialized = true;
-    }
 
     /**
      * Положить предмет на склад

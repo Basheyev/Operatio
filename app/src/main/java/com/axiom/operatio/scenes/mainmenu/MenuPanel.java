@@ -3,11 +3,8 @@ package com.axiom.operatio.scenes.mainmenu;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.util.Log;
-import android.view.MotionEvent;
 
 import com.axiom.atom.R;
-import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
@@ -27,7 +24,7 @@ import java.util.Map;
 public class MenuPanel extends Panel {
 
     public final int panelColor = 0xCC505050;
-    protected ProductionScene pc = null;
+    protected ProductionScene productionScene = null;
     protected String toggledButton;
     protected int tickSound;
 
@@ -36,43 +33,49 @@ public class MenuPanel extends Panel {
         public void onClick(Widget w) {
             int choice = Integer.parseInt(w.getTag());
             SoundRenderer.playSound(tickSound);
+
+            MainActivity mainActivity = MainActivity.getActivity();
+            SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
+            SceneManager sm = SceneManager.getInstance();
+
             switch (choice) {
                 case 1:
-                    SceneManager sm = SceneManager.getInstance();
-                    if (pc==null) {
-                        // Добавить загрузку
-                        MainActivity mainActivity = MainActivity.getActivity();
-                        SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
-                        Map<String,?> map = sharedPref.getAll();
+                    if (productionScene == null) {
                         String savedGame = sharedPref.getString("Game", null);
                         if (savedGame==null) {
-                            pc = new ProductionScene();
+                            productionScene = new ProductionScene();
                         } else {
                             try {
                                 System.out.println("LOADING GAME:\n " + savedGame);
-                                pc = new ProductionScene(new JSONObject(savedGame));
+                                productionScene = new ProductionScene(new JSONObject(savedGame));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 break;
                             }
                         }
-                        sm.addGameScene(pc);
+                        sm.addGameScene(productionScene);
                     }
-                    sm.setActiveScene(pc.getSceneName());
+                    sm.setActiveScene(productionScene.getSceneName());
                     break;
                 case 2:
+                    // Создать новую пустую сцену производства
+                    if (productionScene!=null) {
+                        sm.removeGameScene(productionScene.getSceneName());
+                        productionScene = new ProductionScene();
+                        sm.addGameScene(productionScene);
+                    }
                     break;
                 default:
                     // Добавить сохранение
-                    MainActivity mainActivity = MainActivity.getActivity();
-                    SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    String savedGame = Production.getInstance().serialize().toString();
-                    System.out.println("SAVING GAME:\n " + savedGame);
-                    editor.remove("Game");
-                    editor.putString("Game", savedGame);
-                    editor.apply();
-                    editor.commit();
+                    if (productionScene!=null) {
+                        Production production = productionScene.getProduction();
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        String savedGame = production.serialize().toString();
+                        System.out.println("SAVING GAME:\n " + savedGame);
+                        editor.remove("Game");
+                        editor.putString("Game", savedGame);
+                        editor.commit();
+                    }
                     SceneManager.exitGame();
             }
         }
@@ -94,7 +97,7 @@ public class MenuPanel extends Panel {
 
         for (int i =1; i<4; i++) {
             if (i==1) caption = "Start Game"; else
-            if (i==2) caption = "Options"; else caption = "Exit Game";
+            if (i==2) caption = "Reset Game"; else caption = "Exit Game";
             button = new Button(caption);
             button.setTag(""+i);
             button.setLocalBounds(50, 550 - ( i * 150), 500, 120);

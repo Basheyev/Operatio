@@ -28,7 +28,7 @@ public class ExportBuffer extends Block {
 
     @Override
     public boolean push(Item item) {
-        Inventory inventory = Inventory.getInstance();
+        Inventory inventory = production.getInventory();
         return inventory.push(item);
     }
 

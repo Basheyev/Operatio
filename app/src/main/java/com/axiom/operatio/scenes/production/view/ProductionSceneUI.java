@@ -13,9 +13,7 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
-import org.json.JSONException;
 
-// TODO Просмотр материалов при выборе с Буффером (для быстрого добавления)
 public class ProductionSceneUI {
 
     protected static Production production;
@@ -107,7 +105,7 @@ public class ProductionSceneUI {
         modePanel = new ModePanel();
         widget.addChild(modePanel);
 
-        adjustmentPanel = new AdjustmentPanel();
+        adjustmentPanel = new AdjustmentPanel(production);
         adjustmentPanel.hideBlockInfo();
         widget.addChild(adjustmentPanel);
 

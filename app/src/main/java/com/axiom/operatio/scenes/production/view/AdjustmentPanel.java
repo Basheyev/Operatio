@@ -26,12 +26,10 @@ import static android.graphics.Color.DKGRAY;
 import static android.graphics.Color.GRAY;
 import static android.graphics.Color.WHITE;
 
-// TODO Добавить отображение информации буфера
-// TODO Добавить отображение информации конвейера
-// TODO Добавить отображение информации импортера
-// TODO Добавить отображение информации экспортера
 // TODO Добавить отображение информации перкрестка конвейера
 public class AdjustmentPanel extends Panel {
+
+    protected Production production;
 
     public final int panelColor = 0xCC505050;
     protected Caption caption, inputsCaption, outputsCaption;
@@ -121,8 +119,9 @@ public class AdjustmentPanel extends Panel {
     };
 
 
-    public AdjustmentPanel() {
+    public AdjustmentPanel(Production production) {
         super();
+        this.production = production;
         setLocalBounds(Camera.WIDTH - 375,200,375, 700);
         setColor(panelColor);
         inpBtn = new ItemWidget[4];
@@ -214,7 +213,7 @@ public class AdjustmentPanel extends Panel {
     @Override
     public void draw(Camera camera) {
         super.draw(camera);
-        long currentCycle = Production.getCurrentCycle();
+        long currentCycle = production.getCurrentCycle();
         if (currentCycle > lastProductionCycle) {
             if (choosenBlock!=null) {
                 showBlockInfo(choosenBlock, false);
@@ -400,7 +399,7 @@ public class AdjustmentPanel extends Panel {
 
         inputsCaption.visible = true;
         inputsCaption.setText(material.getName() + "\n\n"
-                + "Balance: " + Inventory.getInstance().getBalance(material) + " items");
+                + "Balance: " + production.getInventory().getBalance(material) + " items");
         outputsCaption.visible = true;
         outputsCaption.setText("");
 

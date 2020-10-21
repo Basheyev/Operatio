@@ -13,17 +13,23 @@ import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Widget;
+import com.axiom.operatio.model.production.Production;
 
 /**
  * Сцена склада
  */
 public class InventoryScene extends GameScene {
 
-    protected static boolean initialized = false;
+    protected boolean initialized = false;
+    protected Production production;
     protected MaterialsPanel materialsPanel;
     protected TechnologyPanel technologyPanel;
     protected static Sprite background;
     protected static int tickSound;
+
+    public InventoryScene(Production production) {
+        this.production = production;
+    }
 
     @Override
     public String getSceneName() {
@@ -102,7 +108,7 @@ public class InventoryScene extends GameScene {
         exitButton.setClickListener(exitListener);
         widget.addChild(exitButton);
 
-        materialsPanel = new MaterialsPanel(this);
+        materialsPanel = new MaterialsPanel(production,this);
         widget.addChild(materialsPanel);
 
         technologyPanel = new TechnologyPanel(materialsPanel);

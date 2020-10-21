@@ -9,6 +9,7 @@ import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Material;
+import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.production.view.ItemWidget;
 
 import java.util.ArrayList;
@@ -23,17 +24,19 @@ import static android.graphics.Color.WHITE;
 public class MaterialsPanel extends Panel {
 
     protected InventoryScene inventoryScene;
+    protected Production production;
     protected ItemWidget[] itemWidget;
     protected Material selectedMaterial;
 
-    public MaterialsPanel(InventoryScene scene) {
+    public MaterialsPanel(Production production, InventoryScene scene) {
         super();
+        this.production = production;
         inventoryScene = scene;
         buildUI();
     }
 
     public void updateData() {
-        Inventory inventory = Inventory.getInstance();
+        Inventory inventory = production.getInventory();
         for (int i = 0; i< Material.getMaterialsAmount(); i++) {
             Material material = Material.getMaterial(i);
             int balance = inventory.getBalance(material);
@@ -56,7 +59,7 @@ public class MaterialsPanel extends Panel {
         caption.setLocalBounds(30, panel.getHeight() - 100, 300, 100);
         panel.addChild(caption);
 
-        Inventory inventory = Inventory.getInstance();
+        Inventory inventory = production.getInventory();
         itemWidget = new ItemWidget[Material.getMaterialsAmount()];
         float x = 30, y = 30;
         for (int i=0; i< Material.getMaterialsAmount(); i++) {

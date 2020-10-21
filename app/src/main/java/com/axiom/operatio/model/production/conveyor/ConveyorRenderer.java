@@ -30,7 +30,7 @@ public class ConveyorRenderer extends BlockRenderer {
         sprite.zOrder = 1;
         createAnimations();
         arrangeAnimation(block.getInputDirection(), block.getOutputDirection());
-        timeStarted = Production.getClockMilliseconds();
+        timeStarted = block.getProduction().getClockMilliseconds();
     }
 
     private void createAnimations() {
@@ -140,7 +140,7 @@ public class ConveyorRenderer extends BlockRenderer {
 
     protected void drawItems(Camera camera, float x, float y, float width, float height) {
         Conveyor conveyor = (Conveyor) block;
-        float cycleTime = Production.getCycleTimeMs();        // Длительность цикла в мс.
+        float cycleTime = block.getProduction().getCycleTimeMs();        // Длительность цикла в мс.
         float deliveryCycles = conveyor.getDeliveryCycles();  // Циклов для доставки предмета
         float capacity = conveyor.getTotalCapacity();         // Вместимость конвейера в предметах
         float stridePerItem = 1.0f / (capacity / 2.0f);       // Шаг для одного предмета
@@ -166,7 +166,7 @@ public class ConveyorRenderer extends BlockRenderer {
         for (int k=0; k<inputQueue.size(); k++) {
             Item item = inputQueue.get(k);
             if (item==null) continue;
-            now = Production.getClockMilliseconds();
+            now = conveyor.getProduction().getClockMilliseconds();
             progress = (now - item.getTimeOwned()) /  deliveryTime;
             if (progress > maxProgress) {
                 progress = maxProgress;

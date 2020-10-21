@@ -34,11 +34,11 @@ public class ProductionScene extends GameScene {
     private boolean initialized = false;
 
     public ProductionScene() {
-        production = Production.getInstance(25,20);
+        production = new Production(25,20);
     }
 
     public ProductionScene(JSONObject jsonProduction) {
-        production = Production.getInstance(jsonProduction);
+        production = new Production(jsonProduction);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class ProductionScene extends GameScene {
     @Override
     public void startScene() {
         if (!initialized) {
-            sceneManager.addGameScene(new InventoryScene());
+            sceneManager.addGameScene(new InventoryScene(production));
             productionRenderer = new ProductionRenderer(production, initialCellWidth, initialCellHeight);
             inputHandler = new InputHandler(this, production, productionRenderer);
             ProductionSceneUI.buildUI(this, getResources(), getSceneWidget(), production);

@@ -48,13 +48,13 @@ public class ImportBuffer extends Block {
 
     @Override
     public Item peek() {
-        Inventory inventory = Inventory.getInstance();
+        Inventory inventory = production.getInventory();
         return inventory.peek(importMaterial);
     }
 
     @Override
     public Item poll() {
-        Inventory inventory = Inventory.getInstance();
+        Inventory inventory = production.getInventory();
         return inventory.poll(importMaterial);
     }
 

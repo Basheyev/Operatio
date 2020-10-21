@@ -170,7 +170,7 @@ public class Machine extends Block {
             Material material = operation.outputMaterials[i];
             for (int j=0; j<operation.outputAmount[i]; j++) {
                 item = new Item(material);
-                item.setOwner(this);
+                item.setOwner(production,this);
                 output.add(item);
 
                 // Если приёмник буфер или конвейер - затолкать самостоятельно
