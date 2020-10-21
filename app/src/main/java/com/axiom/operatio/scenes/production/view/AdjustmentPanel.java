@@ -208,8 +208,6 @@ public class AdjustmentPanel extends Panel {
     }
 
 
-    private int productionCycle;
-
     @Override
     public void draw(Camera camera) {
         super.draw(camera);
@@ -257,13 +255,23 @@ public class AdjustmentPanel extends Panel {
             ExportBuffer exportBuffer = (ExportBuffer) block;
             showExporterInfo(exportBuffer);
         }
-       // visible = true;
     }
 
 
     public void hideBlockInfo() {
         choosenBlock = null;
-      //  visible = false;
+        caption.setText("Block information");
+        centerButton.visible = false;
+        leftButton.visible = false;
+        rightButton.visible = false;
+        inputsCaption.visible = false;
+        outputsCaption.visible = false;
+        changeoverButton.visible = false;
+
+        for (int i=0; i<4; i++) {
+            inpBtn[i].visible = false;
+            outBtn[i].visible = false;
+        }
     }
 
     /**
