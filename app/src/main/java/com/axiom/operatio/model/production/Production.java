@@ -196,6 +196,14 @@ public class Production {
         return blockSelected;
     }
 
+    public Block getSelectedBlock() {
+        if (blockSelected) {
+            return getBlockAt(selectedCol, selectedRow);
+        } else {
+            return null;
+        }
+    }
+
     public void selectBlock(int col, int row) {
         if (col < 0 || row < 0 || col >= columns || row >= columns) return;
         selectedCol = col;

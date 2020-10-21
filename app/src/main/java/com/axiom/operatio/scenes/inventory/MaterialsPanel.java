@@ -37,7 +37,11 @@ public class MaterialsPanel extends Panel {
         for (int i = 0; i< Material.getMaterialsAmount(); i++) {
             Material material = Material.getMaterial(i);
             int balance = inventory.getBalance(material);
-            itemWidget[i].setText("" + balance);
+            if (balance > 0) {
+                itemWidget[i].setText("" + balance);
+            } else {
+                itemWidget[i].setText("");
+            }
         }
     }
 
@@ -54,7 +58,7 @@ public class MaterialsPanel extends Panel {
 
         Inventory inventory = Inventory.getInstance();
         itemWidget = new ItemWidget[Material.getMaterialsAmount()];
-        float x = 30, y = 700;
+        float x = 30, y = 30;
         for (int i=0; i< Material.getMaterialsAmount(); i++) {
             Material material = Material.getMaterial(i);
             int balance = inventory.getBalance(material);
@@ -70,7 +74,7 @@ public class MaterialsPanel extends Panel {
             x += 96;
             if (x + 96 > panel.getWidth()) {
                 x = 30;
-                y -= 96;
+                y += 96;
             }
         }
         selectedMaterial = null;
@@ -88,7 +92,7 @@ public class MaterialsPanel extends Panel {
             int materialID = Integer.parseInt(w.getTag());
             Material material = Material.getMaterial(materialID);
             MaterialsPanel materialsPanel = (MaterialsPanel) w.getParent();
-            if (w.getColor()==BLACK) {
+            if (w.getColor()!=RED) {
                 unselectAllButtons(w);
                 w.setColor(RED);
                 materialsPanel.selectedMaterial = material;

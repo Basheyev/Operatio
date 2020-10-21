@@ -37,7 +37,7 @@ public class Button extends Widget {
     public void draw(Camera camera) {
         if (parent==null || !visible) return;
         AABB bounds = getWorldBounds();
-        AABB scissors = getScissors();
+        // AABB scissors = getScissors();
         AABB parentScissor = parent.getScissors();
 
         if (opaque) {
@@ -56,7 +56,8 @@ public class Button extends Widget {
             float textWidth = GraphicsRender.getTextWidth(text, textScale);
             float textHeight = GraphicsRender.getTextHeight(text,textScale);
             GraphicsRender.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
-            GraphicsRender.drawText(text, bounds.center.x - textWidth/2, bounds.center.y - (textHeight/2), textScale, scissors);
+            GraphicsRender.drawText(text, bounds.center.x - textWidth/2, bounds.center.y - (textHeight/2), textScale, parentScissor);
+           // GraphicsRender.drawText(text, bounds.center.x - textWidth/2, bounds.center.y - (textHeight/2), textScale, scissors);
         }
 
         super.draw(camera);

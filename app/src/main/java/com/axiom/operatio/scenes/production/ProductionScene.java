@@ -56,6 +56,9 @@ public class ProductionScene extends GameScene {
             blocksPanel = ProductionSceneUI.getBlocksPanel();
             modePanel = ProductionSceneUI.getModePanel();
             adjustmentPanel = ProductionSceneUI.getAdjustmentPanel();
+            if (production.isBlockSelected()) {
+                adjustmentPanel.showBlockInfo(production.getSelectedBlock(), false);
+            }
             initialized = true;
         }
     }
