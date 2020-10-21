@@ -6,6 +6,7 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
+import com.axiom.operatio.model.production.buffer.BufferKeepingUnit;
 import com.axiom.operatio.model.production.buffer.ExportBuffer;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
 
@@ -28,6 +29,20 @@ public class Machine extends Block {
         this.operation = op;
         this.matCounter = new int[4];
         this.renderer = new MachineRenderer(this);
+    }
+
+    public Machine(Production production, JSONObject jsonObject, int inDir, int inCapaciy, int outDir, int outCapacity) {
+        super(production, inDir, inCapaciy, outDir, outCapacity);
+        deserializeCommonFields(this, jsonObject);
+        try {
+            type = MachineType.getMachineType(jsonObject.getInt("machineType"));
+            operation = type.getOperation(jsonObject.getInt("operation"));
+            matCounter = new int[4];
+            cyclesLeft = jsonObject.getInt("cyclesLeft");
+            renderer = new MachineRenderer(this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

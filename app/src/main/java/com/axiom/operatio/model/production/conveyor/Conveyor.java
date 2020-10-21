@@ -5,6 +5,7 @@ import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.materials.Item;
+import com.axiom.operatio.model.production.buffer.BufferKeepingUnit;
 import com.axiom.operatio.model.production.buffer.ExportBuffer;
 
 import org.json.JSONArray;
@@ -15,7 +16,7 @@ import org.json.JSONObject;
 public class Conveyor extends Block {
 
     public static final int MAX_CAPACITY = 4;
-    protected int deliveryCycles;
+    private int deliveryCycles;
     private long lastInputCycle = 0;
     private float inputCycleTime;
 
@@ -24,6 +25,18 @@ public class Conveyor extends Block {
         this.deliveryCycles = deliveryCycles;
         this.inputCycleTime = deliveryCycles / (float) MAX_CAPACITY;
         this.renderer = new ConveyorRenderer(this);
+    }
+
+    public Conveyor(Production production, JSONObject jsonObject, int inDir, int outDir) {
+        super(production, inDir, MAX_CAPACITY, outDir, MAX_CAPACITY);
+        deserializeCommonFields(this, jsonObject);
+        try {
+            deliveryCycles = jsonObject.getInt("deliveryCycles");
+            lastInputCycle = jsonObject.getLong("lastInputCycle");
+            inputCycleTime = (float) jsonObject.getDouble("inputCycleTime");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

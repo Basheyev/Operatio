@@ -16,25 +16,54 @@ import java.util.ArrayList;
  */
 public class Inventory {
 
+    public static final int MAX_SKU_CAPACITY = 999;
     protected static Inventory inventory;
     protected static boolean initialized = false;
     protected ArrayList<Channel<Item>> stockKeepingUnit;
 
 
     public static Inventory getInstance() {
-        if (!initialized) inventory = new Inventory();
+        if (!initialized) {
+            inventory = new Inventory();
+            int materialsAmount = Material.getMaterialsAmount();
+            Material[] materials = Material.getMaterials();
+            for (int i=0; i<materialsAmount; i++) {
+                Channel<Item> sku = inventory.stockKeepingUnit.get(i);
+                if (!materials[i].getName().equals("reserved") && i < 8) {
+                    for (int j = 0; j < 300; j++) {
+                        sku.add(new Item(materials[i]));
+                    }
+                }
+            }
+        }
         return inventory;
     }
+
+
+    public static Inventory getInstance(JSONArray jsonArray) {
+        try {
+            inventory = new Inventory();
+            Material[] materials = Material.getMaterials();
+            for (int i = jsonArray.length() - 1; i >= 0; i--) {
+                Channel<Item> sku = inventory.stockKeepingUnit.get(i);
+                int skuBalance = jsonArray.getInt(i);
+                for (int j=0; j<skuBalance; j++) {
+                    sku.add(new Item(materials[i]));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return inventory;
+    }
+
 
     private Inventory() {
         int materialsAmount = Material.getMaterialsAmount();
         stockKeepingUnit = new ArrayList<Channel<Item>>();
-        Material[] materials = Material.getMaterials();
         for (int i=0; i<materialsAmount; i++) {
-            Channel<Item> sku = new Channel<Item>(500);
+            Channel<Item> sku = new Channel<Item>(MAX_SKU_CAPACITY);
             stockKeepingUnit.add(sku);
-            if (!materials[i].getName().equals("reserved"))
-            for (int j=0; j<500; j++) sku.add(new Item(materials[i]));
         }
         initialized = true;
     }
