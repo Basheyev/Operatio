@@ -28,7 +28,7 @@ public class BufferKeepingUnit {
         try {
             BufferKeepingUnit bufferKeepingUnit = new BufferKeepingUnit();
             int materialID = jsonObject.getInt("material");
-            bufferKeepingUnit.material = (materialID>0) ? Material.getMaterial(materialID) : null;
+            bufferKeepingUnit.material = (materialID>=0) ? Material.getMaterial(materialID) : null;
             bufferKeepingUnit.capacity = jsonObject.getInt("capacity");
             bufferKeepingUnit.total = jsonObject.getInt("total");
             return bufferKeepingUnit;
