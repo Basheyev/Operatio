@@ -7,7 +7,7 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
 
-
+// TODO Подсвечивать блоки в которых проблема (простой, неправильный материал и т.п.)
 public class ProductionRenderer {
 
     protected Production production;

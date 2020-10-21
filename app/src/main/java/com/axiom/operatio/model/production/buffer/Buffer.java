@@ -12,7 +12,6 @@ import org.json.JSONObject;
 
 /**
  * Представляет собой мини-склад, который может хранить до 4 видов материалов
- * TODO сериализация
  */
 public class Buffer extends Block {
 
