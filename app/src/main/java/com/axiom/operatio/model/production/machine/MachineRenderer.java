@@ -51,6 +51,7 @@ public class MachineRenderer extends BlockRenderer {
     }
 
     public void setIdleAnimation() {
+        if (sprite.getTimesPlayed()>0)
         sprite.setActiveAnimation(idleAnimation);
     }
 

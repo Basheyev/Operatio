@@ -14,7 +14,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-// TODO Сериализация
 public class Machine extends Block {
 
     protected MachineType type;
@@ -56,23 +55,27 @@ public class Machine extends Block {
     @Override
     public void process() {
 
-        // Если машина работает, уменьшаем счетчик оставшихся циклов работы
-        if (getState()==BUSY && cyclesLeft > 0) {
-            cyclesLeft--;
+        // Если машина работает
+        if (getState()==BUSY) {
             // Если время операции прошло и выход свободен
-            if (cyclesLeft==0 && output.remainingCapacity() <= outputCapacity) {
+            if (getState()==BUSY && cyclesLeft==0 && output.remainingCapacity() <= outputCapacity) {
                 input.clear();       // Удаляем входящие предметы
                 generateOutput();    // Генерируем выходные предметы
                 setState(IDLE);      // Устанавливаем состояние IDLE
             }
+            // уменьшаем счетчик оставшихся циклов работы
+            if (cyclesLeft > 0) cyclesLeft--;
             return;
         }
 
-        // Если количество предметов во вхоядщий очереди меньше чем необходимо для операции
+
+
+        // Если количество предметов во входящей очереди меньше чем необходимо для операции
         // пытаемся самостоятельно взять из направления входа (блок)
         int totalAmount = operation.totalInputAmount();
         if (input.size() < totalAmount) {
             grabItemsFromInputDirection();
+            setState(IDLE);      // Устанавливаем состояние IDLE
             return;
         }
 
@@ -80,6 +83,8 @@ public class Machine extends Block {
         if (operationInputVerified(matCounter)) {    // Начинаем работу машины
             setState(BUSY);                          // Устанавливаем состояние - BUSY
             cyclesLeft = operation.operationTime;    // Указываем количество циклов работы
+        } else {
+            setState(IDLE);
         }
 
     }
@@ -182,16 +187,16 @@ public class Machine extends Block {
         }
     }
 
-    public void setState(int state) {
-        if (this.state==state) return;
-        switch (state) {
+    public void setState(int newState) {
+        if (this.state==newState) return;
+        switch (newState) {
             case Block.IDLE:
                 ((MachineRenderer) renderer).setIdleAnimation();
-                this.state = state;
+                this.state = newState;
+                break;
             case Block.BUSY:
                 ((MachineRenderer) renderer).setBusyAnimation();
-                this.state = state;
-
+                this.state = newState;
         }
     }
 
