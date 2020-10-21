@@ -53,8 +53,7 @@ public class Quad {
                 // сравиваем по текстуре
                 if (a.texture==b.texture) {
                     // сравниваем по цвету
-                    if (a.texture==null) return compareColor(a.color, b.color);
-                    return 0;
+                    return compareColor(a.color, b.color);
                 }
                 if (a.texture==null) return -1;
                 if (b.texture==null) return 1;
