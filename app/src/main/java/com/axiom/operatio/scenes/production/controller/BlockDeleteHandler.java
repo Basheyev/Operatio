@@ -56,7 +56,7 @@ public class BlockDeleteHandler {
             case MotionEvent.ACTION_UP:
                 if (actionInProgress && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
                     if (block!=null) {
-                        production.removeBlock(block);
+                        production.removeBlock(block,true);
                         production.unselectBlock();
                         AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
                         opsPanel.hideBlockInfo();

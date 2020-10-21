@@ -52,7 +52,7 @@ public class BlockAddMoveHandler {
                     cursorX = worldX;
                     cursorY = worldY;
                     dragBlock = block;
-                    production.removeBlock(block);
+                    production.removeBlock(block, false);
                     actionInProgress = true;
                 }
                 break;
