@@ -132,14 +132,14 @@ public class Production {
     }
 
 
-    public void removeBlock(Block block) {
+    public void removeBlock(Block block, boolean returnToInventory) {
         if (block==null) return;
         int col = block.column;
         int row = block.row;
         if (col < 0 || row < 0 || col >= columns || row >= columns) return;
         grid[row][col] = null;
         blocks.remove(block);
-        block.returnItemsTo(getInventory());
+        if (returnToInventory) block.returnItemsTo(getInventory());
     }
 
 
