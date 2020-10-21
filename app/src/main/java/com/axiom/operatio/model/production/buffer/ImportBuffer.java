@@ -27,10 +27,10 @@ public class ImportBuffer extends Block {
     public ImportBuffer(Production production, JSONObject jsonObject) {
         super(production, Block.NONE, 1, Block.NONE, 4);
         deserializeCommonFields(this, jsonObject);
-        renderer = new ImportBufferRenderer(this);
         try {
             int materialID = jsonObject.getInt("material");
             importMaterial = Material.getMaterial(materialID);
+            renderer = new ImportBufferRenderer(this);
         } catch (JSONException e) {
             e.printStackTrace();
         }

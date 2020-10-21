@@ -36,13 +36,13 @@ public class Buffer extends Block {
     public Buffer(Production production, JSONObject jsonObject, int capacity) {
         super(production, Block.NONE, capacity, Block.NONE, 1);
         deserializeCommonFields(this, jsonObject);
-        renderer = new BufferRenderer(this);
         try {
             JSONArray jsonArray = jsonObject.getJSONArray("bufferKeepingUnit");
             bufferKeepingUnit = new BufferKeepingUnit[4];
             for (int i=0; i<4; i++) {
                 bufferKeepingUnit[i] = BufferKeepingUnit.deserialize(jsonArray.getJSONObject(i));
             }
+            renderer = new BufferRenderer(this);
         } catch (JSONException e) {
             e.printStackTrace();
         }

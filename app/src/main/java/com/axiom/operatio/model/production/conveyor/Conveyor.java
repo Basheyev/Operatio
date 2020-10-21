@@ -30,11 +30,12 @@ public class Conveyor extends Block {
     public Conveyor(Production production, JSONObject jsonObject, int inDir, int outDir) {
         super(production, inDir, MAX_CAPACITY, outDir, MAX_CAPACITY);
         deserializeCommonFields(this, jsonObject);
-        this.renderer = new ConveyorRenderer(this);
+
         try {
             deliveryCycles = jsonObject.getInt("deliveryCycles");
             lastInputCycle = jsonObject.getLong("lastInputCycle");
             inputCycleTime = (float) jsonObject.getDouble("inputCycleTime");
+            renderer = new ConveyorRenderer(this);
         } catch (JSONException e) {
             e.printStackTrace();
         }

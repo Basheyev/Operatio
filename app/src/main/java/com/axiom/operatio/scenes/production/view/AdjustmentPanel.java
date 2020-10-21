@@ -279,7 +279,7 @@ public class AdjustmentPanel extends Panel {
 
         caption.setText(machineType.getName() + " operation");
 
-        centerButton.setText("" + (opID+1) + "/" + allOperations.length);
+        centerButton.setText("" + opID + "/" + (allOperations.length-1));
 
         inputsCaption.setText("Inputs:");
         for (int i=0; i<4; i++) {

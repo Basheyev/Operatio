@@ -21,8 +21,8 @@ public class ExportBuffer extends Block {
 
     public ExportBuffer(Production production, JSONObject jsonObject) {
         super(production, Block.NONE, 1, Block.NONE, 1);
-        renderer = new ExportBufferRenderer(this);
         deserializeCommonFields(this, jsonObject);
+        renderer = new ExportBufferRenderer(this);
     }
 
 

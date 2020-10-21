@@ -34,7 +34,6 @@ public class Machine extends Block {
     public Machine(Production production, JSONObject jsonObject, int inDir, int inCapaciy, int outDir, int outCapacity) {
         super(production, inDir, inCapaciy, outDir, outCapacity);
         deserializeCommonFields(this, jsonObject);
-        this.renderer = new MachineRenderer(this);
         try {
             type = MachineType.getMachineType(jsonObject.getInt("machineType"));
             operation = type.getOperation(jsonObject.getInt("operation"));
