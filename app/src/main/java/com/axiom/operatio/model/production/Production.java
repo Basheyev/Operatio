@@ -8,7 +8,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 // TODO Добавить экономику: баланс, цена материала, цена хранения, цена операции (стоимость компании)
@@ -140,6 +139,7 @@ public class Production {
         if (col < 0 || row < 0 || col >= columns || row >= columns) return;
         grid[row][col] = null;
         blocks.remove(block);
+        block.returnItemsTo(getInventory());
     }
 
 
