@@ -108,6 +108,14 @@ public class ProductionRenderer {
 
 
     private void drawSelection(Camera camera, int col, int row) {
+
+        Block underlyingBlock = production.getBlockAt(col,row);
+        if (underlyingBlock==null || movingBlock==null) {
+            selection.setActiveFrame(67);
+        } else {
+            selection.setActiveFrame(69);
+        }
+
         float fluctuation = (float) (Math.cos(System.currentTimeMillis() / 100.0d) + 1f) / 20f;
         selection.draw(camera,
                 col * cellWidth - (cellWidth * fluctuation),
