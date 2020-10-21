@@ -15,16 +15,16 @@ import java.util.ArrayList;
 public class Production {
 
     protected static Production instance;           // Синглтон объекта - производство
-    protected static Inventory inventory;           // Синглтон объекта - склад
-    protected static Market market;                 // Синллтон объекта - рынок
+    protected Inventory inventory;                  // Объект - склад
+    protected Market market;                        // Объект - рынок
 
     protected ArrayList<Block> blocks;              // Список блоков производства
     protected Block[][] grid;                       // Блоки привязанные к координатной сетке
     protected int columns, rows;                    // Количество столбцеов и строк
 
     protected long lastCycleTime;                   // Время последнего цикла (миллисекунды)
-    protected static long cycleMilliseconds = 300;  // Длительносить цикла (миллисекунды)
-    protected static long clock = 0;                // Часы производства (с вычетом пауз игры)
+    protected long cycleMilliseconds = 300;         // Длительносить цикла (миллисекунды)
+    protected long clock = 0;                       // Часы производства (с вычетом пауз игры)
     protected long cycle;                           // Счётчик циклов производства
 
     protected boolean isPaused = false;             // Флаг паузы игры
@@ -36,21 +36,25 @@ public class Production {
 
 
     public static Production getInstance(int columns, int rows) {
-        if (instance==null) instance = new Production(columns, rows);
+        if (instance==null) {
+            instance = new Production(columns, rows);
+            instance.inventory = Inventory.getInstance();
+            instance.market = Market.getInstance();
+        }
+        return instance;
+    }
+
+    public static Production getInstance(JSONObject jsonObject) {
+        instance = deserialize(jsonObject);
         return instance;
     }
 
 
     private Production(int columns, int rows) {
-
         this.columns = columns;
         this.rows = rows;
         grid = new Block[rows][columns];
         blocks = new ArrayList<Block>(100);
-
-        inventory = Inventory.getInstance();
-        market = Market.getInstance();
-
     }
 
 
@@ -86,7 +90,7 @@ public class Production {
      * @return время в миллисекундах
      */
     public static long getClockMilliseconds() {
-        return clock;
+        return instance.clock;
     }
 
 
@@ -166,7 +170,7 @@ public class Production {
 
 
     public static long getCycleTimeMs() {
-        return cycleMilliseconds;
+        return instance.cycleMilliseconds;
     }
 
     public static long getCurrentCycle() {
@@ -264,4 +268,43 @@ public class Production {
 
         return null;
     }
+
+
+    protected static Production deserialize(JSONObject jsonObject) {
+        try {
+            int columns = jsonObject.getInt("columns");
+            int rows = jsonObject.getInt("rows");
+
+            Production production = new Production(columns, rows);
+
+            production.lastCycleTime = jsonObject.getLong("lastCycleTime");
+            production.cycleMilliseconds = jsonObject.getLong("cycleMilliseconds");
+            production.clock = jsonObject.getLong("clock");
+            production.cycle = jsonObject.getLong("cycle");
+            production.isPaused = jsonObject.getBoolean("isPaused");
+            production.pauseStart = jsonObject.getLong("pauseStart");
+            production.pausedTime = jsonObject.getLong("pausedTime");
+            production.blockSelected = jsonObject.getBoolean("blockSelected");
+            production.selectedCol = jsonObject.getInt("selectedCol");
+            production.selectedRow = jsonObject.getInt("selectedRow");
+
+            JSONArray jsonArray = jsonObject.getJSONArray("blocks");
+            for (int i=0; i<jsonArray.length(); i++) {
+                JSONObject jsonBlock = jsonArray.getJSONObject(i);
+                Block block = Block.deserialize(production, jsonBlock);
+                production.setBlock(block, block.column, block.row);
+            }
+
+            JSONArray jsonInventory = jsonObject.getJSONArray("inventory");
+            production.inventory = Inventory.getInstance(jsonInventory);
+            production.market = Market.getInstance();
+
+            return production;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
 }
