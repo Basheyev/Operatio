@@ -57,7 +57,8 @@ public class Button extends Widget {
             float textHeight = GraphicsRender.getTextHeight(text,textScale);
             GraphicsRender.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
             GraphicsRender.drawText(text, bounds.center.x - textWidth/2, bounds.center.y - (textHeight/2), textScale, parentScissor);
-           // GraphicsRender.drawText(text, bounds.center.x - textWidth/2, bounds.center.y - (textHeight/2), textScale, scissors);
+            // Пока не обрезаем текст для повышения производительности
+            // GraphicsRender.drawText(text, bounds.center.x - textWidth/2, bounds.center.y - (textHeight/2), textScale, scissors);
         }
 
         super.draw(camera);
