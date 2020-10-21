@@ -29,7 +29,8 @@ public class ImportBuffer extends Block {
         deserializeCommonFields(this, jsonObject);
         renderer = new ImportBufferRenderer(this);
         try {
-            importMaterial = Material.getMaterial(jsonObject.getInt("material"));
+            int materialID = jsonObject.getInt("material");
+            importMaterial = Material.getMaterial(materialID);
         } catch (JSONException e) {
             e.printStackTrace();
         }

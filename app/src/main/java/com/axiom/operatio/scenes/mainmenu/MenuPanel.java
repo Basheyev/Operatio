@@ -73,7 +73,6 @@ public class MenuPanel extends Panel {
                     editor.putString("Game", savedGame);
                     editor.apply();
                     editor.commit();
-                    // FIXME Не успевает сохранить
                     SceneManager.exitGame();
             }
         }

@@ -81,7 +81,7 @@ public class ExportBuffer extends Block {
     public JSONObject serialize() {
         JSONObject jsonObject = super.serialize();
         try {
-            jsonObject.put("class", "ImportBuffer");
+            jsonObject.put("class", "ExportBuffer");
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
