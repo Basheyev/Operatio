@@ -21,6 +21,7 @@ public class BlockAddMoveHandler {
 
     private Block dragBlock = null;
     private boolean actionInProgress = false;
+    private boolean justCreatedBlock = false;
     private float cursorX, cursorY;
     private int lastCol, lastRow;
     private int blockPlaced;
@@ -79,12 +80,15 @@ public class BlockAddMoveHandler {
                             production.selectBlock(column, row);
                         }
                     } else {
-                        production.setBlock(dragBlock, lastCol, lastRow);
-                        production.selectBlock(lastCol, lastRow);
+                        if (!justCreatedBlock) {
+                            production.setBlock(dragBlock, lastCol, lastRow);
+                            production.selectBlock(lastCol, lastRow);
+                        }
                     }
                     // Если это было добавление то отжимаем кнопки
-                    if (lastCol==-1 && lastRow==-1) {
+                    if (justCreatedBlock) {
                         ProductionSceneUI.getBlocksPanel().untoggleButtons();
+                        justCreatedBlock = false;
                     }
                     actionInProgress = false;
                 }
@@ -94,9 +98,9 @@ public class BlockAddMoveHandler {
     // Используется для добавления
     public synchronized void startAction(Block block, float worldX, float worldY) {
         if (actionInProgress) return;
-        // TODO Специально ошибочное значение (нормально сделать)
-        lastCol = -1;  // Помечаем что это вновь созданные блок
-        lastRow = -1;  // Помечаем что это вновь созданный блок
+        justCreatedBlock = true; // Помечаем что это вновь созданные блок
+        lastCol = -1;
+        lastRow = -1;
         cursorX = worldX;
         cursorY = worldY;
         dragBlock = block;
