@@ -14,6 +14,7 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
 
+// TODO Заменить текстовые кнопки на иконки
 public class ProductionSceneUI {
 
     protected static Production production;
@@ -64,21 +65,10 @@ public class ProductionSceneUI {
             public void onClick(Widget w) {
                 if (w.getTag().equals("Menu")) {
                     SoundRenderer.playSound(tickSound);
-                    if (!production.isPaused()) {
-                        production.setPaused(true);
-                        ProductionSceneUI.setPausedButtonState(true);
-                    }
-                    productionScene.getInputHandler().invalidateAllActions();
                     SceneManager.getInstance().setActiveScene("Menu");
                 } else if (w.getTag().equals("Inventory")) {
                     SoundRenderer.playSound(tickSound);
-                    if (!production.isPaused()) {
-                        production.setPaused(true);
-                        ProductionSceneUI.setPausedButtonState(true);
-                    }
-                    productionScene.getInputHandler().invalidateAllActions();
                     SceneManager.getInstance().setActiveScene("Inventory");
-
                 }
             }
         };

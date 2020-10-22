@@ -33,6 +33,10 @@ public class MainMenuScene extends GameScene {
         //Camera.getInstance().lookAt(Camera.WIDTH/2, Camera.HEIGHT/2);
     }
 
+    public MenuPanel getMenuPanel() {
+        return menuPanel;
+    }
+
     @Override
     public void changeScene() {
 

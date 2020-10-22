@@ -63,9 +63,17 @@ public class ProductionScene extends GameScene {
         }
     }
 
+    public void pause() {
+        if (!production.isPaused()) {
+            production.setPaused(true);
+            ProductionSceneUI.setPausedButtonState(true);
+        }
+        inputHandler.invalidateAllActions();
+    }
+
     @Override
     public void changeScene() {
-
+        pause();
     }
 
     @Override

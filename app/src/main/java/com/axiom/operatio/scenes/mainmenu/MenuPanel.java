@@ -19,13 +19,10 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Map;
-
 public class MenuPanel extends Panel {
 
     public final int panelColor = 0xCC505050;
     protected ProductionScene productionScene = null;
-    protected String toggledButton;
     protected int tickSound;
 
     protected ClickListener listener = new ClickListener() {
@@ -33,50 +30,10 @@ public class MenuPanel extends Panel {
         public void onClick(Widget w) {
             int choice = Integer.parseInt(w.getTag());
             SoundRenderer.playSound(tickSound);
-
-            MainActivity mainActivity = MainActivity.getActivity();
-            SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
-            SceneManager sm = SceneManager.getInstance();
-
             switch (choice) {
-                case 1:
-                    if (productionScene == null) {
-                        String savedGame = sharedPref.getString("Game", null);
-                        if (savedGame==null) {
-                            productionScene = new ProductionScene();
-                        } else {
-                            try {
-                                System.out.println("LOADING GAME:\n " + savedGame);
-                                productionScene = new ProductionScene(new JSONObject(savedGame));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                break;
-                            }
-                        }
-                        sm.addGameScene(productionScene);
-                    }
-                    sm.setActiveScene(productionScene.getSceneName());
-                    break;
-                case 2:
-                    // Создать новую пустую сцену производства
-                    if (productionScene!=null) {
-                        sm.removeGameScene(productionScene.getSceneName());
-                        productionScene = new ProductionScene();
-                        sm.addGameScene(productionScene);
-                    }
-                    break;
-                default:
-                    // Добавить сохранение
-                    if (productionScene!=null) {
-                        Production production = productionScene.getProduction();
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        String savedGame = production.serialize().toString();
-                        System.out.println("SAVING GAME:\n " + savedGame);
-                        editor.remove("Game");
-                        editor.putString("Game", savedGame);
-                        editor.commit();
-                    }
-                    SceneManager.exitGame();
+                case 1: startGame(); break;
+                case 2: resetGame(); break;
+                default: exitGame();
             }
         }
     };
@@ -109,8 +66,52 @@ public class MenuPanel extends Panel {
 
     }
 
-    public String getToggledButton() {
-        return toggledButton;
+    public void startGame() {
+        MainActivity mainActivity = MainActivity.getActivity();
+        SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
+        SceneManager sceneManager = SceneManager.getInstance();
+        if (productionScene == null) {
+            String savedGame = sharedPref.getString("Game", null);
+            if (savedGame==null) {
+                productionScene = new ProductionScene();
+            } else {
+                try {
+                    System.out.println("LOADING GAME:\n " + savedGame);
+                    productionScene = new ProductionScene(new JSONObject(savedGame));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return;
+                }
+            }
+            sceneManager.addGameScene(productionScene);
+        }
+        sceneManager.setActiveScene(productionScene.getSceneName());
+    }
+
+
+    public void resetGame() {
+        SceneManager sceneManager = SceneManager.getInstance();
+        if (productionScene!=null) {
+            sceneManager.removeGameScene(productionScene.getSceneName());
+            productionScene = new ProductionScene();
+            sceneManager.addGameScene(productionScene);
+        }
+    }
+
+
+    public void exitGame() {
+        MainActivity mainActivity = MainActivity.getActivity();
+        SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
+        if (productionScene!=null) {
+            Production production = productionScene.getProduction();
+            SharedPreferences.Editor editor = sharedPref.edit();
+            String savedGame = production.serialize().toString();
+            System.out.println("SAVING GAME:\n " + savedGame);
+            editor.remove("Game");
+            editor.putString("Game", savedGame);
+            editor.commit();
+        }
+        SceneManager.exitGame();
     }
 
 }
