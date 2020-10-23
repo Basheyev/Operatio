@@ -12,6 +12,7 @@ import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.GLESObject;
+import com.axiom.atom.engine.graphics.renderers.Line;
 import com.axiom.atom.engine.graphics.renderers.Rectangle;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
@@ -46,6 +47,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
     protected SceneManager sceneManager;               // Менеджер игровых сцен
     //-------------------------------------------------------------------------------------
     private Text textRender;                           // Рендер текста
+    private Line lineRender;                           // Рендер линии
     private Rectangle rectangleRender;                 // Рендер прямоугольников
     //-------------------------------------------------------------------------------------
     private int framesCounter = 0;                     // Счётчик отрисованных кадров
@@ -83,6 +85,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
 
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         textRender = new Text("sans-serif");
+        lineRender = new Line();
         rectangleRender = new Rectangle();
     }
 
@@ -275,15 +278,16 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
     }
 
     public static void setColor(int rgba) {
-        setColor(((rgba >> 24) & 0xff) / 255.0f,
-                 ((rgba >> 16) & 0xff) / 255.0f,
-                 ((rgba >>  8) & 0xff) / 255.0f,
-              ((rgba      ) & 0xff) / 255.0f);
+        setColor(((rgba      ) & 0xff) / 255.0f,
+                ((rgba >>  8) & 0xff) / 255.0f,
+                ((rgba >> 16) & 0xff) / 255.0f,
+                ((rgba >> 24) & 0xff) / 255.0f);
     }
 
     public static void setColor(float r, float g, float b, float alpha) {
         if (render==null) return;
         render.rectangleRender.setColor(r, g, b, alpha);
+        render.lineRender.setColor(r, g, b, alpha);
         render.textRender.setColor(r, g, b, alpha);
     }
 
@@ -291,11 +295,27 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
         if (render==null) return;
         render.rectangleRender.zOrder = zOrder;
         render.textRender.zOrder = zOrder;
+        render.lineRender.zOrder = zOrder;
+    }
+
+    public static void drawLine(float x1, float y1, float x2, float y2, AABB scissor) {
+        if (render==null) return;
+        render.lineRender.draw(camera, x1, y1, x2, y2, scissor);
+    }
+
+    public static void drawLine(float x1, float y1, float x2, float y2) {
+        if (render==null) return;
+        render.lineRender.draw(camera, x1, y1, x2, y2, null);
     }
 
     public static void drawRectangle(float x, float y, float width, float height, AABB scissor) {
         if (render==null) return;
         render.rectangleRender.draw(camera,x,y,width,height, scissor);
+    }
+
+    public static void drawRectangle(float x, float y, float width, float height) {
+        if (render==null) return;
+        render.rectangleRender.draw(camera,x,y,width,height, null);
     }
 
     public static void drawRectangle(AABB rect, AABB scissor) {
