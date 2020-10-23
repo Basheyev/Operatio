@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 public class Conveyor extends Block {
 
+    public static final int PRICE = 5;
     public static final int MAX_CAPACITY = 4;
     private int deliveryCycles;
     private long lastInputCycle = 0;
@@ -21,6 +22,7 @@ public class Conveyor extends Block {
 
     public Conveyor(Production production, int inDir, int outDir, int deliveryCycles) {
         super(production, inDir, MAX_CAPACITY, outDir, MAX_CAPACITY);
+        price = PRICE;
         this.deliveryCycles = deliveryCycles;
         this.inputCycleTime = deliveryCycles / (float) MAX_CAPACITY;
         this.renderer = new ConveyorRenderer(this);
@@ -28,6 +30,7 @@ public class Conveyor extends Block {
 
     public Conveyor(Production production, JSONObject jsonObject, int inDir, int outDir) {
         super(production, inDir, MAX_CAPACITY, outDir, MAX_CAPACITY);
+        price = PRICE;
         deserializeCommonFields(this, jsonObject);
 
         try {

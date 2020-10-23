@@ -14,13 +14,17 @@ import org.json.JSONObject;
  */
 public class ExportBuffer extends Block {
 
+    public static final int PRICE = 20;
+
     public ExportBuffer(Production production) {
         super(production, Block.NONE, 1, Block.NONE, 1);
+        price = PRICE;
         renderer = new ExportBufferRenderer(this);
     }
 
     public ExportBuffer(Production production, JSONObject jsonObject) {
         super(production, Block.NONE, 1, Block.NONE, 1);
+        price = PRICE;
         deserializeCommonFields(this, jsonObject);
         renderer = new ExportBufferRenderer(this);
     }

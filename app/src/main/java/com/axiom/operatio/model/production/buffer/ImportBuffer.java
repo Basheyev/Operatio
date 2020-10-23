@@ -15,10 +15,13 @@ import org.json.JSONObject;
  */
 public class ImportBuffer extends Block {
 
+    public static final int PRICE = 20;
+
     protected Material importMaterial;
 
     public ImportBuffer(Production production, Material material) {
         super(production, Block.NONE, 1, Block.NONE, 4);
+        price = PRICE;
         renderer = new ImportBufferRenderer(this);
         importMaterial = material;
 
@@ -26,6 +29,7 @@ public class ImportBuffer extends Block {
 
     public ImportBuffer(Production production, JSONObject jsonObject) {
         super(production, Block.NONE, 1, Block.NONE, 4);
+        price = PRICE;
         deserializeCommonFields(this, jsonObject);
         try {
             int materialID = jsonObject.getInt("material");

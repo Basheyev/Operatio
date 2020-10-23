@@ -15,11 +15,13 @@ import org.json.JSONObject;
  */
 public class Buffer extends Block {
 
+    public static final int PRICE = 20;
     public static final int NO_KEEPING_UNIT = -1;      // Константа отсутствия такой ячейки хранения
     protected BufferKeepingUnit[] bufferKeepingUnit;   // Ячейки хранения материалов
 
     public Buffer(Production production, int capacity) {
         super(production, Block.NONE, capacity, Block.NONE, 1);
+        price = PRICE;
         renderer = new BufferRenderer(this);
         // Сформировать список материалов который может хранить (null - любой)
         bufferKeepingUnit = new BufferKeepingUnit[4];
@@ -34,6 +36,7 @@ public class Buffer extends Block {
 
     public Buffer(Production production, JSONObject jsonObject, int capacity) {
         super(production, Block.NONE, capacity, Block.NONE, 1);
+        price = PRICE;
         deserializeCommonFields(this, jsonObject);
         try {
             JSONArray jsonArray = jsonObject.getJSONArray("bufferKeepingUnit");
