@@ -127,9 +127,6 @@ public class Production {
         block.row = row;
         blocks.add(block);
         grid[row][col] = block;
-
-        decreaseCashBalance(block.getPrice());
-
         return true;
     }
 
@@ -165,9 +162,6 @@ public class Production {
         grid[row][col] = null;
         blocks.remove(block);
         if (returnToInventory) block.returnItemsTo(getInventory());
-
-        increaseCashBalance(block.getPrice());
-
     }
 
 

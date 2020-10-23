@@ -36,6 +36,7 @@ public class Machine extends Block {
         deserializeCommonFields(this, jsonObject);
         try {
             type = MachineType.getMachineType(jsonObject.getInt("machineType"));
+            price = type.price;
             operation = type.getOperation(jsonObject.getInt("operation"));
             matCounter = new int[4];
             cyclesLeft = jsonObject.getInt("cyclesLeft");
