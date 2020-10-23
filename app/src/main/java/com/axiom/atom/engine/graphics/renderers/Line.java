@@ -30,12 +30,20 @@ public class Line extends Quad {
 
 
     public void draw(Camera camera, float x1, float y1, float x2, float y2, AABB scissor) {
-        float tmp;
+        float tmp, minY, maxY;
 
         if (x1 > x2) {                                          // если x1 > x2
             tmp = x1; x1 = x2; x2 = tmp;                        // меняем координаты
             tmp = y1; y1 = y2; y2 = tmp;                        // точек местами
         }
+
+        if (y1 > y2) {
+            maxY = y1; minY = y2;
+        } else {
+            maxY = y2; minY = y1;
+        }
+
+        if (!camera.isVisible(x1,minY, x2,maxY)) return;
 
         float length = lineLength(x1, y1, x2, y2);              // Считаем длину линии
         float theta = (float) Math.atan((y2 - y1)/(x2 - x1));   // Считаем угол к оси X
