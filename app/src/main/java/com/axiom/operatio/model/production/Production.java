@@ -10,12 +10,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-// TODO Добавить экономику: баланс, цена материала, цена хранения, цена операции (стоимость компании)
+// TODO Добавить экономику: цена материала, цена хранения, цена операции (стоимость компании)
 public class Production {
 
-    //protected static Production instance;           // Синглтон объекта - производство
+    //protected static Production instance;         // Синглтон объекта - производство
     protected Inventory inventory;                  // Объект - склад
     protected Market market;                        // Объект - рынок
+    protected long cashBalance = 1000;              // Остатки денег
 
     protected ArrayList<Block> blocks;              // Список блоков производства
     protected Block[][] grid;                       // Блоки привязанные к координатной сетке
@@ -33,16 +34,6 @@ public class Production {
     protected boolean blockSelected = false;        // Выбрал ли блок
     protected int selectedCol, selectedRow;         // Столбец и строка выбранного блока
 
-/*
-    public static Production getInstance(int columns, int rows) {
-        if (instance==null) {
-            instance = new Production(columns, rows);
-            instance.inventory = Inventory.getInstance();
-            instance.market = Market.getInstance();
-        }
-        return instance;
-    }
-*/
 
     public Production(int columns, int rows) {
         this.columns = columns;
@@ -54,46 +45,41 @@ public class Production {
     }
 
 
-    public Production(JSONObject jsonObject) {
-        try {
-            int columns = jsonObject.getInt("columns");
-            int rows = jsonObject.getInt("rows");
+    public Production(JSONObject jsonObject) throws JSONException {
 
-            this.columns = columns;
-            this.rows = rows;
-            grid = new Block[rows][columns];
+        cashBalance = jsonObject.getLong("cashBalance");
+        int columns = jsonObject.getInt("columns");
+        int rows = jsonObject.getInt("rows");
 
-            lastCycleTime = jsonObject.getLong("lastCycleTime");
-            cycleMilliseconds = jsonObject.getLong("cycleMilliseconds");
-            clock = jsonObject.getLong("clock");
-            cycle = jsonObject.getLong("cycle");
-            isPaused = jsonObject.getBoolean("isPaused");
-            pauseStart = jsonObject.getLong("pauseStart");
-            pausedTime = jsonObject.getLong("pausedTime");
-            blockSelected = jsonObject.getBoolean("blockSelected");
-            selectedCol = jsonObject.getInt("selectedCol");
-            selectedRow = jsonObject.getInt("selectedRow");
+        this.columns = columns;
+        this.rows = rows;
+        grid = new Block[rows][columns];
 
-            JSONArray jsonArray = jsonObject.getJSONArray("blocks");
-            blocks = new ArrayList<Block>(jsonArray.length());
-            for (int i=0; i<jsonArray.length(); i++) {
-                JSONObject jsonBlock = jsonArray.getJSONObject(i);
-                Block block = Block.deserialize(this, jsonBlock);
-                setBlock(block, block.column, block.row);
-            }
+        lastCycleTime = jsonObject.getLong("lastCycleTime");
+        cycleMilliseconds = jsonObject.getLong("cycleMilliseconds");
+        clock = jsonObject.getLong("clock");
+        cycle = jsonObject.getLong("cycle");
+        isPaused = jsonObject.getBoolean("isPaused");
+        pauseStart = jsonObject.getLong("pauseStart");
+        pausedTime = jsonObject.getLong("pausedTime");
+        blockSelected = jsonObject.getBoolean("blockSelected");
+        selectedCol = jsonObject.getInt("selectedCol");
+        selectedRow = jsonObject.getInt("selectedRow");
 
-            JSONArray jsonInventory = jsonObject.getJSONArray("inventory");
-            inventory = new Inventory(this, jsonInventory);
-            market = new Market();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        JSONArray jsonArray = jsonObject.getJSONArray("blocks");
+        blocks = new ArrayList<Block>(jsonArray.length());
+        for (int i=0; i<jsonArray.length(); i++) {
+            JSONObject jsonBlock = jsonArray.getJSONObject(i);
+            Block block = Block.deserialize(this, jsonBlock);
+            setBlock(block, block.column, block.row);
         }
+
+        JSONArray jsonInventory = jsonObject.getJSONArray("inventory");
+        inventory = new Inventory(this, jsonInventory);
+        market = new Market();
+
     }
-/*
-    public static Production getInstance() {
-        return instance;
-    }
-*/
+
 
 
 
@@ -141,6 +127,9 @@ public class Production {
         block.row = row;
         blocks.add(block);
         grid[row][col] = block;
+
+        decreaseCashBalance(block.getPrice());
+
         return true;
     }
 
@@ -176,6 +165,9 @@ public class Production {
         grid[row][col] = null;
         blocks.remove(block);
         if (returnToInventory) block.returnItemsTo(getInventory());
+
+        increaseCashBalance(block.getPrice());
+
     }
 
 
@@ -282,7 +274,7 @@ public class Production {
 
         try {
             JSONObject jsonObject = new JSONObject();
-
+            jsonObject.put("cashBalance", cashBalance);
             jsonObject.put("columns", columns);
             jsonObject.put("rows", rows);
             jsonObject.put("lastCycleTime", lastCycleTime);
@@ -316,42 +308,18 @@ public class Production {
         return null;
     }
 
-/*
-    protected static Production deserialize(JSONObject jsonObject) {
-        try {
-            int columns = jsonObject.getInt("columns");
-            int rows = jsonObject.getInt("rows");
+    public long getCashBalance() {
+        return cashBalance;
+    }
 
-            Production production = new Production(columns, rows);
+    public long decreaseCashBalance(long value) {
+        cashBalance -= value;
+        return cashBalance;
+    }
 
-            production.lastCycleTime = jsonObject.getLong("lastCycleTime");
-            production.cycleMilliseconds = jsonObject.getLong("cycleMilliseconds");
-            production.clock = jsonObject.getLong("clock");
-            production.cycle = jsonObject.getLong("cycle");
-            production.isPaused = jsonObject.getBoolean("isPaused");
-            production.pauseStart = jsonObject.getLong("pauseStart");
-            production.pausedTime = jsonObject.getLong("pausedTime");
-            production.blockSelected = jsonObject.getBoolean("blockSelected");
-            production.selectedCol = jsonObject.getInt("selectedCol");
-            production.selectedRow = jsonObject.getInt("selectedRow");
-
-            JSONArray jsonArray = jsonObject.getJSONArray("blocks");
-            for (int i=0; i<jsonArray.length(); i++) {
-                JSONObject jsonBlock = jsonArray.getJSONObject(i);
-                Block block = Block.deserialize(production, jsonBlock);
-                production.setBlock(block, block.column, block.row);
-            }
-
-            JSONArray jsonInventory = jsonObject.getJSONArray("inventory");
-            production.inventory = new Inventory(jsonInventory);
-            production.market = new Market();
-
-            return production;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-    }*/
+    public long increaseCashBalance(long value) {
+        cashBalance += value;
+        return cashBalance;
+    }
 
 }

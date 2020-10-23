@@ -80,7 +80,8 @@ public class MenuPanel extends Panel {
                     productionScene = new ProductionScene(new JSONObject(savedGame));
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    return;
+                    System.out.println("Failed to load game.");
+                    productionScene = new ProductionScene();
                 }
             }
             sceneManager.addGameScene(productionScene);

@@ -26,6 +26,7 @@ public class MachineType {
     protected String name;                                 // Название
     protected Operation[] operations;                      // Доступные операции
     protected Sprite image;                                // Изображение машины
+    protected long price;
     //---------------------------------------------------------------------------------
 
     /**
@@ -57,6 +58,7 @@ public class MachineType {
             machineType.ID = csv.getIntValue(row,0);
             machineType.name = csv.getValue(row,1).trim();
             machineType.operations = new Operation[csv.getIntValue(row,2)];
+            machineType.price = csv.getIntValue(row, 3);
             Operation operation;
             try {
                 for (int i = 0; i < machineType.operations.length; i++) {

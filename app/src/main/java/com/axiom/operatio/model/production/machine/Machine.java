@@ -25,6 +25,7 @@ public class Machine extends Block {
     public Machine(Production production, MachineType type, Operation op, int inDir, int outDir) {
         super(production, inDir, op.totalInputAmount(), outDir, op.totalOutputAmount());
         this.type = type;
+        this.price = type.price;
         this.operation = op;
         this.matCounter = new int[4];
         this.renderer = new MachineRenderer(this);

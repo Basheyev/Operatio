@@ -8,12 +8,14 @@ import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
+import com.axiom.atom.engine.graphics.renderers.Line;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
 
 public class MainMenuScene extends GameScene {
 
+    private Line line;
     private Sprite background;
     private MenuPanel menuPanel;
 
@@ -29,6 +31,7 @@ public class MainMenuScene extends GameScene {
             Widget widget = getSceneWidget();
             menuPanel = new MenuPanel();
             widget.addChild(menuPanel);
+            line = new Line();
         }
         //Camera.getInstance().lookAt(Camera.WIDTH/2, Camera.HEIGHT/2);
     }

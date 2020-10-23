@@ -27,6 +27,7 @@ public abstract class Block {
     protected static int blockCounter = 0;
 
     protected int ID;                                 // ID блока
+    protected long price;
     protected int state = IDLE;                       // Текущее состояние блока
     protected int inputDirection, outputDirection;    // Направление ввода и вывода
     protected int inputCapacity, outputCapacity;      // Максимальая вместимость блока в предметах
@@ -160,6 +161,10 @@ public abstract class Block {
 
     public int getID() {
         return ID;
+    }
+
+    public long getPrice() {
+        return price;
     }
 
     public void returnItemsTo(Inventory inventory) {

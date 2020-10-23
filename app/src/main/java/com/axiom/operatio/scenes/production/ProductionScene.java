@@ -7,6 +7,7 @@ import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.input.ScaleEvent;
+import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.production.view.BlocksPanel;
@@ -16,6 +17,7 @@ import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 import com.axiom.operatio.scenes.inventory.InventoryScene;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -31,13 +33,16 @@ public class ProductionScene extends GameScene {
     public AdjustmentPanel adjustmentPanel;
     public float initialCellWidth = 128;                  // Ширина клетки
     public float initialCellHeight = 128;                 // Высота клетки
+
+    private long lastCashBalance = 0;
     private boolean initialized = false;
+
 
     public ProductionScene() {
         production = new Production(25,20);
     }
 
-    public ProductionScene(JSONObject jsonProduction) {
+    public ProductionScene(JSONObject jsonProduction) throws JSONException {
         production = new Production(jsonProduction);
     }
 
@@ -84,6 +89,12 @@ public class ProductionScene extends GameScene {
     @Override
     public void updateScene(float deltaTimeNs) {
         production.process();
+        long currentCashBalance = production.getCashBalance();
+        if (lastCashBalance!=currentCashBalance) {
+            Button balance = ProductionSceneUI.getBalance();
+            balance.setText("$" + currentCashBalance);
+            lastCashBalance = currentCashBalance;
+        }
     }
 
     @Override

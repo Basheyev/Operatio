@@ -1,6 +1,8 @@
 package com.axiom.operatio.scenes.production.view;
 
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 
 import com.axiom.atom.R;
@@ -9,6 +11,7 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
+import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.production.ProductionScene;
@@ -23,6 +26,7 @@ public class ProductionSceneUI {
     protected static BlocksPanel blocksPanel;
     protected static ModePanel modePanel;
     protected static AdjustmentPanel adjustmentPanel;
+    protected static Button balance;
     protected static int tickSound;
 
     public static void setPausedButtonState(boolean paused) {
@@ -107,6 +111,11 @@ public class ProductionSceneUI {
         production.setPaused(true);
         setPausedButtonState(true);
         widget.addChild(pauseButton);
+
+        balance = new Button("$" + production.getCashBalance());
+        balance.setTextColor(Color.BLACK);
+        balance.setLocalBounds(Camera.WIDTH/2-150, 980, 300, 100);
+        widget.addChild(balance);
     }
 
     public static BlocksPanel getBlocksPanel() {
@@ -119,4 +128,5 @@ public class ProductionSceneUI {
 
     public static AdjustmentPanel getAdjustmentPanel() { return adjustmentPanel; }
 
+    public static Button getBalance() { return balance; }
 }
