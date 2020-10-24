@@ -35,7 +35,7 @@ public class ProductionRenderer {
         selection.zOrder = 500;
 
         Sprite particleSprite = new Sprite(SceneManager.getResources(), R.drawable.vfx);
-        particles = new Particles(particleSprite,24, 1000, 8);
+        particles = new Particles(particleSprite,16, 1000, 100);
         particles.zOrder = 8;
 
         this.production = production;
