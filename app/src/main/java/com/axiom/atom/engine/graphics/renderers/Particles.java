@@ -82,21 +82,29 @@ public class Particles {
     }
 
 
+    private long lastTime;
+
+
     private boolean processParticles() {
         Particle particle;
         long passedTime;
         boolean visiblesLeft = false;
+        long currentTime = System.currentTimeMillis();
+        float delta = (currentTime - lastTime) / 1000.0f;         // Прошедшие доли секунд
+
         for (int i=0; i<amount; i++) {
             particle = particles[i];
             if (particle.visible) {
-                passedTime = System.currentTimeMillis() - particle.birthTime;
+                passedTime = currentTime - particle.birthTime;
                 if (passedTime > lifeTime) particle.visible = false;
                 particle.alpha = 1.0f - ((float) passedTime) / ((float) lifeTime);
-                particle.x += particle.vx;
-                particle.y += particle.vy;
+                particle.rotation += 0.1f;
+                particle.x += (particle.vx * delta);
+                particle.y += (particle.vy * delta);
                 visiblesLeft = true;
             }
         }
+        lastTime = currentTime;
         return visiblesLeft;
     }
 
@@ -111,13 +119,14 @@ public class Particles {
             particle.vx = (float) Math.cos(angle) * speed * spread;
             particle.vy = (float) Math.sin(angle) * speed * spread;
             particle.x = (float) (particle.vx * Math.random());
-            particle.y = (float) (particle.vx * Math.random());;
+            particle.y = (float) (particle.vy * Math.random());
             particle.rotation = (float) (angle - Math.PI/2);
             particle.scale = (float) Math.random() * 2 + 0.5f;
             particle.alpha = 1;
             particle.birthTime = System.currentTimeMillis();
             particle.visible = true;
         }
+        lastTime = System.currentTimeMillis();
     }
 
 
