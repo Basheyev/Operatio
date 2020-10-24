@@ -237,7 +237,7 @@ public class ConveyorRenderer extends BlockRenderer {
 
         Sprite materialSprite = item.getMaterial().getImage();
 
-        materialSprite.zOrder = 2;
+        materialSprite.zOrder = sprite.zOrder + 1;
         materialSprite.draw(camera,
                 x + xpos * width + width / 4,
                 y + ypos * height + height / 4,
