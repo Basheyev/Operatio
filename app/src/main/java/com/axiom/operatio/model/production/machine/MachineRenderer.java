@@ -20,7 +20,7 @@ public class MachineRenderer extends BlockRenderer {
         this.machine = machine;
         int ID = machine.getType().ID;
         sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-        sprite.zOrder = 2;
+        sprite.zOrder = 6;
         idleAnimation = sprite.addAnimation(ID * 8, ID * 8, 8, true);
         busyAnimation = sprite.addAnimation(ID * 8, ID * 8 + 7, 8, true);
         sprite.setActiveAnimation(idleAnimation);

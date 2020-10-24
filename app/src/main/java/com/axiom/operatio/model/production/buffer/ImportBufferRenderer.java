@@ -15,7 +15,7 @@ public class ImportBufferRenderer extends BlockRenderer {
     public ImportBufferRenderer(ImportBuffer importBuffer) {
         this.importBuffer = importBuffer;
         sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks,8,11);
-        sprite.zOrder = 1;
+        sprite.zOrder = 5;
     }
 
     public void draw(Camera camera, float x, float y, float width, float height) {
