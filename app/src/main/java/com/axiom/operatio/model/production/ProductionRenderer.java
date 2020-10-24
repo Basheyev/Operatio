@@ -3,6 +3,7 @@ package com.axiom.operatio.model.production;
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.graphics.renderers.Particles;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
@@ -12,6 +13,9 @@ public class ProductionRenderer {
 
     protected Production production;
     protected Sprite tile, tileBlocked, selection;
+
+    public Particles particles; // TODO Fix access
+
     private float cellWidth;                  // Ширина клетки
     private float cellHeight;                 // Высота клетки
 
@@ -29,6 +33,11 @@ public class ProductionRenderer {
         selection = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
         selection.setActiveFrame(67);
         selection.zOrder = 500;
+
+        Sprite particleSprite = new Sprite(SceneManager.getResources(), R.drawable.vfx);
+        particles = new Particles(particleSprite,24, 1000, 8);
+        particles.zOrder = 8;
+
         this.production = production;
         this.cellWidth = cellWidth;
         this.cellHeight = cellHeight;
@@ -79,6 +88,7 @@ public class ProductionRenderer {
                 if (production.isBlockSelected()) {
                     if (row==production.getSelectedRow() && col==production.getSelectedCol()) {
                         drawSelection(camera, col, row);
+                        particles.draw(camera, col * cellWidth + cellWidth / 2, row * cellHeight + cellHeight / 2);
                     }
                 }
             }

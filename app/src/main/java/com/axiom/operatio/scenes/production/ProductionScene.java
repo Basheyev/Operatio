@@ -134,6 +134,10 @@ public class ProductionScene extends GameScene {
         return production;
     }
 
+    public ProductionRenderer getProductionRenderer() {
+        return productionRenderer;
+    }
+
     public InputHandler getInputHandler() {
         return inputHandler;
     }

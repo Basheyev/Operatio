@@ -72,10 +72,13 @@ public class BlockAddMoveHandler {
                         if (block == null) {
                             SoundRenderer.playSound(blockPlaced);
                             production.setBlock(dragBlock, column, row);
-                            production.decreaseCashBalance(dragBlock.getPrice());
+                            if (justCreatedBlock) {
+                                production.decreaseCashBalance(dragBlock.getPrice());
+                            }
                             dragBlock.adjustFlowDirection();
                             opsPanel.showBlockInfo(dragBlock, false);
                             production.selectBlock(column, row);
+                            scene.getProductionRenderer().particles.generateParticles();
                         } else {
                             production.setBlock(dragBlock, lastCol, lastRow);
                             production.selectBlock(column, row);
