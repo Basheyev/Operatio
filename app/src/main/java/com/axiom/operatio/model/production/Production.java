@@ -16,7 +16,7 @@ public class Production {
     //protected static Production instance;         // Синглтон объекта - производство
     protected Inventory inventory;                  // Объект - склад
     protected Market market;                        // Объект - рынок
-    protected long cashBalance = 1000;              // Остатки денег
+    protected long cashBalance = 10000;             // Остатки денег
 
     protected ArrayList<Block> blocks;              // Список блоков производства
     protected Block[][] grid;                       // Блоки привязанные к координатной сетке
@@ -306,9 +306,11 @@ public class Production {
         return cashBalance;
     }
 
-    public long decreaseCashBalance(long value) {
-        cashBalance -= value;
-        return cashBalance;
+    public boolean decreaseCashBalance(long value) {
+        long result = cashBalance - value;
+        if (result < 0) return false;
+        cashBalance = result;
+        return true;
     }
 
     public long increaseCashBalance(long value) {
