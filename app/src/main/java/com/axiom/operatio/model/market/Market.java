@@ -49,8 +49,8 @@ public class Market implements JSONSerializable {
     public Order orderBuy(Agent agent, Material material, int quantity, int price) {
         if (agent==null || material==null || quantity <= 0 || price <= 0) return null;
         Order order = new Order();
-        order.agent = agent.getID();
         order.type = Order.BUY;
+        order.agentID = agent.getID();
         order.materialID = material.getMaterialID();
         order.quantity = quantity;
         order.price = price;
@@ -60,8 +60,8 @@ public class Market implements JSONSerializable {
     public Order orderSell(Agent agent, Material material, int quantity, int price) {
         if (agent==null || material==null || quantity <= 0 || price <= 0) return null;
         Order order = new Order();
-        order.agent = agent.getID();
         order.type = Order.SELL;
+        order.agentID = agent.getID();
         order.materialID = material.getMaterialID();
         order.quantity = quantity;
         order.price = price;
