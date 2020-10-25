@@ -7,20 +7,22 @@ import org.json.JSONObject;
 
 public class Order implements JSONSerializable {
 
+    public static final int CLOSED = 0;
     public static final int BUY = 1;
     public static final int SELL = 2;
 
     public int type;                        // Тип: BUY/SELL
-    public int agentID;                     // ID агента
+    public Agent agent;                     // Агент
     public int materialID;                  // ID материала
     public int quantity;                    // Количество
     public int price;                       // Предельная цена
+
 
     public JSONObject serialize() {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("type", materialID);
-            jsonObject.put("agent", agentID);
+            jsonObject.put("agent", agent.getID());
             jsonObject.put("material", materialID);
             jsonObject.put("quantity", quantity);
             jsonObject.put("price", price);
