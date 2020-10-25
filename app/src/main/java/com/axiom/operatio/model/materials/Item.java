@@ -1,5 +1,6 @@
 package com.axiom.operatio.model.materials;
 
+import com.axiom.atom.engine.data.JSONSerializable;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 
@@ -9,7 +10,7 @@ import org.json.JSONObject;
 /**
  * Содержит информацию о предмете
  */
-public class Item {
+public class Item implements JSONSerializable {
 
     protected Material material;            // Материал
     protected Block owner;                  // Блок владелец

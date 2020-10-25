@@ -2,6 +2,7 @@ package com.axiom.operatio.model.production.block;
 
 
 import com.axiom.atom.engine.data.Channel;
+import com.axiom.atom.engine.data.JSONSerializable;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
@@ -20,7 +21,7 @@ import org.json.JSONObject;
 /**
  * Базовый блок производства реализующий примитивную механику
  */
-public abstract class Block {
+public abstract class Block implements JSONSerializable {
 
     protected Production production;                  // Производство к которомуо относится блок
 

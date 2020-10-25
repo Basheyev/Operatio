@@ -36,10 +36,9 @@ public class TechnologyPanel extends Panel {
             return;
         }
 
-        caption.setText(selectedMaterial.getName());
-
         findMachineAndOperations(selectedMaterial);
 
+        caption.setText(selectedMaterial.getName());
     }
 
 

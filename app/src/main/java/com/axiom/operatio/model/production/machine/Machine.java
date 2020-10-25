@@ -1,6 +1,7 @@
 package com.axiom.operatio.model.production.machine;
 
 import com.axiom.atom.engine.data.Channel;
+import com.axiom.atom.engine.data.JSONSerializable;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.buffer.Buffer;
@@ -14,7 +15,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Machine extends Block {
+// TODO Добавить экономику: цена операции
+public class Machine extends Block implements JSONSerializable {
 
     protected MachineType type;
     protected Operation operation;

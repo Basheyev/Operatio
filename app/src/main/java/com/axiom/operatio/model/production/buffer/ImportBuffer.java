@@ -1,5 +1,6 @@
 package com.axiom.operatio.model.production.buffer;
 
+import com.axiom.atom.engine.data.JSONSerializable;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
@@ -13,7 +14,7 @@ import org.json.JSONObject;
 /**
  * Импортер материалов со склада на производство
  */
-public class ImportBuffer extends Block {
+public class ImportBuffer extends Block implements JSONSerializable {
 
     public static final int PRICE = 20;
 

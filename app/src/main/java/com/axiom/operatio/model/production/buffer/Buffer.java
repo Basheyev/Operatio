@@ -1,5 +1,6 @@
 package com.axiom.operatio.model.production.buffer;
 
+import com.axiom.atom.engine.data.JSONSerializable;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
@@ -12,8 +13,9 @@ import org.json.JSONObject;
 
 /**
  * Представляет собой мини-склад, который может хранить до 4 видов материалов
+ * TODO Добавить экономику: цена хранения
  */
-public class Buffer extends Block {
+public class Buffer extends Block implements JSONSerializable {
 
     public static final int PRICE = 20;
     public static final int NO_KEEPING_UNIT = -1;      // Константа отсутствия такой ячейки хранения

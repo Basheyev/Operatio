@@ -1,17 +1,20 @@
 package com.axiom.operatio.scenes.market;
 
 import android.graphics.Color;
-import android.opengl.GLES20;
 import android.view.MotionEvent;
 
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
-import com.axiom.atom.engine.graphics.renderers.Line;
+import com.axiom.operatio.model.market.Market;
 
 
 public class MarketScene extends GameScene {
+
+    private boolean initialized = false;
+    private MarketPanel marketPanel;
+
     @Override
     public String getSceneName() {
         return null;
@@ -19,7 +22,12 @@ public class MarketScene extends GameScene {
 
     @Override
     public void startScene() {
-
+        if (!initialized) {
+            Market market = new Market();
+            marketPanel = new MarketPanel(null, market);
+            getSceneWidget().addChild(marketPanel);
+            initialized = true;
+        }
     }
 
     @Override
@@ -41,19 +49,9 @@ public class MarketScene extends GameScene {
     public void preRender(Camera camera) {
 
        GraphicsRender.setZOrder(0);
-       GraphicsRender.setColor(Color.DKGRAY);
+       GraphicsRender.setColor(Color.BLACK);
        GraphicsRender.drawRectangle(0,0,1920,1080);
-       GraphicsRender.setZOrder(1);
-        GraphicsRender.setColor(Color.GREEN);
-        float x, y, oldX = 0, oldY = 540;
-        for (int i=-20; i<1920; i+=10) {
-            x = i;
-            y = ((float) Math.sin(i / 100.0f)) * 300 + 540;
-            GraphicsRender.drawLine(oldX, oldY, x, y);
-            oldX = x;
-            oldY = y;
-        }
-        GraphicsRender.drawLine(-100, -100, -10, -10);
+
     }
 
     protected StringBuffer fps = new StringBuffer(100);

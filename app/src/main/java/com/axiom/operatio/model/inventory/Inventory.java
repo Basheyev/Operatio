@@ -1,6 +1,7 @@
 package com.axiom.operatio.model.inventory;
 
 import com.axiom.atom.engine.data.Channel;
+import com.axiom.atom.engine.data.JSONSerializable;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
@@ -14,8 +15,9 @@ import java.util.ArrayList;
 
 /**
  * Модель склада материалов
+ * TODO Добавить экономику: цена хранения
  */
-public class Inventory {
+public class Inventory implements JSONSerializable {
 
     public static final int MAX_SKU_CAPACITY = 999;
 
@@ -44,7 +46,7 @@ public class Inventory {
     }
 
 
-    public Inventory(Production production, JSONArray jsonArray) {
+    public Inventory(Production production, JSONObject jsonObject) {
         try {
             this.production = production;
             int materialsAmount = Material.getMaterialsAmount();
@@ -53,6 +55,7 @@ public class Inventory {
                 Channel<Item> sku = new Channel<Item>(MAX_SKU_CAPACITY);
                 stockKeepingUnit.add(sku);
             }
+            JSONArray jsonArray = jsonObject.getJSONArray("stockKeepingUnit");
             Material[] materials = Material.getMaterials();
             for (int i = jsonArray.length() - 1; i >= 0; i--) {
                 Channel<Item> sku = stockKeepingUnit.get(i);
@@ -117,12 +120,20 @@ public class Inventory {
         
     }
 
-    public JSONArray serialize() {
-        JSONArray jsonArray = new JSONArray();
-        for (int i=0; i<stockKeepingUnit.size(); i++) {
-            jsonArray.put(stockKeepingUnit.get(i).size());
+    public JSONObject serialize() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            JSONArray jsonArray = new JSONArray();
+            for (int i=0; i<stockKeepingUnit.size(); i++) {
+                jsonArray.put(stockKeepingUnit.get(i).size());
+            }
+            jsonObject.put("class", "Inventory");
+            jsonObject.put("stockKeepingUnit", jsonArray);
+            return jsonObject;
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        return jsonArray;
+        return null;
     }
 
 }

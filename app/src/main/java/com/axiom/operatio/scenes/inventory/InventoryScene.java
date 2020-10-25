@@ -14,6 +14,7 @@ import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.scenes.market.MarketPanel;
 
 /**
  * Сцена склада
@@ -24,6 +25,7 @@ public class InventoryScene extends GameScene {
     protected Production production;
     protected MaterialsPanel materialsPanel;
     protected TechnologyPanel technologyPanel;
+    protected MarketPanel marketPanel;
     protected static Sprite background;
     protected static int tickSound;
 
@@ -103,7 +105,8 @@ public class InventoryScene extends GameScene {
 
         Button exitButton = new Button("Production");
         exitButton.setTextColor(1,1,1,1);
-        exitButton.setLocalBounds(Camera.WIDTH - 375,960,375,100);
+        exitButton.setTextScale(1.5f);
+        exitButton.setLocalBounds(1600,995,300,70);
         exitButton.setColor(0.8f, 0.5f, 0.5f, 0.9f);
         exitButton.setClickListener(exitListener);
         widget.addChild(exitButton);
@@ -113,6 +116,9 @@ public class InventoryScene extends GameScene {
 
         technologyPanel = new TechnologyPanel(materialsPanel);
         widget.addChild(technologyPanel);
+
+        marketPanel = new MarketPanel(materialsPanel, production.getMarket());
+        widget.addChild(marketPanel);
 
         initialized = true;
 

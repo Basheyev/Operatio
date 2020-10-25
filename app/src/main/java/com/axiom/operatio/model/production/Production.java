@@ -1,5 +1,7 @@
 package com.axiom.operatio.model.production;
 
+import com.axiom.atom.engine.data.JSONSerializable;
+import com.axiom.operatio.model.market.Agent;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;
@@ -10,12 +12,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-// TODO Добавить экономику: цена материала, цена хранения, цена операции (стоимость компании)
-public class Production {
+
+public class Production implements JSONSerializable {
 
     //protected static Production instance;         // Синглтон объекта - производство
     protected Inventory inventory;                  // Объект - склад
     protected Market market;                        // Объект - рынок
+    protected Agent player;                         // Игрок участник рынка
     protected long cashBalance = 10000;             // Остатки денег
 
     protected ArrayList<Block> blocks;              // Список блоков производства
@@ -74,7 +77,7 @@ public class Production {
             setBlock(block, block.column, block.row);
         }
 
-        JSONArray jsonInventory = jsonObject.getJSONArray("inventory");
+        JSONObject jsonInventory = jsonObject.getJSONObject("inventory");
         inventory = new Inventory(this, jsonInventory);
         market = new Market();
 
