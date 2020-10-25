@@ -52,8 +52,12 @@ public class Quad {
             if (a.zOrder==b.zOrder) {
                 // сравиваем по текстуре
                 if (a.texture==b.texture) {
-                    // сравниваем по цвету
-                    return compareColor(a.color, b.color);
+                    // сравниваем по шейдеру
+                    if (a.program==b.program) {
+                        // сравниваем по цвету
+                        return compareColor(a.color, b.color);
+                    }
+                    if (a.program.getProgramID() < b.program.getProgramID()) return -1; else return 1;
                 }
                 if (a.texture==null) return -1;
                 if (b.texture==null) return 1;
