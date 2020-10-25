@@ -7,6 +7,7 @@ import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
+import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
@@ -161,11 +162,14 @@ public class ConveyorRenderer extends BlockRenderer {
         float progressBias = cycleBias * stridePerItem;
         int finishedCounter = conveyor.getOutputQueue().size();
 
-        Sprite materialSprite;
+        //Sprite materialSprite;
         for (int i=0; i<outputQueue.size(); i++) {
             Item item = outputQueue.get(i);
             if (item==null) continue;
             progress = 1.0f - (i * stridePerItem) + progressBias - stridePerItem;
+            //materialSprite = item.getMaterial().getImage();
+            //materialSprite.useColor = true;
+            //materialSprite.setColor(Color.RED);
             drawItem (camera, x, y, width, height, item, progress);
         }
 
@@ -180,6 +184,9 @@ public class ConveyorRenderer extends BlockRenderer {
                 progress = maxProgress;
                 maxProgress -= stridePerItem;
             }
+            //materialSprite = item.getMaterial().getImage();
+            //materialSprite.useColor = true;
+            //materialSprite.setColor(Color.GREEN);
             drawItem (camera, x, y, width, height, item, progress);
         }
 
