@@ -14,16 +14,18 @@ import org.json.JSONObject;
 
 public class Conveyor extends Block {
 
+    public static final int DELIVERY_CYCLES = 5;
     public static final int PRICE = 5;
     public static final int MAX_CAPACITY = 4;
     private int deliveryCycles;
     private long lastInputCycle = 0;
     private float inputCycleTime;
+    protected long lastPollTime = 0;
 
-    public Conveyor(Production production, int inDir, int outDir, int deliveryCycles) {
+    public Conveyor(Production production, int inDir, int outDir) {
         super(production, inDir, MAX_CAPACITY, outDir, MAX_CAPACITY);
         price = PRICE;
-        this.deliveryCycles = deliveryCycles;
+        this.deliveryCycles = DELIVERY_CYCLES;
         this.inputCycleTime = deliveryCycles / (float) MAX_CAPACITY;
         this.renderer = new ConveyorRenderer(this);
     }
@@ -37,6 +39,7 @@ public class Conveyor extends Block {
             deliveryCycles = jsonObject.getInt("deliveryCycles");
             lastInputCycle = jsonObject.getLong("lastInputCycle");
             inputCycleTime = (float) jsonObject.getDouble("inputCycleTime");
+            lastPollTime = jsonObject.getLong("lastPollTime");
             renderer = new ConveyorRenderer(this);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -77,7 +80,12 @@ public class Conveyor extends Block {
         return super.push(item);
     }
 
-
+    @Override
+    public Item poll() {
+        Item item = super.poll();
+        if (item!=null) lastPollTime = production.getClockMilliseconds();
+        return item;
+    }
 
     @Override
     public void process() {
@@ -116,6 +124,7 @@ public class Conveyor extends Block {
                     if (neightInputDirection==NONE || neighborInput==this) {
                         if (outputBlock.push(item)) {
                             output.remove(item);
+                            lastPollTime = production.getClockMilliseconds();
                         }
                     }
                 }
@@ -151,6 +160,7 @@ public class Conveyor extends Block {
             jsonObject.put("deliveryCycles", deliveryCycles);
             jsonObject.put("lastInputCycle", lastInputCycle);
             jsonObject.put("inputCycleTime", inputCycleTime);
+            jsonObject.put("lastPollTime", lastPollTime);
         } catch (JSONException e) {
             e.printStackTrace();
             return null;

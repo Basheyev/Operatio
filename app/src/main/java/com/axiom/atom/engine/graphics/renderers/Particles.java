@@ -7,7 +7,6 @@ import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 
-// TODO Добить базовые частицы
 public class Particles {
 
     public static class Particle {
@@ -28,6 +27,8 @@ public class Particles {
     private long lifeTime;
     public int zOrder = 0;
 
+    public static final int DEFAULT_SIZE = 32;
+
 
     public Particles(Sprite image, int amount, long lifeTimeMs, float speed) {
         if (image!=null) sprite = image; else rectangle = new Rectangle();
@@ -36,26 +37,25 @@ public class Particles {
         this.amount = amount;
         this.speed = speed;
         this.lifeTime = lifeTimeMs;
-        generateParticles();
     }
 
 
-    public void draw(Camera camera, float x, float y, AABB scissor) {
+    public void draw(Camera camera, float x, float y, float scaleFactor, AABB scissor) {
         Particle particle;
         float particleSize;
 
-        if (!processParticles()) return;
+        if (!processParticles(scaleFactor / 16)) return;
 
         if (sprite==null) {
             for (int i = 0; i < particles.length; i++) {
                 particle = particles[i];
                 if (particle.visible) {
-                    particleSize = 32 * particle.scale;
+                    particleSize = scaleFactor * particle.scale;
                     rectangle.zOrder = zOrder;
                     rectangle.setRotation(particle.rotation);
                     rectangle.setAlpha(particle.alpha);
-                    rectangle.draw(camera, x + particle.x - particleSize/2,
-                            y + particle.y - particleSize/2,
+                    rectangle.draw(camera, x + particle.x - particleSize * 0.5f,
+                            y + particle.y - particleSize * 0.5f,
                             particleSize, particleSize, scissor);
                 }
             }
@@ -63,12 +63,12 @@ public class Particles {
             for (int i = 0; i < particles.length; i++) {
                 particle = particles[i];
                 if (particle.visible) {
-                    particleSize = 32 * particle.scale;
+                    particleSize = scaleFactor * particle.scale;
                     sprite.zOrder = zOrder;
                     sprite.setRotation(particle.rotation);
                     sprite.setAlpha(particle.alpha);
-                    sprite.draw(camera, x + particle.x - particleSize/2,
-                            y + particle.y - particleSize/2,
+                    sprite.draw(camera, x + particle.x - particleSize * 0.5f,
+                            y + particle.y - particleSize * 0.5f,
                             particleSize, particleSize, scissor);
                 }
             }
@@ -77,20 +77,21 @@ public class Particles {
     }
 
 
-    public void draw(Camera camera, float x, float y) {
-        draw(camera,x,y, null);
+    public void draw(Camera camera, float x, float y, float particleSize) {
+        draw(camera,x,y, particleSize, null);
     }
 
 
     private long lastTime;
 
 
-    private boolean processParticles() {
+    private boolean processParticles(float speedScale) {
         Particle particle;
         long passedTime;
         boolean visiblesLeft = false;
+
         long currentTime = System.currentTimeMillis();
-        float delta = (currentTime - lastTime) / 1000.0f;         // Прошедшие доли секунд
+        float delta = (currentTime - lastTime) / 1000.0f;         // Прошедшие доли секунды
 
         for (int i=0; i<amount; i++) {
             particle = particles[i];
@@ -99,8 +100,8 @@ public class Particles {
                 if (passedTime > lifeTime) particle.visible = false;
                 particle.alpha = 1.0f - ((float) passedTime) / ((float) lifeTime);
                 particle.rotation += 0.1f;
-                particle.x += (particle.vx * delta);
-                particle.y += (particle.vy * delta);
+                particle.x += (particle.vx * delta * speedScale);
+                particle.y += (particle.vy * delta * speedScale);
                 visiblesLeft = true;
             }
         }

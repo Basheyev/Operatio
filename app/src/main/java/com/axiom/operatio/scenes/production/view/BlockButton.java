@@ -107,7 +107,7 @@ public class BlockButton extends Button {
         int choice = Integer.parseInt(toggled);
         switch (choice) {
             case 0: // КОн
-                block = new Conveyor(production, Block.LEFT, Block.RIGHT, 5);
+                block = new Conveyor(production, Block.LEFT, Block.RIGHT);
                 break;
             case 1:
                 block = new Buffer(production, 100);

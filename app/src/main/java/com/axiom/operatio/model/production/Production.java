@@ -88,7 +88,7 @@ public class Production {
      */
     public void process() {
         if (!isPaused) {
-            long now = System.currentTimeMillis();
+            long now = clock; //System.currentTimeMillis();
             if (now - lastCycleTime > cycleMilliseconds) {
                 Block block;
                 int size = blocks.size();
@@ -96,6 +96,11 @@ public class Production {
                     block = blocks.get(i);
                     block.process();
                 }
+                // Выполнить симуляцию склада
+                inventory.process();
+                // Выполнить симуляцию рынка
+                market.process();
+                // Увеличиваем счётчик циклов
                 cycle++;
                 lastCycleTime = now;
             }
@@ -103,10 +108,7 @@ public class Production {
             clock = System.currentTimeMillis() - pausedTime;
         }
 
-        // Выполнить симуляцию склада
-        inventory.process();
-        // Выполнить симуляцию рынка
-        market.process();
+
     }
 
 

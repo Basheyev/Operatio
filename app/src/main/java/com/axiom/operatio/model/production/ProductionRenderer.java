@@ -88,7 +88,10 @@ public class ProductionRenderer {
                 if (production.isBlockSelected()) {
                     if (row==production.getSelectedRow() && col==production.getSelectedCol()) {
                         drawSelection(camera, col, row);
-                        particles.draw(camera, col * cellWidth + cellWidth / 2, row * cellHeight + cellHeight / 2);
+                        particles.draw(camera,
+                                col * cellWidth + cellWidth * 0.5f,
+                                row * cellHeight + cellHeight * 0.5f,
+                                cellWidth * 0.25f);
                     }
                 }
             }

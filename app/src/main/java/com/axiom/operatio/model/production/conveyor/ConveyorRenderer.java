@@ -1,5 +1,7 @@
 package com.axiom.operatio.model.production.conveyor;
 
+import android.graphics.Color;
+
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.data.Channel;
@@ -10,10 +12,13 @@ import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
 import com.axiom.operatio.model.materials.Item;
 
+import static android.graphics.Color.BLACK;
 import static com.axiom.operatio.model.production.block.Block.DOWN;
 import static com.axiom.operatio.model.production.block.Block.LEFT;
 import static com.axiom.operatio.model.production.block.Block.RIGHT;
 import static com.axiom.operatio.model.production.block.Block.UP;
+
+// TODO Сделать плавное движение материалов с учетом пауз конвейера
 
 public class ConveyorRenderer extends BlockRenderer {
 
@@ -139,37 +144,41 @@ public class ConveyorRenderer extends BlockRenderer {
 
 
     protected void drawItems(Camera camera, float x, float y, float width, float height) {
-        Conveyor conveyor = (Conveyor) block;
-        float cycleTime = block.getProduction().getCycleTimeMs();        // Длительность цикла в мс.
-        float deliveryCycles = conveyor.getDeliveryCycles();  // Циклов для доставки предмета
-        float capacity = conveyor.getTotalCapacity();         // Вместимость конвейера в предметах
-        float stridePerItem = 1.0f / (capacity / 2.0f);       // Шаг для одного предмета
-        float deliveryTime = deliveryCycles * cycleTime;      // Время доставки в мс.
-        float progress;                                       // Прогресс движения от 0.0 до 1.0
 
-        // Разместим на конвейере доставленные предметы
-        int finishedCounter = 0;
-        Channel<Item> outputQueue = conveyor.getOutputQueue();
+        Conveyor conveyor = (Conveyor) block;                       // Конвейер
+        Channel<Item> inputQueue = conveyor.getInputQueue();        // Входящая очередь
+        Channel<Item> outputQueue = conveyor.getOutputQueue();      // Исходящая очередь
+        float cycleTime = block.getProduction().getCycleTimeMs();   // Длительность цикла в мс.
+        float deliveryCycles = conveyor.getDeliveryCycles();        // Циклов для доставки предмета
+        float deliveryTime = deliveryCycles * cycleTime;            // Время доставки в мс.
+        float capacity = conveyor.getTotalCapacity();               // Вместимость конвейера в предметах
+        float stridePerItem = 1.0f / (capacity / 2.0f);             // Шаг для одного предмета
+        float progress = 1.0f;
 
-        for (int k=0; k<outputQueue.size(); k++) {
-            Item item = outputQueue.get(k);
+        long now = conveyor.getProduction().getClockMilliseconds();
+        float cycleBias = (now - conveyor.lastPollTime) / cycleTime;
+        if (cycleBias > 1.0f) cycleBias = 1.0f;
+        float progressBias = cycleBias * stridePerItem;
+        int finishedCounter = conveyor.getOutputQueue().size();
+
+        Sprite materialSprite;
+        for (int i=0; i<outputQueue.size(); i++) {
+            Item item = outputQueue.get(i);
             if (item==null) continue;
-            progress = 1.0f - (finishedCounter * stridePerItem);
+            progress = 1.0f - (i * stridePerItem) + progressBias - stridePerItem;
             drawItem (camera, x, y, width, height, item, progress);
-            finishedCounter++;
         }
 
-        // Разместим на конвейере движущиеся предметы
-        Channel<Item> inputQueue = conveyor.getInputQueue();
+
         float maxProgress = 1.0f - (finishedCounter * stridePerItem);
-        long now;
-        for (int k=0; k<inputQueue.size(); k++) {
-            Item item = inputQueue.get(k);
-            if (item==null) continue;
+        for (int i=0; i<inputQueue.size(); i++) {
+            Item item = inputQueue.get(i);
+            if (item == null) continue;
             now = conveyor.getProduction().getClockMilliseconds();
             progress = (now - item.getTimeOwned()) /  deliveryTime;
             if (progress > maxProgress) {
                 progress = maxProgress;
+                maxProgress -= stridePerItem;
             }
             drawItem (camera, x, y, width, height, item, progress);
         }

@@ -174,6 +174,7 @@ public class Sprite extends Quad {
             evaluateScale(width, height);
             evaluateOffset(sx, sy);
             Program program = useColor ? coloredProgram : texturedProgram;
+            // FIXME Batcher все равно группирует по цвету и текстуре игнорируя программу
             BatchRender.addTexturedQuad(program, texture, vertices, texCoords, color, zOrder, scissor);
         }
         animationNextFrame();

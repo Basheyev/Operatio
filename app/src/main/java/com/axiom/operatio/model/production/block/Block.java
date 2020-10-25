@@ -194,15 +194,17 @@ public abstract class Block {
             jsonObject.put("column", column);
             jsonObject.put("row", row);
 
+            // Сохраняем очередь входящих в обратном порядке
             JSONArray jsonInputArray = new JSONArray();
-            for (int i=0; i<input.size(); i++) {
+            for (int i=input.size()-1; i>=0; i--) {
                 JSONObject item = input.get(i).serialize();
                 jsonInputArray.put(item);
             }
             jsonObject.put("input", jsonInputArray);
 
+            // Сохраняем очередь исходящих в обратном порядке
             JSONArray jsonOutputArray = new JSONArray();
-            for (int i=0; i<output.size(); i++) {
+            for (int i=output.size()-1; i>=0; i--) {
                 JSONObject item = output.get(i).serialize();
                 jsonOutputArray.put(item);
             }
@@ -266,14 +268,14 @@ public abstract class Block {
             block.row = jsonObject.getInt("row");
 
             JSONArray jsonInputArray = jsonObject.getJSONArray("input");
-            for (int i = jsonInputArray.length() - 1; i >= 0; i--) {
+            for (int i = 0; i < jsonInputArray.length(); i++) {
                 JSONObject jsonItem = (JSONObject) jsonInputArray.get(i);
                 Item item = Item.deserialize(jsonItem, block);
                 block.input.add(item);
             }
 
             JSONArray jsonOutputArray = jsonObject.getJSONArray("output");
-            for (int i = jsonOutputArray.length() - 1; i >= 0; i--) {
+            for (int i = 0; i < jsonOutputArray.length(); i++) {
                 JSONObject jsonItem = (JSONObject) jsonOutputArray.get(i);
                 Item item = Item.deserialize(jsonItem, block);
                 block.output.add(item);
