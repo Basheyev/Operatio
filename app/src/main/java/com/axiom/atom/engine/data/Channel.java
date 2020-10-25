@@ -26,7 +26,7 @@ public class Channel<T> implements Serializable {
     }
 
     public synchronized boolean add(T element) {
-        if (rear==capacity) return false;
+        if (rear==capacity || element==null) return false;
         queue[rear] = element;
         rear++;
         return true;
@@ -54,8 +54,8 @@ public class Channel<T> implements Serializable {
         return (T) element;
     }
 
-    public synchronized void remove(T element) {
-        if (front==rear) return;
+    public synchronized boolean remove(T element) {
+        if (front==rear) return false;
         for (int i=0; i<rear; i++) {
             if (queue[i]==element) {
                 if (rear - 1 - i >= 0)
@@ -64,6 +64,7 @@ public class Channel<T> implements Serializable {
                 break;
             }
         }
+        return true;
     }
 
     public synchronized void clear() {
