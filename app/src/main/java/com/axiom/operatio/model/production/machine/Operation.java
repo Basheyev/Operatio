@@ -9,7 +9,7 @@ public class Operation {
     protected Material[] inputMaterials;        // Список кодов исходящих материалов
     protected int[] outputAmount;               // Список количества входящих материалов
     protected int[] inputAmount;                // Список количества исходящих материалов
-
+    protected long cost;                        // Стоимость операции
 
     public boolean isCorrectInput(Material m) {
         for (Material material: inputMaterials) {

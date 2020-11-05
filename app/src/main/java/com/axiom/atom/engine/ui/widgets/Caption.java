@@ -54,7 +54,7 @@ public class Caption extends Widget {
         if (caption!=null) this.caption = caption;
     }
 
-    public void setScale(float scale) {
+    public void setTextScale(float scale) {
         this.scale = scale;
     }
 

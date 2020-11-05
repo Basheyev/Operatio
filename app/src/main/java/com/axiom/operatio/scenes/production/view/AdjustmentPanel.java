@@ -20,7 +20,6 @@ import com.axiom.operatio.model.production.machine.Machine;
 import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
 import com.axiom.operatio.model.materials.Material;
-import com.axiom.operatio.model.inventory.Inventory;
 
 import static android.graphics.Color.DKGRAY;
 import static android.graphics.Color.GRAY;
@@ -137,7 +136,7 @@ public class AdjustmentPanel extends Panel {
 
         caption = new Caption("Block information");
         caption.setLocalBounds(40,599,300, 100);
-        caption.setScale(1.5f);
+        caption.setTextScale(1.5f);
         caption.setTextColor(WHITE);
         addChild(caption);
 
@@ -167,7 +166,7 @@ public class AdjustmentPanel extends Panel {
         // Список входных материалов
         inputsCaption = new Caption("Input materials:");
         inputsCaption.setLocalBounds(40,400,300, 100);
-        inputsCaption.setScale(1.5f);
+        inputsCaption.setTextScale(1.5f);
         inputsCaption.setTextColor(WHITE);
         addChild(inputsCaption);
 
@@ -183,7 +182,7 @@ public class AdjustmentPanel extends Panel {
         // Список выходных материалов
         outputsCaption = new Caption("Output materials:");
         outputsCaption.setLocalBounds(40,250,300, 100);
-        outputsCaption.setScale(1.5f);
+        outputsCaption.setTextScale(1.5f);
         outputsCaption.setTextColor(WHITE);
         addChild(outputsCaption);
 

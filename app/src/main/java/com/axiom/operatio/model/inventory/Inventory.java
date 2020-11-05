@@ -21,12 +21,10 @@ public class Inventory implements JSONSerializable {
 
     public static final int MAX_SKU_CAPACITY = 999;
 
-    protected Production production;
     protected ArrayList<Channel<Item>> stockKeepingUnit;
 
 
-    public Inventory(Production production) {
-        this.production = production;
+    public Inventory() {
         int materialsAmount = Material.getMaterialsAmount();
         stockKeepingUnit = new ArrayList<Channel<Item>>();
         for (int i=0; i<materialsAmount; i++) {
@@ -46,9 +44,8 @@ public class Inventory implements JSONSerializable {
     }
 
 
-    public Inventory(Production production, JSONObject jsonObject) {
+    public Inventory(JSONObject jsonObject) {
         try {
-            this.production = production;
             int materialsAmount = Material.getMaterialsAmount();
             stockKeepingUnit = new ArrayList<Channel<Item>>();
             for (int i=0; i<materialsAmount; i++) {

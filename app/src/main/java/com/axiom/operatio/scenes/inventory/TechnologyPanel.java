@@ -1,7 +1,6 @@
 package com.axiom.operatio.scenes.inventory;
 
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.operatio.model.materials.Material;
@@ -61,7 +60,7 @@ public class TechnologyPanel extends Panel {
         panel.setColor(0xCC505050);
 
         caption = new Caption("Technology");
-        caption.setScale(1.5f);
+        caption.setTextScale(1.5f);
         caption.setTextColor(WHITE);
         caption.setLocalBounds(30, 200, 300, 100);
         panel.addChild(caption);
@@ -69,7 +68,7 @@ public class TechnologyPanel extends Panel {
         // Список входных материалов
         inputsCaption = new Caption("Input materials:");
         inputsCaption.setLocalBounds(40,130,250, 100);
-        inputsCaption.setScale(1.2f);
+        inputsCaption.setTextScale(1.2f);
         inputsCaption.setTextColor(WHITE);
         addChild(inputsCaption);
 
@@ -85,7 +84,7 @@ public class TechnologyPanel extends Panel {
         // Кнопка отображающая машину
         machineCaption = new Caption("Machine");
         machineCaption.setLocalBounds(400,130,250, 100);
-        machineCaption.setScale(1.2f);
+        machineCaption.setTextScale(1.2f);
         machineCaption.setTextColor(WHITE);
         addChild(machineCaption);
 
@@ -100,7 +99,7 @@ public class TechnologyPanel extends Panel {
         // Список выходных материалов
         outputsCaption = new Caption("Output materials:");
         outputsCaption.setLocalBounds(600,130,300, 100);
-        outputsCaption.setScale(1.2f);
+        outputsCaption.setTextScale(1.2f);
         outputsCaption.setTextColor(WHITE);
         addChild(outputsCaption);
 

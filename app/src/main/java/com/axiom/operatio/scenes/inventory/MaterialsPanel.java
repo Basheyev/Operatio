@@ -1,7 +1,5 @@
 package com.axiom.operatio.scenes.inventory;
 
-import android.util.Log;
-
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Caption;
@@ -54,7 +52,7 @@ public class MaterialsPanel extends Panel {
         panel.setColor(0xCC505050);
 
         Caption caption = new Caption("Materials");
-        caption.setScale(1.5f);
+        caption.setTextScale(1.5f);
         caption.setTextColor(WHITE);
         caption.setLocalBounds(30, panel.getHeight() - 100, 300, 100);
         panel.addChild(caption);

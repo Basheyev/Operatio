@@ -16,7 +16,7 @@ public class Item implements JSONSerializable {
     protected Block owner;                  // Блок владелец
     protected long cycleOwned;              // Цикл производства (захват)
     protected long timeOwned;               // Время в миллисекундах (захват)
-
+    protected long cost;                    // Стоимость
     //----------------------------------------------------------------------------
 
     public Item(Material material) {

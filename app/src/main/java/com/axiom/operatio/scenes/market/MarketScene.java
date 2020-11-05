@@ -13,7 +13,9 @@ import com.axiom.operatio.model.market.Market;
 public class MarketScene extends GameScene {
 
     private boolean initialized = false;
+    private Market market;
     private MarketPanel marketPanel;
+    private long lastTime;
 
     @Override
     public String getSceneName() {
@@ -23,7 +25,7 @@ public class MarketScene extends GameScene {
     @Override
     public void startScene() {
         if (!initialized) {
-            Market market = new Market();
+            market = new Market();
             marketPanel = new MarketPanel(null, market);
             getSceneWidget().addChild(marketPanel);
             initialized = true;
@@ -42,7 +44,12 @@ public class MarketScene extends GameScene {
 
     @Override
     public void updateScene(float deltaTime) {
-
+        long now = System.currentTimeMillis();
+        if (now - lastTime > 1000) {
+            market.process();
+            marketPanel.updateValues();
+            lastTime = now;
+        }
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.axiom.operatio.model.production;
 
 import com.axiom.atom.engine.data.JSONSerializable;
-import com.axiom.operatio.model.market.Agent;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;
@@ -18,7 +17,6 @@ public class Production implements JSONSerializable {
     //protected static Production instance;         // Синглтон объекта - производство
     protected Inventory inventory;                  // Объект - склад
     protected Market market;                        // Объект - рынок
-    protected Agent player;                         // Игрок участник рынка
     protected long cashBalance = 10000;             // Остатки денег
 
     protected ArrayList<Block> blocks;              // Список блоков производства
@@ -43,7 +41,7 @@ public class Production implements JSONSerializable {
         this.rows = rows;
         grid = new Block[rows][columns];
         blocks = new ArrayList<Block>(100);
-        inventory = new Inventory(this);
+        inventory = new Inventory();
         market = new Market();
     }
 
@@ -78,7 +76,7 @@ public class Production implements JSONSerializable {
         }
 
         JSONObject jsonInventory = jsonObject.getJSONObject("inventory");
-        inventory = new Inventory(this, jsonInventory);
+        inventory = new Inventory(jsonInventory);
         market = new Market();
 
     }

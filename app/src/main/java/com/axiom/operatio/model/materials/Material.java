@@ -9,7 +9,6 @@ import com.axiom.atom.engine.data.CSVTable;
 
 /**
  * Содержит данные и изображения материалов (materials.png, materials.csv)
- * TODO Добавить экономику: цена материала
  */
 public class Material {
 
