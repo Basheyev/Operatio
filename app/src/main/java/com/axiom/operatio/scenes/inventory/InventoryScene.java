@@ -13,6 +13,7 @@ import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Widget;
+import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.market.MarketPanel;
 
@@ -28,6 +29,7 @@ public class InventoryScene extends GameScene {
     protected MarketPanel marketPanel;
     protected static Sprite background;
     protected static int tickSound;
+    private long lastTime;
 
     public InventoryScene(Production production) {
         this.production = production;
@@ -56,7 +58,13 @@ public class InventoryScene extends GameScene {
 
     @Override
     public void updateScene(float deltaTime) {
-
+        long now = System.currentTimeMillis();
+        if (now - lastTime > 100) {
+            Market market = production.getMarket();
+            market.process();
+            marketPanel.updateValues();
+            lastTime = now;
+        }
     }
 
     @Override

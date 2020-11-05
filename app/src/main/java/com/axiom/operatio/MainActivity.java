@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
-        gameScene = new MarketScene();
+        gameScene = new MainMenuScene();
         gameView = GameView.getInstance(this, gameScene);
         setContentView(gameView);
     }

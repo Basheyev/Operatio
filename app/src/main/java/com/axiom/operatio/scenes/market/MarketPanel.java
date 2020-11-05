@@ -9,7 +9,10 @@ import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.operatio.model.market.Market;
+import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.scenes.inventory.MaterialsPanel;
+
+import java.util.Arrays;
 
 import static android.graphics.Color.WHITE;
 
@@ -20,6 +23,7 @@ public class MarketPanel extends Panel {
     private double[] values;
     private int counter = 0;
     private int currentMarket = 0;
+    private int previousMarket = 0;
     private MaterialsPanel materialsPanel;
     private Button sellButton, buyButton;
 
@@ -70,6 +74,14 @@ public class MarketPanel extends Panel {
     @Override
     public void draw(Camera camera) {
         super.draw(camera);
+        Material material = null;
+        if (materialsPanel!=null) material = materialsPanel.getSelectedMaterial();
+        if (material!=null) currentMarket = material.getMaterialID(); else currentMarket = 0;
+        if (previousMarket!=currentMarket) {
+            Arrays.fill(values,0);
+            counter = 0;
+            previousMarket = currentMarket;
+        }
 
         AABB wBounds = getWorldBounds();
         AABB scissor = getScissors();
@@ -80,24 +92,19 @@ public class MarketPanel extends Panel {
         float x = wBounds.min.x + 25;
         float y = wBounds.min.y + floor;
         float oldX = x;
-        float oldY = y;
+        float oldY;
         GraphicsRender.drawLine(x,y,x + values.length * 10,y);
+        y += (int) (values[0] * 2);
+        oldY = y;
         for (int i=0; i<counter; i++) {
             x = wBounds.min.x + i * 10 + 25;
-            y = wBounds.min.y + floor + (int) (values[i] * 5);
+            y = wBounds.min.y + floor + (int) (values[i] * 2);
             if (oldY > y) GraphicsRender.setColor(Color.RED); else GraphicsRender.setColor(Color.GREEN);
             GraphicsRender.drawLine(oldX, oldY,x, y);
-           // GraphicsRender.drawRectangle(x-3,y-3,6,6);
             oldX = x;
             oldY = y;
         }
 
-        /*
-        for (int i=0; i<Market.COMMODITY_COUNT; i++) {
-            double demand = market.getValue(i);
-            if (demand>=0) GraphicsRender.setColor(Color.GREEN); else GraphicsRender.setColor(Color.RED);
-            GraphicsRender.drawLine(i * 25, getHeight() / 2, i * 25, (int) (getHeight() / 2 + demand));
-        }*/
 
     }
 

@@ -45,7 +45,7 @@ public class MarketScene extends GameScene {
     @Override
     public void updateScene(float deltaTime) {
         long now = System.currentTimeMillis();
-        if (now - lastTime > 1000) {
+        if (now - lastTime > 100) {
             market.process();
             marketPanel.updateValues();
             lastTime = now;
