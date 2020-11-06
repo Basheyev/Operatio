@@ -12,6 +12,7 @@ import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.scenes.inventory.MaterialsPanel;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
 
 import static android.graphics.Color.WHITE;
@@ -21,6 +22,7 @@ public class MarketPanel extends Panel {
     private Caption caption;
     private Market market;
     private double[] values;
+    private double maxValue;
     private int counter = 0;
     private int currentMarket = 0;
     private int previousMarket = 0;
@@ -67,6 +69,10 @@ public class MarketPanel extends Panel {
                 System.arraycopy(values, 1, values, 0,counter - 1);
                 counter--;
             }
+            maxValue = 0;
+            for (int i=0; i<counter; i++) {
+                if (values[i] > maxValue) maxValue = values[i];
+            }
         }
     }
 
@@ -86,6 +92,7 @@ public class MarketPanel extends Panel {
         AABB wBounds = getWorldBounds();
         AABB scissor = getScissors();
 
+        caption.setText(String.format("$%.2f", market.getValue(currentMarket)));
         GraphicsRender.setZOrder(zOrder + 1);
 
         float floor = 200;
@@ -94,11 +101,11 @@ public class MarketPanel extends Panel {
         float oldX = x;
         float oldY;
         GraphicsRender.drawLine(x,y,x + values.length * 10,y);
-        y += (int) (values[0] * 2);
+        y += (int) (values[0] / maxValue * 200);
         oldY = y;
         for (int i=0; i<counter; i++) {
             x = wBounds.min.x + i * 10 + 25;
-            y = wBounds.min.y + floor + (int) (values[i] * 2);
+            y = wBounds.min.y + floor + (int) (values[i] / maxValue * 200);
             if (oldY > y) GraphicsRender.setColor(Color.RED); else GraphicsRender.setColor(Color.GREEN);
             GraphicsRender.drawLine(oldX, oldY,x, y);
             oldX = x;

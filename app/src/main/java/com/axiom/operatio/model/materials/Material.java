@@ -18,7 +18,7 @@ public class Material {
     private int materialID;                    // Код материала
     private Sprite image;                      // Изображения всех материалов
     private String name;                       // Наименование материала
-
+    private double price;                      // Цена материала
 
     /**
      * Возвращает информацию о материале по коду
@@ -42,11 +42,13 @@ public class Material {
      *
      * @param ID   код материала
      * @param name название материала
+     * @param price цена материала
      */
-    private Material(int ID, Sprite image, String name) {
+    private Material(int ID, Sprite image, String name, double price) {
         materialID = ID;
         this.image = image;
         this.name = name;
+        this.price = price;
     }
 
 
@@ -72,6 +74,7 @@ public class Material {
         return name;
     }
 
+    public double getPrice() { return price; }
 
     public static int getMaterialsAmount() {
         if (!initialized) loadMaterialsData(SceneManager.getResources());
@@ -94,7 +97,7 @@ public class Material {
                 // TODO Можно более экономно создавать спрайт не делая атлас каждый раз
                 Sprite image = new Sprite(resources, R.drawable.materials, 8, 8);
                 image.setActiveFrame(ID);
-                materials[ID] = new Material(ID,  image, csv.getValue(i, 1).trim());
+                materials[ID] = new Material(ID,  image, csv.getValue(i, 1).trim(), csv.getDoubleValue(i, 2));
             }
         }
         initialized = true;

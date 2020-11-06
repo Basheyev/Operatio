@@ -61,6 +61,11 @@ public class CSVTable {
         return Integer.parseInt(value);
     }
 
+    public double getDoubleValue(int row, int col) {
+        String value = getValue(row,col).trim();
+        return Double.parseDouble(value);
+    }
+
     public int getRowCount() {
         return csv.size();
     }

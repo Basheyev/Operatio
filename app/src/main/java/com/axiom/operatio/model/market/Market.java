@@ -1,6 +1,7 @@
 package com.axiom.operatio.model.market;
 
 import com.axiom.atom.engine.data.JSONSerializable;
+import com.axiom.operatio.model.materials.Material;
 
 import org.json.JSONObject;
 
@@ -21,7 +22,7 @@ public class Market implements JSONSerializable {
         marketBias = new double[COMMODITY_COUNT];
         largeCycle = Math.random() * 2 * Math.PI;
         for (int i=0; i<faceValue.length; i++) {
-            faceValue[i] = (i / 8 + 1) * 30.0d;
+            faceValue[i] = Material.getMaterial(i).getPrice();
             marketValue[i] = faceValue[i];
             marketBias[i] = Math.random() * 2 * Math.PI;
             marketCycle[i] = marketBias[i];
