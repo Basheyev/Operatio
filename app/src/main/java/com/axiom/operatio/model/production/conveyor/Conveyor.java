@@ -16,7 +16,7 @@ import org.json.JSONObject;
 public class Conveyor extends Block implements JSONSerializable {
 
     public static final int DELIVERY_CYCLES = 5;
-    public static final int PRICE = 5;
+    public static final int PRICE = 100;
     public static final int MAX_CAPACITY = 4;
     private int deliveryCycles;
     private long lastInputCycle = 0;

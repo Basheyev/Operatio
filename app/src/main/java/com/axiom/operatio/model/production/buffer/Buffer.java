@@ -17,7 +17,7 @@ import org.json.JSONObject;
  */
 public class Buffer extends Block implements JSONSerializable {
 
-    public static final int PRICE = 20;
+    public static final int PRICE = 2000;
     public static final int NO_KEEPING_UNIT = -1;      // Константа отсутствия такой ячейки хранения
     protected BufferKeepingUnit[] bufferKeepingUnit;   // Ячейки хранения материалов
 

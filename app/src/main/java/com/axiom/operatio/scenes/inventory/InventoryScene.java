@@ -1,5 +1,6 @@
 package com.axiom.operatio.scenes.inventory;
 
+import android.graphics.Color;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
@@ -27,6 +28,7 @@ public class InventoryScene extends GameScene {
     protected MaterialsPanel materialsPanel;
     protected TechnologyPanel technologyPanel;
     protected MarketPanel marketPanel;
+    protected Button balance;
     protected static Sprite background;
     protected static int tickSound;
     private long lastTime;
@@ -127,6 +129,11 @@ public class InventoryScene extends GameScene {
 
         marketPanel = new MarketPanel(materialsPanel, production.getMarket(), production, production.getInventory());
         widget.addChild(marketPanel);
+
+        balance = new Button(String.format("$%.2f", production.getCashBalance()));
+        balance.setTextColor(Color.BLACK);
+        balance.setLocalBounds(Camera.WIDTH/2-150, 980, 300, 100);
+        widget.addChild(balance);
 
         initialized = true;
 
