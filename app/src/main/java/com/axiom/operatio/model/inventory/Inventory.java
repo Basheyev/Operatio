@@ -31,15 +31,6 @@ public class Inventory implements JSONSerializable {
             Channel<Item> sku = new Channel<Item>(MAX_SKU_CAPACITY);
             stockKeepingUnit.add(sku);
         }
-        Material[] materials = Material.getMaterials();
-        for (int i=0; i<materialsAmount; i++) {
-            Channel<Item> sku = stockKeepingUnit.get(i);
-            if (!materials[i].getName().equals("reserved") && i < 8) {
-                for (int j = 0; j < 300; j++) {
-                    sku.add(new Item(materials[i]));
-                }
-            }
-        }
 
     }
 

@@ -92,6 +92,7 @@ public class MaterialsPanel extends Panel {
             if (w.getTag()==null) return;
             int materialID = Integer.parseInt(w.getTag());
             Material material = Material.getMaterial(materialID);
+            if (materialID > 55 && materialID < 61) return;
             MaterialsPanel materialsPanel = (MaterialsPanel) w.getParent();
             if (w.getColor()!=RED) {
                 unselectAllButtons(w);

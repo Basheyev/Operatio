@@ -127,13 +127,16 @@ public class InventoryScene extends GameScene {
         technologyPanel = new TechnologyPanel(materialsPanel);
         widget.addChild(technologyPanel);
 
-        marketPanel = new MarketPanel(materialsPanel, production.getMarket(), production, production.getInventory());
+        balance = new Button(String.format("$%.0f", production.getCashBalance()));
+        balance.setTextColor(Color.BLACK);
+        balance.setLocalBounds(Camera.WIDTH/2-150, 1000, 300, 80);
+        widget.addChild(balance);
+
+        marketPanel = new MarketPanel(
+                balance, materialsPanel, production.getMarket(),
+                production, production.getInventory());
         widget.addChild(marketPanel);
 
-        balance = new Button(String.format("$%.2f", production.getCashBalance()));
-        balance.setTextColor(Color.BLACK);
-        balance.setLocalBounds(Camera.WIDTH/2-150, 980, 300, 100);
-        widget.addChild(balance);
 
         initialized = true;
 

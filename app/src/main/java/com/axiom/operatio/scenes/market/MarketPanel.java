@@ -25,6 +25,7 @@ public class MarketPanel extends Panel {
 
     private Production production;
     private Inventory inventory;
+    private Button cashBalance;
 
     private Caption caption;
     private Market market;
@@ -33,9 +34,9 @@ public class MarketPanel extends Panel {
     private int counter = 0;
     private int currentCommodity = 0;
     private int previousCommodity = 0;
-    private int quantity = 1;
+    private int quantity = 10;
     private MaterialsPanel materialsPanel;
-    private Button sellButton, buyButton;
+    private Button sellButton, dealSum, buyButton;
     private Button leftButton, quantityButton, rightButton;
 
     protected ClickListener clickListener = new ClickListener() {
@@ -55,9 +56,11 @@ public class MarketPanel extends Panel {
 
             } else if (button.getTag().equals("BUY")) {
                 market.buyOrder(production, inventory, currentCommodity, quantity);
+                cashBalance.setText(String.format("$%.0f", production.getCashBalance()));
                 materialsPanel.updateData();
             } else if (button.getTag().equals("SELL")) {
                 market.sellOrder(production, inventory, currentCommodity, quantity);
+                cashBalance.setText(String.format("$%.0f", production.getCashBalance()));
                 materialsPanel.updateData();
             }
         }
@@ -65,13 +68,13 @@ public class MarketPanel extends Panel {
     };
 
 
-    public MarketPanel(MaterialsPanel materialsPanel, Market market, Production production, Inventory inventory) {
+    public MarketPanel(Button cashBalance, MaterialsPanel materialsPanel, Market market, Production production, Inventory inventory) {
         super();
         this.market = market;
         this.production = production;
         this.inventory = inventory;
         this.materialsPanel = materialsPanel;
-
+        this.cashBalance = cashBalance;
         values = new double[96];
         counter = 0;
 
@@ -85,7 +88,7 @@ public class MarketPanel extends Panel {
 
         buyButton = new Button("BUY");
         buyButton.setTag("BUY");
-        buyButton.setLocalBounds(25, 25, 150, 80);
+        buyButton.setLocalBounds(25, 35, 150, 80);
         buyButton.setTextScale(1.5f);
         buyButton.setTextColor(WHITE);
         buyButton.setColor(Color.RED);
@@ -94,7 +97,7 @@ public class MarketPanel extends Panel {
 
 
         leftButton = new Button("<");
-        leftButton.setLocalBounds( 200, 25, 75, 80);
+        leftButton.setLocalBounds( 200, 35, 75, 80);
         leftButton.setTag("<");
         leftButton.setColor(GRAY);
         leftButton.setTextColor(WHITE);
@@ -103,22 +106,29 @@ public class MarketPanel extends Panel {
 
         quantityButton = new Button("" + quantity);
         quantityButton.setTextScale(1.5f);
-        quantityButton.setLocalBounds( 275, 25, 150, 80);
-        quantityButton.setColor(WHITE);
-        quantityButton.setTextColor(Color.BLACK);
+        quantityButton.setLocalBounds( 275, 35, 150, 80);
+        quantityButton.setColor(Color.BLACK);
+        quantityButton.setTextColor(WHITE);
         addChild(quantityButton);
 
         rightButton = new Button(">");
         rightButton.setTag(">");
-        rightButton.setLocalBounds( 425, 25, 75, 80);
+        rightButton.setLocalBounds( 425, 35, 75, 80);
         rightButton.setColor(GRAY);
         rightButton.setTextColor(WHITE);
         rightButton.setClickListener(clickListener);
         addChild(rightButton);
 
+        dealSum = new Button(String.format("$%.0f", production.getCashBalance()));
+        dealSum.setTextScale(1.5f);
+        dealSum.setLocalBounds( 525, 35, 250, 80);
+        dealSum.setColor(Color.BLACK);
+        dealSum.setTextColor(WHITE);
+        addChild(dealSum);
+
         sellButton = new Button("SELL");
         sellButton.setTag("SELL");
-        sellButton.setLocalBounds(525, 25, 150, 80);
+        sellButton.setLocalBounds(800, 35, 150, 80);
         sellButton.setTextScale(1.5f);
         sellButton.setTextColor(WHITE);
         sellButton.setColor(Color.GREEN);
@@ -139,6 +149,7 @@ public class MarketPanel extends Panel {
             for (int i=0; i<counter; i++) {
                 if (values[i] > maxValue) maxValue = values[i];
             }
+            dealSum.setText(String.format("$%.2f", quantity * market.getValue(currentCommodity)));
         }
     }
 

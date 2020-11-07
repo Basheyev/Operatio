@@ -15,7 +15,7 @@ import org.json.JSONObject;
  */
 public class ExportBuffer extends Block implements JSONSerializable {
 
-    public static final int PRICE = 500;
+    public static final int PRICE = 1000;
 
     public ExportBuffer(Production production) {
         super(production, Block.NONE, 1, Block.NONE, 1);
