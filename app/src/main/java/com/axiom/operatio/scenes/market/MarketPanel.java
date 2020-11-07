@@ -5,33 +5,71 @@ import android.graphics.Color;
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
+import com.axiom.atom.engine.ui.widgets.Widget;
+import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.materials.Material;
+import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.inventory.MaterialsPanel;
 
-import java.text.NumberFormat;
 import java.util.Arrays;
 
+import static android.graphics.Color.GRAY;
 import static android.graphics.Color.WHITE;
 
 public class MarketPanel extends Panel {
+
+    private Production production;
+    private Inventory inventory;
 
     private Caption caption;
     private Market market;
     private double[] values;
     private double maxValue;
     private int counter = 0;
-    private int currentMarket = 0;
-    private int previousMarket = 0;
+    private int currentCommodity = 0;
+    private int previousCommodity = 0;
+    private int quantity = 1;
     private MaterialsPanel materialsPanel;
     private Button sellButton, buyButton;
+    private Button leftButton, quantityButton, rightButton;
 
-    public MarketPanel(MaterialsPanel materialsPanel, Market market) {
+    protected ClickListener clickListener = new ClickListener() {
+        @Override
+        public void onClick(Widget w) {
+
+            Button button = (Button) w;
+
+            if (button.getTag().equals("<")) {
+                quantity--;
+                if (quantity < 1) quantity = 1;
+                quantityButton.setText("" + quantity);
+            } else if (button.getTag().equals(">")) {
+                quantity++;
+                if (quantity > 100) quantity = 100;
+                quantityButton.setText("" + quantity);
+
+            } else if (button.getTag().equals("BUY")) {
+                market.buyOrder(production, inventory, currentCommodity, quantity);
+                materialsPanel.updateData();
+            } else if (button.getTag().equals("SELL")) {
+                market.sellOrder(production, inventory, currentCommodity, quantity);
+                materialsPanel.updateData();
+            }
+        }
+
+    };
+
+
+    public MarketPanel(MaterialsPanel materialsPanel, Market market, Production production, Inventory inventory) {
         super();
         this.market = market;
+        this.production = production;
+        this.inventory = inventory;
         this.materialsPanel = materialsPanel;
 
         values = new double[96];
@@ -46,24 +84,52 @@ public class MarketPanel extends Panel {
         addChild(caption);
 
         buyButton = new Button("BUY");
-        buyButton.setLocalBounds(25, 25, 100, 60);
+        buyButton.setTag("BUY");
+        buyButton.setLocalBounds(25, 25, 150, 80);
         buyButton.setTextScale(1.5f);
         buyButton.setTextColor(WHITE);
         buyButton.setColor(Color.RED);
+        buyButton.setClickListener(clickListener);
         addChild(buyButton);
 
+
+        leftButton = new Button("<");
+        leftButton.setLocalBounds( 200, 25, 75, 80);
+        leftButton.setTag("<");
+        leftButton.setColor(GRAY);
+        leftButton.setTextColor(WHITE);
+        leftButton.setClickListener(clickListener);
+        addChild(leftButton);
+
+        quantityButton = new Button("" + quantity);
+        quantityButton.setTextScale(1.5f);
+        quantityButton.setLocalBounds( 275, 25, 150, 80);
+        quantityButton.setColor(WHITE);
+        quantityButton.setTextColor(Color.BLACK);
+        addChild(quantityButton);
+
+        rightButton = new Button(">");
+        rightButton.setTag(">");
+        rightButton.setLocalBounds( 425, 25, 75, 80);
+        rightButton.setColor(GRAY);
+        rightButton.setTextColor(WHITE);
+        rightButton.setClickListener(clickListener);
+        addChild(rightButton);
+
         sellButton = new Button("SELL");
-        sellButton.setLocalBounds(175, 25, 100, 60);
+        sellButton.setTag("SELL");
+        sellButton.setLocalBounds(525, 25, 150, 80);
         sellButton.setTextScale(1.5f);
         sellButton.setTextColor(WHITE);
         sellButton.setColor(Color.GREEN);
+        sellButton.setClickListener(clickListener);
         addChild(sellButton);
     }
 
 
     public void updateValues() {
         synchronized (values) {
-            values[counter] = market.getValue(currentMarket);
+            values[counter] = market.getValue(currentCommodity);
             counter++;
             if (counter >= values.length) {
                 System.arraycopy(values, 1, values, 0,counter - 1);
@@ -82,17 +148,17 @@ public class MarketPanel extends Panel {
         super.draw(camera);
         Material material = null;
         if (materialsPanel!=null) material = materialsPanel.getSelectedMaterial();
-        if (material!=null) currentMarket = material.getMaterialID(); else currentMarket = 0;
-        if (previousMarket!=currentMarket) {
+        if (material!=null) currentCommodity = material.getMaterialID(); else currentCommodity = 0;
+        if (previousCommodity != currentCommodity) {
             Arrays.fill(values,0);
             counter = 0;
-            previousMarket = currentMarket;
+            previousCommodity = currentCommodity;
         }
 
         AABB wBounds = getWorldBounds();
         AABB scissor = getScissors();
 
-        caption.setText(String.format("$%.2f", market.getValue(currentMarket)));
+        caption.setText(String.format("$%.2f", market.getValue(currentCommodity)));
         GraphicsRender.setZOrder(zOrder + 1);
 
         float floor = 200;
@@ -100,6 +166,7 @@ public class MarketPanel extends Panel {
         float y = wBounds.min.y + floor;
         float oldX = x;
         float oldY;
+        GraphicsRender.setColor(Color.GREEN);
         GraphicsRender.drawLine(x,y,x + values.length * 10,y);
         y += (int) (values[0] / maxValue * 200);
         oldY = y;

@@ -34,7 +34,7 @@ public class ProductionScene extends GameScene {
     public float initialCellWidth = 128;                  // Ширина клетки
     public float initialCellHeight = 128;                 // Высота клетки
 
-    private long lastCashBalance = 0;
+    private double lastCashBalance = 0;
     private boolean initialized = false;
 
 
@@ -89,10 +89,10 @@ public class ProductionScene extends GameScene {
     @Override
     public void updateScene(float deltaTimeNs) {
         production.process();
-        long currentCashBalance = production.getCashBalance();
+        double currentCashBalance = production.getCashBalance();
         if (lastCashBalance!=currentCashBalance) {
             Button balance = ProductionSceneUI.getBalance();
-            balance.setText("$" + currentCashBalance);
+            balance.setText(String.format("$%.2f", currentCashBalance));
             lastCashBalance = currentCashBalance;
         }
     }

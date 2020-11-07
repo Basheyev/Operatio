@@ -26,7 +26,7 @@ public class MarketScene extends GameScene {
     public void startScene() {
         if (!initialized) {
             market = new Market();
-            marketPanel = new MarketPanel(null, market);
+            marketPanel = new MarketPanel(null, market, null, null);
             getSceneWidget().addChild(marketPanel);
             initialized = true;
         }

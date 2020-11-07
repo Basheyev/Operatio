@@ -112,7 +112,7 @@ public class ProductionSceneUI {
         setPausedButtonState(true);
         widget.addChild(pauseButton);
 
-        balance = new Button("$" + production.getCashBalance());
+        balance = new Button(String.format("$%.2f", production.getCashBalance()));
         balance.setTextColor(Color.BLACK);
         balance.setLocalBounds(Camera.WIDTH/2-150, 980, 300, 100);
         widget.addChild(balance);

@@ -17,7 +17,7 @@ public class Production implements JSONSerializable {
     //protected static Production instance;         // Синглтон объекта - производство
     protected Inventory inventory;                  // Объект - склад
     protected Market market;                        // Объект - рынок
-    protected long cashBalance = 10000;             // Остатки денег
+    protected double cashBalance = 10000;             // Остатки денег
 
     protected ArrayList<Block> blocks;              // Список блоков производства
     protected Block[][] grid;                       // Блоки привязанные к координатной сетке
@@ -305,18 +305,18 @@ public class Production implements JSONSerializable {
         return null;
     }
 
-    public long getCashBalance() {
+    public double getCashBalance() {
         return cashBalance;
     }
 
-    public boolean decreaseCashBalance(long value) {
-        long result = cashBalance - value;
+    public boolean decreaseCashBalance(double value) {
+        double result = cashBalance - value;
         if (result < 0) return false;
         cashBalance = result;
         return true;
     }
 
-    public long increaseCashBalance(long value) {
+    public double increaseCashBalance(double value) {
         cashBalance += value;
         return cashBalance;
     }

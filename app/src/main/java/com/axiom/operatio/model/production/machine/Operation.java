@@ -2,6 +2,7 @@ package com.axiom.operatio.model.production.machine;
 
 import com.axiom.operatio.model.materials.Material;
 
+// todo add op cost
 public class Operation {
 
     protected int operationTime;                // Время операции в циклах производства

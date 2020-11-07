@@ -59,7 +59,7 @@ public class InventoryScene extends GameScene {
     @Override
     public void updateScene(float deltaTime) {
         long now = System.currentTimeMillis();
-        if (now - lastTime > 100) {
+        if (now - lastTime > 1000) {
             Market market = production.getMarket();
             market.process();
             marketPanel.updateValues();
@@ -125,7 +125,7 @@ public class InventoryScene extends GameScene {
         technologyPanel = new TechnologyPanel(materialsPanel);
         widget.addChild(technologyPanel);
 
-        marketPanel = new MarketPanel(materialsPanel, production.getMarket());
+        marketPanel = new MarketPanel(materialsPanel, production.getMarket(), production, production.getInventory());
         widget.addChild(marketPanel);
 
         initialized = true;

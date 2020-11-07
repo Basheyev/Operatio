@@ -1,7 +1,10 @@
 package com.axiom.operatio.model.market;
 
 import com.axiom.atom.engine.data.JSONSerializable;
+import com.axiom.operatio.model.inventory.Inventory;
+import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
+import com.axiom.operatio.model.production.Production;
 
 import org.json.JSONObject;
 
@@ -77,12 +80,22 @@ public class Market implements JSONSerializable {
         return cycle;
     }
 
-    public void buyOrder(int commodity, int amount, double price) {
-
+    public void buyOrder(Production production, Inventory inventory, int commodity, int amount) {
+        double commodityPrice = getValue(commodity);
+        for (int i=0; i < amount; i++) {
+            if (!production.decreaseCashBalance(commodityPrice)) break;
+            inventory.push(new Item(Material.getMaterial(commodity)));
+        }
     }
 
-    public void sellOrder(int commidity, int amount, double price) {
-
+    public void sellOrder(Production production, Inventory inventory, int commodity, int amount) {
+        Item item;
+        double commodityPrice = getValue(commodity);
+        for (int i=0; i < amount; i++) {
+            item = inventory.poll(Material.getMaterial(commodity));
+            if (item==null) break;
+            production.increaseCashBalance(commodityPrice);
+        }
     }
 
     @Override

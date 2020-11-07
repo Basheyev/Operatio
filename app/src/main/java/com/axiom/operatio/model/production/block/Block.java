@@ -28,7 +28,7 @@ public abstract class Block implements JSONSerializable {
     protected static int blockCounter = 0;
 
     protected int ID;                                 // ID блока
-    protected long price;
+    protected double price;
     protected int state = IDLE;                       // Текущее состояние блока
     protected int inputDirection, outputDirection;    // Направление ввода и вывода
     protected int inputCapacity, outputCapacity;      // Максимальая вместимость блока в предметах
@@ -164,7 +164,7 @@ public abstract class Block implements JSONSerializable {
         return ID;
     }
 
-    public long getPrice() {
+    public double getPrice() {
         return price;
     }
 

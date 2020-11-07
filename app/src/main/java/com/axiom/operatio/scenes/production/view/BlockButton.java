@@ -80,7 +80,7 @@ public class BlockButton extends Button {
                 Block block = createBlock(scene.getProduction(), getTag());
                 if (block!=null) {
                     scene.getInputHandler().invalidateAllActions();
-                    long cash = scene.getProduction().getCashBalance();
+                    double cash = scene.getProduction().getCashBalance();
                     if (cash - block.getPrice() >= 0) {
                         moveHandler.startAction(block, worldX, worldY);
                     }
