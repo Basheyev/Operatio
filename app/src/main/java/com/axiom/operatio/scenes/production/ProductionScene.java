@@ -78,7 +78,6 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void changeScene() {
-        pause();
     }
 
     @Override
