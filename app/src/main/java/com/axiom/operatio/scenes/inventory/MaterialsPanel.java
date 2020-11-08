@@ -51,7 +51,7 @@ public class MaterialsPanel extends Panel {
         panel.setLocalBounds(50,100, 820, Camera.HEIGHT - 200);
         panel.setColor(0xCC505050);
 
-        Caption caption = new Caption("Materials");
+        Caption caption = new Caption("Materials inventory");
         caption.setTextScale(1.5f);
         caption.setTextColor(WHITE);
         caption.setLocalBounds(30, panel.getHeight() - 100, 300, 100);
