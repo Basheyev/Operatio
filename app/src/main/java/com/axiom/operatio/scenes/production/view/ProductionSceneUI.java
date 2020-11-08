@@ -116,7 +116,9 @@ public class ProductionSceneUI {
         widget.addChild(pauseButton);
 
         balance = new Button(String.format("$%.0f", production.getCashBalance()));
-        balance.setTextColor(Color.BLACK);
+        balance.setColor(0xCC505050);
+        balance.setTextColor(Color.WHITE);
+        balance.setTextScale(1.5f);
         balance.setLocalBounds(Camera.WIDTH/2-150, 1000, 300, 80);
         widget.addChild(balance);
     }
