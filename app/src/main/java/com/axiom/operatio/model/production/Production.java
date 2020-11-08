@@ -42,7 +42,7 @@ public class Production implements JSONSerializable {
         grid = new Block[rows][columns];
         blocks = new ArrayList<Block>(100);
         inventory = new Inventory();
-        market = new Market();
+        market = new Market(this);
     }
 
 
@@ -77,7 +77,7 @@ public class Production implements JSONSerializable {
 
         JSONObject jsonInventory = jsonObject.getJSONObject("inventory");
         inventory = new Inventory(jsonInventory);
-        market = new Market();
+        market = new Market(this);
 
     }
 
