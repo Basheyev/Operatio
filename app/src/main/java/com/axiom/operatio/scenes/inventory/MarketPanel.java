@@ -2,9 +2,11 @@ package com.axiom.operatio.scenes.inventory;
 
 import android.graphics.Color;
 
+import com.axiom.atom.R;
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Caption;
@@ -40,29 +42,41 @@ public class MarketPanel extends Panel {
     private Button sellButton, dealSum, buyButton;
     private Button leftButton, quantityButton, rightButton;
 
+    private final int cashSound, tickSound, denySound;
+
     protected ClickListener clickListener = new ClickListener() {
         @Override
         public void onClick(Widget w) {
-
             Button button = (Button) w;
-
             if (button.getTag().equals("<")) {
                 quantity--;
-                if (quantity < 1) quantity = 1;
-                quantityButton.setText("" + quantity);
-            } else if (button.getTag().equals(">")) {
-                quantity++;
-                if (quantity > 100) quantity = 100;
+                if (quantity < 1) {
+                    quantity = 1;
+                    SoundRenderer.playSound(denySound);
+                } else {
+                    SoundRenderer.playSound(tickSound);
+                }
                 quantityButton.setText("" + quantity);
 
+            } else if (button.getTag().equals(">")) {
+                quantity++;
+                if (quantity > 100) {
+                    quantity = 100;
+                    SoundRenderer.playSound(denySound);
+                } else {
+                    SoundRenderer.playSound(tickSound);
+                }
+                quantityButton.setText("" + quantity);
             } else if (button.getTag().equals("BUY")) {
                 market.buyOrder(inventory, currentCommodity, quantity);
-                cashBalance.setText(String.format(MONEY_FORMAT_0F, production.getCashBalance()));
+                cashBalance.setText(String.format("$%,d", (long) production.getCashBalance()));
                 materialsPanel.updateData();
+                SoundRenderer.playSound(cashSound);
             } else if (button.getTag().equals("SELL")) {
                 market.sellOrder(inventory, currentCommodity, quantity);
-                cashBalance.setText(String.format(MONEY_FORMAT_0F, production.getCashBalance()));
+                cashBalance.setText(String.format("$%,d", (long) production.getCashBalance()));
                 materialsPanel.updateData();
+                SoundRenderer.playSound(cashSound);
             }
         }
 
@@ -79,8 +93,11 @@ public class MarketPanel extends Panel {
         values = new double[Market.HISTORY_LENGTH];
         counter = 0;
         commodityName = Material.getMaterial(currentCommodity).getName();
+        cashSound = SoundRenderer.loadSound(R.raw.cash_snd);
+        tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
+        denySound = SoundRenderer.loadSound(R.raw.deny_snd);
 
-        setLocalBounds(900, 430, 1000, 550);
+        setLocalBounds(900, 390, 1000, 550);
         setColor(0xCC505050);
         caption = new Caption("Market");
         caption.setTextScale(1.5f);
@@ -163,22 +180,30 @@ public class MarketPanel extends Panel {
         AABB wBounds = getWorldBounds();
         AABB scissor = getScissors();
 
-        caption.setText(commodityName + " price " + String.format(MONEY_FORMAT_2F, market.getValue(currentCommodity)));
+        caption.setText(commodityName + " - " + String.format(MONEY_FORMAT_2F, market.getValue(currentCommodity)));
         GraphicsRender.setZOrder(zOrder + 1);
 
         synchronized (values) {
-            float floor = 200;
+            float graphWidth = 960;
+            float graphHeight = 300;
+            float floor = 150;
             float x = wBounds.min.x + 25;
             float y = wBounds.min.y + floor;
             float oldX = x;
             float oldY;
-            GraphicsRender.setColor(Color.GREEN);
-            GraphicsRender.drawLine(x, y, x + values.length * 10, y);
-            y += (int) (values[0] / maxValue * 200);
+            GraphicsRender.setColor(Color.BLACK);
+            GraphicsRender.setZOrder(zOrder + 1);
+            GraphicsRender.drawRectangle(x, y, graphWidth,  graphHeight);
+            GraphicsRender.setZOrder(zOrder + 2);
+            float faceValueY = (float) (y + market.getFaceValue(currentCommodity) / maxValue * graphHeight * 0.8f);
+            GraphicsRender.setColor(Color.DKGRAY);
+            GraphicsRender.drawLine(x, faceValueY, x + graphWidth, faceValueY);
+            GraphicsRender.setZOrder(zOrder + 3);
+            y += (int) (values[0] / maxValue * graphHeight * 0.8f);
             oldY = y;
             for (int i = 0; i < counter; i++) {
                 x = wBounds.min.x + i * 10 + 25;
-                y = wBounds.min.y + floor + (int) (values[i] / maxValue * 200);
+                y = wBounds.min.y + floor + (int) (values[i] / maxValue * graphHeight * 0.8f);
                 if (oldY > y) GraphicsRender.setColor(Color.RED);
                 else GraphicsRender.setColor(Color.GREEN);
                 GraphicsRender.drawLine(oldX, oldY, x, y);

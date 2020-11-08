@@ -120,7 +120,7 @@ public class InventoryScene extends GameScene {
         Button exitButton = new Button("Production");
         exitButton.setTextColor(1,1,1,1);
         exitButton.setTextScale(1.5f);
-        exitButton.setLocalBounds(1600,995,300,70);
+        exitButton.setLocalBounds(1600,965,300,100);
         exitButton.setColor(0.8f, 0.5f, 0.5f, 0.9f);
         exitButton.setClickListener(exitListener);
         widget.addChild(exitButton);
@@ -131,8 +131,10 @@ public class InventoryScene extends GameScene {
         technologyPanel = new TechnologyPanel(materialsPanel);
         widget.addChild(technologyPanel);
 
-        balance = new Button(String.format("$%.0f", production.getCashBalance()));
-        balance.setTextColor(Color.BLACK);
+        balance = new Button(String.format("$%,d", (long) production.getCashBalance()));
+        balance.setColor(0xCC505050);
+        balance.setTextColor(Color.WHITE);
+        balance.setTextScale(1.5f);
         balance.setLocalBounds(Camera.WIDTH/2-150, 1000, 300, 80);
         widget.addChild(balance);
 

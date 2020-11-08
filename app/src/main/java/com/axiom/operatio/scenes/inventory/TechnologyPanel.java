@@ -37,7 +37,7 @@ public class TechnologyPanel extends Panel {
 
         findMachineAndOperations(selectedMaterial);
 
-        caption.setText(selectedMaterial.getName());
+        caption.setText(selectedMaterial.getName() + " technology");
     }
 
 
@@ -56,7 +56,7 @@ public class TechnologyPanel extends Panel {
 
     private void buildUI() {
         Panel panel = this;
-        panel.setLocalBounds(900,100, 1000, 300);
+        panel.setLocalBounds(900,60, 1000, 300);
         panel.setColor(0xCC505050);
 
         caption = new Caption("Technology");

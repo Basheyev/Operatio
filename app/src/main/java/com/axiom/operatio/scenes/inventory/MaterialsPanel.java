@@ -1,6 +1,8 @@
 package com.axiom.operatio.scenes.inventory;
 
+import com.axiom.atom.R;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
@@ -25,11 +27,13 @@ public class MaterialsPanel extends Panel {
     protected Production production;
     protected ItemWidget[] itemWidget;
     protected Material selectedMaterial;
+    protected int tickSound;
 
     public MaterialsPanel(Production production, InventoryScene scene) {
         super();
         this.production = production;
         inventoryScene = scene;
+        tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
         buildUI();
     }
 
@@ -48,7 +52,7 @@ public class MaterialsPanel extends Panel {
 
     protected void buildUI() {
         Panel panel = this;
-        panel.setLocalBounds(50,100, 820, Camera.HEIGHT - 200);
+        panel.setLocalBounds(50,60, 820, 880);
         panel.setColor(0xCC505050);
 
         Caption caption = new Caption("Materials inventory");
