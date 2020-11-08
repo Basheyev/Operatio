@@ -1,4 +1,4 @@
-package com.axiom.operatio.scenes.market;
+package com.axiom.operatio.scenes.inventory;
 
 import android.graphics.Color;
 
@@ -14,7 +14,6 @@ import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
-import com.axiom.operatio.scenes.inventory.MaterialsPanel;
 
 import java.util.Arrays;
 
@@ -29,7 +28,7 @@ public class MarketPanel extends Panel {
 
     private Caption caption;
     private Market market;
-    private double[] values;
+    private final double[] values;
     private double maxValue;
     private int counter = 0;
     private int currentCommodity = 0;
@@ -75,7 +74,7 @@ public class MarketPanel extends Panel {
         this.inventory = inventory;
         this.materialsPanel = materialsPanel;
         this.cashBalance = cashBalance;
-        values = new double[96];
+        values = new double[Market.HISTORY_LENGTH];
         counter = 0;
 
         setLocalBounds(900, 430, 1000, 550);
@@ -139,16 +138,13 @@ public class MarketPanel extends Panel {
 
     public void updateValues() {
         synchronized (values) {
-            values[counter] = market.getValue(currentCommodity);
-            counter++;
-            if (counter >= values.length) {
-                System.arraycopy(values, 1, values, 0,counter - 1);
-                counter--;
-            }
-            maxValue = 0;
-            for (int i=0; i<counter; i++) {
-                if (values[i] > maxValue) maxValue = values[i];
-            }
+            Material material = null;
+            if (materialsPanel!=null) material = materialsPanel.getSelectedMaterial();
+            if (material!=null) currentCommodity = material.getMaterialID(); else currentCommodity = 0;
+            double[] history = market.getHistoryValues(currentCommodity);
+            counter = market.getHistoryLength(currentCommodity);
+            System.arraycopy(history, 0, values, 0,counter);
+            maxValue = market.getHistoryMaxValue(currentCommodity);
             dealSum.setText(String.format("$%.2f", quantity * market.getValue(currentCommodity)));
         }
     }
@@ -157,39 +153,39 @@ public class MarketPanel extends Panel {
     @Override
     public void draw(Camera camera) {
         super.draw(camera);
-        Material material = null;
-        if (materialsPanel!=null) material = materialsPanel.getSelectedMaterial();
-        if (material!=null) currentCommodity = material.getMaterialID(); else currentCommodity = 0;
+/**
         if (previousCommodity != currentCommodity) {
             Arrays.fill(values,0);
             counter = 0;
             previousCommodity = currentCommodity;
         }
-
+**/
         AABB wBounds = getWorldBounds();
         AABB scissor = getScissors();
 
         caption.setText(String.format("$%.2f", market.getValue(currentCommodity)));
         GraphicsRender.setZOrder(zOrder + 1);
 
-        float floor = 200;
-        float x = wBounds.min.x + 25;
-        float y = wBounds.min.y + floor;
-        float oldX = x;
-        float oldY;
-        GraphicsRender.setColor(Color.GREEN);
-        GraphicsRender.drawLine(x,y,x + values.length * 10,y);
-        y += (int) (values[0] / maxValue * 200);
-        oldY = y;
-        for (int i=0; i<counter; i++) {
-            x = wBounds.min.x + i * 10 + 25;
-            y = wBounds.min.y + floor + (int) (values[i] / maxValue * 200);
-            if (oldY > y) GraphicsRender.setColor(Color.RED); else GraphicsRender.setColor(Color.GREEN);
-            GraphicsRender.drawLine(oldX, oldY,x, y);
-            oldX = x;
+        synchronized (values) {
+            float floor = 200;
+            float x = wBounds.min.x + 25;
+            float y = wBounds.min.y + floor;
+            float oldX = x;
+            float oldY;
+            GraphicsRender.setColor(Color.GREEN);
+            GraphicsRender.drawLine(x, y, x + values.length * 10, y);
+            y += (int) (values[0] / maxValue * 200);
             oldY = y;
+            for (int i = 0; i < counter; i++) {
+                x = wBounds.min.x + i * 10 + 25;
+                y = wBounds.min.y + floor + (int) (values[i] / maxValue * 200);
+                if (oldY > y) GraphicsRender.setColor(Color.RED);
+                else GraphicsRender.setColor(Color.GREEN);
+                GraphicsRender.drawLine(oldX, oldY, x, y);
+                oldX = x;
+                oldY = y;
+            }
         }
-
 
     }
 

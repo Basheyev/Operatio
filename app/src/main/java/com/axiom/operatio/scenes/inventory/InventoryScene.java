@@ -16,7 +16,6 @@ import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.Production;
-import com.axiom.operatio.scenes.market.MarketPanel;
 
 /**
  * Сцена склада
@@ -45,6 +44,8 @@ public class InventoryScene extends GameScene {
     @Override
     public void startScene() {
         if (!initialized) buildUI();
+        Market market = production.getMarket();
+        market.process();
         materialsPanel.updateData();
     }
 

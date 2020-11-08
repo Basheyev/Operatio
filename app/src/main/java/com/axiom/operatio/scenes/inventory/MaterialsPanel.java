@@ -104,6 +104,7 @@ public class MaterialsPanel extends Panel {
                 materialsPanel.selectedMaterial = null;
                 materialsPanel.inventoryScene.technologyPanel.updateData();
             }
+            materialsPanel.inventoryScene.marketPanel.updateValues();
         }
 
         public void unselectAllButtons(Widget w) {

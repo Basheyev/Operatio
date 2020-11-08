@@ -3,16 +3,11 @@ package com.axiom.operatio;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.ViewGroup;
 
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.tests.demotest.DemoScene;
-import com.axiom.atom.tests.shoottest.ShooterScene;
-import com.axiom.atom.tests.spritetest.SpriteScene;
 import com.axiom.operatio.scenes.mainmenu.MainMenuScene;
-import com.axiom.operatio.scenes.market.MarketScene;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
 public class MainActivity extends AppCompatActivity {

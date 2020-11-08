@@ -11,12 +11,17 @@ import org.json.JSONObject;
 public class Market implements JSONSerializable {
 
     public static final int COMMODITY_COUNT = 64;
+    public static final int HISTORY_LENGTH = 96;
     private double largeCycle;
     private final double[] faceValue;
     private final double[] marketValue;
     private final double[] marketCycle;
     private final double[] marketBias;
     private long cycle;
+
+    private double[][] historyValues;
+    private double[] historyMaxValue;
+    private int[] historyLengthCounter;
 
     public Market() {
         faceValue = new double[COMMODITY_COUNT];
@@ -30,13 +35,34 @@ public class Market implements JSONSerializable {
             marketBias[i] = Math.random() * 2 * Math.PI;
             marketCycle[i] = marketBias[i];
         }
+        historyValues = new double[COMMODITY_COUNT][HISTORY_LENGTH];
+        historyMaxValue = new double[COMMODITY_COUNT];
+        historyLengthCounter = new int[COMMODITY_COUNT];
         cycle = 0;
     }
 
 
-    public void process() {
-        for (int i=0; i<marketValue.length; i++) {
-            marketValue[i] = evaluateNextValue(i);
+    public synchronized void process() {
+        for (int commodityID=0; commodityID<marketValue.length; commodityID++) {
+            // Посчитаем очередное значение
+            marketValue[commodityID] = evaluateNextValue(commodityID);
+
+            // Сохраним в историю цен
+            historyValues[commodityID][historyLengthCounter[commodityID]] = marketValue[commodityID];
+            historyLengthCounter[commodityID]++;
+            if (historyLengthCounter[commodityID] >= HISTORY_LENGTH) {
+                System.arraycopy(historyValues[commodityID], 1,
+                        historyValues[commodityID], 0,
+                        historyLengthCounter[commodityID] - 1);
+                historyLengthCounter[commodityID]--;
+            }
+            // Найдем максимальное значение
+            historyMaxValue[commodityID] = 0;
+            for (int j = 0; j< historyLengthCounter[commodityID]; j++) {
+                if (historyValues[commodityID][j] > historyMaxValue[commodityID]) {
+                    historyMaxValue[commodityID] = historyValues[commodityID][j];
+                }
+            }
         }
         cycle++;
     }
@@ -60,27 +86,27 @@ public class Market implements JSONSerializable {
         return value;
     }
 
-    public double getValue(int commodity) {
+    public synchronized double getValue(int commodity) {
         return marketValue[commodity];
     }
 
-    public double getFaceValue(int commmodity) {
+    public synchronized double getFaceValue(int commmodity) {
         return faceValue[commmodity];
     }
 
-    public void setFaceValue(int commodity, double price) {
+    public synchronized void setFaceValue(int commodity, double price) {
         faceValue[commodity] = price;
     }
 
-    public double getDemandBySupply(int commodity) {
+    public synchronized double getDemandBySupply(int commodity) {
         return 2 + Math.cos(largeCycle + marketBias[commodity]);
     }
 
-    public long getCycle() {
+    public synchronized long getCycle() {
         return cycle;
     }
 
-    public void buyOrder(Production production, Inventory inventory, int commodity, int amount) {
+    public synchronized void buyOrder(Production production, Inventory inventory, int commodity, int amount) {
         double commodityPrice = getValue(commodity);
         for (int i=0; i < amount; i++) {
             if (!production.decreaseCashBalance(commodityPrice)) break;
@@ -88,7 +114,7 @@ public class Market implements JSONSerializable {
         }
     }
 
-    public void sellOrder(Production production, Inventory inventory, int commodity, int amount) {
+    public synchronized void sellOrder(Production production, Inventory inventory, int commodity, int amount) {
         Item item;
         double commodityPrice = getValue(commodity);
         for (int i=0; i < amount; i++) {
@@ -96,6 +122,18 @@ public class Market implements JSONSerializable {
             if (item==null) break;
             production.increaseCashBalance(commodityPrice);
         }
+    }
+
+    public synchronized int getHistoryLength(int commodity) {
+        return historyLengthCounter[commodity];
+    }
+
+    public synchronized double getHistoryMaxValue(int commodity) {
+        return historyMaxValue[commodity];
+    }
+
+    public synchronized double[] getHistoryValues(int commodity) {
+        return historyValues[commodity];
     }
 
     @Override
