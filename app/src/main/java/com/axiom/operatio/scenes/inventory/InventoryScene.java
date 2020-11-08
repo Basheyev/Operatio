@@ -28,6 +28,7 @@ public class InventoryScene extends GameScene {
     protected TechnologyPanel technologyPanel;
     protected MarketPanel marketPanel;
     protected Button balance;
+    protected long currentBalance, lastBalance;
     protected static Sprite background;
     protected static int tickSound;
     private long lastTime;
@@ -62,11 +63,19 @@ public class InventoryScene extends GameScene {
     @Override
     public void updateScene(float deltaTime) {
         Market market = production.getMarket();
+
         long now = System.currentTimeMillis();
+
         market.process();
         production.process();
-        if (now - lastTime > 1000) {
 
+        currentBalance = (long) production.getCashBalance();
+        if (lastBalance != currentBalance) {
+            balance.setText(String.format("$%,d", (long) currentBalance));
+            lastBalance = currentBalance;
+        }
+
+        if (now - lastTime > 1000) {
             materialsPanel.updateData();
             marketPanel.updateValues();
             lastTime = now;

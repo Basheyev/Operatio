@@ -27,13 +27,12 @@ public class MaterialsPanel extends Panel {
     protected Production production;
     protected ItemWidget[] itemWidget;
     protected Material selectedMaterial;
-    protected int tickSound;
+
 
     public MaterialsPanel(Production production, InventoryScene scene) {
         super();
         this.production = production;
         inventoryScene = scene;
-        tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
         buildUI();
     }
 
@@ -91,9 +90,12 @@ public class MaterialsPanel extends Panel {
 
     protected static ClickListener clickListener = new ClickListener() {
 
+        protected int tickSound =-1;
+
         @Override
         public void onClick(Widget w) {
             if (w.getTag()==null) return;
+            if (tickSound == -1) tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
             int materialID = Integer.parseInt(w.getTag());
             Material material = Material.getMaterial(materialID);
             if (materialID > 55 && materialID < 61) return;
@@ -103,6 +105,7 @@ public class MaterialsPanel extends Panel {
                 w.setColor(RED);
                 materialsPanel.selectedMaterial = material;
                 materialsPanel.inventoryScene.technologyPanel.updateData();
+                SoundRenderer.playSound(tickSound);
             } else {
                 unselectAllButtons(w);
                 materialsPanel.selectedMaterial = null;

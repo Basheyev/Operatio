@@ -8,6 +8,7 @@ import com.axiom.operatio.model.production.Production;
 
 import org.json.JSONObject;
 
+// TODO Добавить авто-закуп и авто-продажу
 public class Market implements JSONSerializable {
 
     public static final int COMMODITY_COUNT = 64;

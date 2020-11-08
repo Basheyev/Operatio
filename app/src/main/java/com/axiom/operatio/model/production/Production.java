@@ -4,6 +4,8 @@ import com.axiom.atom.engine.data.JSONSerializable;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;
+import com.axiom.operatio.model.production.conveyor.Conveyor;
+import com.axiom.operatio.model.production.machine.Machine;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,7 +19,7 @@ public class Production implements JSONSerializable {
     //protected static Production instance;         // Синглтон объекта - производство
     protected Inventory inventory;                  // Объект - склад
     protected Market market;                        // Объект - рынок
-    protected double cashBalance = 10000;             // Остатки денег
+    protected double cashBalance = 15000;             // Остатки денег
 
     protected ArrayList<Block> blocks;              // Список блоков производства
     protected Block[][] grid;                       // Блоки привязанные к координатной сетке
@@ -92,10 +94,23 @@ public class Production implements JSONSerializable {
             long now = clock; //System.currentTimeMillis();
             if (now - lastCycleTime > cycleMilliseconds) {
                 Block block;
+                boolean energyPayed;
                 int size = blocks.size();
                 for (int i = 0; i < size; i++) {
                     block = blocks.get(i);
-                    block.process();
+                    energyPayed = false;
+                    if (block instanceof Machine) {
+                        energyPayed = decreaseCashBalance(0.05d);  // Берем по $0.04 за цикл машины
+                    } else if (block instanceof Conveyor) {
+                        energyPayed = decreaseCashBalance(0.02d);  // Берем по $0.01 за конвейер
+                    } else {
+                        energyPayed = decreaseCashBalance(0.001d); // Берем по $0.001 за буферы
+                    }
+                    if (energyPayed) {
+                        block.process();  // Если энергия оплачена отрабатываем
+                    } else {
+                        // TODO иначе показываем что не хватает на операцию (энергии)
+                    }
                 }
                 // Выполнить симуляцию склада
                 inventory.process();

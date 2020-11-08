@@ -91,7 +91,7 @@ public class ProductionScene extends GameScene {
         double currentCashBalance = production.getCashBalance();
         if (lastCashBalance!=currentCashBalance) {
             Button balance = ProductionSceneUI.getBalance();
-            balance.setText(String.format("$%.0f", currentCashBalance));
+            balance.setText(String.format("$%,d", (long) production.getCashBalance()));
             lastCashBalance = currentCashBalance;
         }
     }
