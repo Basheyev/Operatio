@@ -69,8 +69,11 @@ public class ProductionSceneUI {
             public void onClick(Widget w) {
                 if (w.getTag().equals("Menu")) {
                     SoundRenderer.playSound(tickSound);
+                    productionScene.getInputHandler().invalidateAllActions();
+                    productionScene.pause();
                     SceneManager.getInstance().setActiveScene("Menu");
                 } else if (w.getTag().equals("Inventory")) {
+                    productionScene.getInputHandler().invalidateAllActions();
                     SoundRenderer.playSound(tickSound);
                     SceneManager.getInstance().setActiveScene("Inventory");
                 }
