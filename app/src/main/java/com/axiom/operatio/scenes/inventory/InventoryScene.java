@@ -61,10 +61,13 @@ public class InventoryScene extends GameScene {
 
     @Override
     public void updateScene(float deltaTime) {
+        Market market = production.getMarket();
         long now = System.currentTimeMillis();
+        market.process();
+        production.process();
         if (now - lastTime > 1000) {
-            Market market = production.getMarket();
-            market.process();
+
+            materialsPanel.updateData();
             marketPanel.updateValues();
             lastTime = now;
         }
