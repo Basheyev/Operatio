@@ -132,8 +132,8 @@ public class Market implements JSONSerializable {
         return historyMaxValue[commodity];
     }
 
-    public synchronized double[] getHistoryValues(int commodity) {
-        return historyValues[commodity];
+    public synchronized void getHistoryValues(int commodity, double[] destination) {
+        System.arraycopy(historyValues[commodity], 0, destination, 0, historyLengthCounter[commodity]);
     }
 
     @Override

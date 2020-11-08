@@ -141,10 +141,9 @@ public class MarketPanel extends Panel {
             Material material = null;
             if (materialsPanel!=null) material = materialsPanel.getSelectedMaterial();
             if (material!=null) currentCommodity = material.getMaterialID(); else currentCommodity = 0;
-            double[] history = market.getHistoryValues(currentCommodity);
-            counter = market.getHistoryLength(currentCommodity);
-            System.arraycopy(history, 0, values, 0,counter);
             maxValue = market.getHistoryMaxValue(currentCommodity);
+            counter = market.getHistoryLength(currentCommodity);
+            market.getHistoryValues(currentCommodity, values);
             dealSum.setText(String.format("$%.2f", quantity * market.getValue(currentCommodity)));
         }
     }
@@ -153,13 +152,7 @@ public class MarketPanel extends Panel {
     @Override
     public void draw(Camera camera) {
         super.draw(camera);
-/**
-        if (previousCommodity != currentCommodity) {
-            Arrays.fill(values,0);
-            counter = 0;
-            previousCommodity = currentCommodity;
-        }
-**/
+
         AABB wBounds = getWorldBounds();
         AABB scissor = getScissors();
 
