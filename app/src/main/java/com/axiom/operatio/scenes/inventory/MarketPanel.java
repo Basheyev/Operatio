@@ -15,12 +15,13 @@ import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 
-import java.util.Arrays;
-
 import static android.graphics.Color.GRAY;
 import static android.graphics.Color.WHITE;
 
 public class MarketPanel extends Panel {
+
+    public static final String MONEY_FORMAT_0F = "$%.0f";
+    public static final String MONEY_FORMAT_2F = "$%.2f";
 
     private Production production;
     private Inventory inventory;
@@ -31,9 +32,10 @@ public class MarketPanel extends Panel {
     private final double[] values;
     private double maxValue;
     private int counter = 0;
+    private String commodityName = "";
     private int currentCommodity = 0;
     private int previousCommodity = 0;
-    private int quantity = 10;
+    private int quantity = 20;
     private MaterialsPanel materialsPanel;
     private Button sellButton, dealSum, buyButton;
     private Button leftButton, quantityButton, rightButton;
@@ -54,12 +56,12 @@ public class MarketPanel extends Panel {
                 quantityButton.setText("" + quantity);
 
             } else if (button.getTag().equals("BUY")) {
-                market.buyOrder(production, inventory, currentCommodity, quantity);
-                cashBalance.setText(String.format("$%.0f", production.getCashBalance()));
+                market.buyOrder(inventory, currentCommodity, quantity);
+                cashBalance.setText(String.format(MONEY_FORMAT_0F, production.getCashBalance()));
                 materialsPanel.updateData();
             } else if (button.getTag().equals("SELL")) {
-                market.sellOrder(production, inventory, currentCommodity, quantity);
-                cashBalance.setText(String.format("$%.0f", production.getCashBalance()));
+                market.sellOrder(inventory, currentCommodity, quantity);
+                cashBalance.setText(String.format(MONEY_FORMAT_0F, production.getCashBalance()));
                 materialsPanel.updateData();
             }
         }
@@ -76,6 +78,7 @@ public class MarketPanel extends Panel {
         this.cashBalance = cashBalance;
         values = new double[Market.HISTORY_LENGTH];
         counter = 0;
+        commodityName = Material.getMaterial(currentCommodity).getName();
 
         setLocalBounds(900, 430, 1000, 550);
         setColor(0xCC505050);
@@ -118,7 +121,7 @@ public class MarketPanel extends Panel {
         rightButton.setClickListener(clickListener);
         addChild(rightButton);
 
-        dealSum = new Button(String.format("$%.0f", production.getCashBalance()));
+        dealSum = new Button(String.format(MONEY_FORMAT_2F, production.getCashBalance()));
         dealSum.setTextScale(1.5f);
         dealSum.setLocalBounds( 525, 35, 250, 80);
         dealSum.setColor(Color.BLACK);
@@ -141,10 +144,14 @@ public class MarketPanel extends Panel {
             Material material = null;
             if (materialsPanel!=null) material = materialsPanel.getSelectedMaterial();
             if (material!=null) currentCommodity = material.getMaterialID(); else currentCommodity = 0;
+            if (currentCommodity!=previousCommodity) {
+                commodityName = Material.getMaterial(currentCommodity).getName();
+                previousCommodity = currentCommodity;
+            }
             maxValue = market.getHistoryMaxValue(currentCommodity);
             counter = market.getHistoryLength(currentCommodity);
             market.getHistoryValues(currentCommodity, values);
-            dealSum.setText(String.format("$%.2f", quantity * market.getValue(currentCommodity)));
+            dealSum.setText(String.format(MONEY_FORMAT_2F, quantity * market.getValue(currentCommodity)));
         }
     }
 
@@ -156,7 +163,7 @@ public class MarketPanel extends Panel {
         AABB wBounds = getWorldBounds();
         AABB scissor = getScissors();
 
-        caption.setText(String.format("$%.2f", market.getValue(currentCommodity)));
+        caption.setText(commodityName + " price " + String.format(MONEY_FORMAT_2F, market.getValue(currentCommodity)));
         GraphicsRender.setZOrder(zOrder + 1);
 
         synchronized (values) {
