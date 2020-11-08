@@ -26,7 +26,7 @@ public class MachineType {
     protected String name;                                 // Название
     protected Operation[] operations;                      // Доступные операции
     protected Sprite image;                                // Изображение машины
-    protected long price;
+    protected double price;
     //---------------------------------------------------------------------------------
 
     /**
@@ -140,6 +140,8 @@ public class MachineType {
     public Sprite getImage() {
         return image;
     }
+
+    public double getPrice() { return price; }
 
     //--------------------------------------------------------------------------------
 
