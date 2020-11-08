@@ -17,13 +17,18 @@ public class Market implements JSONSerializable {
     private final double[] marketValue;
     private final double[] marketCycle;
     private final double[] marketBias;
+    private final double[][] historyValues;
+    private final double[] historyMaxValue;
+    private final int[] historyLengthCounter;
+
+    private Production production;
+    protected long lastCycleTime;                   // Время последнего цикла (миллисекунды)
+    protected long cycleMilliseconds = 900;         // Длительносить цикла (миллисекунды)
     private long cycle;
 
-    private double[][] historyValues;
-    private double[] historyMaxValue;
-    private int[] historyLengthCounter;
 
-    public Market() {
+    public Market(Production production) {
+        this.production = production;
         faceValue = new double[COMMODITY_COUNT];
         marketValue = new double[COMMODITY_COUNT];
         marketCycle = new double[COMMODITY_COUNT];
@@ -43,7 +48,10 @@ public class Market implements JSONSerializable {
 
 
     public synchronized void process() {
-        for (int commodityID=0; commodityID<marketValue.length; commodityID++) {
+        long now = production.getClockMilliseconds();
+        if (now - lastCycleTime < cycleMilliseconds) return;
+
+        for (int commodityID = 0; commodityID < marketValue.length; commodityID++) {
             // Посчитаем очередное значение
             marketValue[commodityID] = evaluateNextValue(commodityID);
 
@@ -58,12 +66,14 @@ public class Market implements JSONSerializable {
             }
             // Найдем максимальное значение
             historyMaxValue[commodityID] = 0;
-            for (int j = 0; j< historyLengthCounter[commodityID]; j++) {
+            for (int j = 0; j < historyLengthCounter[commodityID]; j++) {
                 if (historyValues[commodityID][j] > historyMaxValue[commodityID]) {
                     historyMaxValue[commodityID] = historyValues[commodityID][j];
                 }
             }
         }
+
+        lastCycleTime = now;
         cycle++;
     }
 
@@ -106,7 +116,7 @@ public class Market implements JSONSerializable {
         return cycle;
     }
 
-    public synchronized void buyOrder(Production production, Inventory inventory, int commodity, int amount) {
+    public synchronized void buyOrder(Inventory inventory, int commodity, int amount) {
         double commodityPrice = getValue(commodity);
         for (int i=0; i < amount; i++) {
             if (!production.decreaseCashBalance(commodityPrice)) break;
@@ -114,7 +124,7 @@ public class Market implements JSONSerializable {
         }
     }
 
-    public synchronized void sellOrder(Production production, Inventory inventory, int commodity, int amount) {
+    public synchronized void sellOrder(Inventory inventory, int commodity, int amount) {
         Item item;
         double commodityPrice = getValue(commodity);
         for (int i=0; i < amount; i++) {
