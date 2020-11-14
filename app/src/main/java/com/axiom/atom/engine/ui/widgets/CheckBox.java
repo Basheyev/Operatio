@@ -7,7 +7,6 @@ import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 
-// TODO Сделать check/uncheck
 public class CheckBox extends Widget {
 
     protected String text;
