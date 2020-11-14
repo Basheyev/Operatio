@@ -23,7 +23,6 @@ import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.scenes.production.ProductionScene;
 import com.axiom.operatio.scenes.production.controller.BlockAddMoveHandler;
 
-// TODO Добавить стоимость блока
 public class BlockButton extends Button {
 
     protected ProductionScene scene;

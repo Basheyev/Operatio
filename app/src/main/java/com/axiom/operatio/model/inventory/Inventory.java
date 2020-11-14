@@ -2,6 +2,7 @@ package com.axiom.operatio.model.inventory;
 
 import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.data.JSONSerializable;
+import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
@@ -10,30 +11,33 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Модель склада материалов
- * TODO Добавить экономику: цена хранения
  */
 public class Inventory implements JSONSerializable {
 
+    public static final int SKU_COUNT = 64;
     public static final int MAX_SKU_CAPACITY = 999;
+    public static final int BATCH_SIZE = 20;
 
     protected ArrayList<Channel<Item>> stockKeepingUnit;
-
+    private boolean[] isAutoBuy, isAutoSell; // todo serialize auto buy/sell states;
 
     public Inventory() {
         int materialsAmount = Material.getMaterialsAmount();
-        stockKeepingUnit = new ArrayList<Channel<Item>>();
+        stockKeepingUnit = new ArrayList<>(SKU_COUNT);
         for (int i=0; i<materialsAmount; i++) {
             Channel<Item> sku = new Channel<Item>(MAX_SKU_CAPACITY);
             stockKeepingUnit.add(sku);
         }
-
+        isAutoBuy = new boolean[SKU_COUNT];
+        isAutoSell = new boolean[SKU_COUNT];
+        Arrays.fill(isAutoBuy, false);
+        Arrays.fill(isAutoSell, false);
     }
-
 
     public Inventory(JSONObject jsonObject) {
         try {
@@ -52,6 +56,10 @@ public class Inventory implements JSONSerializable {
                     sku.add(new Item(materials[i]));
                 }
             }
+            isAutoBuy = new boolean[SKU_COUNT];
+            isAutoSell = new boolean[SKU_COUNT];
+            Arrays.fill(isAutoBuy, false);
+            Arrays.fill(isAutoSell, false);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -103,9 +111,40 @@ public class Inventory implements JSONSerializable {
         return stockKeepingUnit.get(ID).size();
     }
 
+    public void setAutoBuy(int sku, boolean state) {
+        isAutoBuy[sku] = state;
+    }
 
-    public void process() {
-        
+    public boolean getAutoBuy(int sku) {
+        return isAutoBuy[sku];
+    }
+
+    public void setAutoSell(int sku, boolean state) {
+        isAutoSell[sku] = state;
+    }
+
+    public boolean getAutoSell(int sku) {
+        return isAutoSell[sku];
+    }
+
+    public void process(Production production) {
+        Market market = production.getMarket();
+
+        for (int i=0; i<SKU_COUNT; i++) {
+
+            // TODO Добавить экономику: цена хранения
+
+            if (isAutoBuy[i]) {
+                if (stockKeepingUnit.get(i).size() <= BATCH_SIZE) {
+                    market.buyOrder(this, i, BATCH_SIZE);
+                }
+            } else if (isAutoSell[i]) {
+                if (stockKeepingUnit.get(i).size() > BATCH_SIZE) {
+                    market.sellOrder(this, i, BATCH_SIZE);
+                }
+            }
+        }
+
     }
 
     public JSONObject serialize() {

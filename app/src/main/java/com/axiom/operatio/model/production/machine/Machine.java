@@ -15,7 +15,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-// TODO Добавить экономику: цена операции
 public class Machine extends Block implements JSONSerializable {
 
     protected MachineType type;

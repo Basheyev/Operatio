@@ -113,7 +113,7 @@ public class Production implements JSONSerializable {
                     }
                 }
                 // Выполнить симуляцию склада
-                inventory.process();
+                inventory.process(this);
                 // Выполнить симуляцию рынка
                 market.process();
                 // Увеличиваем счётчик циклов

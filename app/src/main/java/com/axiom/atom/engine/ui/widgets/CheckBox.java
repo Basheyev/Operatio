@@ -46,7 +46,13 @@ public class CheckBox extends Widget {
 
     }
 
+    public boolean isChecked() {
+        return isChecked;
+    }
 
+    public void setChecked(boolean isChecked) {
+        this.isChecked = isChecked;
+    }
 
     public void setTextColor(float r, float g, float b, float a) {
         textColor[0] = r;
@@ -74,9 +80,6 @@ public class CheckBox extends Widget {
     @Override
     public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
         boolean eventHandeled = false;
-        //-------------------------------------------------------------------
-        // Если произошел клик и событие не обработано дочерними виджетами
-        //-------------------------------------------------------------------
         int action = event.getActionMasked();
         if (action == MotionEvent.ACTION_DOWN) {
             pressed = true;

@@ -10,6 +10,7 @@ import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Caption;
+import com.axiom.atom.engine.ui.widgets.CheckBox;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.inventory.Inventory;
@@ -28,6 +29,7 @@ public class MarketPanel extends Panel {
     private Production production;
     private Inventory inventory;
     private Button cashBalance;
+    private CheckBox autoBuyCB, autoSellCB;
 
     private Caption caption;
     private Market market;
@@ -47,8 +49,7 @@ public class MarketPanel extends Panel {
     protected ClickListener clickListener = new ClickListener() {
         @Override
         public void onClick(Widget w) {
-            Button button = (Button) w;
-            if (button.getTag().equals("<")) {
+            if (w.getTag().equals("<")) {
                 quantity--;
                 if (quantity < 1) {
                     quantity = 1;
@@ -58,7 +59,7 @@ public class MarketPanel extends Panel {
                 }
                 quantityButton.setText("" + quantity);
 
-            } else if (button.getTag().equals(">")) {
+            } else if (w.getTag().equals(">")) {
                 quantity++;
                 if (quantity > 100) {
                     quantity = 100;
@@ -67,16 +68,24 @@ public class MarketPanel extends Panel {
                     SoundRenderer.playSound(tickSound);
                 }
                 quantityButton.setText("" + quantity);
-            } else if (button.getTag().equals("BUY")) {
+            } else if (w.getTag().equals("BUY")) {
                 market.buyOrder(inventory, currentCommodity, quantity);
                 cashBalance.setText(String.format("$%,d", (long) production.getCashBalance()));
                 materialsPanel.updateData();
-                SoundRenderer.playSound(cashSound);
-            } else if (button.getTag().equals("SELL")) {
+                SoundRenderer.playSound(tickSound);
+              //  SoundRenderer.playSound(cashSound);
+            } else if (w.getTag().equals("SELL")) {
                 market.sellOrder(inventory, currentCommodity, quantity);
                 cashBalance.setText(String.format("$%,d", (long) production.getCashBalance()));
                 materialsPanel.updateData();
-                SoundRenderer.playSound(cashSound);
+                SoundRenderer.playSound(tickSound);
+              //  SoundRenderer.playSound(cashSound);
+            } else if (w.getTag().equals("Auto-buy")) {
+                inventory.setAutoBuy(currentCommodity, autoBuyCB.isChecked());
+                autoSellCB.setChecked(false);
+            } else if (w.getTag().equals("Auto-sell")) {
+                inventory.setAutoSell(currentCommodity, autoSellCB.isChecked());
+                autoBuyCB.setChecked(false);
             }
         }
 
@@ -95,14 +104,14 @@ public class MarketPanel extends Panel {
         commodityName = Material.getMaterial(currentCommodity).getName();
         cashSound = SoundRenderer.loadSound(R.raw.cash_snd);
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
-        denySound = SoundRenderer.loadSound(R.raw.deny_snd);
+        denySound = SoundRenderer.loadSound(R.raw.deny_snd);;
 
         setLocalBounds(900, 390, 1000, 550);
         setColor(0xCC505050);
         caption = new Caption("Market");
         caption.setTextScale(1.5f);
         caption.setTextColor(WHITE);
-        caption.setLocalBounds(30, getHeight() - 100, 300, 100);
+        caption.setLocalBounds(30, 450, 300, 100);
         addChild(caption);
 
         buyButton = new Button("BUY");
@@ -153,6 +162,23 @@ public class MarketPanel extends Panel {
         sellButton.setColor(Color.GREEN);
         sellButton.setClickListener(clickListener);
         addChild(sellButton);
+
+
+        autoBuyCB = new CheckBox("Auto-buy", false);
+        autoBuyCB.setTag("Auto-buy");
+        autoBuyCB.setLocalBounds(550, 475, 200, 100);
+        autoBuyCB.setTextColor(WHITE);
+        autoBuyCB.setTextScale(1.5f);
+        autoBuyCB.setClickListener(clickListener);
+        addChild(autoBuyCB);
+
+        autoSellCB = new CheckBox("Auto-sell", false);
+        autoSellCB.setTag("Auto-sell");
+        autoSellCB.setLocalBounds(800, 475, 200, 100);
+        autoSellCB.setTextColor(WHITE);
+        autoSellCB.setTextScale(1.5f);
+        autoSellCB.setClickListener(clickListener);
+        addChild(autoSellCB);
     }
 
 
@@ -163,6 +189,8 @@ public class MarketPanel extends Panel {
             if (material!=null) currentCommodity = material.getMaterialID(); else currentCommodity = 0;
             if (currentCommodity!=previousCommodity) {
                 commodityName = Material.getMaterial(currentCommodity).getName();
+                autoBuyCB.setChecked(inventory.getAutoBuy(currentCommodity));
+                autoSellCB.setChecked(inventory.getAutoSell(currentCommodity));
                 previousCommodity = currentCommodity;
             }
             maxValue = market.getHistoryMaxValue(currentCommodity);

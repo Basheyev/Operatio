@@ -17,7 +17,6 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
 
-// TODO Заменить текстовые кнопки на иконки
 public class ProductionSceneUI {
 
     protected static Production production;
