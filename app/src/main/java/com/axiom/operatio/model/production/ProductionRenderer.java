@@ -143,7 +143,7 @@ public class ProductionRenderer {
         float newCellWidth = cellWidth * scaleFactor;
         float newCellHeight = cellHeight * scaleFactor;
 
-        if (newCellWidth<64 || newCellHeight<64) { newCellWidth = 64; newCellHeight = 64; }
+        if (newCellWidth<128 || newCellHeight<128) { newCellWidth = 128; newCellHeight = 128; }
         if (newCellWidth>512 || newCellHeight>512) { newCellWidth = 512; newCellHeight = 512; }
 
         Camera camera = Camera.getInstance();
