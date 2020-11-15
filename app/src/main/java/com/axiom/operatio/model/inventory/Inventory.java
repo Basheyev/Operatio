@@ -118,7 +118,11 @@ public class Inventory implements JSONSerializable {
     }
 
     public void setAutoBuy(int sku, boolean state) {
-        autoAction[sku] |=  state ? AUTO_BUY : 0;
+        if (state) {
+            autoAction[sku] |= AUTO_BUY;
+        } else {
+            autoAction[sku] &= ~AUTO_BUY;
+        }
     }
 
     public boolean isAutoBuy(int sku) {
@@ -126,7 +130,11 @@ public class Inventory implements JSONSerializable {
     }
 
     public void setAutoSell(int sku, boolean state) {
-        autoAction[sku] |=  state ? AUTO_SELL : 0;
+        if (state) {
+            autoAction[sku] |= AUTO_SELL;
+        } else {
+            autoAction[sku] &= ~AUTO_SELL;
+        }
     }
 
     public boolean isAutoSell(int sku) {
