@@ -12,6 +12,7 @@ public class Ledger {
     private double startingAssetsValue = 0;
     private double startingInventoryValue = 0;
     private double startingCash = 0;
+    private double cashflow = 0;
     private double valuation;
 
     public void process(Production production) {
@@ -24,8 +25,10 @@ public class Ledger {
             double cash = production.getCashBalance();
             double newValuation = cash + assetsValuation + inventoryValuation;
 
-            Log.i("CAPITAL CHANGE DAY=" + (currentCycle / REPORTING_PERIOD), "$" + (long)(newValuation - valuation));
+            Log.i("CAPITAL CHANGE DAY=" + (currentCycle / REPORTING_PERIOD), "$" + (long)(newValuation - valuation)
+            + " CASHFLOW=$" + cashflow);
 
+            cashflow = 0;
             startingAssetsValue = assetsValuation;
             startingInventoryValue = inventoryValuation;
             startingCash = cash;
@@ -59,21 +62,25 @@ public class Ledger {
 
     public void registerBlockBought(double price) {
     //    Log.i("BLOCK BOUGHT", " -$" + price);
+        cashflow -= price;
         // TODO Log block bought
     }
 
     public void registerBlockSold(double price) {
     //    Log.i("BLOCK SOLD", " +$" + price);
+        cashflow += price;
         // TODO Log block sold
     }
 
     public void registerExpense(int type, double sum) {
      //   Log.i("EXPENSE", " -$" + sum);
+        cashflow -= sum;
         // TODO Log expense
     }
 
     public void registerIncome(int type, double sum) {
      //   Log.i("INCOME", " +$" + sum);
+        cashflow += sum;
         // TODO Log income
     }
 
