@@ -38,7 +38,7 @@ public class MarketPanel extends Panel {
     private int counter = 0;
     private String commodityName = "";
     private int currentCommodity = 0;
-    private int previousCommodity = 0;
+    private int previousCommodity = -1;
     private int quantity = 20;
     private MaterialsPanel materialsPanel;
     private Button sellButton, dealSum, buyButton;
@@ -189,8 +189,8 @@ public class MarketPanel extends Panel {
             if (material!=null) currentCommodity = material.getMaterialID(); else currentCommodity = 0;
             if (currentCommodity!=previousCommodity) {
                 commodityName = Material.getMaterial(currentCommodity).getName();
-                autoBuyCB.setChecked(inventory.getAutoBuy(currentCommodity));
-                autoSellCB.setChecked(inventory.getAutoSell(currentCommodity));
+                autoBuyCB.setChecked(inventory.isAutoBuy(currentCommodity));
+                autoSellCB.setChecked(inventory.isAutoSell(currentCommodity));
                 previousCommodity = currentCommodity;
             }
             maxValue = market.getHistoryMaxValue(currentCommodity);

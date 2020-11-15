@@ -23,8 +23,12 @@ public class Inventory implements JSONSerializable {
     public static final int MAX_SKU_CAPACITY = 999;
     public static final int BATCH_SIZE = 20;
 
+    public static final int AUTO_NONE = 0;          //     0000
+    public static final int AUTO_BUY = 1;           //     0001
+    public static final int AUTO_SELL = 2;          //     0010
+
     protected ArrayList<Channel<Item>> stockKeepingUnit;
-    private boolean[] isAutoBuy, isAutoSell; // todo serialize auto buy/sell states;
+    private int[] autoAction;
 
     public Inventory() {
         int materialsAmount = Material.getMaterialsAmount();
@@ -33,16 +37,14 @@ public class Inventory implements JSONSerializable {
             Channel<Item> sku = new Channel<Item>(MAX_SKU_CAPACITY);
             stockKeepingUnit.add(sku);
         }
-        isAutoBuy = new boolean[SKU_COUNT];
-        isAutoSell = new boolean[SKU_COUNT];
-        Arrays.fill(isAutoBuy, false);
-        Arrays.fill(isAutoSell, false);
+        autoAction = new int[SKU_COUNT];
+        Arrays.fill(autoAction, AUTO_NONE);
     }
 
     public Inventory(JSONObject jsonObject) {
         try {
             int materialsAmount = Material.getMaterialsAmount();
-            stockKeepingUnit = new ArrayList<Channel<Item>>();
+            stockKeepingUnit = new ArrayList<>();
             for (int i=0; i<materialsAmount; i++) {
                 Channel<Item> sku = new Channel<Item>(MAX_SKU_CAPACITY);
                 stockKeepingUnit.add(sku);
@@ -56,10 +58,14 @@ public class Inventory implements JSONSerializable {
                     sku.add(new Item(materials[i]));
                 }
             }
-            isAutoBuy = new boolean[SKU_COUNT];
-            isAutoSell = new boolean[SKU_COUNT];
-            Arrays.fill(isAutoBuy, false);
-            Arrays.fill(isAutoSell, false);
+            JSONArray autoState = jsonObject.optJSONArray("autoAction");
+            autoAction = new int[SKU_COUNT];
+            Arrays.fill(autoAction, AUTO_NONE);
+            if (autoState!=null) {
+                for (int i = autoState.length() - 1; i >= 0; i--) {
+                    autoAction[i] = autoState.getInt(i);
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -112,33 +118,30 @@ public class Inventory implements JSONSerializable {
     }
 
     public void setAutoBuy(int sku, boolean state) {
-        isAutoBuy[sku] = state;
+        autoAction[sku] |=  state ? AUTO_BUY : 0;
     }
 
-    public boolean getAutoBuy(int sku) {
-        return isAutoBuy[sku];
+    public boolean isAutoBuy(int sku) {
+        return (autoAction[sku] & AUTO_BUY) > 0;
     }
 
     public void setAutoSell(int sku, boolean state) {
-        isAutoSell[sku] = state;
+        autoAction[sku] |=  state ? AUTO_SELL : 0;
     }
 
-    public boolean getAutoSell(int sku) {
-        return isAutoSell[sku];
+    public boolean isAutoSell(int sku) {
+        return (autoAction[sku] & AUTO_SELL) > 0;
     }
 
     public void process(Production production) {
         Market market = production.getMarket();
 
         for (int i=0; i<SKU_COUNT; i++) {
-
-            // TODO Добавить экономику: цена хранения
-
-            if (isAutoBuy[i]) {
+            if (isAutoBuy(i)) {
                 if (stockKeepingUnit.get(i).size() <= BATCH_SIZE) {
                     market.buyOrder(this, i, BATCH_SIZE);
                 }
-            } else if (isAutoSell[i]) {
+            } else if (isAutoSell(i)) {
                 if (stockKeepingUnit.get(i).size() > BATCH_SIZE) {
                     market.sellOrder(this, i, BATCH_SIZE);
                 }
@@ -147,15 +150,19 @@ public class Inventory implements JSONSerializable {
 
     }
 
+
     public JSONObject serialize() {
         try {
             JSONObject jsonObject = new JSONObject();
-            JSONArray jsonArray = new JSONArray();
+            JSONArray skuBalanceJson = new JSONArray();
+            JSONArray skuAutoState = new JSONArray();
             for (int i=0; i<stockKeepingUnit.size(); i++) {
-                jsonArray.put(stockKeepingUnit.get(i).size());
+                skuBalanceJson.put(stockKeepingUnit.get(i).size());
+                skuAutoState.put(autoAction[i]);
             }
             jsonObject.put("class", "Inventory");
-            jsonObject.put("stockKeepingUnit", jsonArray);
+            jsonObject.put("stockKeepingUnit", skuBalanceJson);
+            jsonObject.put("autoAction", skuAutoState);
             return jsonObject;
         } catch (JSONException e) {
             e.printStackTrace();
