@@ -43,7 +43,6 @@ public class ModePanel extends Panel {
             if (w.getColor()==Color.GRAY) {
                 w.setColor(Color.RED);
                 toggledButton = w.getTag();
-                Log.i("BUTTON", toggledButton);
             } else {
                 w.setColor(Color.GRAY);
                 toggledButton = null;

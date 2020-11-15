@@ -94,7 +94,6 @@ public class MachineType {
                 }
                 machineTypes.add(machineType);
             } catch (Exception e) {
-                Log.e("Machines Loader", " Wrong data format at row " + row);
                 e.printStackTrace();
             }
         }

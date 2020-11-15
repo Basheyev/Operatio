@@ -120,19 +120,31 @@ public class Market implements JSONSerializable {
 
     public synchronized void buyOrder(Inventory inventory, int commodity, int amount) {
         double commodityPrice = getValue(commodity);
+        int quantity = 0;
+        int expenseType = Production.EXPENSE_MATERIAL_BOUGHT;
         for (int i=0; i < amount; i++) {
-            if (!production.decreaseCashBalance(commodityPrice)) break;
+            if (!production.decreaseCashBalance(expenseType, commodityPrice)) break;
             inventory.push(new Item(Material.getMaterial(commodity)));
+            quantity++;
+        }
+        if (quantity > 0) {
+            production.getLedger().registerCommodityBought(commodity, quantity, commodityPrice);
         }
     }
 
     public synchronized void sellOrder(Inventory inventory, int commodity, int amount) {
         Item item;
         double commodityPrice = getValue(commodity);
+        int quantity = 0;
+        int incomeType = Production.INCOME_MATERIAL_SOLD;
         for (int i=0; i < amount; i++) {
             item = inventory.poll(Material.getMaterial(commodity));
             if (item==null) break;
-            production.increaseCashBalance(commodityPrice);
+            production.increaseCashBalance(incomeType, commodityPrice);
+            quantity++;
+        }
+        if (quantity > 0) {
+            production.getLedger().registerCommoditySold(commodity, quantity, commodityPrice);
         }
     }
 

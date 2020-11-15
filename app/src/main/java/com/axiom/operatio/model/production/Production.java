@@ -1,6 +1,7 @@
 package com.axiom.operatio.model.production;
 
 import com.axiom.atom.engine.data.JSONSerializable;
+import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;
@@ -13,13 +14,21 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-
+// TODO Площадь производства должна быть ограничена
 public class Production implements JSONSerializable {
+
+    public static final int EXPENSE_BLOCK_BOUGHT    = 0x0001;
+    public static final int EXPENSE_BLOCK_OPERATION = 0x0002;
+    public static final int EXPENSE_MATERIAL_BOUGHT = 0x0003;
+
+    public static final int INCOME_BLOCK_SOLD       = 0x1001;
+    public static final int INCOME_MATERIAL_SOLD    = 0x1002;
 
     //protected static Production instance;         // Синглтон объекта - производство
     protected Inventory inventory;                  // Объект - склад
     protected Market market;                        // Объект - рынок
-    protected double cashBalance = 15000;             // Остатки денег
+    protected Ledger ledger;                        // Объект - игровая статистика
+    protected double cashBalance = 15000;           // Остатки денег
 
     protected ArrayList<Block> blocks;              // Список блоков производства
     protected Block[][] grid;                       // Блоки привязанные к координатной сетке
@@ -43,8 +52,9 @@ public class Production implements JSONSerializable {
         this.rows = rows;
         grid = new Block[rows][columns];
         blocks = new ArrayList<Block>(100);
-        inventory = new Inventory();
+        inventory = new Inventory(this);
         market = new Market(this);
+        ledger = new Ledger();
     }
 
 
@@ -78,9 +88,9 @@ public class Production implements JSONSerializable {
         }
 
         JSONObject jsonInventory = jsonObject.getJSONObject("inventory");
-        inventory = new Inventory(jsonInventory);
+        inventory = new Inventory(this, jsonInventory);
         market = new Market(this);
-
+        ledger = new Ledger();
     }
 
 
@@ -96,15 +106,16 @@ public class Production implements JSONSerializable {
                 Block block;
                 boolean energyPayed;
                 int size = blocks.size();
+                int expenseType = Production.EXPENSE_BLOCK_OPERATION;
                 for (int i = 0; i < size; i++) {
                     block = blocks.get(i);
                     energyPayed = false;
                     if (block instanceof Machine) {
-                        energyPayed = decreaseCashBalance(0.05d);  // Берем по $0.04 за цикл машины
+                        energyPayed = decreaseCashBalance(expenseType,0.05d);  // Берем по $0.04 за цикл машины
                     } else if (block instanceof Conveyor) {
-                        energyPayed = decreaseCashBalance(0.02d);  // Берем по $0.01 за конвейер
+                        energyPayed = decreaseCashBalance(expenseType,0.02d);  // Берем по $0.01 за конвейер
                     } else {
-                        energyPayed = decreaseCashBalance(0.001d); // Берем по $0.001 за буферы
+                        energyPayed = decreaseCashBalance(expenseType,0.001d); // Берем по $0.001 за буферы
                     }
                     if (energyPayed) {
                         block.process();  // Если энергия оплачена отрабатываем
@@ -116,6 +127,8 @@ public class Production implements JSONSerializable {
                 inventory.process(this);
                 // Выполнить симуляцию рынка
                 market.process();
+                // Выполнить процесс учёта статистики
+                ledger.process(this);
                 // Увеличиваем счётчик циклов
                 cycle++;
                 lastCycleTime = now;
@@ -172,6 +185,15 @@ public class Production implements JSONSerializable {
     }
 
 
+    public double getValuation() {
+        double sum = 0;
+        for (int i=0; i<blocks.size(); i++) {
+            sum += blocks.get(i).getPrice();
+        }
+        return sum;
+    }
+
+
     public void removeBlock(Block block, boolean returnToInventory) {
         if (block==null) return;
         int col = block.column;
@@ -212,6 +234,7 @@ public class Production implements JSONSerializable {
         return market;
     }
 
+    public Ledger getLedger() { return ledger; }
 
     public long getCycleTimeMs() {
         return cycleMilliseconds;
@@ -324,15 +347,17 @@ public class Production implements JSONSerializable {
         return cashBalance;
     }
 
-    public boolean decreaseCashBalance(double value) {
+    public boolean decreaseCashBalance(int type, double value) {
         double result = cashBalance - value;
         if (result < 0) return false;
+        ledger.registerExpense(type, value);
         cashBalance = result;
         return true;
     }
 
-    public double increaseCashBalance(double value) {
+    public double increaseCashBalance(int type, double value) {
         cashBalance += value;
+        ledger.registerIncome(type, value);
         return cashBalance;
     }
 

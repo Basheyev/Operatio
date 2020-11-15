@@ -2,6 +2,7 @@ package com.axiom.operatio.model.inventory;
 
 import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.data.JSONSerializable;
+import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
@@ -27,10 +28,12 @@ public class Inventory implements JSONSerializable {
     public static final int AUTO_BUY = 1;           //     0001
     public static final int AUTO_SELL = 2;          //     0010
 
+    protected Production production;
     protected ArrayList<Channel<Item>> stockKeepingUnit;
     private int[] autoAction;
 
-    public Inventory() {
+    public Inventory(Production production) {
+        this.production = production;
         int materialsAmount = Material.getMaterialsAmount();
         stockKeepingUnit = new ArrayList<>(SKU_COUNT);
         for (int i=0; i<materialsAmount; i++) {
@@ -41,8 +44,9 @@ public class Inventory implements JSONSerializable {
         Arrays.fill(autoAction, AUTO_NONE);
     }
 
-    public Inventory(JSONObject jsonObject) {
+    public Inventory(Production production, JSONObject jsonObject) {
         try {
+            this.production = production;
             int materialsAmount = Material.getMaterialsAmount();
             stockKeepingUnit = new ArrayList<>();
             for (int i=0; i<materialsAmount; i++) {
@@ -80,7 +84,12 @@ public class Inventory implements JSONSerializable {
     public boolean push(Item item) {
         if (item==null) return false;
         int ID = item.getMaterial().getMaterialID();
-        return stockKeepingUnit.get(ID).add(item);
+        boolean stored = stockKeepingUnit.get(ID).add(item);
+        if (stored) {
+            Ledger ledger = production.getLedger();
+            ledger.registerCommodityPushed(ID, 1);
+        }
+        return stored;
     }
 
     /**
@@ -102,7 +111,12 @@ public class Inventory implements JSONSerializable {
     public Item poll(Material material) {
         if (material==null) return null;
         int ID = material.getMaterialID();
-        return stockKeepingUnit.get(ID).poll();
+        Item item = stockKeepingUnit.get(ID).poll();
+        if (item!=null) {
+            Ledger ledger = production.getLedger();
+            ledger.registerCommodityPolled(ID, 1);
+        }
+        return item;
     }
 
 
@@ -158,6 +172,13 @@ public class Inventory implements JSONSerializable {
 
     }
 
+    public double getValuation() {
+        double sum = 0;
+        for (int i=0; i<stockKeepingUnit.size(); i++) {
+            sum += stockKeepingUnit.get(i).size() * production.getMarket().getValue(i);
+        }
+        return sum;
+    }
 
     public JSONObject serialize() {
         try {

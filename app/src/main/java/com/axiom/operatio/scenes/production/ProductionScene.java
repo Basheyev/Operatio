@@ -89,9 +89,10 @@ public class ProductionScene extends GameScene {
     public void updateScene(float deltaTimeNs) {
         production.process();
         double currentCashBalance = production.getCashBalance();
-        if (lastCashBalance!=currentCashBalance) {
+        if ((long)lastCashBalance != (long)currentCashBalance) {
             Button balance = ProductionSceneUI.getBalance();
-            balance.setText(String.format("$%,d", (long) production.getCashBalance()));
+            balance.setText("Day " + (production.getCurrentCycle() / 60) + " " +
+                    String.format("$%,d", (long) production.getCashBalance()));
             lastCashBalance = currentCashBalance;
         }
     }
