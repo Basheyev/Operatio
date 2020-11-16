@@ -5,6 +5,7 @@ import android.view.MotionEvent;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.sound.SoundRenderer;
+import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.block.Block;
@@ -74,9 +75,9 @@ public class BlockAddMoveHandler {
                             production.setBlock(dragBlock, column, row);
                             // New block created
                             if (justCreatedBlock) {
-                                int expenseType = Production.EXPENSE_BLOCK_BOUGHT;
+                                int expenseType = Ledger.EXPENSE_BLOCK_BOUGHT;
                                 production.decreaseCashBalance(expenseType, dragBlock.getPrice());
-                                production.getLedger().registerBlockBought(dragBlock.getPrice());
+                                //production.getLedger().registerBlockBought(dragBlock.getPrice());
                             }
                             dragBlock.adjustFlowDirection();
                             opsPanel.showBlockInfo(dragBlock, false);

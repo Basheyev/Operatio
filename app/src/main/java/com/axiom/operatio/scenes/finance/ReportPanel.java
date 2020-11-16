@@ -23,7 +23,7 @@ public class ReportPanel extends Panel {
         super();
         this.production = production;
 
-        setLocalBounds(50,60, 1880, 880);
+        setLocalBounds(50,60, 1850, 880);
         setColor(0xCC505050);
 
         Caption caption = new Caption("Financial report");
@@ -39,15 +39,15 @@ public class ReportPanel extends Panel {
         addChild(incomeCaption);
 
         expenseCaption = new Caption("Expense");
-        expenseCaption.setTextColor(RED);
+        expenseCaption.setTextColor(1,0.5f,0.5f, 1);
         expenseCaption.setTextScale(1.3f);
-        expenseCaption.setLocalBounds(800, 700,300, 100);
+        expenseCaption.setLocalBounds(600, 700,300, 100);
         addChild(expenseCaption);
 
-        reportCaption = new Caption("Report");
+        reportCaption = new Caption("Cashflow");
         reportCaption.setTextColor(WHITE);
         reportCaption.setTextScale(1.3f);
-        reportCaption.setLocalBounds(1400, 700, 300, 100);
+        reportCaption.setLocalBounds(1200, 700, 300, 100);
         addChild(reportCaption);
     }
 
@@ -56,8 +56,14 @@ public class ReportPanel extends Panel {
         String incomeText = "INCOME - " + Utils.moneyFormat(ledger.getPeriodIncome()) + "\n";
         String expensesText = "EXPENSES - " + Utils.moneyFormat(ledger.getPeriodExpenses()) + "\n";
 
-        int soldCounter = 0;
-        int boughtCounter = 0;
+        int soldCounter = 1;
+        incomeText += "\n" + soldCounter + ". Investments " + Utils.moneyFormat(ledger.getPeriodInvestIncome());
+
+        int boughtCounter = 1;
+        expensesText += "\n" + boughtCounter + ". Operations - " + Utils.moneyFormat(ledger.getPeriodOperationalExpenses());
+        boughtCounter++;
+        expensesText += "\n" + boughtCounter + ". Investments - " + Utils.moneyFormat(ledger.getPeriodInvestExpenses());
+
         for (int i=0; i< Inventory.SKU_COUNT; i++) {
             double soldSum = ledger.getCommoditySold(i);
             double boughtSum = ledger.getCommodityBought(i);
@@ -75,7 +81,8 @@ public class ReportPanel extends Panel {
 
         incomeCaption.setText(incomeText);
         expenseCaption.setText(expensesText);
-        reportCaption.setText("CASHFLOW " + Utils.moneyFormat(ledger.getPeriodCashflow()));
+        reportCaption.setText("CASHFLOW " + Utils.moneyFormat(ledger.getPeriodCashflow()) +
+                "\n\n CAPITALIZATION " + Utils.moneyFormat(ledger.getCapitalization(production)));
     }
 
 }

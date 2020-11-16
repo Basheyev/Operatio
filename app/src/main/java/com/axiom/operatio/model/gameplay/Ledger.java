@@ -8,11 +8,19 @@ import java.util.Arrays;
 public class Ledger {
 
     public static final int REPORTING_PERIOD = 60;
+    public static final int EXPENSE_BLOCK_BOUGHT    = 0x0001;
+    public static final int EXPENSE_BLOCK_OPERATION = 0x0002;
+    public static final int EXPENSE_MATERIAL_BOUGHT = 0x0003;
+    public static final int INCOME_BLOCK_SOLD       = 0x1001;
+    public static final int INCOME_MATERIAL_SOLD    = 0x1002;
 
     private long startingCycle = 0;
     private double periodCashflow = 0;
     private double periodIncome = 0;
     private double periodExpenses = 0;
+    private double periodOperationalExpenses = 0;
+    private double periodInvestExpenses = 0;
+    private double periodInvestIncome = 0;
     private double previousValuation = 0;
     private int[] manufacturedCommodities;
     private double[] soldCommodities;
@@ -30,11 +38,6 @@ public class Ledger {
         long currentCycle = production.getCurrentCycle();
         if (currentCycle > startingCycle + REPORTING_PERIOD) {
             double valuation = getCapitalization(production);
-         //   periodCashflow = 0;
-         //   periodIncome = 0;
-         //   periodExpenses = 0;
-         //   Arrays.fill(soldCommodities, 0);
-         //   Arrays.fill(boughtCommodities, 0);
             previousValuation = valuation;
             startingCycle = currentCycle;
         }
@@ -58,6 +61,18 @@ public class Ledger {
 
     public double getPeriodExpenses() {
         return periodExpenses;
+    }
+
+    public double getPeriodOperationalExpenses() {
+        return periodOperationalExpenses;
+    }
+
+    public double getPeriodInvestExpenses() {
+        return periodInvestExpenses;
+    }
+
+    public double getPeriodInvestIncome() {
+        return periodInvestIncome;
     }
 
     public double getPreviousValuation() {
@@ -88,24 +103,24 @@ public class Ledger {
         boughtCommodities[commodity] += quantity * price;
     }
 
-    public void registerBlockBought(double price) {
-        periodCashflow -= price;
-        periodExpenses += price;
-    }
-
-    public void registerBlockSold(double price) {
-        periodCashflow += price;
-        periodIncome += price;
-    }
 
     public void registerExpense(int type, double sum) {
         periodCashflow -= sum;
         periodExpenses += sum;
+        if (type==EXPENSE_BLOCK_BOUGHT) {
+            periodInvestExpenses += sum;
+        }
+        if (type==EXPENSE_BLOCK_OPERATION) {
+            periodOperationalExpenses += sum;
+        }
     }
 
     public void registerIncome(int type, double sum) {
         periodCashflow += sum;
         periodIncome += sum;
+        if (type==INCOME_BLOCK_SOLD) {
+            periodInvestIncome += sum;
+        }
     }
 
 }

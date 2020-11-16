@@ -4,10 +4,10 @@ import java.text.DecimalFormat;
 
 public class Utils {
 
-    private static DecimalFormat decimalFormat = new DecimalFormat("$###,###,###,###.00");
+    private static DecimalFormat moneyFormat = new DecimalFormat("$###,###,###,###,###.00");
 
     public static String moneyFormat(double sum) {
-        return decimalFormat.format(sum);
+        return moneyFormat.format(sum);
     }
 
 }

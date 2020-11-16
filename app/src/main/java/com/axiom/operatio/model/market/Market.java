@@ -1,6 +1,7 @@
 package com.axiom.operatio.model.market;
 
 import com.axiom.atom.engine.data.JSONSerializable;
+import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
@@ -121,7 +122,7 @@ public class Market implements JSONSerializable {
     public synchronized void buyOrder(Inventory inventory, int commodity, int amount) {
         double commodityPrice = getValue(commodity);
         int quantity = 0;
-        int expenseType = Production.EXPENSE_MATERIAL_BOUGHT;
+        int expenseType = Ledger.EXPENSE_MATERIAL_BOUGHT;
         for (int i=0; i < amount; i++) {
             if (!production.decreaseCashBalance(expenseType, commodityPrice)) break;
             inventory.push(new Item(Material.getMaterial(commodity)));
@@ -136,7 +137,7 @@ public class Market implements JSONSerializable {
         Item item;
         double commodityPrice = getValue(commodity);
         int quantity = 0;
-        int incomeType = Production.INCOME_MATERIAL_SOLD;
+        int incomeType = Ledger.INCOME_MATERIAL_SOLD;
         for (int i=0; i < amount; i++) {
             item = inventory.poll(Material.getMaterial(commodity));
             if (item==null) break;

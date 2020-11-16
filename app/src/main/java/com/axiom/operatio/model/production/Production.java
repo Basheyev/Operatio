@@ -17,12 +17,6 @@ import java.util.ArrayList;
 // TODO Площадь производства должна быть ограничена
 public class Production implements JSONSerializable {
 
-    public static final int EXPENSE_BLOCK_BOUGHT    = 0x0001;
-    public static final int EXPENSE_BLOCK_OPERATION = 0x0002;
-    public static final int EXPENSE_MATERIAL_BOUGHT = 0x0003;
-
-    public static final int INCOME_BLOCK_SOLD       = 0x1001;
-    public static final int INCOME_MATERIAL_SOLD    = 0x1002;
 
     //protected static Production instance;         // Синглтон объекта - производство
     protected Inventory inventory;                  // Объект - склад
@@ -106,16 +100,16 @@ public class Production implements JSONSerializable {
                 Block block;
                 boolean energyPayed;
                 int size = blocks.size();
-                int expenseType = Production.EXPENSE_BLOCK_OPERATION;
+                int expenseType = Ledger.EXPENSE_BLOCK_OPERATION;
                 for (int i = 0; i < size; i++) {
                     block = blocks.get(i);
                     energyPayed = false;
                     if (block instanceof Machine) {
-                        energyPayed = decreaseCashBalance(expenseType,0.05d);  // Берем по $0.04 за цикл машины
+                        energyPayed = decreaseCashBalance(expenseType,0.1d);  // Берем по $0.1 за цикл машины
                     } else if (block instanceof Conveyor) {
-                        energyPayed = decreaseCashBalance(expenseType,0.02d);  // Берем по $0.01 за конвейер
+                        energyPayed = decreaseCashBalance(expenseType,0.05d);  // Берем по $0.05 за конвейер
                     } else {
-                        energyPayed = decreaseCashBalance(expenseType,0.001d); // Берем по $0.001 за буферы
+                        energyPayed = decreaseCashBalance(expenseType,0.01d); // Берем по $0.01 за буферы
                     }
                     if (energyPayed) {
                         block.process();  // Если энергия оплачена отрабатываем
