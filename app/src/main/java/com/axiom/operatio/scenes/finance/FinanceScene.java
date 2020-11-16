@@ -1,6 +1,5 @@
-package com.axiom.operatio.scenes.inventory;
+package com.axiom.operatio.scenes.finance;
 
-import android.graphics.Color;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
@@ -13,47 +12,32 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
+import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.model.gameplay.Utils;
-import com.axiom.operatio.model.market.Market;
+import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.production.Production;
 
-/**
- * Сцена склада
- */
-public class InventoryScene extends GameScene {
+public class FinanceScene extends GameScene {
 
-    protected boolean initialized = false;
-    protected Production production;
-    protected MaterialsPanel materialsPanel;
-    protected TechnologyPanel technologyPanel;
-    protected MarketPanel marketPanel;
-    protected Button balance;
-    protected long currentBalance, lastBalance;
-    protected static Sprite background;
-    protected static int tickSound;
-    private long lastTime;
+    private boolean initialized = false;
+    private Production production;
+    private ReportPanel reportPanel;
+    private Sprite background;
+    private int tickSound;
+    private long lastCycle;
 
-    public InventoryScene(Production production) {
+    public FinanceScene(Production production) {
         this.production = production;
     }
 
     @Override
     public String getSceneName() {
-        return "Inventory";
+        return "Finance";
     }
 
     @Override
     public void startScene() {
         if (!initialized) buildUI();
-        Market market = production.getMarket();
-        market.process();
-        materialsPanel.updateData();
-    }
-
-    @Override
-    public void changeScene() {
-
     }
 
     @Override
@@ -62,24 +46,18 @@ public class InventoryScene extends GameScene {
     }
 
     @Override
+    public void changeScene() {
+
+    }
+
+    @Override
     public void updateScene(float deltaTime) {
-        Market market = production.getMarket();
-
-        long now = System.currentTimeMillis();
-
-        market.process();
+        production.getMarket().process();
         production.process();
-
-        currentBalance = (long) production.getCashBalance();
-        if (lastBalance != currentBalance) {
-            balance.setText(Utils.moneyFormat(currentBalance));
-            lastBalance = currentBalance;
-        }
-
-        if (now - lastTime > 1000) {
-            materialsPanel.updateData();
-            marketPanel.updateValues();
-            lastTime = now;
+        long currentCycle = production.getCurrentCycle();
+        if (currentCycle - lastCycle > 3) {
+            reportPanel.updateData();
+            lastCycle = currentCycle;
         }
     }
 
@@ -111,9 +89,7 @@ public class InventoryScene extends GameScene {
 
     }
 
-
-    protected void buildUI() {
-
+    private void buildUI() {
         background = new Sprite(SceneManager.getResources(), R.drawable.background);
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
 
@@ -135,28 +111,10 @@ public class InventoryScene extends GameScene {
         exitButton.setClickListener(exitListener);
         widget.addChild(exitButton);
 
-        materialsPanel = new MaterialsPanel(production,this);
-        widget.addChild(materialsPanel);
-
-        technologyPanel = new TechnologyPanel(materialsPanel);
-        widget.addChild(technologyPanel);
-
-        balance = new Button(Utils.moneyFormat(production.getCashBalance()));
-        balance.setColor(0xCC505050);
-        balance.setTextColor(Color.WHITE);
-        balance.setTextScale(1.5f);
-        balance.setLocalBounds(Camera.WIDTH/2-150, 1000, 300, 80);
-        widget.addChild(balance);
-
-        marketPanel = new MarketPanel(
-                balance, materialsPanel, production.getMarket(),
-                production, production.getInventory());
-        widget.addChild(marketPanel);
-
+        reportPanel = new ReportPanel(production);
+        widget.addChild(reportPanel);
 
         initialized = true;
-
     }
-
 
 }

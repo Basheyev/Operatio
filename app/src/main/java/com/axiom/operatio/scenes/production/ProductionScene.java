@@ -8,8 +8,10 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.input.ScaleEvent;
 import com.axiom.atom.engine.ui.widgets.Button;
+import com.axiom.operatio.model.gameplay.Utils;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.scenes.finance.FinanceScene;
 import com.axiom.operatio.scenes.production.view.BlocksPanel;
 import com.axiom.operatio.scenes.production.controller.InputHandler;
 import com.axiom.operatio.scenes.production.view.ModePanel;
@@ -55,6 +57,7 @@ public class ProductionScene extends GameScene {
     public void startScene() {
         if (!initialized) {
             sceneManager.addGameScene(new InventoryScene(production));
+            sceneManager.addGameScene(new FinanceScene(production));
             productionRenderer = new ProductionRenderer(production, initialCellWidth, initialCellHeight);
             inputHandler = new InputHandler(this, production, productionRenderer);
             ProductionSceneUI.buildUI(this, getResources(), getSceneWidget(), production);
@@ -92,7 +95,7 @@ public class ProductionScene extends GameScene {
         if ((long)lastCashBalance != (long)currentCashBalance) {
             Button balance = ProductionSceneUI.getBalance();
             balance.setText("Day " + (production.getCurrentCycle() / 60) + " " +
-                    String.format("$%,d", (long) production.getCashBalance()));
+                    Utils.moneyFormat(production.getCashBalance()));
             lastCashBalance = currentCashBalance;
         }
     }

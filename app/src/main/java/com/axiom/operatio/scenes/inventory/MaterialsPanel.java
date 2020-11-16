@@ -13,6 +13,7 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.production.view.ItemWidget;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.RED;
@@ -27,7 +28,6 @@ public class MaterialsPanel extends Panel {
     protected Production production;
     protected ItemWidget[] itemWidget;
     protected Material selectedMaterial;
-
 
     public MaterialsPanel(Production production, InventoryScene scene) {
         super();
@@ -98,8 +98,10 @@ public class MaterialsPanel extends Panel {
             if (tickSound == -1) tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
             int materialID = Integer.parseInt(w.getTag());
             Material material = Material.getMaterial(materialID);
-            if (materialID > 55 && materialID < 61) return;
             MaterialsPanel materialsPanel = (MaterialsPanel) w.getParent();
+
+            if (materialID > 55 && materialID < 61) return;
+
             if (w.getColor()!=RED) {
                 unselectAllButtons(w);
                 w.setColor(RED);

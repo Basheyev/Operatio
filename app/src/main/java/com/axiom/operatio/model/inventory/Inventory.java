@@ -172,6 +172,10 @@ public class Inventory implements JSONSerializable {
 
     }
 
+    /**
+     * Возвращает стоимость хранимых материалов
+     * @return стоимость всех хранимых материалов
+     */
     public double getValuation() {
         double sum = 0;
         for (int i=0; i<stockKeepingUnit.size(); i++) {
@@ -179,6 +183,7 @@ public class Inventory implements JSONSerializable {
         }
         return sum;
     }
+
 
     public JSONObject serialize() {
         try {

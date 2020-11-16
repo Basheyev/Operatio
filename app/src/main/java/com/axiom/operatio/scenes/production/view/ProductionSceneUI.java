@@ -13,6 +13,7 @@ import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Widget;
+import com.axiom.operatio.model.gameplay.Utils;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
@@ -75,6 +76,10 @@ public class ProductionSceneUI {
                     productionScene.getInputHandler().invalidateAllActions();
                     SoundRenderer.playSound(tickSound);
                     SceneManager.getInstance().setActiveScene("Inventory");
+                } else if (w.getTag().equals("Finance")) {
+                    productionScene.getInputHandler().invalidateAllActions();
+                    SoundRenderer.playSound(tickSound);
+                    SceneManager.getInstance().setActiveScene("Finance");
                 }
             }
         };
@@ -114,10 +119,12 @@ public class ProductionSceneUI {
         setPausedButtonState(true);
         widget.addChild(pauseButton);
 
-        balance = new Button(String.format("$%.0f", production.getCashBalance()));
+        balance = new Button(Utils.moneyFormat(production.getCashBalance()));
+        balance.setTag("Finance");
         balance.setColor(0xCC505050);
         balance.setTextColor(Color.WHITE);
         balance.setTextScale(1.5f);
+        balance.setClickListener(exitListener);
         balance.setLocalBounds(Camera.WIDTH/2-150, 1000, 300, 80);
         widget.addChild(balance);
     }
