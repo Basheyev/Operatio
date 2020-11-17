@@ -137,7 +137,7 @@ public class Market implements JSONSerializable {
         Item item;
         double commodityPrice = getValue(commodity);
         int quantity = 0;
-        int incomeType = Ledger.INCOME_MATERIAL_SOLD;
+        int incomeType = Ledger.REVENUE_MATERIAL_SOLD;
         for (int i=0; i < amount; i++) {
             item = inventory.poll(Material.getMaterial(commodity));
             if (item==null) break;

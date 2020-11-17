@@ -168,6 +168,23 @@ public abstract class Block implements JSONSerializable {
         return price;
     }
 
+    public double getItemsPrice() {
+        double sum = 0;
+        Item item;
+
+        for (int i=0; i<input.size(); i++) {
+            item = input.get(i);
+            sum += item.getMaterial().getPrice();
+        }
+
+        for (int i=0; i<output.size(); i++) {
+            item = output.get(i);
+            sum += item.getMaterial().getPrice();
+        }
+
+        return sum;
+    }
+
     public void returnItemsTo(Inventory inventory) {
         int inputItemsCount = input.size();
         for (int i=0; i<inputItemsCount; i++) {

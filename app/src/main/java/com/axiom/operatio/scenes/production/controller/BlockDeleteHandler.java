@@ -1,6 +1,5 @@
 package com.axiom.operatio.scenes.production.controller;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
@@ -58,8 +57,7 @@ public class BlockDeleteHandler {
                 if (actionInProgress && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
                     if (block!=null) {
                         production.removeBlock(block,true);
-                        production.increaseCashBalance(Ledger.INCOME_BLOCK_SOLD, block.getPrice());
-                        //production.getLedger().registerBlockSold(block.getPrice());
+                        production.increaseCashBalance(Ledger.REVENUE_BLOCK_SOLD, block.getPrice());
                         production.unselectBlock();
                         AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
                         opsPanel.hideBlockInfo();

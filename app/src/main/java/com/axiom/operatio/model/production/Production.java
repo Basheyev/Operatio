@@ -104,6 +104,7 @@ public class Production implements JSONSerializable {
                 for (int i = 0; i < size; i++) {
                     block = blocks.get(i);
                     energyPayed = false;
+                    // TODO Разные операционные косты надо брать у блока, а не у тут
                     if (block instanceof Machine) {
                         energyPayed = decreaseCashBalance(expenseType,0.1d);  // Берем по $0.1 за цикл машины
                     } else if (block instanceof Conveyor) {
@@ -179,10 +180,22 @@ public class Production implements JSONSerializable {
     }
 
 
-    public double getValuation() {
+    public double getAssetsValuation() {
         double sum = 0;
+        Block block;
         for (int i=0; i<blocks.size(); i++) {
-            sum += blocks.get(i).getPrice();
+            block = blocks.get(i);
+            sum += block.getPrice();
+        }
+        return sum;
+    }
+
+    public double getWorkInProgressValuation() {
+        double sum = 0;
+        Block block;
+        for (int i=0; i<blocks.size(); i++) {
+            block = blocks.get(i);
+            sum += block.getItemsPrice();
         }
         return sum;
     }
@@ -351,7 +364,7 @@ public class Production implements JSONSerializable {
 
     public double increaseCashBalance(int type, double value) {
         cashBalance += value;
-        ledger.registerIncome(type, value);
+        ledger.registerRevenue(type, value);
         return cashBalance;
     }
 
