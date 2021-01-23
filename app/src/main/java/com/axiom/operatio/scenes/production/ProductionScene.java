@@ -8,6 +8,8 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.input.ScaleEvent;
 import com.axiom.atom.engine.ui.widgets.Button;
+import com.axiom.operatio.model.gameplay.Level;
+import com.axiom.operatio.model.gameplay.LevelManager;
 import com.axiom.operatio.model.gameplay.Utils;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.Production;
@@ -94,8 +96,11 @@ public class ProductionScene extends GameScene {
         double currentCashBalance = production.getCashBalance();
         if ((long)lastCashBalance != (long)currentCashBalance) {
             Button balance = ProductionSceneUI.getBalance();
-            balance.setText("Day " + (production.getCurrentCycle() / 60) + " " +
-                    Utils.moneyFormat(production.getCashBalance()));
+            LevelManager lm = LevelManager.getInstance();
+            Level level = lm.getLevel(production.getLevel());
+            String goal = level.getDescription();
+            balance.setText("Level " + production.getLevel() + " Day " + (production.getCurrentCycle() / 60) + " " +
+                    Utils.moneyFormat(production.getCashBalance()) + "\n" + goal);
             lastCashBalance = currentCashBalance;
         }
     }

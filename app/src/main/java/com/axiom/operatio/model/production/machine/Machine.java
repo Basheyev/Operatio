@@ -2,6 +2,7 @@ package com.axiom.operatio.model.production.machine;
 
 import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.data.JSONSerializable;
+import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.buffer.Buffer;
@@ -169,13 +170,16 @@ public class Machine extends Block implements JSONSerializable {
     // Добавляем на выход исходящие предметы
     protected void generateOutput() {
         Item item;
+        Ledger ledger = production.getLedger();
         for (int i=0; i<operation.outputAmount.length; i++) {
             Material material = operation.outputMaterials[i];
+            // Регистрируем факт производства материала
+            ledger.registerCommodityManufactured(material.getMaterialID(), operation.outputAmount[i]);
+
             for (int j=0; j<operation.outputAmount[i]; j++) {
                 item = new Item(material);
                 item.setOwner(production,this);
                 output.add(item);
-
                 // Если приёмник буфер или конвейер - затолкать самостоятельно
                 Block outputBlock = production.getBlockAt(this,outputDirection);
                 if (outputBlock!=null) {

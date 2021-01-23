@@ -79,13 +79,17 @@ public class ReportPanel extends Panel {
             }
         }
 
+        double periodRevenue = ledger.getPeriodOperRevenue();
+        double margin = 0;
+        if (periodRevenue > 0) margin = Math.round(ledger.getPeriodOperMargin() / periodRevenue * 100);
+
         String report = "MARGIN - " + Utils.moneyFormat(ledger.getPeriodOperMargin()) + " ("
-                        + Math.round(ledger.getPeriodOperMargin() / ledger.getPeriodOperRevenue() * 100) + "%)"
+                        + margin + "%)"
                         + "\n\nCash - " + Utils.moneyFormat(production.getCashBalance())
                         + "\nAssets - " + Utils.moneyFormat(production.getAssetsValuation())
                         + "\nWork in progress - " + Utils.moneyFormat(production.getWorkInProgressValuation())
                         + "\nInventory - " + Utils.moneyFormat(production.getInventory().getValuation())
-                        + "\n\nCapitalization - " + Utils.moneyFormat(ledger.getCapitalization(production));
+                        + "\n\nCapitalization - " + Utils.moneyFormat(ledger.getCapitalization());
 
         panelCaption.setText("Financial report - " + production.getCurrentCycle() / Ledger.REPORTING_PERIOD + " day");
         incomeCaption.setText(revenueText);

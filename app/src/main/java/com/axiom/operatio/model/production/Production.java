@@ -1,7 +1,11 @@
 package com.axiom.operatio.model.production;
 
+import android.util.Log;
+
 import com.axiom.atom.engine.data.JSONSerializable;
 import com.axiom.operatio.model.gameplay.Ledger;
+import com.axiom.operatio.model.gameplay.Level;
+import com.axiom.operatio.model.gameplay.LevelManager;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;
@@ -18,11 +22,13 @@ import java.util.ArrayList;
 public class Production implements JSONSerializable {
 
 
-    //protected static Production instance;         // Синглтон объекта - производство
     protected Inventory inventory;                  // Объект - склад
     protected Market market;                        // Объект - рынок
     protected Ledger ledger;                        // Объект - игровая статистика
-    protected double cashBalance = 15000;           // Остатки денег
+    protected LevelManager levelManager;            // Менеджер уровней
+    protected int level = 0;                        // Текущий уровень
+    protected int lastCompletedLevel = -1;          // Последний завершенный уровень
+    protected double cashBalance = 10000;           // Остатки денег
 
     protected ArrayList<Block> blocks;              // Список блоков производства
     protected Block[][] grid;                       // Блоки привязанные к координатной сетке
@@ -41,19 +47,24 @@ public class Production implements JSONSerializable {
     protected int selectedCol, selectedRow;         // Столбец и строка выбранного блока
 
 
+
     public Production(int columns, int rows) {
+
+        levelManager = LevelManager.getInstance();
         this.columns = columns;
         this.rows = rows;
         grid = new Block[rows][columns];
         blocks = new ArrayList<Block>(100);
         inventory = new Inventory(this);
         market = new Market(this);
-        ledger = new Ledger();
+        ledger = new Ledger(this);
+
     }
 
 
     public Production(JSONObject jsonObject) throws JSONException {
 
+        levelManager = LevelManager.getInstance();
         cashBalance = jsonObject.getLong("cashBalance");
         int columns = jsonObject.getInt("columns");
         int rows = jsonObject.getInt("rows");
@@ -61,7 +72,7 @@ public class Production implements JSONSerializable {
         this.columns = columns;
         this.rows = rows;
         grid = new Block[rows][columns];
-
+        level = jsonObject.getInt("level");
         lastCycleTime = jsonObject.getLong("lastCycleTime");
         cycleMilliseconds = jsonObject.getLong("cycleMilliseconds");
         clock = jsonObject.getLong("clock");
@@ -84,7 +95,7 @@ public class Production implements JSONSerializable {
         JSONObject jsonInventory = jsonObject.getJSONObject("inventory");
         inventory = new Inventory(this, jsonInventory);
         market = new Market(this);
-        ledger = new Ledger();
+        ledger = new Ledger(this);
     }
 
 
@@ -119,11 +130,22 @@ public class Production implements JSONSerializable {
                     }
                 }
                 // Выполнить симуляцию склада
-                inventory.process(this);
+                inventory.process();
                 // Выполнить симуляцию рынка
                 market.process();
                 // Выполнить процесс учёта статистики
-                ledger.process(this);
+                ledger.process();
+                // Проверка условий уровня
+                Level theLevel = levelManager.getLevel(level);
+                if (theLevel.checkWinConditions(this) && lastCompletedLevel != level) {
+                    // todo сделать переход с уровня на уровень
+                    Log.i("PRODUCTION", "LEVEL " + level + " COMPLETED!!!!");
+                    // Забрать награду
+                    cashBalance += theLevel.getReward();
+                    // Перейти на следующий уровень если он есть
+                    lastCompletedLevel = level;
+                    if (level + 1 <= levelManager.size() - 1) level++;
+                }
                 // Увеличиваем счётчик циклов
                 cycle++;
                 lastCycleTime = now;
@@ -307,6 +329,10 @@ public class Production implements JSONSerializable {
         }
     }
 
+    public int getLevel() {
+        return level;
+    }
+
     public boolean isPaused() {
         return isPaused;
     }
@@ -319,6 +345,7 @@ public class Production implements JSONSerializable {
             jsonObject.put("cashBalance", cashBalance);
             jsonObject.put("columns", columns);
             jsonObject.put("rows", rows);
+            jsonObject.put("level", level);
             jsonObject.put("lastCycleTime", lastCycleTime);
             jsonObject.put("cycleMilliseconds", cycleMilliseconds);
             jsonObject.put("clock", clock);
@@ -329,9 +356,7 @@ public class Production implements JSONSerializable {
             jsonObject.put("blockSelected", blockSelected);
             jsonObject.put("selectedCol", selectedCol);
             jsonObject.put("selectedRow", selectedRow);
-            /*
-                protected static Market market;                 // Синллтон объекта - рынок
-            */
+
 
             JSONArray jsonArray = new JSONArray();
             for (int i=0; i<blocks.size(); i++) {

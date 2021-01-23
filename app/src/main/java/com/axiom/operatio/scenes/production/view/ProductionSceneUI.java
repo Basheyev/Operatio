@@ -125,7 +125,7 @@ public class ProductionSceneUI {
         balance.setTextColor(Color.WHITE);
         balance.setTextScale(1.5f);
         balance.setClickListener(exitListener);
-        balance.setLocalBounds(Camera.WIDTH/2-150, 1000, 300, 80);
+        balance.setLocalBounds(Camera.WIDTH/2-300, 940, 600, 140);
         widget.addChild(balance);
     }
 

@@ -155,7 +155,7 @@ public class Inventory implements JSONSerializable {
         return (autoAction[sku] & AUTO_SELL) > 0;
     }
 
-    public void process(Production production) {
+    public void process() {
         Market market = production.getMarket();
 
         for (int i=0; i<SKU_COUNT; i++) {
