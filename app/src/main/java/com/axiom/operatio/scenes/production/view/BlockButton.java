@@ -120,7 +120,7 @@ public class BlockButton extends Button {
         MachineType mt;
         int choice = Integer.parseInt(toggled);
         switch (choice) {
-            case 0: // КОн
+            case 0: // Конвейер
                 block = new Conveyor(production, Block.LEFT, Block.RIGHT);
                 break;
             case 1:

@@ -135,17 +135,24 @@ public class Production implements JSONSerializable {
                 market.process();
                 // Выполнить процесс учёта статистики
                 ledger.process();
+
+
+
                 // Проверка условий уровня
                 Level theLevel = levelManager.getLevel(level);
                 if (theLevel.checkWinConditions(this) && lastCompletedLevel != level) {
                     // todo сделать переход с уровня на уровень
                     Log.i("PRODUCTION", "LEVEL " + level + " COMPLETED!!!!");
+                    // todo сделать звуковой сигнал
                     // Забрать награду
                     cashBalance += theLevel.getReward();
                     // Перейти на следующий уровень если он есть
                     lastCompletedLevel = level;
                     if (level + 1 <= levelManager.size() - 1) level++;
                 }
+
+
+
                 // Увеличиваем счётчик циклов
                 cycle++;
                 lastCycleTime = now;

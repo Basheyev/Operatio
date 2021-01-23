@@ -5,7 +5,11 @@ import android.graphics.Color;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
+import com.axiom.operatio.model.gameplay.Level;
+import com.axiom.operatio.model.gameplay.LevelManager;
 import com.axiom.operatio.scenes.production.ProductionScene;
+
+import java.util.ArrayList;
 
 public class BlocksPanel extends Panel {
 
@@ -50,6 +54,20 @@ public class BlocksPanel extends Panel {
         for (int id =0; id<10; id++) {
             button = new BlockButton(productionScene,this, id);
             button.setLocalBounds(25 + (id % 2) * 130, 550 - (id / 2) * 130, 120, 120);
+        }
+    }
+
+    public void updatePermissions(int level) {
+        LevelManager lm = LevelManager.getInstance();
+        Level currentLevel = lm.getLevel(level);
+        ArrayList<Widget> children = getChildren();
+        for (int i=0; i<children.size(); i++) {
+            BlockButton button = (BlockButton) children.get(i);
+            if (currentLevel.isBlockAvailable(Integer.parseInt(button.getTag()))) {
+                button.visible = true;
+            } else {
+                button.visible = false;
+            }
         }
     }
 

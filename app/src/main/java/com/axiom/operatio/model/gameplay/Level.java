@@ -12,12 +12,12 @@ public class Level {
 
     protected String description;                        // Описание цели и задач уровня
     protected double reward;                             // Вознаграждение за прохождение
-    protected ArrayList<Integer> allowedMachines;        // Разрешенные на уровне машины
+    protected ArrayList<Integer> allowedBlocks;        // Разрешенные на уровне машины
     protected ArrayList<Integer> allowedMaterials;       // Разрешенные на уровне материалы
     protected ArrayList<LevelCondition> winConditions;   // Условия победы
 
     public Level() {
-        allowedMachines = new ArrayList<>();
+        allowedBlocks = new ArrayList<>();
         allowedMaterials = new ArrayList<>();
         winConditions = new ArrayList<>();
     }
@@ -53,8 +53,8 @@ public class Level {
     // Level permissions
     //-------------------------------------------------------------------------------------------
 
-    public boolean isMachineAvailable(int machineID) {
-        return allowedMachines.contains(machineID);
+    public boolean isBlockAvailable(int blockID) {
+        return allowedBlocks.contains(blockID);
     }
 
     public boolean isAllowedToBuy(int commodity) {

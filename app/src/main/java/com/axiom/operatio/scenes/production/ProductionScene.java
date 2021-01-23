@@ -30,6 +30,7 @@ public class ProductionScene extends GameScene {
     private Production production;
     private InputHandler inputHandler;
     private ProductionRenderer productionRenderer;
+    private int currentLevel = -1;
 
     // Надо сделать сеттеры и геттеры
     public BlocksPanel blocksPanel;
@@ -71,6 +72,10 @@ public class ProductionScene extends GameScene {
             }
             initialized = true;
         }
+
+        // Включить доступные машины на этом уровне
+        blocksPanel.updatePermissions(production.getLevel());
+
     }
 
     public void pause() {
@@ -99,9 +104,17 @@ public class ProductionScene extends GameScene {
             LevelManager lm = LevelManager.getInstance();
             Level level = lm.getLevel(production.getLevel());
             String goal = level.getDescription();
+            // todo здесь может съедаться память если не использовать StringBuffer
             balance.setText("Level " + production.getLevel() + " Day " + (production.getCurrentCycle() / 60) + " " +
                     Utils.moneyFormat(production.getCashBalance()) + "\n" + goal);
             lastCashBalance = currentCashBalance;
+        }
+
+        // Проверить не сменился ли уровень (обновить доступ к кнопкам)
+        if (currentLevel != production.getLevel()) {
+            currentLevel = production.getLevel();
+            // Включить доступные машины на этом уровне
+            blocksPanel.updatePermissions(production.getLevel());
         }
     }
 
@@ -149,4 +162,6 @@ public class ProductionScene extends GameScene {
     public InputHandler getInputHandler() {
         return inputHandler;
     }
+
+
 }
