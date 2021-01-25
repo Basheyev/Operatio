@@ -68,8 +68,10 @@ public class LevelManager {
         level.allowedMaterials.add(2);      // Copper
         level.allowedMaterials.add(8);      // Steel plate
         level.allowedMaterials.add(10);     // Copper plate
+
         level.addCondition(LevelCondition.MANUFACTURED_AMOUNT, 10, 150);
         level.addCondition(LevelCondition.SOLD_AMOUNT, 10, 150);
+
         levels.add(level);
     }
 
@@ -90,10 +92,9 @@ public class LevelManager {
         level.allowedBlocks.add(8);       // import
         level.allowedBlocks.add(9);       // export
 
-        level.allowedMaterials.add(0);      // Steel
-        level.allowedMaterials.add(2);      // Copper
-        level.allowedMaterials.add(8);      // Steel plate
-        level.allowedMaterials.add(10);     // Copper plate
+        for (int i=0;i<64; i++) {
+            level.allowedMaterials.add(i);
+        }
 
 //        level.addCondition(LevelCondition.MANUFACTURED_AMOUNT, 10, 150);
 //        level.addCondition(LevelCondition.SOLD_AMOUNT, 10, 150);

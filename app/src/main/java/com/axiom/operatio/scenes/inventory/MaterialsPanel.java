@@ -7,9 +7,12 @@ import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
+import com.axiom.operatio.model.gameplay.Level;
+import com.axiom.operatio.model.gameplay.LevelManager;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.scenes.production.view.BlockButton;
 import com.axiom.operatio.scenes.production.view.ItemWidget;
 
 import java.util.ArrayList;
@@ -36,6 +39,7 @@ public class MaterialsPanel extends Panel {
         buildUI();
     }
 
+
     public void updateData() {
         Inventory inventory = production.getInventory();
         for (int i = 0; i< Material.getMaterialsAmount(); i++) {
@@ -48,6 +52,22 @@ public class MaterialsPanel extends Panel {
             }
         }
     }
+
+
+    public void updatePermissions(int level) {
+        LevelManager lm = LevelManager.getInstance();
+        Level currentLevel = lm.getLevel(level);
+        ArrayList<Widget> children = getChildren();
+        for (int i=0; i<itemWidget.length; i++) {
+            ItemWidget item = itemWidget[i];
+            if (currentLevel.isMaterialAvailable(i)) {
+                item.visible = true;
+            } else {
+                item.visible = false;
+            }
+        }
+    }
+
 
     protected void buildUI() {
         Panel panel = this;
@@ -100,6 +120,7 @@ public class MaterialsPanel extends Panel {
             Material material = Material.getMaterial(materialID);
             MaterialsPanel materialsPanel = (MaterialsPanel) w.getParent();
 
+            // fixme constant material ID
             if (materialID > 55 && materialID < 61) return;
 
             if (w.getColor()!=RED) {

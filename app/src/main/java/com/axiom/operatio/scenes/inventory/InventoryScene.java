@@ -19,7 +19,7 @@ import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.Production;
 
 /**
- * Сцена склада
+ * Сцена склада todo отключать недоступные материалы
  */
 public class InventoryScene extends GameScene {
 
@@ -30,6 +30,7 @@ public class InventoryScene extends GameScene {
     protected MarketPanel marketPanel;
     protected Button balance;
     protected long currentBalance, lastBalance;
+    protected int currentLevel = -1;
     protected static Sprite background;
     protected static int tickSound;
     private long lastTime;
@@ -71,15 +72,25 @@ public class InventoryScene extends GameScene {
         production.process();
 
         currentBalance = (long) production.getCashBalance();
+
+        // ели изменился баланс
         if (lastBalance != currentBalance) {
             balance.setText(Utils.moneyFormat(currentBalance));
             lastBalance = currentBalance;
         }
 
+        // если прошла секунда времени
         if (now - lastTime > 1000) {
             materialsPanel.updateData();
             marketPanel.updateValues();
             lastTime = now;
+        }
+
+        // Если сменился уровень
+        if (currentLevel != production.getLevel()) {
+            currentLevel = production.getLevel();
+            // Включить доступные машины на этом уровне
+            materialsPanel.updatePermissions(production.getLevel());
         }
     }
 
