@@ -173,6 +173,7 @@ public class Machine extends Block implements JSONSerializable {
         Ledger ledger = production.getLedger();
         for (int i=0; i<operation.outputAmount.length; i++) {
             Material material = operation.outputMaterials[i];
+
             // Регистрируем факт производства материала
             ledger.registerCommodityManufactured(material.getMaterialID(), operation.outputAmount[i]);
 

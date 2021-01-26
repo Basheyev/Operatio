@@ -9,8 +9,7 @@ import com.axiom.operatio.model.production.Production;
 
 import org.json.JSONObject;
 
-// TODO СУПЕР ВАЖНО!!!! Добавить авто-закуп и авто-продажу
-// TODO Сделать финансовый отчёт по бюджету (РАСХОДЫ, ДОХОДЫ, ПРИБЫЛЬ, ФИН. ПОКАЗАТЕЛИ)
+
 public class Market implements JSONSerializable {
 
     public static final int COMMODITY_COUNT = 64;

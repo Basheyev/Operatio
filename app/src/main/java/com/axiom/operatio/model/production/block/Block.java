@@ -403,8 +403,12 @@ public abstract class Block implements JSONSerializable {
         if (block==null) return false;
         boolean hasInput = (production.getBlockAt(block, block.getInputDirection())==this);
         boolean hasOutput = (production.getBlockAt(block, block.getOutputDirection())==this);
+
         boolean itsBuffer = block instanceof Buffer;
-        return hasInput || hasOutput || itsBuffer;
+        boolean itsImportBuffer = block instanceof ImportBuffer;
+        boolean itsExportBuffer = block instanceof ExportBuffer;
+
+        return hasInput || hasOutput || itsBuffer || itsImportBuffer || itsExportBuffer;
     }
 
 
@@ -416,9 +420,11 @@ public abstract class Block implements JSONSerializable {
     private void adjustDirectionOneNeighbor(Block neighbor, int neighborSide) {
         Block neighborOutput = production.getBlockAt(neighbor, neighbor.getOutputDirection());
         Block neighborInput = production.getBlockAt(neighbor, neighbor.getInputDirection());
-        if (neighborOutput==this || (neighbor instanceof Buffer)) {
+
+        // если выход соседа направлен на этот блок или он сосед является буфером
+        if (neighborOutput==this || (neighbor instanceof Buffer || neighbor instanceof ImportBuffer)) {
             setDirections(neighborSide, oppositeDirection(neighborSide));
-        } else if (neighborInput==this) {
+        } else if (neighborInput==this || (neighbor instanceof ExportBuffer)) {
             setDirections(oppositeDirection(neighborSide), neighborSide);
         }
     }
@@ -430,10 +436,15 @@ public abstract class Block implements JSONSerializable {
 
         Block neighbor1Output = production.getBlockAt(neighbor1, neighbor1.getOutputDirection());
         Block neighbor1Input = production.getBlockAt(neighbor1, neighbor1.getInputDirection());
-        boolean neighbor1IsBuffer = neighbor1 instanceof Buffer;
+        boolean neighbor1IsBuffer = neighbor1 instanceof Buffer ||
+                                    neighbor1 instanceof ImportBuffer ||
+                                    neighbor1 instanceof ExportBuffer;
+
         Block neighbor2Output = production.getBlockAt(neighbor2, neighbor2.getOutputDirection());
         Block neighbor2Input = production.getBlockAt(neighbor2, neighbor2.getInputDirection());
-        boolean neighbor2IsBuffer = neighbor2 instanceof Buffer;
+        boolean neighbor2IsBuffer = neighbor2 instanceof Buffer ||
+                                    neighbor2 instanceof ImportBuffer ||
+                                    neighbor2 instanceof ExportBuffer;;
 
         // если ни один вход/выход двух соседей не направлен на это блок
         // и ни один из них не является буфером - уходим ничего не делаем
@@ -441,18 +452,23 @@ public abstract class Block implements JSONSerializable {
                 && neighbor2Input!=this && neighbor2Output!=this &&
                 !neighbor1IsBuffer && !neighbor2IsBuffer) return;
 
-        // Если только первого блока вход/выход направлен на этот блок
-        // поворачиваем как будто у нас один сосед
+
         if ((neighbor1Input==this || neighbor1Output==this || neighbor1IsBuffer) &&
                 (neighbor2Input!=this && neighbor2Output!=this && !neighbor2IsBuffer)) {
+            // Если только первого блока вход/выход направлен на этот блок
+            // поворачиваем как будто у нас один сосед
             adjustDirectionOneNeighbor(neighbor1, neightbor1Side);
         } else if (neighbor1Input!=this && neighbor1Output!=this && !neighbor1IsBuffer) {
             // Если только второго блока вход/выход направлен на этот блок
             // поворачиваем как будто у нас один сосед
             adjustDirectionOneNeighbor(neighbor2, neightbor2Side);
-        } else if (neighbor1Input==this && neighbor2Output==this || neighbor1IsBuffer) {
+        } else if ((neighbor1Input==this || neighbor1 instanceof ExportBuffer || neighbor1 instanceof Buffer) &&
+                 (neighbor2Output==this || neighbor2 instanceof ImportBuffer || neighbor2 instanceof Buffer)) {
+            // Если вход соседа1 направлен от нас или это буефер, а выход соседа2 на нас или это буфер
             setDirections(neightbor2Side, neightbor1Side);
-        } else if (neighbor1Output==this && neighbor2Input==this || neighbor2IsBuffer) {
+        } else if ((neighbor1Output==this || neighbor1 instanceof ImportBuffer || neighbor1 instanceof Buffer) &&
+               (neighbor2Input==this || neighbor2 instanceof ExportBuffer || neighbor2 instanceof Buffer)) {
+            // Если вход соседа2 направлен от нас или это буефер, а выход соседа1 на нас или это буфер
             setDirections(neightbor1Side, neightbor2Side);
         }
 

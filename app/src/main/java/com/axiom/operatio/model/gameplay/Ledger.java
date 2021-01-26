@@ -142,14 +142,6 @@ public class Ledger {
         manufacturedCommodities[commodity] += quantity;
     }
 
-    public void registerCommodityPolled(int commodity, int quantity) {
-        // TODO so what?
-    }
-
-    public void registerCommodityPushed(int commodity, int quantity) {
-        // TODO so what?
-    }
-
     public void registerCommoditySold(int commodity, int quantity, double price) {
         soldCommoditiesSum[commodity] += quantity * price;
         soldCommoditiesAmount[commodity] += quantity;

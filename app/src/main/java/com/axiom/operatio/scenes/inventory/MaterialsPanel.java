@@ -1,22 +1,19 @@
 package com.axiom.operatio.scenes.inventory;
 
 import com.axiom.atom.R;
-import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.gameplay.Level;
-import com.axiom.operatio.model.gameplay.LevelManager;
+import com.axiom.operatio.model.gameplay.LevelFactory;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
-import com.axiom.operatio.scenes.production.view.BlockButton;
 import com.axiom.operatio.scenes.production.view.ItemWidget;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.RED;
@@ -55,15 +52,14 @@ public class MaterialsPanel extends Panel {
 
 
     public void updatePermissions(int level) {
-        LevelManager lm = LevelManager.getInstance();
+        LevelFactory lm = LevelFactory.getInstance();
         Level currentLevel = lm.getLevel(level);
-        ArrayList<Widget> children = getChildren();
         for (int i=0; i<itemWidget.length; i++) {
             ItemWidget item = itemWidget[i];
             if (currentLevel.isMaterialAvailable(i)) {
-                item.visible = true;
+                item.setActive(true);
             } else {
-                item.visible = false;
+                item.setActive(false);
             }
         }
     }
@@ -121,7 +117,9 @@ public class MaterialsPanel extends Panel {
             MaterialsPanel materialsPanel = (MaterialsPanel) w.getParent();
 
             // fixme constant material ID
-            if (materialID > 55 && materialID < 61) return;
+            ItemWidget item = (ItemWidget) w;
+            if (!item.isActive()) return;
+            // if (materialID > 55 && materialID < 61) return;
 
             if (w.getColor()!=RED) {
                 unselectAllButtons(w);

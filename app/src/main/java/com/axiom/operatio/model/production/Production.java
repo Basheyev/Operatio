@@ -5,7 +5,7 @@ import android.util.Log;
 import com.axiom.atom.engine.data.JSONSerializable;
 import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.gameplay.Level;
-import com.axiom.operatio.model.gameplay.LevelManager;
+import com.axiom.operatio.model.gameplay.LevelFactory;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;
@@ -18,14 +18,19 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-// TODO Площадь производства должна быть ограничена
+
+/**
+ * Модель производства
+ */
 public class Production implements JSONSerializable {
 
+    // todo ограничение площади производства (доступна минимальная часть и по мере уровней)
+    // todo возможность покупки дополнительной площади и ограничения (покупка по квадратами)
 
     protected Inventory inventory;                  // Объект - склад
     protected Market market;                        // Объект - рынок
     protected Ledger ledger;                        // Объект - игровая статистика
-    protected LevelManager levelManager;            // Менеджер уровней
+    protected LevelFactory levelFactory;            // Менеджер уровней
     protected int level = 0;                        // Текущий уровень
     protected int lastCompletedLevel = -1;          // Последний завершенный уровень
     protected double cashBalance = 10000;           // Остатки денег
@@ -50,7 +55,7 @@ public class Production implements JSONSerializable {
 
     public Production(int columns, int rows) {
 
-        levelManager = LevelManager.getInstance();
+        levelFactory = LevelFactory.getInstance();
         this.columns = columns;
         this.rows = rows;
         grid = new Block[rows][columns];
@@ -64,7 +69,7 @@ public class Production implements JSONSerializable {
 
     public Production(JSONObject jsonObject) throws JSONException {
 
-        levelManager = LevelManager.getInstance();
+        levelFactory = LevelFactory.getInstance();
         cashBalance = jsonObject.getLong("cashBalance");
         int columns = jsonObject.getInt("columns");
         int rows = jsonObject.getInt("rows");
@@ -139,7 +144,7 @@ public class Production implements JSONSerializable {
 
 
                 // Проверка условий уровня
-                Level theLevel = levelManager.getLevel(level);
+                Level theLevel = levelFactory.getLevel(level);
                 if (theLevel.checkWinConditions(this) && lastCompletedLevel != level) {
                     // todo сделать переход с уровня на уровень
                     Log.i("PRODUCTION", "LEVEL " + level + " COMPLETED!!!!");
@@ -148,7 +153,7 @@ public class Production implements JSONSerializable {
                     cashBalance += theLevel.getReward();
                     // Перейти на следующий уровень если он есть
                     lastCompletedLevel = level;
-                    if (level + 1 <= levelManager.size() - 1) level++;
+                    if (level + 1 <= levelFactory.size() - 1) level++;
                 }
 
 

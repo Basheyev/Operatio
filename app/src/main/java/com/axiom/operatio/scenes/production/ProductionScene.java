@@ -9,7 +9,7 @@ import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.input.ScaleEvent;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.operatio.model.gameplay.Level;
-import com.axiom.operatio.model.gameplay.LevelManager;
+import com.axiom.operatio.model.gameplay.LevelFactory;
 import com.axiom.operatio.model.gameplay.Utils;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.Production;
@@ -24,7 +24,7 @@ import com.axiom.operatio.scenes.inventory.InventoryScene;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+// todo Снизу экрана расположить информацию о деньгах и финотчета, а сверху сообщения и подсказки
 public class ProductionScene extends GameScene {
 
     private Production production;
@@ -101,10 +101,10 @@ public class ProductionScene extends GameScene {
         double currentCashBalance = production.getCashBalance();
         if ((long)lastCashBalance != (long)currentCashBalance) {
             Button balance = ProductionSceneUI.getBalance();
-            LevelManager lm = LevelManager.getInstance();
+            LevelFactory lm = LevelFactory.getInstance();
             Level level = lm.getLevel(production.getLevel());
             String goal = level.getDescription();
-            // todo здесь может съедаться память если не использовать StringBuffer
+            // todo здесь может съедаться память если не использовать StringBuffer (если только уже это компилятор не недлает)
             balance.setText("Level " + production.getLevel() + " Day " + (production.getCurrentCycle() / 60) + " " +
                     Utils.moneyFormat(production.getCashBalance()) + "\n" + goal);
             lastCashBalance = currentCashBalance;

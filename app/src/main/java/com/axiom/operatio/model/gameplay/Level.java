@@ -10,8 +10,6 @@ import java.util.ArrayList;
  */
 public class Level {
 
-    // todo на одну на 1-3 звезды закончить уровень (разные вознаграждения)
-
     protected String description;                        // Описание цели и задач уровня
     protected double reward;                             // Вознаграждение за прохождение
     protected ArrayList<Integer> allowedBlocks;          // Разрешенные на уровне машины

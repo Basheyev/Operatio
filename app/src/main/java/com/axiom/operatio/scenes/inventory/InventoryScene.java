@@ -19,7 +19,7 @@ import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.Production;
 
 /**
- * Сцена склада todo отключать недоступные материалы
+ * Сцена склада
  */
 public class InventoryScene extends GameScene {
 

@@ -54,6 +54,7 @@ public class Button extends Widget {
         }
 
         if (text!=null) {
+            // fixme выравниваение по центру со второй строки работает не корректно
             GraphicsRender.setZOrder(zOrder + 2);
             float textWidth = GraphicsRender.getTextWidth(text, textScale);
             float textHeight = GraphicsRender.getTextHeight(text,textScale);

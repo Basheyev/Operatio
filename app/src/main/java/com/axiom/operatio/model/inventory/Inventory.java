@@ -86,8 +86,8 @@ public class Inventory implements JSONSerializable {
         int ID = item.getMaterial().getMaterialID();
         boolean stored = stockKeepingUnit.get(ID).add(item);
         if (stored) {
-            Ledger ledger = production.getLedger();
-            ledger.registerCommodityPushed(ID, 1);
+           // Ledger ledger = production.getLedger();
+           // ledger.registerCommodityPushed(ID, 1);
         }
         return stored;
     }
@@ -113,8 +113,8 @@ public class Inventory implements JSONSerializable {
         int ID = material.getMaterialID();
         Item item = stockKeepingUnit.get(ID).poll();
         if (item!=null) {
-            Ledger ledger = production.getLedger();
-            ledger.registerCommodityPolled(ID, 1);
+         //   Ledger ledger = production.getLedger();
+         //   ledger.registerCommodityPolled(ID, 1);
         }
         return item;
     }

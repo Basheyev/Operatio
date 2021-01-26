@@ -13,6 +13,7 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 
+// todo Возможно Import/Export Buffers Должны находиться только на границе производства
 public class BlockAddMoveHandler {
 
     private InputHandler inputHandler;
@@ -81,7 +82,7 @@ public class BlockAddMoveHandler {
                             dragBlock.adjustFlowDirection();
                             opsPanel.showBlockInfo(dragBlock, false);
                             production.selectBlock(column, row);
-                            scene.getProductionRenderer().particles.generateParticles();
+                            scene.getProductionRenderer().getParticles().generateParticles();
                         } else {
                             production.setBlock(dragBlock, lastCol, lastRow);
                             production.selectBlock(column, row);

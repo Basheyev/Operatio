@@ -15,7 +15,7 @@ public class ProductionRenderer {
     protected Production production;
     protected Sprite tile, tileBlocked, selection;
 
-    public Particles particles; // TODO Fix access
+    private Particles particles;
 
     private float cellWidth;                  // Ширина клетки
     private float cellHeight;                 // Высота клетки
@@ -175,4 +175,12 @@ public class ProductionRenderer {
         movingBlock = null;
     }
 
+
+    public Particles getParticles() {
+        return particles;
+    }
+
+    public void setParticles(Particles particles) {
+        this.particles = particles;
+    }
 }
