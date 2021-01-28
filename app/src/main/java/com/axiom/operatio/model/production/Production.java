@@ -2,7 +2,9 @@ package com.axiom.operatio.model.production;
 
 import android.util.Log;
 
+import com.axiom.atom.R;
 import com.axiom.atom.engine.data.JSONSerializable;
+import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.gameplay.Level;
 import com.axiom.operatio.model.gameplay.LevelFactory;
@@ -51,9 +53,12 @@ public class Production implements JSONSerializable {
     protected boolean blockSelected = false;        // Выбрал ли блок
     protected int selectedCol, selectedRow;         // Столбец и строка выбранного блока
 
+    private int levelCompletedSound;
 
 
     public Production(int columns, int rows) {
+
+        levelCompletedSound = SoundRenderer.loadSound(R.raw.yes_snd);
 
         levelFactory = LevelFactory.getInstance();
         this.columns = columns;
@@ -68,6 +73,8 @@ public class Production implements JSONSerializable {
 
 
     public Production(JSONObject jsonObject) throws JSONException {
+
+        levelCompletedSound = SoundRenderer.loadSound(R.raw.yes_snd);
 
         levelFactory = LevelFactory.getInstance();
         cashBalance = jsonObject.getLong("cashBalance");
@@ -149,6 +156,9 @@ public class Production implements JSONSerializable {
                     // todo сделать переход с уровня на уровень
                     Log.i("PRODUCTION", "LEVEL " + level + " COMPLETED!!!!");
                     // todo сделать звуковой сигнал
+
+                    SoundRenderer.playSound(levelCompletedSound);
+
                     // Забрать награду
                     cashBalance += theLevel.getReward();
                     // Перейти на следующий уровень если он есть
