@@ -10,7 +10,7 @@ import java.util.Arrays;
  */
 public class Ledger {
     //---------------------------------------------------------------------------------------------
-    public static final int REPORTING_PERIOD = 60;               // Длительность периода в циклах
+    public static final int OPERATIONAL_DAY_CYCLES = 60;        // Длительность периода в циклах
     //---------------------------------------------------------------------------------------------
     public static final int EXPENSE_BLOCK_BOUGHT    = 0x0001;    // Расходы на покупку блока
     public static final int EXPENSE_BLOCK_OPERATION = 0x0002;    // Расходы на операцию блока
@@ -29,7 +29,9 @@ public class Ledger {
     private double periodAssetsSold = 0;                         // Продано активов на сумму
     private double currentCashBalance = 0;                       // Текущий остаток денег
     //---------------------------------------------------------------------------------------------
-    private int[] manufacturedCommodities;                       // Объем произведенных материалов
+    private int[] productivity;                                  // Производительность за период
+    private int[] manufacturedByPeriod;                          // Объем произведенных материалов за период
+    private int[] manufacturedTotal;                             // Объем произведенных материалов всего
     private double[] soldCommoditiesSum;                         // Объем проданных материалов
     private int[] soldCommoditiesAmount;                         // Количество проданных материалов
     private double[] boughtCommoditiesSum;                       // Объем приобретенных материалов
@@ -39,12 +41,14 @@ public class Ledger {
 
     public Ledger(Production production) {
         this.production = production;
-        manufacturedCommodities = new int[Inventory.SKU_COUNT];
+        manufacturedTotal = new int[Inventory.SKU_COUNT];
+        manufacturedByPeriod = new int[Inventory.SKU_COUNT];
+        productivity = new int[Inventory.SKU_COUNT];
         soldCommoditiesSum = new double[Inventory.SKU_COUNT];
         soldCommoditiesAmount = new int[Inventory.SKU_COUNT];
         boughtCommoditiesSum = new double[Inventory.SKU_COUNT];
         boughtCommoditiesAmount = new int[Inventory.SKU_COUNT];
-        Arrays.fill(manufacturedCommodities, 0);
+        Arrays.fill(manufacturedTotal, 0);
         Arrays.fill(soldCommoditiesSum, 0);
         Arrays.fill(soldCommoditiesAmount, 0);
         Arrays.fill(boughtCommoditiesSum, 0);
@@ -52,12 +56,22 @@ public class Ledger {
     }
 
 
+    /**
+     * Вычисляет отчёт по периоду
+     */
     public void process() {
         currentCashBalance = production.getCashBalance();
 
         long currentCycle = production.getCurrentCycle();
-        if (currentCycle > startingCycle + REPORTING_PERIOD) {
+        if (currentCycle > startingCycle + OPERATIONAL_DAY_CYCLES) {
+
+            // Копируем количество произведенного в отчёт
+            System.arraycopy(manufacturedByPeriod, 0, productivity, 0, Inventory.SKU_COUNT);
+            // Зануляем массив для учта произведенного за период
+            Arrays.fill(manufacturedByPeriod, 0);
+
             // TODO Report
+
             startingCycle = currentCycle;
         }
 
@@ -112,8 +126,12 @@ public class Ledger {
 
     public int getCommodityBoughtAmount(int commodity) { return boughtCommoditiesAmount[commodity]; }
 
-    public int getCommodityManufacturedAmount(int commodity) {
-        return manufacturedCommodities[commodity];
+    public int getManufacturedAmount(int commodity) {
+        return manufacturedTotal[commodity];
+    }
+
+    public int getProductivity(int commodity) {
+        return productivity[commodity];
     }
 
     //--------------------------------------------------------------------------------------------
@@ -139,7 +157,8 @@ public class Ledger {
     }
 
     public void registerCommodityManufactured(int commodity, int quantity) {
-        manufacturedCommodities[commodity] += quantity;
+        manufacturedTotal[commodity] += quantity;
+        manufacturedByPeriod[commodity] += quantity;
     }
 
     public void registerCommoditySold(int commodity, int quantity, double price) {

@@ -91,7 +91,7 @@ public class ReportPanel extends Panel {
                         + "\nInventory - " + Utils.moneyFormat(production.getInventory().getValuation())
                         + "\n\nCapitalization - " + Utils.moneyFormat(ledger.getCapitalization());
 
-        panelCaption.setText("Financial report - " + production.getCurrentCycle() / Ledger.REPORTING_PERIOD + " day");
+        panelCaption.setText("Financial report - " + production.getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES + " day");
         incomeCaption.setText(revenueText);
         expenseCaption.setText(expensesText);
         reportCaption.setText(report);

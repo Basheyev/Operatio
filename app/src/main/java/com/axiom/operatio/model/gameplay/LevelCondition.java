@@ -40,12 +40,11 @@ public class LevelCondition {
 
 
     private boolean checkManufacturedAmount(Ledger ledger) {
-        return ledger.getCommodityManufacturedAmount(materialID) >= value;
+        return ledger.getManufacturedAmount(materialID) >= value;
     }
 
     private boolean checkManufacturedProductivity(Ledger ledger) {
-        // TODO За какой период считать продуктовность - продукции/время)?
-        return false;
+        return ledger.getProductivity(materialID) >= value;
     }
 
     public boolean checkSoldAmount(Ledger ledger) {
