@@ -4,11 +4,12 @@ package com.axiom.operatio.model.gameplay;
 public class LevelCondition {
 
     public static final int MANUFACTURED_AMOUNT = 1;           // Произведенное количество
-    public static final int MANUFACTURE_PRODUCTIVITY = 2;      // Продуктивность за время
-    public static final int SOLD_AMOUNT = 3;                   // Проданное количество
-    public static final int CASH_BALANCE = 4;                  // Остаток денег
-    public static final int OPERATING_MARGIN = 5;              // Операционная маржинальность
-    public static final int CAPITALIZATION = 6;                // Капитализация
+    public static final int MANUFACTURE_PRODUCTIVITY = 2;      // Продуктивность за день
+    public static final int SOLD_AMOUNT = 3;                   // Проданное количество всего
+    public static final int REVENUE_PER_DAY = 4;               // Выручка в день
+    public static final int CASH_BALANCE = 5;                  // Остаток денег
+    public static final int OPERATING_MARGIN = 6;              // Операционная маржинальность
+    public static final int CAPITALIZATION = 7;                // Капитализация
 
     protected int KPI;                                         // Показатель
     protected int materialID;                                  // ID материала
@@ -28,6 +29,8 @@ public class LevelCondition {
                 return checkManufacturedProductivity(ledger);
             case SOLD_AMOUNT:
                 return checkSoldAmount(ledger);
+            case REVENUE_PER_DAY:
+                return checkRevenuePerDay(ledger);
             case CASH_BALANCE:
                 return checkCashBalance(ledger);
             case OPERATING_MARGIN:
@@ -51,12 +54,16 @@ public class LevelCondition {
         return ledger.getCommoditySoldAmount(materialID) >= value;
     }
 
+    public boolean checkRevenuePerDay(Ledger ledger) {
+        return ledger.getPeriodRevenue() >= value;
+    }
+
     public boolean checkCashBalance(Ledger ledger) {
         return ledger.getCurrentCashBalance() >= value;
     }
 
     public boolean checkOperatingMargin(Ledger ledger) {
-        return ledger.getPeriodOperMargin() >= value;
+        return ledger.getTotalMargin() >= value;
     }
 
     public boolean checkCapitalization(Ledger ledger) {

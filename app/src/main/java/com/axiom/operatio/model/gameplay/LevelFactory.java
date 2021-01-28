@@ -23,6 +23,7 @@ public class LevelFactory {
         buildLevel2();
         buildLevel3();
         buildLevel4();
+        buildLevel5();
     }
 
 
@@ -58,7 +59,7 @@ public class LevelFactory {
 
     private void buildLevel2() {
         Level level = new Level();
-        level.description = "Reach 30 steel plates a day";
+        level.description = "Manufacture 30 steel plates a day";
         level.reward = 2000;
 
         level.allowedBlocks.add(0);       // Conveyor
@@ -78,7 +79,29 @@ public class LevelFactory {
 
     private void buildLevel3() {
         Level level = new Level();
-        level.description = "Manufacture 150 copper plates and sell it";
+        level.description = "Manufacture 150 copper plates";
+        level.reward = 6000;
+
+        level.allowedBlocks.add(0);       // Conveyor
+        level.allowedBlocks.add(1);       // Buffer
+        level.allowedBlocks.add(2);       // Press
+
+        level.allowedBlocks.add(8);       // import buffer
+        level.allowedBlocks.add(9);       // export buffer
+
+        level.allowedMaterials.add(0);      // Steel
+        level.allowedMaterials.add(2);      // Copper
+        level.allowedMaterials.add(8);      // Steel plate
+        level.allowedMaterials.add(10);     // Copper plate
+
+        level.addCondition(LevelCondition.MANUFACTURED_AMOUNT, 10, 100);
+
+        levels.add(level);
+    }
+
+    private void buildLevel4() {
+        Level level = new Level();
+        level.description = "Reach $500 revenue per day";
         level.reward = 5000;
 
         level.allowedBlocks.add(0);       // Conveyor
@@ -93,14 +116,14 @@ public class LevelFactory {
         level.allowedMaterials.add(8);      // Steel plate
         level.allowedMaterials.add(10);     // Copper plate
 
-        level.addCondition(LevelCondition.MANUFACTURED_AMOUNT, 10, 150);
-        level.addCondition(LevelCondition.SOLD_AMOUNT, 10, 150);
+        level.addCondition(LevelCondition.REVENUE_PER_DAY, 0, 500);
 
         levels.add(level);
     }
 
 
-    private void buildLevel4() {
+
+    private void buildLevel5() {
         Level level = new Level();
         level.description = "Free play";
         level.reward = 10000;

@@ -53,12 +53,12 @@ public class ReportPanel extends Panel {
 
     public void updateData() {
         Ledger ledger = production.getLedger();
-        String revenueText = "REVENUE - " + Utils.moneyFormat(ledger.getPeriodOperRevenue()) + "\n";
-        String expensesText = "EXPENSES - " + Utils.moneyFormat(ledger.getPeriodOperExpenses()) + "\n";
+        String revenueText = "REVENUE - " + Utils.moneyFormat(ledger.getTotalRevenue()) + "\n";
+        String expensesText = "EXPENSES - " + Utils.moneyFormat(ledger.getTotalExpenses()) + "\n";
 
         int soldCounter = 0;
         int boughtCounter = 1;
-        expensesText += "\n" + boughtCounter + ". Maintenance - " + Utils.moneyFormat(ledger.getPeriodMaintenanceCost());
+        expensesText += "\n" + boughtCounter + ". Maintenance - " + Utils.moneyFormat(ledger.getTotalMaintenanceCost());
 
         for (int i=0; i< Inventory.SKU_COUNT; i++) {
             double soldSum = ledger.getCommoditySoldSum(i);
@@ -79,11 +79,11 @@ public class ReportPanel extends Panel {
             }
         }
 
-        double periodRevenue = ledger.getPeriodOperRevenue();
+        double periodRevenue = ledger.getTotalRevenue();
         double margin = 0;
-        if (periodRevenue > 0) margin = Math.round(ledger.getPeriodOperMargin() / periodRevenue * 100);
+        if (periodRevenue > 0) margin = Math.round(ledger.getTotalMargin() / periodRevenue * 100);
 
-        String report = "MARGIN - " + Utils.moneyFormat(ledger.getPeriodOperMargin()) + " ("
+        String report = "MARGIN - " + Utils.moneyFormat(ledger.getTotalMargin()) + " ("
                         + margin + "%)"
                         + "\n\nCash - " + Utils.moneyFormat(production.getCashBalance())
                         + "\nAssets - " + Utils.moneyFormat(production.getAssetsValuation())
