@@ -12,6 +12,7 @@ public class MachineRenderer extends BlockRenderer {
 
     protected Machine machine;                             // Отрисовываемая машина
     protected Sprite sprite;                               // Анимации машины
+    protected Sprite fault;
     protected int idleAnimation;                           // Код анимации простоя
     protected int busyAnimation;                           // Код анимации занятости
     protected ConveyorRenderer conveyorRenderer;
@@ -19,11 +20,17 @@ public class MachineRenderer extends BlockRenderer {
     public MachineRenderer(Machine machine) {
         this.machine = machine;
         int ID = machine.getType().ID;
+
         sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
         sprite.zOrder = 6;
         idleAnimation = sprite.addAnimation(ID * 8, ID * 8, 8, true);
         busyAnimation = sprite.addAnimation(ID * 8, ID * 8 + 7, 8, true);
         sprite.setActiveAnimation(idleAnimation);
+
+        fault = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+        fault.setActiveFrame(71);
+        fault.zOrder = 7;
+
         conveyorRenderer = new ConveyorRenderer(machine);
     }
 
@@ -39,6 +46,11 @@ public class MachineRenderer extends BlockRenderer {
 
         // Рисуем машину
         sprite.draw(camera, x, y, width, height);
+
+        // Рисуем значок сбоя, если произошел сбой
+        if (machine.getState()==Machine.FAULT) {
+            fault.draw(camera, x, y, width, height);
+        }
 
         // Рисуем вход-выход
         drawInOut(camera, machine.getInputDirection(), machine.getOutputDirection(),

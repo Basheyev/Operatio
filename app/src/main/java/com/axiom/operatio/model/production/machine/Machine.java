@@ -51,8 +51,14 @@ public class Machine extends Block implements JSONSerializable {
     @Override
     public boolean push(Item item) {
         // Проверяем допустимый ли материал для добавления в очередь ввода
-        if (!operation.isCorrectInput(item.getMaterial())) return false;
-        if (output.remainingCapacity() < outputCapacity) return false;
+        if (!operation.isCorrectInput(item.getMaterial())) {
+            setState(FAULT);
+            return false;
+        }
+        if (output.remainingCapacity() < outputCapacity) {
+            setState(FAULT);
+            return false;
+        }
         return super.push(item);
     }
 
@@ -72,14 +78,11 @@ public class Machine extends Block implements JSONSerializable {
             return;
         }
 
-
-
         // Если количество предметов во входящей очереди меньше чем необходимо для операции
         // пытаемся самостоятельно взять из направления входа (блок)
         int totalAmount = operation.totalInputAmount();
         if (input.size() < totalAmount) {
             grabItemsFromInputDirection();
-            setState(IDLE);      // Устанавливаем состояние IDLE
             return;
         }
 
@@ -88,7 +91,7 @@ public class Machine extends Block implements JSONSerializable {
             setState(BUSY);                          // Устанавливаем состояние - BUSY
             cyclesLeft = operation.operationTime;    // Указываем количество циклов работы
         } else {
-            setState(IDLE);
+            // setState(IDLE);
         }
 
     }
@@ -117,13 +120,19 @@ public class Machine extends Block implements JSONSerializable {
                     if (inputBlock instanceof Buffer) {
                         Buffer inputBuffer = (Buffer) inputBlock;
                         Item item = inputBuffer.peek(material);      // Пытаемся взять предмет из блока входа
-                        if (item == null) continue;          // Если ничего нет возвращаем false
-                        if (!push(item)) continue;           // Если не получилось добавить к себе - false
+                        if (item == null) {                  // Если ничего нет пробуем взять
+                            setState(IDLE);                  // Устанавливаем состояние IDLE
+                            continue;
+                        }
+                        if (!push(item)) continue;           // Если не получилось добавить к себе
                         inputBuffer.poll(material);          // Если получилось - удаляем из блока входа
                     } else {
                         Item item = inputBlock.peek();       // Пытаемся взять предмет из блока входа
-                        if (item == null) continue;          // Если ничего нет возвращаем false
-                        if (!push(item)) continue;           // Если не получилось добавить к себе - false
+                        if (item == null) {                  // Если ничего нет возвращаем
+                            setState(IDLE);                  // Устанавливаем состояние IDLE
+                            continue;
+                        }
+                        if (!push(item)) continue;           // Если не получилось добавить к себе
                         inputBlock.poll();                   // Если получилось - удаляем из блока входа
                     }
                 }
@@ -205,6 +214,10 @@ public class Machine extends Block implements JSONSerializable {
             case Block.BUSY:
                 ((MachineRenderer) renderer).setBusyAnimation();
                 this.state = newState;
+            case Block.FAULT:
+                ((MachineRenderer) renderer).setIdleAnimation();
+                this.state = newState;
+                break;
         }
     }
 
