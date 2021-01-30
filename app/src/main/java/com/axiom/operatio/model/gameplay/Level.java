@@ -43,9 +43,13 @@ public class Level {
     //-------------------------------------------------------------------------------------------
 
     public boolean checkWinConditions(Production production) {
+        // Если условий победы нет - выигрыша нет
+        if (winConditions.size()==0) return false;
+        // Если не выполнилось хоть одно условия - выигрыша нет
         for (int i=0; i<winConditions.size(); i++) {
             if (!winConditions.get(i).check(production.getLedger())) return false;
         }
+        // Иначе выигрыш
         return true;
     }
 

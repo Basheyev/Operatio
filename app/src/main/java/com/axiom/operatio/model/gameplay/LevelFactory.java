@@ -40,7 +40,7 @@ public class LevelFactory {
 
     private void buildLevel1() {
         Level level = new Level();
-        level.description = "Manufacture 20 steel plates";
+        level.description = "Manufacture 10 steel plates";
         level.reward = 1000;
 
         level.allowedBlocks.add(0);       // Conveyor
@@ -52,14 +52,14 @@ public class LevelFactory {
         level.allowedMaterials.add(0);      // Steel
         level.allowedMaterials.add(8);      // Steel plate
 
-        level.addCondition(LevelCondition.MANUFACTURED_AMOUNT, 8, 20);
+        level.addCondition(LevelCondition.MANUFACTURED_AMOUNT, 8, 10);
 
         levels.add(level);
     }
 
     private void buildLevel2() {
         Level level = new Level();
-        level.description = "Manufacture 30 steel plates a day";
+        level.description = "Manufacture 20 steel plates a day";
         level.reward = 2000;
 
         level.allowedBlocks.add(0);       // Conveyor
@@ -72,14 +72,14 @@ public class LevelFactory {
         level.allowedMaterials.add(0);      // Steel
         level.allowedMaterials.add(8);      // Steel plate
 
-        level.addCondition(LevelCondition.MANUFACTURE_PRODUCTIVITY, 8, 30);
+        level.addCondition(LevelCondition.MANUFACTURE_PRODUCTIVITY, 8, 20);
 
         levels.add(level);
     }
 
     private void buildLevel3() {
         Level level = new Level();
-        level.description = "Manufacture 150 copper plates";
+        level.description = "Manufacture 60 copper plates";
         level.reward = 6000;
 
         level.allowedBlocks.add(0);       // Conveyor
@@ -94,14 +94,14 @@ public class LevelFactory {
         level.allowedMaterials.add(8);      // Steel plate
         level.allowedMaterials.add(10);     // Copper plate
 
-        level.addCondition(LevelCondition.MANUFACTURED_AMOUNT, 10, 100);
+        level.addCondition(LevelCondition.MANUFACTURED_AMOUNT, 10, 60);
 
         levels.add(level);
     }
 
     private void buildLevel4() {
         Level level = new Level();
-        level.description = "Reach $500 revenue per day";
+        level.description = "Reach $400 revenue per day";
         level.reward = 5000;
 
         level.allowedBlocks.add(0);       // Conveyor
@@ -116,7 +116,7 @@ public class LevelFactory {
         level.allowedMaterials.add(8);      // Steel plate
         level.allowedMaterials.add(10);     // Copper plate
 
-        level.addCondition(LevelCondition.REVENUE_PER_DAY, 0, 500);
+        level.addCondition(LevelCondition.REVENUE_PER_DAY, 0, 400);
 
         levels.add(level);
     }
@@ -142,9 +142,6 @@ public class LevelFactory {
         for (int i=0;i<64; i++) {
             level.allowedMaterials.add(i);
         }
-
-//        level.addCondition(LevelCondition.MANUFACTURED_AMOUNT, 10, 150);
-//        level.addCondition(LevelCondition.SOLD_AMOUNT, 10, 150);
 
         levels.add(level);
     }
