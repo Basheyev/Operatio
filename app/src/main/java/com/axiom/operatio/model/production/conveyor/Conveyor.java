@@ -113,7 +113,9 @@ public class Conveyor extends Block implements JSONSerializable {
         // Если на выводе есть предметы и есть выходной блок отправляем один предмет в выходной блок
         Item item = output.peek();
         if (item!=null) {
+            // Берём блок который находится по направлению вывода конвейера
             Block outputBlock = production.getBlockAt(this, outputDirection);
+            // Если такой блок есть
             if (outputBlock != null) {
                 // Если выходной блок буфер/экспорт/конвейер - заталкиваем сами
                 if (outputBlock instanceof Buffer

@@ -1,19 +1,16 @@
 package com.axiom.operatio.model.production.conveyor;
 
-import android.graphics.Color;
-
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
 import com.axiom.operatio.model.materials.Item;
 
-import static android.graphics.Color.BLACK;
+import static com.axiom.operatio.model.production.block.Block.BUSY;
 import static com.axiom.operatio.model.production.block.Block.DOWN;
 import static com.axiom.operatio.model.production.block.Block.LEFT;
 import static com.axiom.operatio.model.production.block.Block.RIGHT;
@@ -46,6 +43,11 @@ public class ConveyorRenderer extends BlockRenderer {
     }
 
 
+    /**
+     * Подготовить анимацию с учетом направления входа и выхода
+     * @param inputDirection
+     * @param outputDirection
+     */
     public void arrangeAnimation(int inputDirection, int outputDirection) {
 
         if (inputDirection== LEFT && outputDirection== RIGHT) {
@@ -124,10 +126,17 @@ public class ConveyorRenderer extends BlockRenderer {
 
 
     public void draw(Camera camera, float x, float y, float width, float height) {
+
+        // Проверить поставлена ли на паузу игра
+        boolean gamePaused = false;
         Production production = block.getProduction();
-        if (production!=null) {
-            sprite.animationPaused = production.isPaused();
-        }
+        if (production!=null) gamePaused = production.isPaused();
+
+        // Если конвейер занят или игра поставлена на паузу - остановить анимацию движения
+        if (block.getState()==BUSY || gamePaused)
+            sprite.animationPaused = true;
+        else
+            sprite.animationPaused = false;
 
         // Отрисовать сам конвейер
         sprite.draw(camera,x,y, width, height);
@@ -146,10 +155,10 @@ public class ConveyorRenderer extends BlockRenderer {
 
     protected void drawItems(Camera camera, float x, float y, float width, float height) {
 
-        Conveyor conveyor = (Conveyor) block;                       // Конвейер
+        Conveyor conveyor = (Conveyor) this.block;                       // Конвейер
         Channel<Item> inputQueue = conveyor.getInputQueue();        // Входящая очередь
         Channel<Item> outputQueue = conveyor.getOutputQueue();      // Исходящая очередь
-        float cycleTime = block.getProduction().getCycleTimeMs();   // Длительность цикла в мс.
+        float cycleTime = this.block.getProduction().getCycleTimeMs();   // Длительность цикла в мс.
         float deliveryCycles = conveyor.getDeliveryCycles();        // Циклов для доставки предмета
         float deliveryTime = deliveryCycles * cycleTime;            // Время доставки в мс.
         float capacity = conveyor.getTotalCapacity();               // Вместимость конвейера в предметах

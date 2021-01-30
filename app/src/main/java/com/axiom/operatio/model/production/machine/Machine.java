@@ -55,6 +55,7 @@ public class Machine extends Block implements JSONSerializable {
             setState(FAULT);
             return false;
         }
+        // Если на выходе машины что-то еще осталось не брать новый материал
         if (output.remainingCapacity() < outputCapacity) {
             setState(FAULT);
             return false;
@@ -65,12 +66,22 @@ public class Machine extends Block implements JSONSerializable {
     @Override
     public void process() {
 
+        // Если был FAULT и на выход есть предметы - пробуем вытолкнуть на выход
+        if (getState()==FAULT && output.size() > 0) {
+            if (pushToOutput()) {
+                setState(IDLE);
+            } else {
+                setState(FAULT);
+            }
+        }
+
         // Если машина работает
         if (getState()==BUSY) {
             // Если время операции прошло и выход свободен
-            if (getState()==BUSY && cyclesLeft==0 && output.remainingCapacity() <= outputCapacity) {
+            if (getState()==BUSY && cyclesLeft==0 && output.size()==0) {
                 input.clear();       // Удаляем входящие предметы
                 generateOutput();    // Генерируем выходные предметы
+                pushToOutput();      // Выталкиваем предметы на вывод
                 setState(IDLE);      // Устанавливаем состояние IDLE
             }
             // уменьшаем счетчик оставшихся циклов работы
@@ -90,8 +101,6 @@ public class Machine extends Block implements JSONSerializable {
         if (operationInputVerified(matCounter)) {    // Начинаем работу машины
             setState(BUSY);                          // Устанавливаем состояние - BUSY
             cyclesLeft = operation.operationTime;    // Указываем количество циклов работы
-        } else {
-            // setState(IDLE);
         }
 
     }
@@ -110,6 +119,7 @@ public class Machine extends Block implements JSONSerializable {
         Block neighborOutput = production.getBlockAt(inputBlock, neighborOutputDirection);
         if (neighborOutputDirection==NONE || neighborOutput==this) {
 
+            // Проверяем количество и тип входящих материалов
             // Считаем сколько не хватает еще материалов и какого вида, если хватает уходим
             if (operationInputVerified(matCounter)) return;
 
@@ -151,16 +161,15 @@ public class Machine extends Block implements JSONSerializable {
     protected boolean operationInputVerified(int[] matCounter) {
         // Копируем количество необходимого входного материала из описания операции в matCounter
         System.arraycopy(operation.inputAmount, 0, matCounter,0, operation.inputAmount.length);
-        // Алгоритм построен с учтом того, что все входящие материалы входят в рецепт
+        // Алгоритм построен с учтом того, что все входящие материалы входят в рецепт операции
         for (int k=0; k<input.size(); k++) {
             Item item = input.get(k);
             if (item==null) continue;
             // Берем код очередного материала из входящей очереди
             int materialID = item.getMaterial().getMaterialID();
-
+            // Проверяем есть ли такой материал в списке входных материалов операции
             for (int i=0; i<operation.inputMaterials.length; i++) {
                 // Если нашли такой же материал, то уменьшаем счетчик необходимых материалов
-
                 if (operation.inputMaterials[i].getMaterialID()==materialID) {
                     matCounter[i]--;
                     break;
@@ -190,19 +199,28 @@ public class Machine extends Block implements JSONSerializable {
                 item = new Item(material);
                 item.setOwner(production,this);
                 output.add(item);
-                // Если приёмник буфер или конвейер - затолкать самостоятельно
-                Block outputBlock = production.getBlockAt(this,outputDirection);
-                if (outputBlock!=null) {
-                    if (outputBlock instanceof Buffer
-                            || outputBlock instanceof ExportBuffer
-                            || outputBlock instanceof Conveyor) {
-                        if (outputBlock.push(item)) output.remove(item);
-                    }
-                }
-
             }
         }
     }
+
+
+    private boolean pushToOutput() {
+        Block outputBlock = production.getBlockAt(this,outputDirection);
+        if (outputBlock==null) return false;
+        if (!(outputBlock instanceof Buffer ||
+              outputBlock instanceof ExportBuffer ||
+              outputBlock instanceof Conveyor)) return false;
+
+        Item item;
+        while (output.size() > 0) {
+            item = output.peek();
+            if (outputBlock.push(item)) output.poll(); else return false;
+        }
+
+        return true;
+    }
+
+
 
     public void setState(int newState) {
         if (this.state==newState) return;
