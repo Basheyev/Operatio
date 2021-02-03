@@ -298,6 +298,11 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
         render.lineRender.zOrder = zOrder;
     }
 
+    public static void setLineThickness(float w) {
+        if (render==null) return;
+        render.lineRender.setLineThickness(w);
+    }
+
     public static void drawLine(float x1, float y1, float x2, float y2, AABB scissor) {
         if (render==null) return;
         render.lineRender.draw(camera, x1, y1, x2, y2, scissor);

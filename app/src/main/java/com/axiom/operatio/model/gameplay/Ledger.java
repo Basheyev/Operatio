@@ -36,6 +36,12 @@ public class Ledger {
     private double periodAssetsBought = 0;                       // Приобретено активов на сумму
     private double periodAssetsSold = 0;                         // Продано активов на сумму
     //---------------------------------------------------------------------------------------------
+    public static final int HISTORY_LENGTH = 32;                 // Максимальная длина истории
+    private int historyCounter = 0;                              // Фактическая длина истории в днях
+    private double[] historyRevenue;                             // Операционная выручка за период
+    private double[] historyExpenses;                            // Операционные расходы за период
+    private double[] historyCashBalance;                         // Операционная маржа за период
+    //---------------------------------------------------------------------------------------------
     private int[] productivity;                                  // Производительность за период
     private int[] manufacturedByPeriod;                          // Объем произведенных материалов за период
     private int[] manufacturedTotal;                             // Объем произведенных материалов всего
@@ -60,6 +66,11 @@ public class Ledger {
         Arrays.fill(soldCommoditiesAmount, 0);
         Arrays.fill(boughtCommoditiesSum, 0);
         Arrays.fill(boughtCommoditiesAmount, 0);
+
+        historyRevenue = new double[HISTORY_LENGTH];
+        historyExpenses = new double[HISTORY_LENGTH];
+        historyCashBalance = new double[HISTORY_LENGTH];
+
     }
 
 
@@ -76,6 +87,17 @@ public class Ledger {
             // Зануляем массив для учта произведенного за период
             Arrays.fill(manufacturedByPeriod, 0);
 
+            historyRevenue[historyCounter] = periodRevenue;
+            historyExpenses[historyCounter] = periodExpenses;
+            historyCashBalance[historyCounter] = currentCashBalance;
+            historyCounter++;
+            if (historyCounter >= HISTORY_LENGTH) {
+                System.arraycopy(historyRevenue, 1, historyRevenue, 0, HISTORY_LENGTH - 1);
+                System.arraycopy(historyExpenses, 1, historyExpenses, 0, HISTORY_LENGTH - 1);
+                System.arraycopy(historyCashBalance, 1, historyCashBalance, 0, HISTORY_LENGTH - 1);
+                historyCounter--;
+            }
+
             periodRevenue = 0;
             periodExpenses = 0;
             periodMargin = 0;
@@ -86,6 +108,18 @@ public class Ledger {
             startingCycle = currentCycle;
         }
 
+    }
+
+    public int getHistoryCounter() {
+        return historyCounter;
+    }
+
+    public double[] getHistoryRevenue() {
+        return historyRevenue;
+    }
+
+    public double[] getHistoryCashBalance() {
+        return historyCashBalance;
     }
 
 

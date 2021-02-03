@@ -109,7 +109,6 @@ public class Text {
 
             if (symbol=='\n') {                               // Если это перенос строки,
                 cursorY -= font.maxLineHeight * scale;        // Смещаемся по вертикали вниз
-                // fixme зафиксировано выравнивание по левому краму
                 cursorX = x;                                  // Переходим на начало строки
                 lastSymbol = symbol;
                 continue;                                     // Переходим к следующему символу

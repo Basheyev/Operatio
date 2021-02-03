@@ -29,6 +29,7 @@ public class Caption extends Widget {
         if (caption != null) {
             textRenderer.zOrder = zOrder + 2;
             textRenderer.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
+            // fixme зафиксировано выравнивание по левому краму (надо дробить на строки и выравнивать каждую)
             textRenderer.draw(camera, caption, bounds.min.x, bounds.center.y - textHeight/2, scale, scissors);
         }
 
