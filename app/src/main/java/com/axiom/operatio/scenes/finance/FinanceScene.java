@@ -12,9 +12,7 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
-import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.production.Production;
 
 public class FinanceScene extends GameScene {

@@ -118,6 +118,10 @@ public class Ledger {
         return historyRevenue;
     }
 
+    public double[] getHistoryExpenses() {
+        return historyExpenses;
+    }
+
     public double[] getHistoryCashBalance() {
         return historyCashBalance;
     }

@@ -1,8 +1,10 @@
 package com.axiom.operatio.scenes.finance;
 
+import android.graphics.Color;
+
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
-import com.axiom.atom.engine.ui.widgets.charts.Chart;
+import com.axiom.operatio.scenes.finance.charts.LineChart;
 import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.gameplay.Utils;
 import com.axiom.operatio.model.inventory.Inventory;
@@ -19,7 +21,7 @@ public class ReportPanel extends Panel {
     private Caption incomeCaption;
     private Caption expenseCaption;
     private Caption reportCaption;
-    private Chart chart;
+    private LineChart chart;
     private float[] chartData;
 
     public ReportPanel(Production production) {
@@ -54,10 +56,11 @@ public class ReportPanel extends Panel {
         addChild(reportCaption);
 
 
-        chart = new Chart();
+        chart = new LineChart(2);
         chart.setLocalBounds(25,25, 800, 300);
         Ledger ledger = production.getLedger();
-        chart.updateValues(ledger.getHistoryCashBalance(), ledger.getHistoryCounter());
+        chart.updateData(0, ledger.getHistoryRevenue(), ledger.getHistoryCounter(), GREEN);
+        chart.updateData(1, ledger.getHistoryExpenses(), ledger.getHistoryCounter(), Color.RED);
         addChild(chart);
 
     }
@@ -72,7 +75,8 @@ public class ReportPanel extends Panel {
         expensesText += "\n" + boughtCounter + ". Maintenance - " + Utils.moneyFormat(ledger.getTotalMaintenanceCost());
 
         // Обновить график
-        chart.updateValues(ledger.getHistoryCashBalance(), ledger.getHistoryCounter());
+        chart.updateData(0, ledger.getHistoryRevenue(), ledger.getHistoryCounter(), GREEN);
+        chart.updateData(1, ledger.getHistoryExpenses(), ledger.getHistoryCounter(), Color.RED);
 
         for (int i=0; i< Inventory.SKU_COUNT; i++) {
             double soldSum = ledger.getCommoditySoldSum(i);
