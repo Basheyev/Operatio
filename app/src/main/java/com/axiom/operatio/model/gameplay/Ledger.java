@@ -29,9 +29,13 @@ public class Ledger {
     private double totalAssetsSold = 0;                          // Продано активов на сумму
     private double currentCashBalance = 0;                       // Текущий остаток денег
     //---------------------------------------------------------------------------------------------
-    private double periodRevenue = 0;                            // Операционная выручка за период
-    private double periodExpenses = 0;                           // Операционные расходы за период
-    private double periodMargin = 0;                             // Операционная маржа за период
+    private double currentPeriodRevenue = 0;                     // Операционная выручка за период
+    private double currentPeriodExpenses = 0;                    // Операционные расходы за период
+    private double currentPeriodMargin = 0;                      // Операционная маржа за период
+    //---------------------------------------------------------------------------------------------
+    private double lastPeriodRevenue = 0;
+    private double lastPeriodExpenses = 0;
+    private double lastPeriodMargin = 0;
     private double periodMaintenanceCost = 0;                    // Расходы на операции за период
     private double periodAssetsBought = 0;                       // Приобретено активов на сумму
     private double periodAssetsSold = 0;                         // Продано активов на сумму
@@ -87,10 +91,12 @@ public class Ledger {
             // Зануляем массив для учта произведенного за период
             Arrays.fill(manufacturedByPeriod, 0);
 
-            historyRevenue[historyCounter] = periodRevenue;
-            historyExpenses[historyCounter] = periodExpenses;
+            lastPeriodMargin = currentPeriodMargin;
+            historyRevenue[historyCounter] = lastPeriodRevenue = currentPeriodRevenue;
+            historyExpenses[historyCounter] = lastPeriodExpenses = currentPeriodExpenses;
             historyCashBalance[historyCounter] = currentCashBalance;
             historyCounter++;
+
             if (historyCounter >= HISTORY_LENGTH) {
                 System.arraycopy(historyRevenue, 1, historyRevenue, 0, HISTORY_LENGTH - 1);
                 System.arraycopy(historyExpenses, 1, historyExpenses, 0, HISTORY_LENGTH - 1);
@@ -98,9 +104,9 @@ public class Ledger {
                 historyCounter--;
             }
 
-            periodRevenue = 0;
-            periodExpenses = 0;
-            periodMargin = 0;
+            currentPeriodRevenue = 0;
+            currentPeriodExpenses = 0;
+            currentPeriodMargin = 0;
             periodMaintenanceCost = 0;
             periodAssetsBought = 0;
             periodAssetsSold = 0;
@@ -155,16 +161,16 @@ public class Ledger {
         return totalMaintenanceCost;
     }
 
-    public double getPeriodRevenue() {
-        return periodRevenue;
+    public double getLastPeriodRevenue() {
+        return lastPeriodRevenue;
     }
 
-    public double getPeriodExpenses() {
-        return periodExpenses;
+    public double getLastPeriodExpenses() {
+        return lastPeriodExpenses;
     }
 
-    public double getPeriodMargin() {
-        return periodMargin;
+    public double getLastPeriodMargin() {
+        return lastPeriodMargin;
     }
 
     public double getPeriodMaintenanceCost() {
@@ -228,8 +234,8 @@ public class Ledger {
             totalMaintenanceCost += sum;
         }
 
-        periodExpenses += sum;
-        periodMargin = periodRevenue - periodExpenses;
+        currentPeriodExpenses += sum;
+        currentPeriodMargin = currentPeriodRevenue - currentPeriodExpenses;
 
         totalExpenses += sum;
         totalMargin = totalRevenue - totalExpenses;
@@ -248,8 +254,8 @@ public class Ledger {
             return;
         }
 
-        periodRevenue += sum;
-        periodMargin = periodRevenue - periodExpenses;
+        currentPeriodRevenue += sum;
+        currentPeriodMargin = currentPeriodRevenue - currentPeriodExpenses;
 
         totalRevenue += sum;
         totalMargin = totalRevenue - totalExpenses;

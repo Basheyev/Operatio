@@ -40,30 +40,31 @@ public class ReportPanel extends Panel {
         incomeCaption = new Caption("Income");
         incomeCaption.setTextColor(GREEN);
         incomeCaption.setTextScale(1.3f);
-        incomeCaption.setLocalBounds(50, 700, 300, 100);
+        incomeCaption.setLocalBounds(50, 350, 300, 100);
         addChild(incomeCaption);
 
         expenseCaption = new Caption("Expense");
         expenseCaption.setTextColor(1,0.5f,0.5f, 1);
         expenseCaption.setTextScale(1.3f);
-        expenseCaption.setLocalBounds(700, 700,300, 100);
+        expenseCaption.setLocalBounds(700, 350,300, 100);
         addChild(expenseCaption);
 
         reportCaption = new Caption("Cashflow");
         reportCaption.setTextColor(WHITE);
         reportCaption.setTextScale(1.3f);
-        reportCaption.setLocalBounds(1200, 700, 300, 100);
+        reportCaption.setLocalBounds(1400, 720, 300, 100);
         addChild(reportCaption);
 
 
         chart = new LineChart(2);
-        chart.setLocalBounds(25,25, 800, 300);
+        chart.setLocalBounds(25,435, 1350, 350);
         Ledger ledger = production.getLedger();
         chart.updateData(0, ledger.getHistoryRevenue(), ledger.getHistoryCounter(), GREEN);
         chart.updateData(1, ledger.getHistoryExpenses(), ledger.getHistoryCounter(), Color.RED);
         addChild(chart);
 
     }
+
 
     public void updateData() {
         Ledger ledger = production.getLedger();
@@ -97,13 +98,16 @@ public class ReportPanel extends Panel {
             }
         }
 
-        double periodRevenue = ledger.getTotalRevenue();
+        double totalRevenue = ledger.getTotalRevenue();
         double margin = 0;
-        if (periodRevenue > 0) margin = Math.round(ledger.getTotalMargin() / periodRevenue * 100);
+        if (totalRevenue > 0) margin = Math.round(ledger.getTotalMargin() / totalRevenue * 100);
 
-        String report = "MARGIN - " + Utils.moneyFormat(ledger.getTotalMargin()) + " ("
+        String report = "Income: - " + Utils.moneyFormat(ledger.getLastPeriodRevenue()) + " per day" +
+                        "\nExpenses: - " + Utils.moneyFormat(ledger.getLastPeriodExpenses()) + " per day" +
+                        "\nMargin: - " + Utils.moneyFormat(ledger.getLastPeriodMargin()) + " per day"
+                        + "\n\nTotal margin: - " + Utils.moneyFormat(ledger.getTotalMargin()) + " ("
                         + margin + "%)"
-                        + "\n\nCash - " + Utils.moneyFormat(production.getCashBalance())
+                        + "\nCash - " + Utils.moneyFormat(production.getCashBalance())
                         + "\nAssets - " + Utils.moneyFormat(production.getAssetsValuation())
                         + "\nWork in progress - " + Utils.moneyFormat(production.getWorkInProgressValuation())
                         + "\nInventory - " + Utils.moneyFormat(production.getInventory().getValuation())
@@ -113,6 +117,11 @@ public class ReportPanel extends Panel {
         incomeCaption.setText(revenueText);
         expenseCaption.setText(expensesText);
         reportCaption.setText(report);
+
+    }
+
+
+    private void updateTotal() {
 
     }
 

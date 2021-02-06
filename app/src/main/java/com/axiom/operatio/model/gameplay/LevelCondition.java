@@ -55,7 +55,7 @@ public class LevelCondition {
     }
 
     public boolean checkRevenuePerDay(Ledger ledger) {
-        return ledger.getPeriodRevenue() >= value;
+        return ledger.getLastPeriodRevenue() >= value;
     }
 
     public boolean checkCashBalance(Ledger ledger) {
