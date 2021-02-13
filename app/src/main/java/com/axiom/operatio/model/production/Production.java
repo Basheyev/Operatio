@@ -107,7 +107,16 @@ public class Production implements JSONSerializable {
         JSONObject jsonInventory = jsonObject.getJSONObject("inventory");
         inventory = new Inventory(this, jsonInventory);
         market = new Market(this);
-        ledger = new Ledger(this);
+
+        JSONObject jsonLedger;
+        try {
+            jsonLedger = jsonObject.getJSONObject("ledger");
+            ledger = new Ledger(this, jsonLedger);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            ledger = new Ledger(this);
+        }
+
     }
 
 
@@ -384,8 +393,10 @@ public class Production implements JSONSerializable {
                 JSONObject jsonBlock = blocks.get(i).serialize();
                 jsonArray.put(jsonBlock);
             }
+
             jsonObject.put("blocks", jsonArray);
             jsonObject.put("inventory", inventory.serialize());
+            jsonObject.put("ledger", ledger.serialize());
 
             return jsonObject;
 

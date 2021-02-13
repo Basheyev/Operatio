@@ -1,14 +1,19 @@
 package com.axiom.operatio.model.gameplay;
 
+import com.axiom.atom.engine.data.JSONSerializable;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.production.Production;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 
 /**
  * Главный журнал регистрации всех производственных и финансовых событий
  */
-public class Ledger {
+public class Ledger implements JSONSerializable {
     //---------------------------------------------------------------------------------------------
     public static final int OPERATIONAL_DAY_CYCLES = 60;         // Длительность периода в циклах
     //---------------------------------------------------------------------------------------------
@@ -74,6 +79,68 @@ public class Ledger {
         historyRevenue = new double[HISTORY_LENGTH];
         historyExpenses = new double[HISTORY_LENGTH];
         historyCashBalance = new double[HISTORY_LENGTH];
+
+    }
+
+
+    public Ledger(Production production, JSONObject jsonObject) {
+        this(production);
+
+        try {
+            /*
+            boolean validClass = jsonObject.getString("class").equals("Ledger");
+             */
+            startingCycle = jsonObject.getLong("startingCycle");
+            totalRevenue = jsonObject.getDouble("totalRevenue");
+            totalExpenses = jsonObject.getDouble("totalExpenses");
+            totalMargin = jsonObject.getDouble("totalMargin");
+
+            totalMaintenanceCost = jsonObject.getDouble("totalMaintenanceCost");
+            totalAssetsBought = jsonObject.getDouble("totalAssetsBought");
+            totalAssetsSold = jsonObject.getDouble("totalAssetsSold");
+            currentCashBalance = jsonObject.getDouble("currentCashBalance");
+
+            currentPeriodRevenue = jsonObject.getDouble("currentPeriodRevenue");
+            currentPeriodExpenses = jsonObject.getDouble("currentPeriodExpenses");
+            currentPeriodMargin = jsonObject.getDouble("currentPeriodMargin");
+
+            lastPeriodRevenue = jsonObject.getDouble("lastPeriodRevenue");
+            lastPeriodExpenses = jsonObject.getDouble("lastPeriodExpenses");
+            lastPeriodMargin = jsonObject.getDouble("lastPeriodMargin");
+            periodMaintenanceCost = jsonObject.getDouble("periodMaintenanceCost");
+            periodAssetsBought = jsonObject.getDouble("periodAssetsBought");
+            periodAssetsSold = jsonObject.getDouble("periodAssetsSold");
+
+            historyCounter = jsonObject.getInt("historyCounter");
+            JSONArray jHistoryRevenue = jsonObject.getJSONArray("historyRevenue");
+            JSONArray jHistoryExpenses = jsonObject.getJSONArray("historyExpenses");
+            JSONArray jHistoryCashBalance = jsonObject.getJSONArray("historyCashBalance");
+            for (int i = historyCounter-1; i >= 0; i--) {
+                historyRevenue[i] = jHistoryRevenue.getDouble(i);
+                historyExpenses[i] = jHistoryExpenses.getDouble(i);
+                historyCashBalance[i] = jHistoryCashBalance.getDouble(i);
+            }
+
+            JSONArray jProductivity = jsonObject.getJSONArray("productivity");
+            JSONArray jManufacturedByPeriod = jsonObject.getJSONArray("manufacturedByPeriod");
+            JSONArray jManufacturedTotal = jsonObject.getJSONArray("manufacturedTotal");
+            JSONArray jSoldCommoditiesSum = jsonObject.getJSONArray("soldCommoditiesSum");
+            JSONArray jSoldCommoditiesAmount = jsonObject.getJSONArray("soldCommoditiesAmount");
+            JSONArray jBoughtCommoditiesSum = jsonObject.getJSONArray("boughtCommoditiesSum");
+            JSONArray jBoughtCommoditiesAmount = jsonObject.getJSONArray("boughtCommoditiesAmount");
+            for (int i = Inventory.SKU_COUNT-1; i >= 0; i--) {
+                productivity[i] = jProductivity.getInt(i);
+                manufacturedByPeriod[i] = jManufacturedByPeriod.getInt(i);
+                manufacturedTotal[i] = jManufacturedTotal.getInt(i);
+                soldCommoditiesSum[i] = jSoldCommoditiesSum.getDouble(i);
+                soldCommoditiesAmount[i] = jSoldCommoditiesAmount.getInt(i);
+                boughtCommoditiesSum[i] = jBoughtCommoditiesSum.getDouble(i);
+                boughtCommoditiesAmount[i] = jBoughtCommoditiesAmount.getInt(i);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -226,7 +293,7 @@ public class Ledger {
         if (type==EXPENSE_BLOCK_BOUGHT) {
             totalAssetsBought += sum;
             periodAssetsSold += sum;
-            return;
+           // return;
         }
 
         if (type==EXPENSE_BLOCK_OPERATION) {
@@ -251,7 +318,7 @@ public class Ledger {
         if (type==REVENUE_BLOCK_SOLD) {
             totalAssetsSold += sum;
             periodAssetsSold += sum;
-            return;
+        //    return;
         }
 
         currentPeriodRevenue += sum;
@@ -294,4 +361,77 @@ public class Ledger {
         boughtCommoditiesAmount[commodity] += quantity;
     }
 
+
+    @Override
+    public JSONObject serialize() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+
+            jsonObject.put("class", "Ledger");
+
+            jsonObject.put("startingCycle", startingCycle);
+            jsonObject.put("totalRevenue", totalRevenue);
+            jsonObject.put("totalExpenses", totalExpenses);
+            jsonObject.put("totalMargin", totalMargin);
+
+            jsonObject.put("totalMaintenanceCost", totalMaintenanceCost);
+            jsonObject.put("totalAssetsBought", totalAssetsBought);
+            jsonObject.put("totalAssetsSold", totalAssetsSold);
+            jsonObject.put("currentCashBalance", currentCashBalance);
+
+            jsonObject.put("currentPeriodRevenue", currentPeriodRevenue);
+            jsonObject.put("currentPeriodExpenses", currentPeriodExpenses);
+            jsonObject.put("currentPeriodMargin", currentPeriodMargin);
+
+            jsonObject.put("lastPeriodRevenue",lastPeriodRevenue);
+            jsonObject.put("lastPeriodExpenses", lastPeriodExpenses);
+            jsonObject.put("lastPeriodMargin", lastPeriodMargin);
+            jsonObject.put("periodMaintenanceCost", periodMaintenanceCost);
+            jsonObject.put("periodAssetsBought", periodAssetsBought);
+            jsonObject.put("periodAssetsSold", periodAssetsSold);
+
+            JSONArray jHistoryRevenue = new JSONArray();
+            JSONArray jHistoryExpenses = new JSONArray();
+            JSONArray jHistoryCashBalance = new JSONArray();
+            for (int i=0; i<historyCounter; i++) {
+                jHistoryRevenue.put(historyRevenue[i]);
+                jHistoryExpenses.put(historyExpenses[i]);
+                jHistoryCashBalance.put(historyCashBalance[i]);
+            }
+            jsonObject.put("historyCounter", historyCounter);
+            jsonObject.put("historyRevenue", jHistoryRevenue);
+            jsonObject.put("historyExpenses", jHistoryExpenses);
+            jsonObject.put("historyCashBalance", jHistoryCashBalance);
+
+            JSONArray jProductivity = new JSONArray();
+            JSONArray jManufacturedByPeriod = new JSONArray();
+            JSONArray jManufacturedTotal = new JSONArray();
+            JSONArray jSoldCommoditiesSum = new JSONArray();
+            JSONArray jSoldCommoditiesAmount = new JSONArray();
+            JSONArray jBoughtCommoditiesSum = new JSONArray();
+            JSONArray jBoughtCommoditiesAmount = new JSONArray();
+            for (int i=0; i < Inventory.SKU_COUNT; i++) {
+                jProductivity.put(productivity[i]);
+                jManufacturedByPeriod.put(manufacturedByPeriod[i]);
+                jManufacturedTotal.put(manufacturedTotal[i]);
+                jSoldCommoditiesSum.put(soldCommoditiesSum[i]);
+                jSoldCommoditiesAmount.put(soldCommoditiesAmount[i]);
+                jBoughtCommoditiesSum.put(boughtCommoditiesSum[i]);
+                jBoughtCommoditiesAmount.put(boughtCommoditiesAmount[i]);
+            }
+            jsonObject.put("productivity", jProductivity);
+            jsonObject.put("manufacturedByPeriod", jManufacturedByPeriod);
+            jsonObject.put("manufacturedTotal", jManufacturedTotal);
+            jsonObject.put("soldCommoditiesSum", jSoldCommoditiesSum);
+            jsonObject.put("soldCommoditiesAmount", jSoldCommoditiesAmount);
+            jsonObject.put("boughtCommoditiesSum", jBoughtCommoditiesSum);
+            jsonObject.put("boughtCommoditiesAmount", jBoughtCommoditiesAmount);
+
+            return jsonObject;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
