@@ -136,12 +136,16 @@ public class ReportPanel extends Panel {
 
         // Очистить все ячейки отображения материалов
         for (int i=0; i < manufacturedMaterials.length; i++) {
+            boughtMaterials[i].setActive(false);
+            manufacturedMaterials[i].setActive(false);
+            soldMaterials[i].setActive(false);
+            /*
             boughtMaterials[i].setBackground(null);
             boughtMaterials[i].setText("");
             manufacturedMaterials[i].setBackground(null);
             manufacturedMaterials[i].setText("");
             soldMaterials[i].setBackground(null);
-            soldMaterials[i].setText("");
+            soldMaterials[i].setText("");*/
         }
 
         int manufacturedCounter = 0;
@@ -155,6 +159,7 @@ public class ReportPanel extends Panel {
                 Material material = Material.getMaterial(i);
                 boughtMaterials[boughtCounter].setBackground(material.getImage());
                 boughtMaterials[boughtCounter].setText("" + boughtAmount);
+                boughtMaterials[boughtCounter].setActive(true);
                 boughtCounter++;
             }
 
@@ -164,6 +169,7 @@ public class ReportPanel extends Panel {
                 Material material = Material.getMaterial(i);
                 manufacturedMaterials[manufacturedCounter].setBackground(material.getImage());
                 manufacturedMaterials[manufacturedCounter].setText("" + manufacturedAmount);
+                manufacturedMaterials[manufacturedCounter].setActive(true);
                 manufacturedCounter++;
             }
 
@@ -173,6 +179,7 @@ public class ReportPanel extends Panel {
                 Material material = Material.getMaterial(i);
                 soldMaterials[soldCounter].setBackground(material.getImage());
                 soldMaterials[soldCounter].setText("" + soldAmount);
+                soldMaterials[soldCounter].setActive(true);
                 soldCounter++;
             }
 

@@ -26,6 +26,9 @@ public class ItemWidget extends Button {
             GraphicsRender.drawRectangle(bounds, parentScissor);
         }
 
+
+        // fixme конкурентное изменение текста и изображения!
+
         if (!active) return;
 
         if (background !=null) {
