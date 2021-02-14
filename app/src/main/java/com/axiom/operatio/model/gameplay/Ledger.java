@@ -56,8 +56,12 @@ public class Ledger implements JSONSerializable {
     private int[] manufacturedTotal;                             // Объем произведенных материалов всего
     private double[] soldCommoditiesSum;                         // Объем проданных материалов
     private int[] soldCommoditiesAmount;                         // Количество проданных материалов
+    private int[] soldCommoditiesByPeriod;
+    private int[] soldCommoditiesCounter;
     private double[] boughtCommoditiesSum;                       // Объем приобретенных материалов
     private int[] boughtCommoditiesAmount;                       // Количество приобретенных материалов
+    private int[] boughtCommoditiesByPeriod;
+    private int[] boughtCommoditiesCounter;
     //---------------------------------------------------------------------------------------------
 
 
@@ -66,15 +70,28 @@ public class Ledger implements JSONSerializable {
         manufacturedTotal = new int[Inventory.SKU_COUNT];
         manufacturedByPeriod = new int[Inventory.SKU_COUNT];
         productivity = new int[Inventory.SKU_COUNT];
+
         soldCommoditiesSum = new double[Inventory.SKU_COUNT];
         soldCommoditiesAmount = new int[Inventory.SKU_COUNT];
+        soldCommoditiesByPeriod  = new int[Inventory.SKU_COUNT];
+        soldCommoditiesCounter = new int[Inventory.SKU_COUNT];
+
         boughtCommoditiesSum = new double[Inventory.SKU_COUNT];
         boughtCommoditiesAmount = new int[Inventory.SKU_COUNT];
+        boughtCommoditiesByPeriod = new int[Inventory.SKU_COUNT];
+        boughtCommoditiesCounter = new int[Inventory.SKU_COUNT];
+
         Arrays.fill(manufacturedTotal, 0);
+
         Arrays.fill(soldCommoditiesSum, 0);
         Arrays.fill(soldCommoditiesAmount, 0);
+        Arrays.fill(soldCommoditiesByPeriod, 0);
+        Arrays.fill(soldCommoditiesCounter, 0);
+
         Arrays.fill(boughtCommoditiesSum, 0);
         Arrays.fill(boughtCommoditiesAmount, 0);
+        Arrays.fill(boughtCommoditiesByPeriod, 0);
+        Arrays.fill(boughtCommoditiesCounter, 0);
 
         historyRevenue = new double[HISTORY_LENGTH];
         historyExpenses = new double[HISTORY_LENGTH];
@@ -126,16 +143,28 @@ public class Ledger implements JSONSerializable {
             JSONArray jManufacturedTotal = jsonObject.getJSONArray("manufacturedTotal");
             JSONArray jSoldCommoditiesSum = jsonObject.getJSONArray("soldCommoditiesSum");
             JSONArray jSoldCommoditiesAmount = jsonObject.getJSONArray("soldCommoditiesAmount");
+            JSONArray jSoldCommoditiesCounter = jsonObject.getJSONArray("soldCommoditiesCounter");
+            JSONArray jSoldCommoditiesByPeriod = jsonObject.getJSONArray("soldCommoditiesByPeriod");
+
             JSONArray jBoughtCommoditiesSum = jsonObject.getJSONArray("boughtCommoditiesSum");
             JSONArray jBoughtCommoditiesAmount = jsonObject.getJSONArray("boughtCommoditiesAmount");
+            JSONArray jBoughtCommoditiesCounter = jsonObject.getJSONArray("boughtCommoditiesCounter");
+            JSONArray jBoughtCommoditiesByPeriod = jsonObject.getJSONArray("boughtCommoditiesByPeriod");
+
             for (int i = Inventory.SKU_COUNT-1; i >= 0; i--) {
                 productivity[i] = jProductivity.getInt(i);
                 manufacturedByPeriod[i] = jManufacturedByPeriod.getInt(i);
                 manufacturedTotal[i] = jManufacturedTotal.getInt(i);
                 soldCommoditiesSum[i] = jSoldCommoditiesSum.getDouble(i);
                 soldCommoditiesAmount[i] = jSoldCommoditiesAmount.getInt(i);
+                soldCommoditiesCounter[i] = jSoldCommoditiesCounter.getInt(i);
+                soldCommoditiesByPeriod[i] = jSoldCommoditiesByPeriod.getInt(i);
+
                 boughtCommoditiesSum[i] = jBoughtCommoditiesSum.getDouble(i);
                 boughtCommoditiesAmount[i] = jBoughtCommoditiesAmount.getInt(i);
+                boughtCommoditiesCounter[i] = jBoughtCommoditiesCounter.getInt(i);
+                boughtCommoditiesByPeriod[i] = jBoughtCommoditiesByPeriod.getInt(i);
+
             }
 
         } catch (JSONException e) {
@@ -146,17 +175,28 @@ public class Ledger implements JSONSerializable {
 
 
     /**
-     * Вычисляет отчёт по периоду TODO Report
+     * Вычисляет отчёт по периоду
      */
     public void process() {
         currentCashBalance = production.getCashBalance();
 
         long currentCycle = production.getCurrentCycle();
         if (currentCycle > startingCycle + OPERATIONAL_DAY_CYCLES) {
+
             // Копируем количество произведенного в отчёт
             System.arraycopy(manufacturedByPeriod, 0, productivity, 0, Inventory.SKU_COUNT);
-            // Зануляем массив для учта произведенного за период
+            // Зануляем массив для учета произведенного за период
             Arrays.fill(manufacturedByPeriod, 0);
+
+            // Копируем количество закупленного в отчёт
+            System.arraycopy(boughtCommoditiesCounter, 0, boughtCommoditiesByPeriod, 0, Inventory.SKU_COUNT);
+            // Зануляем массив для учета закупленного за период
+            Arrays.fill(boughtCommoditiesCounter, 0);
+
+            // Копируем количество проданного в отчёт
+            System.arraycopy(soldCommoditiesCounter, 0, soldCommoditiesByPeriod, 0, Inventory.SKU_COUNT);
+            // Зануляем массив для учета проданного за период
+            Arrays.fill(soldCommoditiesCounter, 0);
 
             lastPeriodMargin = currentPeriodMargin;
             historyRevenue[historyCounter] = lastPeriodRevenue = currentPeriodRevenue;
@@ -266,13 +306,25 @@ public class Ledger implements JSONSerializable {
         return totalAssetsSold;
     }
 
-    public int getCommoditySoldAmount(int commodity) { return soldCommoditiesAmount[commodity]; }
+    public int getCommoditySoldByPeriod(int commodity) {
+        return soldCommoditiesByPeriod[commodity];
+    }
+
+    public int getCommoditySoldAmount(int commodity) {
+        return soldCommoditiesAmount[commodity];
+    }
 
     public double getCommodityBoughtSum(int commodity) {
         return boughtCommoditiesSum[commodity];
     }
 
-    public int getCommodityBoughtAmount(int commodity) { return boughtCommoditiesAmount[commodity]; }
+    public int getCommodityBoughtByPeriod(int commodity) {
+        return boughtCommoditiesByPeriod[commodity];
+    }
+
+    public int getCommodityBoughtAmount(int commodity) {
+        return boughtCommoditiesAmount[commodity];
+    }
 
     public int getManufacturedAmount(int commodity) {
         return manufacturedTotal[commodity];
@@ -348,6 +400,7 @@ public class Ledger implements JSONSerializable {
     public void registerCommoditySold(int commodity, int quantity, double price) {
         soldCommoditiesSum[commodity] += quantity * price;
         soldCommoditiesAmount[commodity] += quantity;
+        soldCommoditiesCounter[commodity] += quantity;
     }
 
     /**
@@ -359,6 +412,7 @@ public class Ledger implements JSONSerializable {
     public void registerCommodityBought(int commodity, int quantity, double price) {
         boughtCommoditiesSum[commodity] += quantity * price;
         boughtCommoditiesAmount[commodity] += quantity;
+        boughtCommoditiesCounter[commodity] += quantity;
     }
 
 
@@ -408,24 +462,41 @@ public class Ledger implements JSONSerializable {
             JSONArray jManufacturedTotal = new JSONArray();
             JSONArray jSoldCommoditiesSum = new JSONArray();
             JSONArray jSoldCommoditiesAmount = new JSONArray();
+            JSONArray jSoldCommoditiesCounter = new JSONArray();
+            JSONArray jSoldCommoditiesByPeriod = new JSONArray();
             JSONArray jBoughtCommoditiesSum = new JSONArray();
             JSONArray jBoughtCommoditiesAmount = new JSONArray();
+            JSONArray jBoughtCommoditiesCounter = new JSONArray();
+            JSONArray jBoughtCommoditiesByPeriod = new JSONArray();
+
             for (int i=0; i < Inventory.SKU_COUNT; i++) {
                 jProductivity.put(productivity[i]);
                 jManufacturedByPeriod.put(manufacturedByPeriod[i]);
                 jManufacturedTotal.put(manufacturedTotal[i]);
+
                 jSoldCommoditiesSum.put(soldCommoditiesSum[i]);
                 jSoldCommoditiesAmount.put(soldCommoditiesAmount[i]);
+                jSoldCommoditiesCounter.put(soldCommoditiesCounter[i]);
+                jSoldCommoditiesByPeriod.put(soldCommoditiesByPeriod[i]);
+
                 jBoughtCommoditiesSum.put(boughtCommoditiesSum[i]);
                 jBoughtCommoditiesAmount.put(boughtCommoditiesAmount[i]);
+                jBoughtCommoditiesCounter.put(boughtCommoditiesCounter[i]);
+                jBoughtCommoditiesByPeriod.put(boughtCommoditiesByPeriod[i]);
             }
             jsonObject.put("productivity", jProductivity);
             jsonObject.put("manufacturedByPeriod", jManufacturedByPeriod);
             jsonObject.put("manufacturedTotal", jManufacturedTotal);
+
             jsonObject.put("soldCommoditiesSum", jSoldCommoditiesSum);
             jsonObject.put("soldCommoditiesAmount", jSoldCommoditiesAmount);
+            jsonObject.put("soldCommoditiesCounter", jSoldCommoditiesCounter);
+            jsonObject.put("soldCommoditiesByPeriod", jSoldCommoditiesByPeriod);
+
             jsonObject.put("boughtCommoditiesSum", jBoughtCommoditiesSum);
             jsonObject.put("boughtCommoditiesAmount", jBoughtCommoditiesAmount);
+            jsonObject.put("boughtCommoditiesCounter", jBoughtCommoditiesCounter);
+            jsonObject.put("boughtCommoditiesByPeriod", jBoughtCommoditiesByPeriod);
 
             return jsonObject;
 
