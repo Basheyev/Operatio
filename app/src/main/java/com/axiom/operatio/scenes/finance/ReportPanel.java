@@ -2,9 +2,9 @@ package com.axiom.operatio.scenes.finance;
 
 import android.graphics.Color;
 
+import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
-import com.axiom.operatio.scenes.finance.charts.LineChart;
 import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.gameplay.Utils;
 import com.axiom.operatio.model.inventory.Inventory;
@@ -122,94 +122,92 @@ public class ReportPanel extends Panel {
     }
 
 
+    /**
+     * Обновляет данные
+     */
     public void updateData() {
         Ledger ledger = production.getLedger();
-        String revenueText = "Sold: " + Utils.moneyFormat(ledger.getLastPeriodRevenue()) + "\n";
-        String expensesText = "Purchased: " + Utils.moneyFormat(ledger.getLastPeriodExpenses()) + "\n";
-
-
+        String revenueText = "Sold: " + Utils.moneyFormat(Math.round(ledger.getLastPeriodRevenue())) + "\n";
+        String expensesText = "Purchased: " + Utils.moneyFormat(Math.round(ledger.getLastPeriodExpenses())) + "\n";
         //expensesText += "\n" + boughtCounter + ". Maintenance - " + Utils.moneyFormat(ledger.getTotalMaintenanceCost());
 
-        // Обновить график
-        chart.updateData(0, ledger.getHistoryRevenue(), ledger.getHistoryCounter(), GREEN);
-        chart.updateData(1, ledger.getHistoryExpenses(), ledger.getHistoryCounter(), Color.RED);
+        synchronized (this) {
 
-        // Очистить все ячейки отображения материалов
-        for (int i=0; i < manufacturedMaterials.length; i++) {
-            boughtMaterials[i].setActive(false);
-            manufacturedMaterials[i].setActive(false);
-            soldMaterials[i].setActive(false);
-            /*
-            boughtMaterials[i].setBackground(null);
-            boughtMaterials[i].setText("");
-            manufacturedMaterials[i].setBackground(null);
-            manufacturedMaterials[i].setText("");
-            soldMaterials[i].setBackground(null);
-            soldMaterials[i].setText("");*/
+            // Обновить график
+            chart.updateData(0, ledger.getHistoryRevenue(), ledger.getHistoryCounter(), GREEN);
+            chart.updateData(1, ledger.getHistoryExpenses(), ledger.getHistoryCounter(), Color.RED);
+
+            // Очистить все ячейки отображения материалов
+            for (int i = 0; i < manufacturedMaterials.length; i++) {
+                boughtMaterials[i].setActive(false);
+                manufacturedMaterials[i].setActive(false);
+                soldMaterials[i].setActive(false);
+            }
+
+            int manufacturedCounter = 0;
+            int soldCounter = 0;
+            int boughtCounter = 0;
+            for (int i = 0; i < Inventory.SKU_COUNT; i++) {
+
+                // Вывести объем закупа
+                int boughtAmount = ledger.getCommodityBoughtByPeriod(i);
+                if (boughtAmount > 0 && boughtCounter < boughtMaterials.length) {
+                    Material material = Material.getMaterial(i);
+                    boughtMaterials[boughtCounter].setBackground(material.getImage());
+                    boughtMaterials[boughtCounter].setText("" + boughtAmount);
+                    boughtMaterials[boughtCounter].setActive(true);
+                    boughtCounter++;
+                }
+
+                // Вывести продуктивность производства
+                int manufacturedAmount = ledger.getProductivity(i);
+                if (manufacturedAmount > 0 && manufacturedCounter < manufacturedMaterials.length) {
+                    Material material = Material.getMaterial(i);
+                    manufacturedMaterials[manufacturedCounter].setBackground(material.getImage());
+                    manufacturedMaterials[manufacturedCounter].setText("" + manufacturedAmount);
+                    manufacturedMaterials[manufacturedCounter].setActive(true);
+                    manufacturedCounter++;
+                }
+
+                // Вывести объем продаж
+                int soldAmount = ledger.getCommoditySoldByPeriod(i);
+                if (soldAmount > 0 && soldCounter < soldMaterials.length) {
+                    Material material = Material.getMaterial(i);
+                    soldMaterials[soldCounter].setBackground(material.getImage());
+                    soldMaterials[soldCounter].setText("" + soldAmount);
+                    soldMaterials[soldCounter].setActive(true);
+                    soldCounter++;
+                }
+
+            }
+
+            double totalRevenue = ledger.getTotalRevenue();
+            double margin = 0;
+            if (totalRevenue > 0) margin = Math.round(ledger.getTotalMargin() / totalRevenue * 100);
+
+            String report = "Income: " + Utils.moneyFormat(Math.round(ledger.getLastPeriodRevenue())) +
+                    "\nExpenses: " + Utils.moneyFormat(Math.round(ledger.getLastPeriodExpenses()))  +
+                    "\nMargin: " + Utils.moneyFormat(Math.round(ledger.getLastPeriodMargin()))
+                    + "\n\nTotal margin: " + Utils.moneyFormat(Math.round(ledger.getTotalMargin())) + " ("
+                    + margin + "%)"
+                    + "\nCash: " + Utils.moneyFormat(Math.round(production.getCashBalance()))
+                    + "\nAssets: " + Utils.moneyFormat(Math.round(production.getAssetsValuation()))
+                    + "\nWork in progress: " + Utils.moneyFormat(Math.round(production.getWorkInProgressValuation()))
+                    + "\nInventory: " + Utils.moneyFormat(Math.round(production.getInventory().getValuation()))
+                    + "\n\nCapitalization: " + Utils.moneyFormat(Math.round(ledger.getCapitalization()));
+
+            panelCaption.setText("Operations daily report - " + production.getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES + " day");
+            incomeCaption.setText(revenueText);
+            expenseCaption.setText(expensesText);
+            reportCaption.setText(report);
         }
-
-        int manufacturedCounter = 0;
-        int soldCounter = 0;
-        int boughtCounter = 0;
-        for (int i=0; i < Inventory.SKU_COUNT; i++) {
-
-            // Вывести объем закупа
-            int boughtAmount = ledger.getCommodityBoughtByPeriod(i);
-            if (boughtAmount > 0 && boughtCounter < boughtMaterials.length) {
-                Material material = Material.getMaterial(i);
-                boughtMaterials[boughtCounter].setBackground(material.getImage());
-                boughtMaterials[boughtCounter].setText("" + boughtAmount);
-                boughtMaterials[boughtCounter].setActive(true);
-                boughtCounter++;
-            }
-
-            // Вывести продуктивность производства
-            int manufacturedAmount = ledger.getProductivity(i);
-            if (manufacturedAmount > 0 && manufacturedCounter < manufacturedMaterials.length) {
-                Material material = Material.getMaterial(i);
-                manufacturedMaterials[manufacturedCounter].setBackground(material.getImage());
-                manufacturedMaterials[manufacturedCounter].setText("" + manufacturedAmount);
-                manufacturedMaterials[manufacturedCounter].setActive(true);
-                manufacturedCounter++;
-            }
-
-            // Вывести объем продаж
-            int soldAmount = ledger.getCommoditySoldByPeriod(i);
-            if (soldAmount > 0 && soldCounter < soldMaterials.length) {
-                Material material = Material.getMaterial(i);
-                soldMaterials[soldCounter].setBackground(material.getImage());
-                soldMaterials[soldCounter].setText("" + soldAmount);
-                soldMaterials[soldCounter].setActive(true);
-                soldCounter++;
-            }
-
-        }
-
-        double totalRevenue = ledger.getTotalRevenue();
-        double margin = 0;
-        if (totalRevenue > 0) margin = Math.round(ledger.getTotalMargin() / totalRevenue * 100);
-
-        String report = "Income: " + Utils.moneyFormat(ledger.getLastPeriodRevenue()) + " per day" +
-                        "\nExpenses: " + Utils.moneyFormat(ledger.getLastPeriodExpenses()) + " per day" +
-                        "\nMargin: " + Utils.moneyFormat(ledger.getLastPeriodMargin()) + " per day"
-                        + "\n\nTotal margin: " + Utils.moneyFormat(ledger.getTotalMargin()) + " ("
-                        + margin + "%)"
-                        + "\nCash " + Utils.moneyFormat(production.getCashBalance())
-                        + "\nAssets " + Utils.moneyFormat(production.getAssetsValuation())
-                        + "\nWork in progress " + Utils.moneyFormat(production.getWorkInProgressValuation())
-                        + "\nInventory " + Utils.moneyFormat(production.getInventory().getValuation())
-                        + "\n\nCapitalization " + Utils.moneyFormat(ledger.getCapitalization());
-
-        panelCaption.setText("Operations daily report - " + production.getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES + " day");
-        incomeCaption.setText(revenueText);
-        expenseCaption.setText(expensesText);
-        reportCaption.setText(report);
-
     }
 
 
-    private void updateTotal() {
-
+    @Override
+    public void draw(Camera camera) {
+        synchronized (this) {
+            super.draw(camera);
+        }
     }
-
 }

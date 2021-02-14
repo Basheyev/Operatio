@@ -1,4 +1,4 @@
-package com.axiom.operatio.scenes.finance.charts;
+package com.axiom.operatio.scenes.finance;
 
 import android.graphics.Color;
 
@@ -86,11 +86,12 @@ public class LineChart extends Widget {
                 double value = data.values[i];
                 if (value > data.maxValue) data.maxValue = value;
                 if (value < data.minValue) data.minValue = value;
-                if (value > totalMax) totalMax = value;
-                if (value < totalMin) totalMin = value;
             }
             data.range = data.maxValue - data.minValue;
             data.color = color;
+
+            calculateTotalMinMax();
+
         }
 
     }
@@ -161,6 +162,29 @@ public class LineChart extends Widget {
      */
     private double normalized(double value) {
         return (value - totalMin) / (totalMax - totalMin);
+    }
+
+
+    private void calculateTotalMinMax() {
+        int longestDataSeries = 0;
+
+        for (DataSeries dataSery : dataSeries) {
+            if (dataSery.count > longestDataSeries) longestDataSeries = dataSery.count;
+        }
+
+        totalMax = Double.MIN_VALUE;
+        totalMin = Double.MAX_VALUE;
+        double value;
+        for (int i=0; i<longestDataSeries; i++) {
+            for (int j=0; j<dataSeries.length; j++) {
+                if (i < dataSeries[j].count) {
+                    value = dataSeries[j].values[i];
+                    if (value > totalMax) totalMax = value;
+                    if (value < totalMin) totalMin = value;
+                }
+            }
+        }
+
     }
 
 }

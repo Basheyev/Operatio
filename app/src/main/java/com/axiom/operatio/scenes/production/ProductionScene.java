@@ -97,7 +97,9 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void updateScene(float deltaTimeNs) {
+
         production.process();
+
         double currentCashBalance = production.getCashBalance();
         if ((long)lastCashBalance != (long)currentCashBalance) {
             Button balance = ProductionSceneUI.getBalance();
@@ -106,7 +108,7 @@ public class ProductionScene extends GameScene {
             String goal = level.getDescription();
             // todo здесь может съедаться память если не использовать StringBuffer (если только уже это компилятор не недлает)
             balance.setText("Level " + production.getLevel() + " Day " + (production.getCurrentCycle() / 60) + " " +
-                    Utils.moneyFormat(production.getCashBalance()) + "\n" + goal);
+                    Utils.moneyFormat(Math.round(production.getCashBalance())) + "\n" + goal);
             lastCashBalance = currentCashBalance;
         }
 

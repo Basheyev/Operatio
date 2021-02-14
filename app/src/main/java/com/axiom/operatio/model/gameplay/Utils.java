@@ -4,8 +4,9 @@ import java.text.DecimalFormat;
 
 public class Utils {
 
-    private static DecimalFormat moneyFormat = new DecimalFormat("$###,###,###,###,###.00");
+    private static DecimalFormat moneyFormat = new DecimalFormat("$###,###,###,###,###.##");
 
+    // fixme не работает на Galaxy Note
     public static String moneyFormat(double sum) {
         return moneyFormat.format(sum);
     }

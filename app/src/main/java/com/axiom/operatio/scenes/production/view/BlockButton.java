@@ -55,7 +55,7 @@ public class BlockButton extends Button {
             int startFrame = (id - 2) * 8;
             animation = background.addAnimation(startFrame, startFrame + 7, 8, true);
             background.setActiveAnimation(animation);
-            setText(Utils.moneyFormat(MachineType.getMachineType(id-2).getPrice()));
+            setText(Utils.moneyFormat(Math.round(MachineType.getMachineType(id-2).getPrice())));
         } else if (id==7) {
             background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
             background.setActiveFrame(64);

@@ -79,7 +79,7 @@ public class FinanceScene extends GameScene {
         float y = camera.getMinY();
         GraphicsRender.setZOrder(2000);
         GraphicsRender.setColor(1,1,1,1);
-        GraphicsRender.drawText(fps, x + 600,y + 20, 2f);
+        GraphicsRender.drawText(fps, x + 750,y + 20, 1.2f);
     }
 
     @Override
