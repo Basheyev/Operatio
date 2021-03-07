@@ -10,11 +10,11 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 
-
+/**
+ * Обработчик движения камеры
+ */
 public class CameraMoveHandler {
 
-    private InputHandler inputHandler;
-    private ProductionScene scene;
     private Production production;
     private ProductionRenderer productionRenderer;
 
@@ -23,55 +23,67 @@ public class CameraMoveHandler {
     private int lastCol, lastRow;
 
 
-    public CameraMoveHandler(InputHandler inputHandler, ProductionScene scn, Production prod, ProductionRenderer prodRender) {
-        this.inputHandler = inputHandler;
+    public CameraMoveHandler(Production prod, ProductionRenderer prodRender) {
         this.production = prod;
         this.productionRenderer = prodRender;
-        this.scene = scn;
-
     }
+
 
     public void onMotion(MotionEvent event, float worldX, float worldY) {
         int column = productionRenderer.getProductionColumn(worldX);
         int row = productionRenderer.getProductionRow(worldY);
-
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                lastCol = column;
-                lastRow = row;
-                cursorX = worldX;
-                cursorY = worldY;
-                actionInProgress = true;
+                actionDown(column, row, worldX, worldY);
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (actionInProgress) {
-                    Camera camera = Camera.getInstance();
-                    float x = camera.getX() + (cursorX - worldX);
-                    float y = camera.getY() + (cursorY - worldY);
-                    camera.lookAt(x, y);
-                }
+                actionMove(worldX, worldY);
                 break;
             case MotionEvent.ACTION_UP:
-                if (actionInProgress) {
-                    if (column >= 0 && row >= 0 && lastCol == column && lastRow == row) {
-                        Block block = production.getBlockAt(column, row);
-                        if (block != null) {
-                            AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
-                            if (production.isBlockSelected()
-                                    && production.getSelectedCol() == column
-                                    && production.getSelectedRow() == row) {
-                                production.unselectBlock();
-                                opsPanel.hideBlockInfo();
-                            } else {
-                                opsPanel.showBlockInfo(block);
-                                production.selectBlock(column, row);
-                            }
-                        }
-                    }
-
-                }
-                actionInProgress = false;
+                actionUp(column, row);
         }
+    }
+
+
+    private void actionDown(int column, int row, float worldX, float worldY) {
+        lastCol = column;
+        lastRow = row;
+        cursorX = worldX;
+        cursorY = worldY;
+        actionInProgress = true;
+    }
+
+
+    private void actionMove(float worldX, float worldY) {
+        if (actionInProgress) {
+            Camera camera = Camera.getInstance();
+            float x = camera.getX() + (cursorX - worldX);
+            float y = camera.getY() + (cursorY - worldY);
+            camera.lookAt(x, y);
+        }
+    }
+
+
+    private void actionUp(int column, int row) {
+        if (actionInProgress) {
+            if (column >= 0 && row >= 0 && lastCol == column && lastRow == row) {
+                Block block = production.getBlockAt(column, row);
+                if (block != null) {
+                    AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
+                    if (production.isBlockSelected()
+                            && production.getSelectedCol() == column
+                            && production.getSelectedRow() == row) {
+                        production.unselectBlock();
+                        opsPanel.hideBlockInfo();
+                    } else {
+                        opsPanel.showBlockInfo(block);
+                        production.selectBlock(column, row);
+                    }
+                }
+            }
+
+        }
+        actionInProgress = false;
     }
 
 

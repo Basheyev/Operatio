@@ -12,25 +12,24 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 
-
+/**
+ * Обработчик удаления блока
+ */
 public class BlockDeleteHandler {
 
     private InputHandler inputHandler;
-    private ProductionScene scene;
     private Production production;
     private ProductionRenderer productionRenderer;
 
     private boolean actionInProgress = false;
-    private float cursorX, cursorY;
     private int lastCol, lastRow;
     private int blockRemoveSound;
 
-    public BlockDeleteHandler(InputHandler inputHandler, ProductionScene scn,
-                              Production prod, ProductionRenderer prodRender) {
+
+    public BlockDeleteHandler(InputHandler inputHandler, Production prod, ProductionRenderer prodRender) {
         this.inputHandler = inputHandler;
         this.production = prod;
         this.productionRenderer = prodRender;
-        this.scene = scn;
         blockRemoveSound = SoundRenderer.loadSound(R.raw.block_remove_snd);
     }
 
@@ -39,32 +38,38 @@ public class BlockDeleteHandler {
         int column = productionRenderer.getProductionColumn(worldX);
         int row = productionRenderer.getProductionRow(worldY);
         Block block = production.getBlockAt(column, row);
+
+        // Если никакого блока нет - вызываем обработчик движения камеры
         if (block==null) inputHandler.getCameraMoveHandler().onMotion(event, worldX, worldY);
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                if (block!=null) {
-                    lastCol = column;
-                    lastRow = row;
-                    cursorX = worldX;
-                    cursorY = worldY;
-                    actionInProgress = true;
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
+                if (block!=null) startAction(column, row);
                 break;
             case MotionEvent.ACTION_UP:
-                if (actionInProgress && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
-                    if (block!=null) {
-                        production.removeBlock(block,true);
-                        production.increaseCashBalance(Ledger.REVENUE_BLOCK_SOLD, block.getPrice());
-                        production.unselectBlock();
-                        AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
-                        opsPanel.hideBlockInfo();
-                        SoundRenderer.playSound(blockRemoveSound);
-                    }
-                }
-                actionInProgress = false;
+                deleteBlock(column, row, block);
+        }
+    }
+
+
+    private void startAction(int column, int row) {
+        lastCol = column;
+        lastRow = row;
+        actionInProgress = true;
+    }
+
+
+    private void deleteBlock(int column, int row, Block block) {
+        if (actionInProgress && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
+            if (block!=null) {
+                production.removeBlock(block,true);
+                production.increaseCashBalance(Ledger.REVENUE_BLOCK_SOLD, block.getPrice());
+                production.unselectBlock();
+                AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
+                opsPanel.hideBlockInfo();
+                SoundRenderer.playSound(blockRemoveSound);
+            }
+            actionInProgress = false;
         }
     }
 

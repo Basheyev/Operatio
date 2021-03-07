@@ -12,25 +12,12 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 
 import java.util.ArrayList;
 
+/**
+ * Панель добавления блоков
+ */
 public class BlocksPanel extends Panel {
 
-    protected boolean collapsed = false;
-
-    public static ClickListener clickListener = new ClickListener() {
-        @Override
-        public void onClick(Widget w) {
-            BlocksPanel panel = (BlocksPanel) w;
-            if (!panel.collapsed) {
-                panel.setLocation(-300, 200);
-                panel.collapsed = true;
-            } else {
-                panel.setLocation(0, 200);
-                panel.collapsed = false;
-            }
-        }
-    };
-
-    public final int panelColor = 0xCC505050;
+    public static final int panelColor = 0xCC505050;
     protected ProductionScene productionScene;
     protected String toggledButton;
 
@@ -77,8 +64,8 @@ public class BlocksPanel extends Panel {
 
     @Override
     public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
-        if (event.getAction()==MotionEvent.ACTION_UP) {
-            productionScene.getInputHandler().invalidateAllActionsButScale();
+        if (event.getActionMasked()==MotionEvent.ACTION_UP) {
+            productionScene.getInputHandler().invalidateAllActions();
         }
         return super.onMotionEvent(event, worldX, worldY);
     }

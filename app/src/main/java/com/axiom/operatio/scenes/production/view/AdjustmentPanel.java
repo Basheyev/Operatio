@@ -27,24 +27,27 @@ import static android.graphics.Color.DKGRAY;
 import static android.graphics.Color.GRAY;
 import static android.graphics.Color.WHITE;
 
+/**
+ * Панель настройки блока
+ */
 public class AdjustmentPanel extends Panel {
 
     protected Production production;
     protected ProductionScene productionScene;
 
-    public final int panelColor = 0xCC505050;
+    public static final int panelColor = 0xCC505050;
     protected Caption caption, inputsCaption, outputsCaption;
     protected Button leftButton, centerButton, rightButton;
     protected Button changeoverButton;
-    protected Block choosenBlock = null;
+    protected Block chosenBlock = null;
 
-    protected int choosenOperationID = 0;
+    protected int chosenOperationID = 0;
     protected int materialID = 0;
 
     private long lastProductionCycle;
 
-    private ItemWidget inpBtn[];
-    private ItemWidget outBtn[];
+    private ItemWidget[] inpBtn;
+    private ItemWidget[] outBtn;
     private int tickSound;
 
 
@@ -53,30 +56,30 @@ public class AdjustmentPanel extends Panel {
         public void onClick(Widget w) {
             SoundRenderer.playSound(tickSound);
             Button button = (Button) w;
-            if (choosenBlock != null) {
-                if (choosenBlock instanceof Machine) {
-                    Machine machine = (Machine) choosenBlock;
+            if (chosenBlock != null) {
+                if (chosenBlock instanceof Machine) {
+                    Machine machine = (Machine) chosenBlock;
                     if (button.getTag().equals("<")) {
-                        choosenOperationID--;
-                        if (choosenOperationID < 0) choosenOperationID = 0;
-                        showMachineInfo(machine, choosenOperationID);
-                        if (choosenOperationID ==machine.getOperationID()) {
+                        chosenOperationID--;
+                        if (chosenOperationID < 0) chosenOperationID = 0;
+                        showMachineInfo(machine, chosenOperationID);
+                        if (chosenOperationID ==machine.getOperationID()) {
                             changeoverButton.setColor(GRAY);
                         } else changeoverButton.setColor(0f, 0.6f, 0f, 1);
                     } else if (button.getTag().equals(">")) {
                         int operationsCount = machine.getType().getOperations().length;
-                        choosenOperationID++;
-                        if (choosenOperationID >= operationsCount) choosenOperationID = operationsCount - 1;
-                        showMachineInfo(machine, choosenOperationID);
-                        if (choosenOperationID ==machine.getOperationID()) {
+                        chosenOperationID++;
+                        if (chosenOperationID >= operationsCount) chosenOperationID = operationsCount - 1;
+                        showMachineInfo(machine, chosenOperationID);
+                        if (chosenOperationID ==machine.getOperationID()) {
                             changeoverButton.setColor(GRAY);
                         } else changeoverButton.setColor(0f, 0.6f, 0f, 1);
                     } else if (button.getTag().equals("Changeover")) {
-                        machine.setOperation(choosenOperationID);
+                        machine.setOperation(chosenOperationID);
                         changeoverButton.setColor(GRAY);
                     }
-                } else if (choosenBlock instanceof ImportBuffer) {
-                    ImportBuffer importBuffer = (ImportBuffer) choosenBlock;
+                } else if (chosenBlock instanceof ImportBuffer) {
+                    ImportBuffer importBuffer = (ImportBuffer) chosenBlock;
                     if (button.getTag().equals("<")) {
                         materialID--;
                         if (materialID < 0) materialID = 0;
@@ -194,24 +197,26 @@ public class AdjustmentPanel extends Panel {
     @Override
     public void draw(Camera camera) {
         long currentCycle = production.getCurrentCycle();
+        // Если прошел один цикл производства обновить информацию
         if (currentCycle > lastProductionCycle) {
-            if (choosenBlock!=null) showBlockInfo(choosenBlock);
+            if (chosenBlock != null) showBlockInfo(chosenBlock);
             lastProductionCycle = currentCycle;
         }
-        if (choosenBlock!=null) super.draw(camera);
+        // Если выбран блок - отрисловать
+        if (chosenBlock != null) super.draw(camera);
     }
 
     @Override
     public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
-        if (event.getAction()==MotionEvent.ACTION_UP) {
-            productionScene.getInputHandler().invalidateAllActionsButScale();
+        if (event.getActionMasked()==MotionEvent.ACTION_UP) {
+            productionScene.getInputHandler().invalidateAllActions();
         }
         return super.onMotionEvent(event, worldX, worldY);
     }
 
     /**
      * Отображение информации о блоке на панели
-     * @param block
+     * @param block информацио о котором надо отобразить
      */
     public void showBlockInfo(Block block) {
         boolean blockChanged = false;
@@ -221,16 +226,16 @@ public class AdjustmentPanel extends Panel {
             return;
         } else visible = true;
 
-        if (block!=choosenBlock) {
+        if (block!= chosenBlock) {
             blockChanged = true;
-            choosenBlock = block;
+            chosenBlock = block;
             changeoverButton.setColor(GRAY);
         }
 
         if (block instanceof Machine) {
             Machine machine = (Machine) block;
-            if (blockChanged) choosenOperationID = machine.getOperationID();
-            showMachineInfo(machine, choosenOperationID);
+            if (blockChanged) chosenOperationID = machine.getOperationID();
+            showMachineInfo(machine, chosenOperationID);
         }
         if (block instanceof Conveyor) {
             showConveyorInfo((Conveyor) block);
@@ -250,8 +255,11 @@ public class AdjustmentPanel extends Panel {
     }
 
 
+    /**
+     * Скрыть панель отображения информации о блоке
+     */
     public void hideBlockInfo() {
-        choosenBlock = null;
+        chosenBlock = null;
         caption.setText("Block information");
         centerButton.visible = false;
         leftButton.visible = false;

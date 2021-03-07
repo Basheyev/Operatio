@@ -27,11 +27,11 @@ public class InputHandler {
     
     public InputHandler(ProductionScene scene, Production production, ProductionRenderer productionRenderer) {
         this.scene = scene;
-        cameraMoveHandler = new CameraMoveHandler(this, scene, production, productionRenderer);
-        cameraScaleHandler = new CameraScaleHandler(this, scene, production, productionRenderer);
+        cameraMoveHandler = new CameraMoveHandler(production, productionRenderer);
+        cameraScaleHandler = new CameraScaleHandler(this, productionRenderer);
         blockAddMoveHandler = new BlockAddMoveHandler(this, scene, production, productionRenderer);
-        blockDeleteHandler = new BlockDeleteHandler(this, scene, production, productionRenderer);
-        blockRotateHandler = new BlockRotateHandler(this, scene, production, productionRenderer);
+        blockDeleteHandler = new BlockDeleteHandler(this, production, productionRenderer);
+        blockRotateHandler = new BlockRotateHandler(this, production, productionRenderer);
     }
 
 
@@ -62,7 +62,7 @@ public class InputHandler {
 
 
     public void onScale(ScaleEvent event, float worldX, float worldY) {
-        cameraScaleHandler.onScale(event, worldX, worldY);
+        cameraScaleHandler.onScale(event);
     }
 
 
@@ -72,19 +72,9 @@ public class InputHandler {
     public void invalidateAllActions() {
         blockDeleteHandler.invalidateAction();
         blockAddMoveHandler.invalidateAction();
-        cameraMoveHandler.invalidateAction();
-        cameraScaleHandler.invalidateAction();
-    }
-
-    /**
-     * Отменяет все начатые действия кроме масштабирования
-     */
-    public void invalidateAllActionsButScale() {
-        blockDeleteHandler.invalidateAction();
-        blockAddMoveHandler.invalidateAction();
+        blockRotateHandler.invalidateAction();
         cameraMoveHandler.invalidateAction();
     }
-
 
     public CameraMoveHandler getCameraMoveHandler() {
         return cameraMoveHandler;

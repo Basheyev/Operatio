@@ -224,7 +224,7 @@ public class ScenesPanel extends Panel {
         if (scene instanceof ProductionScene) {
             ProductionScene productionScene = (ProductionScene) scene;
             if (event.getAction() == MotionEvent.ACTION_UP) {
-                productionScene.getInputHandler().invalidateAllActionsButScale();
+                productionScene.getInputHandler().invalidateAllActions();
             }
         }
         return super.onMotionEvent(event, worldX, worldY);

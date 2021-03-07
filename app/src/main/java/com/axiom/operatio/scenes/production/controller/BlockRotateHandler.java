@@ -12,19 +12,16 @@ import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 public class BlockRotateHandler {
 
     private InputHandler inputHandler;
-    private ProductionScene scene;
     private Production production;
     private ProductionRenderer productionRenderer;
     private int lastCol, lastRow;
-
     private boolean actionInProgress = false;
 
-    public BlockRotateHandler(InputHandler inputHandler, ProductionScene scene,
-                              Production production, ProductionRenderer productionRenderer) {
+
+    public BlockRotateHandler(InputHandler inputHandler, Production production, ProductionRenderer productionRenderer) {
         this.inputHandler = inputHandler;
         this.production = production;
         this.productionRenderer = productionRenderer;
-        this.scene = scene;
     }
 
 
@@ -32,27 +29,36 @@ public class BlockRotateHandler {
         int column = productionRenderer.getProductionColumn(worldX);
         int row = productionRenderer.getProductionRow(worldY);
         Block block = production.getBlockAt(column, row);
+
+        // Если нет никакого блока - вызвать обработчик движения камеры
         if (block==null) inputHandler.getCameraMoveHandler().onMotion(event, worldX, worldY);
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                if (block!=null) {
-                    lastCol = column;
-                    lastRow = row;
-                    actionInProgress = true;
-                }
+                if (block!=null) startAction(column, row);
                 break;
             case MotionEvent.ACTION_UP:
-                if (actionInProgress && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
-                    if (block!=null) {
-                        block.rotateFlowDirection();
-                        AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
-                        opsPanel.showBlockInfo(block);
-                        production.selectBlock(column, row);
-                    }
-                }
+                rotateBlock(column, row, block);
         }
 
+    }
+
+    private void startAction(int column, int row) {
+        lastCol = column;
+        lastRow = row;
+        actionInProgress = true;
+    }
+
+
+    private void rotateBlock(int column, int row, Block block) {
+        if (actionInProgress && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
+            if (block!=null) {
+                block.rotateFlowDirection();
+                AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
+                opsPanel.showBlockInfo(block);
+                production.selectBlock(column, row);
+            }
+        }
     }
 
 

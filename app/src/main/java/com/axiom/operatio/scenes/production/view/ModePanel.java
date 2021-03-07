@@ -17,6 +17,9 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 
 import java.util.ArrayList;
 
+/**
+ * Панель выбора режима редактирования: перемещение, поворот и удаление
+ */
 public class ModePanel extends Panel {
 
     public final int panelColor = 0xCC505050;
@@ -93,8 +96,8 @@ public class ModePanel extends Panel {
 
     @Override
     public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
-        if (event.getAction()==MotionEvent.ACTION_UP) {
-            productionScene.getInputHandler().invalidateAllActionsButScale();
+        if (event.getActionMasked()==MotionEvent.ACTION_UP) {
+            productionScene.getInputHandler().invalidateAllActions();
         }
         return super.onMotionEvent(event, worldX, worldY);
     }

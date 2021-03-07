@@ -13,7 +13,9 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 
-// todo Возможно Import/Export Buffers Должны находиться только на границе производства
+/**
+ * Обработчик добавления и перемещения блока
+ */
 public class BlockAddMoveHandler {
 
     private InputHandler inputHandler;
@@ -28,6 +30,7 @@ public class BlockAddMoveHandler {
     private int lastCol, lastRow;
     private int blockPlaced;
 
+
     public BlockAddMoveHandler(InputHandler inputHandler,
                                ProductionScene scn, Production prod, ProductionRenderer prodRender) {
         blockPlaced = SoundRenderer.loadSound(R.raw.block_add_snd);
@@ -37,74 +40,117 @@ public class BlockAddMoveHandler {
         this.scene = scn;
     }
 
+
     public synchronized void onMotion(MotionEvent event, float worldX, float worldY) {
-        int cols = production.getColumns();
-        int rows = production.getRows();
         int column = productionRenderer.getProductionColumn(worldX);
         int row = productionRenderer.getProductionRow(worldY);
-
         Block block = production.getBlockAt(column, row);
+
+        // Если начато движение, но блока нет - вызываем обработчик движения камеры
         if (block==null) inputHandler.getCameraMoveHandler().onMotion(event, worldX, worldY);
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                if (block!=null) {
-                    lastCol = column;
-                    lastRow = row;
-                    cursorX = worldX;
-                    cursorY = worldY;
-                    dragBlock = block;
-                    production.removeBlock(block, false);
-                    actionInProgress = true;
-                }
+                if (block!=null) actionDown(column,row,worldX,worldY, block);
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (actionInProgress && dragBlock!=null) {
-                    cursorX = worldX;
-                    cursorY = worldY;
-                    productionRenderer.startBlockMoving(dragBlock, cursorX, cursorY);
-                    production.selectBlock(column, row);
-                }
+                actionMove(column, row, worldX, worldY);
                 break;
             case MotionEvent.ACTION_UP:
-                if (actionInProgress) {
-                    productionRenderer.stopBlockMoving();
-                    if (column >= 0 && row >= 0 && column < cols && row < rows) {
-                        AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
-                        if (block == null) {
-                            SoundRenderer.playSound(blockPlaced);
-                            production.setBlock(dragBlock, column, row);
-                            // New block created
-                            if (justCreatedBlock) {
-                                int expenseType = Ledger.EXPENSE_BLOCK_BOUGHT;
-                                production.decreaseCashBalance(expenseType, dragBlock.getPrice());
-                            }
-                            dragBlock.adjustFlowDirection();
-                            opsPanel.showBlockInfo(dragBlock);
-                            production.selectBlock(column, row);
-                            scene.getProductionRenderer().getParticles().generateParticles();
-                        } else {
-                            production.setBlock(dragBlock, lastCol, lastRow);
-                            production.selectBlock(column, row);
-                        }
-                    } else {
-                        if (!justCreatedBlock) {
-                            production.setBlock(dragBlock, lastCol, lastRow);
-                            production.selectBlock(lastCol, lastRow);
-                        }
-                        invalidateAction();
-                    }
-                    // Если это было добавление то отжимаем кнопки
-                    if (justCreatedBlock) {
-                        ProductionSceneUI.getBlocksPanel().untoggleButtons();
-                        justCreatedBlock = false;
-                    }
-                    actionInProgress = false;
-                }
+                actionUp(column, row, worldX, worldY, block);
+        }
+
+    }
+
+
+    private synchronized void actionDown(int column, int row, float worldX, float worldY, Block block) {
+        lastCol = column;
+        lastRow = row;
+        cursorX = worldX;
+        cursorY = worldY;
+        dragBlock = block;
+        production.removeBlock(block, false);
+        actionInProgress = true;
+    }
+
+
+    private synchronized void actionMove(int column, int row, float worldX, float worldY) {
+        if (actionInProgress && dragBlock!=null) {
+            cursorX = worldX;
+            cursorY = worldY;
+            productionRenderer.startBlockMoving(dragBlock, cursorX, cursorY);
+            production.selectBlock(column, row);
         }
     }
 
-    // Используется для добавления нового блока
+
+    private synchronized void actionUp(int column, int row, float worldX, float worldY, Block block) {
+        int cols = production.getColumns();
+        int rows = production.getRows();
+        // Если было начато движение (добавление) блока
+        if (actionInProgress) {
+            productionRenderer.stopBlockMoving();
+            // Если блок добавлен в пределах карты производства
+            if (column >= 0 && row >= 0 && column < cols && row < rows) {
+                if (block == null) setBlockTo(column, row);
+                else returnBlockBack(column, row);
+            } else {
+                if (!justCreatedBlock) returnBlockBack(lastCol, lastRow);
+                invalidateAction();
+            }
+            // Если это было добавление, то отжимаем кнопки
+            if (justCreatedBlock) {
+                ProductionSceneUI.getBlocksPanel().untoggleButtons();
+                justCreatedBlock = false;
+            }
+            actionInProgress = false;
+        }
+    }
+
+
+    /**
+     * Установить блок в указанную позицию на производстве
+     * @param column - столбец
+     * @param row - строка
+     */
+    private synchronized void setBlockTo(int column, int row) {
+        AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
+        production.setBlock(dragBlock, column, row);
+        // Если был создан новый блок - вычесть деньги
+        if (justCreatedBlock) {
+            int expenseType = Ledger.EXPENSE_BLOCK_BOUGHT;
+            production.decreaseCashBalance(expenseType, dragBlock.getPrice());
+        }
+        dragBlock.adjustFlowDirection();
+        opsPanel.showBlockInfo(dragBlock);
+        production.selectBlock(column, row);
+
+        // Запускаем эффект частиц
+        scene.getProductionRenderer().getParticles().generateParticles();
+        // Проигрываем звук
+        SoundRenderer.playSound(blockPlaced);
+    }
+
+
+    /**
+     * Вернуть блок обратно, если действие запрещено
+     * @param selectedColumn столбец выделяемого блока
+     * @param selectedRow строка выделяемого блока
+     */
+    private synchronized void returnBlockBack(int selectedColumn, int selectedRow) {
+        // Вернуть блок откуда взяли - ранее сохраненный столбец и строка
+        production.setBlock(dragBlock, lastCol, lastRow);
+        // Выделить тот блок который указали
+        production.selectBlock(selectedColumn, selectedRow);
+    }
+
+
+    /**
+     * Начало движения блока при добавлении
+     * @param block новый блок
+     * @param worldX мировая координата X
+     * @param worldY мировая координата Y
+     */
     public synchronized void startAction(Block block, float worldX, float worldY) {
         if (actionInProgress) return;
         justCreatedBlock = true; // Помечаем что это вновь созданные блок
@@ -116,7 +162,9 @@ public class BlockAddMoveHandler {
         actionInProgress = true;
     }
 
-
+    /**
+     * Отмена движения блока
+     */
     public synchronized void invalidateAction() {
         // Вернуть блок на место
         if (actionInProgress) {
@@ -131,4 +179,5 @@ public class BlockAddMoveHandler {
         // Убрать выделение блока если там ничего нет
         production.unselectBlock();
     }
+
 }
