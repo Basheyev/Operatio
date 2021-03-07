@@ -18,8 +18,8 @@ import java.util.ArrayList;
 public class BlocksPanel extends Panel {
 
     public static final int panelColor = 0xCC505050;
-    protected ProductionScene productionScene;
-    protected String toggledButton;
+    private ProductionScene productionScene;
+    private String toggledButton;
 
     public BlocksPanel(ProductionScene scene) {
         super();
@@ -60,6 +60,10 @@ public class BlocksPanel extends Panel {
 
     public String getToggledButton() {
         return toggledButton;
+    }
+
+    public void setToggledButton(String tag) {
+        toggledButton = tag;
     }
 
     @Override

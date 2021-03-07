@@ -15,15 +15,15 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 
 public class ProductionSceneUI {
 
-    protected static Production production;
-    protected static ProductionScene productionScene;
-    protected static BlocksPanel blocksPanel;
-    protected static ModePanel modePanel;
-    protected static AdjustmentPanel adjustmentPanel;
+    private static Production production;
+    private static ProductionScene productionScene;
+    private static BlocksPanel blocksPanel;
+    private static ModePanel modePanel;
+    private static AdjustmentPanel adjustmentPanel;
 
-    protected static ScenesPanel scenesPanel;
+    private static ScenesPanel scenesPanel;
 
-    protected static int tickSound;
+    private static int tickSound;
 
 
     public static void buildUI(ProductionScene scene, final Resources resources, Widget widget, Production prod) {

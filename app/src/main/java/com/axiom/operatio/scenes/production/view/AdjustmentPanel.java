@@ -32,78 +32,30 @@ import static android.graphics.Color.WHITE;
  */
 public class AdjustmentPanel extends Panel {
 
-    protected Production production;
-    protected ProductionScene productionScene;
+    private static final int panelColor = 0xCC505050;
+    private static final String BLOCK_INFO = "Block information";
+    private static final String LEFT = "<";
+    private static final String RIGHT = ">";
+    private static final String INPUTS = "Input materials:";
+    private static final String OUTPUTS = "Output materials:";
+    private static final String CHANGEOVER = "Changeover";
 
-    public static final int panelColor = 0xCC505050;
-    protected Caption caption, inputsCaption, outputsCaption;
-    protected Button leftButton, centerButton, rightButton;
-    protected Button changeoverButton;
-    protected Block chosenBlock = null;
+    private Production production;
+    private ProductionScene productionScene;
 
-    protected int chosenOperationID = 0;
-    protected int materialID = 0;
+    private Caption caption, inputsCaption, outputsCaption;
+    private Button leftButton, centerButton, rightButton;
+    private Button changeoverButton;
+    private Block chosenBlock = null;
+
+    private int chosenOperationID = 0;
+    private int materialID = 0;
 
     private long lastProductionCycle;
 
     private ItemWidget[] inpBtn;
     private ItemWidget[] outBtn;
     private int tickSound;
-
-
-    protected ClickListener clickListener = new ClickListener() {
-        @Override
-        public void onClick(Widget w) {
-            SoundRenderer.playSound(tickSound);
-            Button button = (Button) w;
-            if (chosenBlock != null) {
-                if (chosenBlock instanceof Machine) {
-                    Machine machine = (Machine) chosenBlock;
-                    if (button.getTag().equals("<")) {
-                        chosenOperationID--;
-                        if (chosenOperationID < 0) chosenOperationID = 0;
-                        showMachineInfo(machine, chosenOperationID);
-                        if (chosenOperationID ==machine.getOperationID()) {
-                            changeoverButton.setColor(GRAY);
-                        } else changeoverButton.setColor(0f, 0.6f, 0f, 1);
-                    } else if (button.getTag().equals(">")) {
-                        int operationsCount = machine.getType().getOperations().length;
-                        chosenOperationID++;
-                        if (chosenOperationID >= operationsCount) chosenOperationID = operationsCount - 1;
-                        showMachineInfo(machine, chosenOperationID);
-                        if (chosenOperationID ==machine.getOperationID()) {
-                            changeoverButton.setColor(GRAY);
-                        } else changeoverButton.setColor(0f, 0.6f, 0f, 1);
-                    } else if (button.getTag().equals("Changeover")) {
-                        machine.setOperation(chosenOperationID);
-                        changeoverButton.setColor(GRAY);
-                    }
-                } else if (chosenBlock instanceof ImportBuffer) {
-                    ImportBuffer importBuffer = (ImportBuffer) chosenBlock;
-                    if (button.getTag().equals("<")) {
-                        materialID--;
-                        if (materialID < 0) materialID = 0;
-                        showImporterInfo(importBuffer, materialID);
-                        if (materialID == importBuffer.getImportMaterial().getMaterialID()) {
-                            changeoverButton.setColor(GRAY);
-                        } else changeoverButton.setColor(0f, 0.6f, 0f, 1);
-                    } else if (button.getTag().equals(">")) {
-                        int materialsAmount = Material.getMaterialsAmount();
-                        materialID++;
-                        if (materialID >= materialsAmount) materialID = materialsAmount - 1;
-                        showImporterInfo(importBuffer, materialID);
-                        if (materialID == importBuffer.getImportMaterial().getMaterialID()) {
-                            changeoverButton.setColor(GRAY);
-                        } else changeoverButton.setColor(0f, 0.6f, 0f, 1);
-                    } else if (button.getTag().equals("Changeover")) {
-                        importBuffer.setImportMaterial(Material.getMaterial(materialID));
-                        changeoverButton.setColor(GRAY);
-                    }
-
-                }
-            }
-        }
-    };
 
 
     public AdjustmentPanel(Production production, ProductionScene scene) {
@@ -119,78 +71,59 @@ public class AdjustmentPanel extends Panel {
     }
 
 
-    protected void buildButtons() {
+    private void buildButtons() {
+        // Название блока
+        caption = buildCaption(BLOCK_INFO, 40,599);
 
-        caption = new Caption("Block information");
-        caption.setLocalBounds(40,599,300, 100);
+        // Кнопки управления блоком
+        leftButton = buildActiveButton(LEFT, 40, 500, 75, 100);
+        centerButton = buildActiveButton("", 140, 500, 100, 100);
+        centerButton.setTextScale(1.5f);
+        rightButton = buildActiveButton(RIGHT, 265, 500, 75, 100);
+
+        // Список входных материалов
+        inputsCaption = buildCaption(INPUTS, 40,400);
+        for (int i=0; i<4; i++) inpBtn[i] = buildItemWidget(40 + i*80, 350);
+
+        // Список выходных материалов
+        outputsCaption = buildCaption(OUTPUTS, 40,250);
+        for (int i=0; i<4; i++) outBtn[i] = buildItemWidget(40 + i*80, 200);
+
+        changeoverButton = buildActiveButton(CHANGEOVER, 40, 50, 300, 100);
+        changeoverButton.setTextScale(1.5f);
+    }
+
+
+    private Caption buildCaption(String text, float x, float y) {
+        Caption caption = new Caption(text);
+        caption.setLocalBounds(x,y,300, 100);
         caption.setTextScale(1.5f);
         caption.setTextColor(WHITE);
         addChild(caption);
-
-        leftButton = new Button("<");
-        leftButton.setLocalBounds( 40, 500, 75, 100);
-        leftButton.setTag("<");
-        leftButton.setColor(GRAY);
-        leftButton.setTextColor(WHITE);
-        leftButton.setClickListener(clickListener);
-        addChild(leftButton);
-
-        centerButton = new Button("");
-        centerButton.setTextScale(1.5f);
-        centerButton.setLocalBounds( 140, 500, 100, 100);
-        centerButton.setColor(GRAY);
-        centerButton.setTextColor(WHITE);
-        addChild(centerButton);
-
-        rightButton = new Button(">");
-        rightButton.setTag(">");
-        rightButton.setLocalBounds( 265, 500, 75, 100);
-        rightButton.setColor(GRAY);
-        rightButton.setTextColor(WHITE);
-        rightButton.setClickListener(clickListener);
-        addChild(rightButton);
-
-        // Список входных материалов
-        inputsCaption = new Caption("Input materials:");
-        inputsCaption.setLocalBounds(40,400,300, 100);
-        inputsCaption.setTextScale(1.5f);
-        inputsCaption.setTextColor(WHITE);
-        addChild(inputsCaption);
-
-        for (int i=0; i<4; i++) {
-            inpBtn[i] = new ItemWidget("");
-            inpBtn[i].setLocalBounds(40 + i*80, 350, 64, 64);
-            inpBtn[i].setColor(DKGRAY);
-            inpBtn[i].setTextColor(WHITE);
-            inpBtn[i].setTextScale(1);
-            addChild(inpBtn[i]);
-        }
-
-        // Список выходных материалов
-        outputsCaption = new Caption("Output materials:");
-        outputsCaption.setLocalBounds(40,250,300, 100);
-        outputsCaption.setTextScale(1.5f);
-        outputsCaption.setTextColor(WHITE);
-        addChild(outputsCaption);
+        return caption;
+    }
 
 
-        for (int i=0; i<4; i++) {
-            outBtn[i] = new ItemWidget("");
-            outBtn[i].setLocalBounds(40 + i*80, 200, 64, 64);
-            outBtn[i].setColor(DKGRAY);
-            outBtn[i].setTextColor(WHITE);
-            outBtn[i].setTextScale(1);
-            addChild(outBtn[i]);
-        }
+    private ItemWidget buildItemWidget(float x, float y) {
+        ItemWidget iw = new ItemWidget("");
+        iw.setLocalBounds(x, y, 64, 64);
+        iw.setColor(DKGRAY);
+        iw.setTextColor(WHITE);
+        iw.setTextScale(1);
+        addChild(iw);
+        return iw;
+    }
 
-        changeoverButton = new Button("Changeover");
-        changeoverButton.setTextScale(1.5f);
-        changeoverButton.setTag("Changeover");
-        changeoverButton.setLocalBounds( 40, 50, 300, 100);
-        changeoverButton.setColor(Color.GRAY);
-        changeoverButton.setTextColor(WHITE);
-        changeoverButton.setClickListener(clickListener);
-        addChild(changeoverButton);
+
+    private Button buildActiveButton(String caption, float x, float y, float width, float height) {
+        Button button = new Button(caption);
+        button.setTag(caption);
+        button.setLocalBounds(x, y, width, height);
+        button.setColor(Color.GRAY);
+        button.setTextColor(WHITE);
+        button.setClickListener(clickListener);
+        addChild(button);
+        return button;
     }
 
 
@@ -205,6 +138,76 @@ public class AdjustmentPanel extends Panel {
         // Если выбран блок - отрисловать
         if (chosenBlock != null) super.draw(camera);
     }
+
+
+    private ClickListener clickListener = new ClickListener() {
+        @Override
+        public void onClick(Widget w) {
+            SoundRenderer.playSound(tickSound);
+            Button button = (Button) w;
+            if (chosenBlock != null) {
+                if (chosenBlock instanceof Machine) {
+                    machineAdjustmentClick(button, (Machine) chosenBlock);
+                } else if (chosenBlock instanceof ImportBuffer) {
+                    importBufferAdjustmentClick(button, (ImportBuffer) chosenBlock);
+                }
+            }
+        }
+    };
+
+
+
+    private void machineAdjustmentClick(Button button, Machine machine) {
+        String tag = button.getTag();
+        int currentOperation = machine.getOperationID();
+        if (tag.equals(LEFT)) {
+            chosenOperationID--;
+            if (chosenOperationID < 0) chosenOperationID = 0;
+            showMachineInfo(machine, chosenOperationID);
+            if (chosenOperationID == currentOperation) setChangeoverState(false); else setChangeoverState(true);
+        } else if (tag.equals(RIGHT)) {
+            int operationsCount = machine.getType().getOperations().length;
+            chosenOperationID++;
+            if (chosenOperationID >= operationsCount) chosenOperationID = operationsCount - 1;
+            showMachineInfo(machine, chosenOperationID);
+            if (chosenOperationID == currentOperation) setChangeoverState(false); else setChangeoverState(true);
+        } else if (tag.equals(CHANGEOVER)) {
+            machine.setOperation(chosenOperationID);
+            changeoverButton.setColor(GRAY);
+        }
+    }
+
+
+    private void importBufferAdjustmentClick(Button button, ImportBuffer importBuffer) {
+        String tag = button.getTag();
+        int currentMaterial = importBuffer.getImportMaterial().getMaterialID();
+
+        if (tag.equals(LEFT)) {
+            materialID--;
+            if (materialID < 0) materialID = 0;
+            showImporterInfo(importBuffer, materialID);
+            if (materialID == currentMaterial) setChangeoverState(false); else setChangeoverState(true);
+        } else if (tag.equals(RIGHT)) {
+            int materialsAmount = Material.getMaterialsAmount();
+            materialID++;
+            if (materialID >= materialsAmount) materialID = materialsAmount - 1;
+            showImporterInfo(importBuffer, materialID);
+            if (materialID == currentMaterial) setChangeoverState(false); else setChangeoverState(true);
+        } else if (tag.equals(CHANGEOVER)) {
+            importBuffer.setImportMaterial(Material.getMaterial(materialID));
+            setChangeoverState(false);
+        }
+    }
+
+
+    private void setChangeoverState(boolean active) {
+        if (active) {
+            changeoverButton.setColor(0f, 0.6f, 0f, 1);
+        } else {
+            changeoverButton.setColor(GRAY);
+        }
+    }
+
 
     @Override
     public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
@@ -221,12 +224,9 @@ public class AdjustmentPanel extends Panel {
     public void showBlockInfo(Block block) {
         boolean blockChanged = false;
 
-        if (block==null) {
-            visible = false;
-            return;
-        } else visible = true;
+        if (block == null) { visible = false; return; } else visible = true;
 
-        if (block!= chosenBlock) {
+        if (block != chosenBlock) {
             blockChanged = true;
             chosenBlock = block;
             changeoverButton.setColor(GRAY);
@@ -237,21 +237,14 @@ public class AdjustmentPanel extends Panel {
             if (blockChanged) chosenOperationID = machine.getOperationID();
             showMachineInfo(machine, chosenOperationID);
         }
-        if (block instanceof Conveyor) {
-            showConveyorInfo((Conveyor) block);
-        }
-        if (block instanceof Buffer) {
-            showBufferInfo((Buffer) block);
-        }
         if (block instanceof ImportBuffer) {
             ImportBuffer importBuffer = (ImportBuffer) block;
             if (blockChanged) materialID = importBuffer.getImportMaterial().getMaterialID();
             showImporterInfo(importBuffer, materialID);
         }
-        if (block instanceof ExportBuffer) {
-            ExportBuffer exportBuffer = (ExportBuffer) block;
-            showExporterInfo(exportBuffer);
-        }
+        if (block instanceof Conveyor) showConveyorInfo((Conveyor) block);
+        if (block instanceof Buffer) showBufferInfo((Buffer) block);
+        if (block instanceof ExportBuffer) showExporterInfo((ExportBuffer) block);
     }
 
 
@@ -267,14 +260,13 @@ public class AdjustmentPanel extends Panel {
         inputsCaption.visible = false;
         outputsCaption.visible = false;
         changeoverButton.visible = false;
-
         for (int i=0; i<4; i++) {
             inpBtn[i].visible = false;
             outBtn[i].visible = false;
         }
-
         visible = false;
     }
+
 
     /**
      * Отображает информацию о машине
@@ -301,7 +293,7 @@ public class AdjustmentPanel extends Panel {
         centerButton.setText("" + opID + "/" + (allOperations.length-1));
 
         inputsCaption.visible = true;
-        inputsCaption.setText("Inputs:");
+        inputsCaption.setText(INPUTS);
         for (int i=0; i<4; i++) {
             if (i < inputMaterials.length) {
                 inpBtn[i].setBackground(inputMaterials[i].getImage());
@@ -314,7 +306,7 @@ public class AdjustmentPanel extends Panel {
         }
 
         outputsCaption.visible = true;
-        outputsCaption.setText("Outputs:");
+        outputsCaption.setText(OUTPUTS);
         for (int i=0; i<4; i++) {
             if (i < outputMaterials.length) {
                 outBtn[i].setBackground(outputMaterials[i].getImage());
@@ -328,6 +320,7 @@ public class AdjustmentPanel extends Panel {
 
         changeoverButton.visible = true;
     }
+
 
     /**
      * Отображает информацию буфере
@@ -360,6 +353,7 @@ public class AdjustmentPanel extends Panel {
         outputsCaption.setText("");
         changeoverButton.visible = false;
     }
+
 
     /**
      * Отображает информацию о конвейере
@@ -421,6 +415,10 @@ public class AdjustmentPanel extends Panel {
         changeoverButton.visible = true;
     }
 
+    /**
+     * Отображает информаци об экспортере на склад
+     * @param exportBuffer
+     */
     private void showExporterInfo(ExportBuffer exportBuffer) {
         caption.setText("Exporter");
         centerButton.visible = false;

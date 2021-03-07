@@ -26,10 +26,11 @@ import com.axiom.operatio.scenes.production.controller.BlockAddMoveHandler;
 
 public class BlockButton extends Button {
 
-    protected ProductionScene scene;
-    protected BlocksPanel panel;
-    protected int tickSound;
-    protected int denySound;
+    private ProductionScene scene;
+    private BlocksPanel panel;
+    private int tickSound;
+    private int denySound;
+
 
     public BlockButton(ProductionScene scene, BlocksPanel panel, int id) {
         super();
@@ -38,36 +39,12 @@ public class BlockButton extends Button {
         setTextColor(Color.WHITE);
         setTextScale(1f);
 
-        int animation;
-
-        if (id==0) { // Если это конвейер
-            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-            animation = background.addAnimation(40, 47, 15,true);
-            background.setActiveAnimation(animation);
-            setText("$" + Conveyor.PRICE);
-        } else if (id==1) { // Если это буфер
-            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-            animation = background.addAnimation(72, 79, 8,true);
-            background.setActiveAnimation(animation);
-            setText("$" + Buffer.PRICE);
-        } else if (id>=2 && id<7) { // Если это машины 0-4
-            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-            int startFrame = (id - 2) * 8;
-            animation = background.addAnimation(startFrame, startFrame + 7, 8, true);
-            background.setActiveAnimation(animation);
-            setText(Utils.moneyFormat(Math.round(MachineType.getMachineType(id-2).getPrice())));
-        } else if (id==7) {
-            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-            background.setActiveFrame(64);
-        } else if (id==8) {
-            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-            background.setActiveFrame(65);
-            setText("$" + ImportBuffer.PRICE);
-        } else if (id==9) {
-            background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-            background.setActiveFrame(66);
-            setText("$" + ExportBuffer.PRICE);
-        }
+        if (id==0) initializeAnimationButton(40, 47, 15, Conveyor.PRICE);    // Если это конвейер
+        else if (id==1) initializeAnimationButton(72, 79, 8, Buffer.PRICE); // Если это буфер
+        else if (id>=2 && id<7) initializeMachineButton(id); // Если это машины 0-4
+        else if (id==7) initializeImageButton(64, 0);
+        else if (id==8) initializeImageButton(65, ImportBuffer.PRICE);
+        else if (id==9) initializeImageButton(66, ExportBuffer.PRICE);
 
         setColor(0.5f, 0.7f, 0.5f, 0.9f);
         setColor(Color.GRAY);
@@ -78,87 +55,95 @@ public class BlockButton extends Button {
         denySound = SoundRenderer.loadSound(R.raw.deny_snd);
     }
 
+
+    private void initializeMachineButton(int id) {
+        background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+        int startFrame = (id - 2) * 8;
+        int animation = background.addAnimation(startFrame, startFrame + 7, 8, true);
+        background.setActiveAnimation(animation);
+        setText(Utils.moneyFormat(Math.round(MachineType.getMachineType(id-2).getPrice())));
+    }
+
+
+    private void initializeImageButton(int activeFrame, int price) {
+        background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+        background.setActiveFrame(activeFrame);
+        if (price > 0) setText("$" + price); else setText("");
+    }
+
+
+    private void initializeAnimationButton(int startFrame, int stopFrame, int fps, int price) {
+        background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+        int animation = background.addAnimation(startFrame, stopFrame, fps,true);
+        background.setActiveAnimation(animation);
+        setText("$" + price);
+    }
+
+
     @Override
     public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
         BlockAddMoveHandler moveHandler = scene.getInputHandler().getBlockAddMoveHandler();
-
         int action = event.getActionMasked();
-
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                scene.getInputHandler().invalidateAllActions();
-                ProductionSceneUI.getModePanel().untoggleButtons();
-                Block block = createBlock(scene.getProduction(), getTag());
-                if (block!=null) {
-                    panel.toggledButton = getTag();
-                    double cash = scene.getProduction().getCashBalance();
-                    if (cash - block.getPrice() >= 0) {
-                        moveHandler.startAction(block, worldX, worldY);
-                        SoundRenderer.playSound(tickSound);
-                    } else {
-                        SoundRenderer.playSound(denySound);
-                    }
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
+                actionDown(worldX,worldY,moveHandler);
                 break;
             case MotionEvent.ACTION_UP:
-                panel.toggledButton = "";
-                scene.getProduction().unselectBlock();
-                moveHandler.invalidateAction();
+                actionUp(moveHandler);
                 break;
         }
-
         return true;
-
     }
 
+
+    private void actionDown(float worldX, float worldY, BlockAddMoveHandler moveHandler) {
+        scene.getInputHandler().invalidateAllActions();
+        ProductionSceneUI.getModePanel().untoggleButtons();
+        Block block = createBlock(scene.getProduction(), getTag());
+        if (block!=null) {
+            panel.setToggledButton(getTag());
+            double cash = scene.getProduction().getCashBalance();
+            if (cash - block.getPrice() >= 0) {
+                moveHandler.startAction(block, worldX, worldY);
+                SoundRenderer.playSound(tickSound);
+            } else {
+                SoundRenderer.playSound(denySound);
+            }
+        }
+    }
+
+
+    private void actionUp(BlockAddMoveHandler moveHandler) {
+        panel.setToggledButton("");
+        scene.getProduction().unselectBlock();
+        moveHandler.invalidateAction();
+    }
 
 
     protected Block createBlock(Production production, String toggled) {
         Block block = null;
-        MachineType mt;
         int choice = Integer.parseInt(toggled);
         switch (choice) {
-            case 0: // Конвейер
-                block = new Conveyor(production, Block.LEFT, Block.RIGHT);
-                break;
-            case 1:
-                block = new Buffer(production, 100);
-                break;
-            case 2:
-                mt = MachineType.getMachineType(0);
-                block = new Machine(production, mt, mt.getOperations()[0], Machine.LEFT, Machine.RIGHT);
-                break;
-            case 3:
-                mt = MachineType.getMachineType(1);
-                block = new Machine(production, mt, mt.getOperations()[0], Machine.LEFT, Machine.RIGHT);
-                break;
-            case 4:
-                mt = MachineType.getMachineType(2);
-                block = new Machine(production, mt, mt.getOperations()[0], Machine.LEFT, Machine.RIGHT);
-                break;
-            case 5:
-                mt = MachineType.getMachineType(3);
-                block = new Machine(production, mt, mt.getOperations()[0], Machine.LEFT, Machine.RIGHT);
-                break;
-            case 6:
-                mt = MachineType.getMachineType(4);
-                block = new Machine(production, mt, mt.getOperations()[0], Machine.LEFT, Machine.RIGHT);
-                break;
-            case 7:
-                break;
-            case 8:
-                block = new ImportBuffer(production, Material.getMaterial(0));
-                break;
-            case 9:
-                block = new ExportBuffer(production);
-                break;
+            case 0: block = new Conveyor(production, Block.LEFT, Block.RIGHT); break;
+            case 1: block = new Buffer(production, 100); break;
+            case 2: block = createMachine(production, 0); break;
+            case 3: block = createMachine(production, 1); break;
+            case 4: block = createMachine(production, 2); break;
+            case 5: block = createMachine(production, 3); break;
+            case 6: block = createMachine(production, 4); break;
+            case 7: break;
+            case 8: block = new ImportBuffer(production, Material.getMaterial(0)); break;
+            case 9: block = new ExportBuffer(production); break;
         }
-
         return block;
-
     }
+
+
+    private Machine createMachine(Production production, int machineType) {
+        MachineType mt = MachineType.getMachineType(machineType);
+        return new Machine(production, mt, mt.getOperations()[0], Machine.LEFT, Machine.RIGHT);
+    }
+
 
     @Override
     public void draw(Camera camera) {

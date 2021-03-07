@@ -23,16 +23,16 @@ import java.util.ArrayList;
 public class ModePanel extends Panel {
 
     public final int panelColor = 0xCC505050;
-    protected ProductionScene productionScene;
-    protected int tickSound;
-    protected String toggledButton;
+    private ProductionScene productionScene;
+    private int tickSound;
+    private String toggledButton;
 
     protected ClickListener listener = new ClickListener() {
         @Override
         public void onClick(Widget w) {
 
-            if (ProductionSceneUI.blocksPanel.getToggledButton()!=null) {
-                ProductionSceneUI.blocksPanel.untoggleButtons();
+            if (ProductionSceneUI.getBlocksPanel().getToggledButton()!=null) {
+                ProductionSceneUI.getBlocksPanel().untoggleButtons();
             }
 
             SoundRenderer.playSound(tickSound);
