@@ -1,20 +1,15 @@
 package com.axiom.operatio.scenes.production.view;
 
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.util.Log;
 
 import com.axiom.atom.R;
-import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
-import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.model.gameplay.Utils;
 import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.scenes.common.ScenesPanel;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
 
@@ -26,7 +21,9 @@ public class ProductionSceneUI {
     protected static BlocksPanel blocksPanel;
     protected static ModePanel modePanel;
     protected static AdjustmentPanel adjustmentPanel;
-    protected static Button balance;
+
+    protected static ScenesPanel scenesPanel;
+
     protected static int tickSound;
 
     public static void setPausedButtonState(boolean paused) {
@@ -64,42 +61,6 @@ public class ProductionSceneUI {
             }
         };
 
-        ClickListener exitListener = new ClickListener() {
-            @Override
-            public void onClick(Widget w) {
-                if (w.getTag().equals("Menu")) {
-                    SoundRenderer.playSound(tickSound);
-                    productionScene.getInputHandler().invalidateAllActions();
-                    productionScene.pause();
-                    SceneManager.getInstance().setActiveScene("Menu");
-                } else if (w.getTag().equals("Inventory")) {
-                    productionScene.getInputHandler().invalidateAllActions();
-                    SoundRenderer.playSound(tickSound);
-                    SceneManager.getInstance().setActiveScene("Inventory");
-                } else if (w.getTag().equals("Finance")) {
-                    productionScene.getInputHandler().invalidateAllActions();
-                    SoundRenderer.playSound(tickSound);
-                    SceneManager.getInstance().setActiveScene("Finance");
-                }
-            }
-        };
-
-        Button exitButton = new Button("Menu");
-        exitButton.setTag("Menu");
-        exitButton.setTextColor(1,1,1,1);
-        exitButton.setLocalBounds(0,960,340,100);
-        exitButton.setColor(0.8f, 0.5f, 0.5f, 0.9f);
-        exitButton.setClickListener(exitListener);
-        widget.addChild(exitButton);
-
-        Button inventoryButton = new Button("Inventory");
-        inventoryButton.setTag("Inventory");
-        inventoryButton.setTextColor(1,1,1,1);
-        inventoryButton.setLocalBounds(Camera.WIDTH - 375,960,375,100);
-        inventoryButton.setColor(0.8f, 0.5f, 0.5f, 0.9f);
-        inventoryButton.setClickListener(exitListener);
-        widget.addChild(inventoryButton);
-
         blocksPanel = new BlocksPanel(scene);
         widget.addChild(blocksPanel);
 
@@ -119,14 +80,9 @@ public class ProductionSceneUI {
         setPausedButtonState(true);
         widget.addChild(pauseButton);
 
-        balance = new Button(Utils.moneyFormat(production.getCashBalance()));
-        balance.setTag("Finance");
-        balance.setColor(0xCC505050);
-        balance.setTextColor(Color.WHITE);
-        balance.setTextScale(1.5f);
-        balance.setClickListener(exitListener);
-        balance.setLocalBounds(Camera.WIDTH/2-300, 940, 600, 140);
-        widget.addChild(balance);
+        scenesPanel = new ScenesPanel(production);
+        widget.addChild(scenesPanel);
+
     }
 
     public static BlocksPanel getBlocksPanel() {
@@ -139,5 +95,5 @@ public class ProductionSceneUI {
 
     public static AdjustmentPanel getAdjustmentPanel() { return adjustmentPanel; }
 
-    public static Button getBalance() { return balance; }
+//    public static Button getBalance() { return balance; }
 }

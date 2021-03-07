@@ -1,4 +1,4 @@
-package com.axiom.operatio.scenes.finance;
+package com.axiom.operatio.scenes.report;
 
 import android.view.MotionEvent;
 
@@ -14,23 +14,28 @@ import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.scenes.common.ScenesPanel;
+import com.axiom.operatio.scenes.production.ProductionScene;
 
-public class FinanceScene extends GameScene {
+public class ReportScene extends GameScene {
+
+    public static final String SCENE_NAME = "Report";
 
     private boolean initialized = false;
     private Production production;
+    private ScenesPanel scenesPanel;
     private ReportPanel reportPanel;
     private Sprite background;
     private int tickSound;
     private long lastCycle;
 
-    public FinanceScene(Production production) {
+    public ReportScene(Production production) {
         this.production = production;
     }
 
     @Override
     public String getSceneName() {
-        return "Finance";
+        return SCENE_NAME;
     }
 
     @Override
@@ -91,23 +96,10 @@ public class FinanceScene extends GameScene {
         background = new Sprite(SceneManager.getResources(), R.drawable.background);
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
 
-        ClickListener exitListener = new ClickListener() {
-            @Override
-            public void onClick(Widget w) {
-                SoundRenderer.playSound(tickSound);
-                SceneManager.getInstance().setActiveScene("Production");
-            }
-        };
-
         Widget widget = getSceneWidget();
 
-        Button exitButton = new Button("Production");
-        exitButton.setTextColor(1,1,1,1);
-        exitButton.setTextScale(1.5f);
-        exitButton.setLocalBounds(1600,965,300,100);
-        exitButton.setColor(0.8f, 0.5f, 0.5f, 0.9f);
-        exitButton.setClickListener(exitListener);
-        widget.addChild(exitButton);
+        scenesPanel = new ScenesPanel(production);
+        widget.addChild(scenesPanel);
 
         reportPanel = new ReportPanel(production);
         widget.addChild(reportPanel);

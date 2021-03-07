@@ -17,19 +17,22 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.gameplay.Utils;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.scenes.common.ScenesPanel;
+import com.axiom.operatio.scenes.production.ProductionScene;
 
 /**
  * Сцена склада
  */
 public class InventoryScene extends GameScene {
 
+    public static final String SCENE_NAME = "Inventory";
+
     protected boolean initialized = false;
     protected Production production;
+    protected ScenesPanel scenesPanel;
     protected MaterialsPanel materialsPanel;
     protected TechnologyPanel technologyPanel;
     protected MarketPanel marketPanel;
-    protected Button balance;
-    protected long currentBalance, lastBalance;
     protected int currentLevel = -1;
     protected static Sprite background;
     protected static int tickSound;
@@ -41,7 +44,7 @@ public class InventoryScene extends GameScene {
 
     @Override
     public String getSceneName() {
-        return "Inventory";
+        return SCENE_NAME;
     }
 
     @Override
@@ -70,14 +73,6 @@ public class InventoryScene extends GameScene {
 
         market.process();
         production.process();
-
-        currentBalance = (long) production.getCashBalance();
-
-        // ели изменился баланс
-        if (lastBalance != currentBalance) {
-            balance.setText(Utils.moneyFormat(currentBalance));
-            lastBalance = currentBalance;
-        }
 
         // если прошла секунда времени
         if (now - lastTime > 1000) {
@@ -114,7 +109,7 @@ public class InventoryScene extends GameScene {
         float y = camera.getMinY();
         GraphicsRender.setZOrder(2000);
         GraphicsRender.setColor(1,1,1,1);
-        GraphicsRender.drawText(fps, x + 600,y + 20, 2f);
+        GraphicsRender.drawText(fps, x + 750,y + 20, 1.2f);
     }
 
     @Override
@@ -128,23 +123,7 @@ public class InventoryScene extends GameScene {
         background = new Sprite(SceneManager.getResources(), R.drawable.background);
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
 
-        ClickListener exitListener = new ClickListener() {
-            @Override
-            public void onClick(Widget w) {
-                SoundRenderer.playSound(tickSound);
-                SceneManager.getInstance().setActiveScene("Production");
-            }
-        };
-
         Widget widget = getSceneWidget();
-
-        Button exitButton = new Button("Production");
-        exitButton.setTextColor(1,1,1,1);
-        exitButton.setTextScale(1.5f);
-        exitButton.setLocalBounds(1600,965,300,100);
-        exitButton.setColor(0.8f, 0.5f, 0.5f, 0.9f);
-        exitButton.setClickListener(exitListener);
-        widget.addChild(exitButton);
 
         materialsPanel = new MaterialsPanel(production,this);
         widget.addChild(materialsPanel);
@@ -152,18 +131,13 @@ public class InventoryScene extends GameScene {
         technologyPanel = new TechnologyPanel(materialsPanel);
         widget.addChild(technologyPanel);
 
-        balance = new Button(Utils.moneyFormat(production.getCashBalance()));
-        balance.setColor(0xCC505050);
-        balance.setTextColor(Color.WHITE);
-        balance.setTextScale(1.5f);
-        balance.setLocalBounds(Camera.WIDTH/2-150, 1000, 300, 80);
-        widget.addChild(balance);
-
         marketPanel = new MarketPanel(
-                balance, materialsPanel, production.getMarket(),
+                materialsPanel, production.getMarket(),
                 production, production.getInventory());
         widget.addChild(marketPanel);
 
+        scenesPanel = new ScenesPanel(production);
+        widget.addChild(scenesPanel);
 
         initialized = true;
 

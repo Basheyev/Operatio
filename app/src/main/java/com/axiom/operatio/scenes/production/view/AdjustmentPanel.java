@@ -209,21 +209,19 @@ public class AdjustmentPanel extends Panel {
 
     @Override
     public void draw(Camera camera) {
-        super.draw(camera);
         long currentCycle = production.getCurrentCycle();
         if (currentCycle > lastProductionCycle) {
-            if (choosenBlock!=null) {
-                showBlockInfo(choosenBlock, false);
-            }
+            if (choosenBlock!=null) showBlockInfo(choosenBlock);
             lastProductionCycle = currentCycle;
         }
+        if (choosenBlock!=null) super.draw(camera);
     }
 
     /**
      * Отображение информации о блоке на панели
      * @param block
      */
-    public void showBlockInfo(Block block, boolean playSound) {
+    public void showBlockInfo(Block block) {
         boolean blockChanged = false;
 
         if (block==null) return;

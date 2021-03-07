@@ -80,7 +80,7 @@ public class BlockAddMoveHandler {
                                 production.decreaseCashBalance(expenseType, dragBlock.getPrice());
                             }
                             dragBlock.adjustFlowDirection();
-                            opsPanel.showBlockInfo(dragBlock, false);
+                            opsPanel.showBlockInfo(dragBlock);
                             production.selectBlock(column, row);
                             scene.getProductionRenderer().getParticles().generateParticles();
                         } else {

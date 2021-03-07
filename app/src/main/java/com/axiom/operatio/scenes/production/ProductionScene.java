@@ -7,13 +7,9 @@ import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.input.ScaleEvent;
-import com.axiom.atom.engine.ui.widgets.Button;
-import com.axiom.operatio.model.gameplay.Level;
-import com.axiom.operatio.model.gameplay.LevelFactory;
-import com.axiom.operatio.model.gameplay.Utils;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.Production;
-import com.axiom.operatio.scenes.finance.FinanceScene;
+import com.axiom.operatio.scenes.report.ReportScene;
 import com.axiom.operatio.scenes.production.view.BlocksPanel;
 import com.axiom.operatio.scenes.production.controller.InputHandler;
 import com.axiom.operatio.scenes.production.view.ModePanel;
@@ -26,6 +22,8 @@ import org.json.JSONObject;
 
 // todo Снизу экрана расположить информацию о деньгах и финотчета, а сверху сообщения и подсказки
 public class ProductionScene extends GameScene {
+
+    public static final String SCENE_NAME = "Production";
 
     private Production production;
     private InputHandler inputHandler;
@@ -44,7 +42,7 @@ public class ProductionScene extends GameScene {
 
 
     public ProductionScene() {
-        production = new Production(25,20);
+        production = new Production(8,6);
     }
 
     public ProductionScene(JSONObject jsonProduction) throws JSONException {
@@ -53,14 +51,14 @@ public class ProductionScene extends GameScene {
 
     @Override
     public String getSceneName() {
-        return "Production";
+        return SCENE_NAME;
     }
 
     @Override
     public void startScene() {
         if (!initialized) {
             sceneManager.addGameScene(new InventoryScene(production));
-            sceneManager.addGameScene(new FinanceScene(production));
+            sceneManager.addGameScene(new ReportScene(production));
             productionRenderer = new ProductionRenderer(production, initialCellWidth, initialCellHeight);
             inputHandler = new InputHandler(this, production, productionRenderer);
             ProductionSceneUI.buildUI(this, getResources(), getSceneWidget(), production);
@@ -68,7 +66,7 @@ public class ProductionScene extends GameScene {
             modePanel = ProductionSceneUI.getModePanel();
             adjustmentPanel = ProductionSceneUI.getAdjustmentPanel();
             if (production.isBlockSelected()) {
-                adjustmentPanel.showBlockInfo(production.getSelectedBlock(), false);
+                adjustmentPanel.showBlockInfo(production.getSelectedBlock());
             }
             initialized = true;
         }
@@ -102,13 +100,15 @@ public class ProductionScene extends GameScene {
 
         double currentCashBalance = production.getCashBalance();
         if ((long)lastCashBalance != (long)currentCashBalance) {
+            // fixme публиковать информаци на главной панели
+            /**
             Button balance = ProductionSceneUI.getBalance();
             LevelFactory lm = LevelFactory.getInstance();
             Level level = lm.getLevel(production.getLevel());
             String goal = level.getDescription();
             // todo здесь может съедаться память если не использовать StringBuffer (если только уже это компилятор не недлает)
             balance.setText("Level " + production.getLevel() + " Day " + (production.getCurrentCycle() / 60) + " " +
-                    Utils.moneyFormat(Math.round(production.getCashBalance())) + "\n" + goal);
+                    Utils.moneyFormat(Math.round(production.getCashBalance())) + "\n" + goal);**/
             lastCashBalance = currentCashBalance;
         }
 
@@ -139,7 +139,7 @@ public class ProductionScene extends GameScene {
         float y = camera.getMinY();
         GraphicsRender.setZOrder(2000);
         GraphicsRender.setColor(0,0,0,1);
-        GraphicsRender.drawText(fps, x + 600,y + 20, 2f);
+        GraphicsRender.drawText(fps, x + 750,y + 20, 1.2f);
     }
 
     @Override

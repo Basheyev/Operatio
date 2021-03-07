@@ -63,7 +63,7 @@ public class CameraMoveHandler {
                                 production.unselectBlock();
                                 opsPanel.hideBlockInfo();
                             } else {
-                                opsPanel.showBlockInfo(block, true);
+                                opsPanel.showBlockInfo(block);
                                 production.selectBlock(column, row);
                             }
                         }

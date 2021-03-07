@@ -26,7 +26,7 @@ public class MarketPanel extends Panel {
 
     private Production production;
     private Inventory inventory;
-    private Button cashBalance;
+    //private Button cashBalance;
     private CheckBox autoBuyCB, autoSellCB;
 
     private Caption caption;
@@ -68,13 +68,11 @@ public class MarketPanel extends Panel {
                 quantityButton.setText("" + quantity);
             } else if (w.getTag().equals("BUY")) {
                 market.buyOrder(inventory, currentCommodity, quantity);
-                cashBalance.setText(Utils.moneyFormat(production.getCashBalance()));
                 materialsPanel.updateData();
                 SoundRenderer.playSound(tickSound);
               //  SoundRenderer.playSound(cashSound);
             } else if (w.getTag().equals("SELL")) {
                 market.sellOrder(inventory, currentCommodity, quantity);
-                cashBalance.setText(Utils.moneyFormat(production.getCashBalance()));
                 materialsPanel.updateData();
                 SoundRenderer.playSound(tickSound);
               //  SoundRenderer.playSound(cashSound);
@@ -90,13 +88,13 @@ public class MarketPanel extends Panel {
     };
 
 
-    public MarketPanel(Button cashBalance, MaterialsPanel materialsPanel, Market market, Production production, Inventory inventory) {
+    public MarketPanel(MaterialsPanel materialsPanel, Market market, Production production, Inventory inventory) {
         super();
         this.market = market;
         this.production = production;
         this.inventory = inventory;
         this.materialsPanel = materialsPanel;
-        this.cashBalance = cashBalance;
+
         values = new double[Market.HISTORY_LENGTH];
         counter = 0;
         commodityName = Material.getMaterial(currentCommodity).getName();

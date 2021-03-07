@@ -47,7 +47,7 @@ public class BlockRotateHandler {
                     if (block!=null) {
                         block.rotateFlowDirection();
                         AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
-                        opsPanel.showBlockInfo(block, false);
+                        opsPanel.showBlockInfo(block);
                         production.selectBlock(column, row);
                     }
                 }

@@ -59,7 +59,7 @@ public class ProductionRenderer {
         for (int row=minRow; row <= maxRow; row++) {
             for (int col=minCol; col <= maxCol; col++) {
 
-                if (col < 0 || col > columns || row < 0 || row > rows) {
+                if (col < 0 || col >= columns || row < 0 || row >= rows) {
                     tileBlocked.draw(camera,
                             col * cellWidth,
                             row * cellHeight,

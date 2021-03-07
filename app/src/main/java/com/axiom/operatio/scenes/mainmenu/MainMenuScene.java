@@ -15,13 +15,14 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 
 public class MainMenuScene extends GameScene {
 
-    private Line line;
+    public static final String SCENE_NAME = "Menu";
+
     private Sprite background;
     private MenuPanel menuPanel;
 
     @Override
     public String getSceneName() {
-        return "Menu";
+        return SCENE_NAME;
     }
 
     @Override
@@ -31,7 +32,6 @@ public class MainMenuScene extends GameScene {
             Widget widget = getSceneWidget();
             menuPanel = new MenuPanel();
             widget.addChild(menuPanel);
-            line = new Line();
         }
         //Camera.getInstance().lookAt(Camera.WIDTH/2, Camera.HEIGHT/2);
     }
