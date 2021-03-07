@@ -37,7 +37,7 @@ public class BlocksPanel extends Panel {
     public BlocksPanel(ProductionScene scene) {
         super();
         this.productionScene = scene;
-        setLocalBounds(0,200,340,700);
+        setLocalBounds(0,160,340,700);
         setColor(panelColor);
         buildButtons();
     }

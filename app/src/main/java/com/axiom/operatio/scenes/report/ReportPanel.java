@@ -6,6 +6,8 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.operatio.model.gameplay.Ledger;
+import com.axiom.operatio.model.gameplay.Level;
+import com.axiom.operatio.model.gameplay.LevelFactory;
 import com.axiom.operatio.model.gameplay.Utils;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Material;
@@ -36,9 +38,9 @@ public class ReportPanel extends Panel {
         setColor(0xCC505050);
 
         panelCaption = new Caption("Operations daily report");
-        panelCaption.setTextScale(1.5f);
+        panelCaption.setTextScale(1.7f);
         panelCaption.setTextColor(WHITE);
-        panelCaption.setLocalBounds(30, getHeight() - 90, 300, 100);
+        panelCaption.setLocalBounds(30, getHeight() - 100, 300, 100);
         addChild(panelCaption);
 
         expenseCaption = new Caption("Purchase");
@@ -196,7 +198,15 @@ public class ReportPanel extends Panel {
                     + "\nInventory: " + Utils.moneyFormat(Math.round(production.getInventory().getValuation()))
                     + "\n\nCapitalization: " + Utils.moneyFormat(Math.round(ledger.getCapitalization()));
 
-            panelCaption.setText("Operations daily report - " + production.getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES + " day");
+
+            LevelFactory lm = LevelFactory.getInstance();
+            Level level = lm.getLevel(production.getLevel());
+            // todo здесь может съедаться память если не использовать StringBuffer (если только уже это компилятор не недлает)
+            String goal = "Level " + production.getLevel() + " - " + level.getDescription();
+            panelCaption.setText(goal);
+
+
+
             incomeCaption.setText(revenueText);
             expenseCaption.setText(expensesText);
             reportCaption.setText(report);

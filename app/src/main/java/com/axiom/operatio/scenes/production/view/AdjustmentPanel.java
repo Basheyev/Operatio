@@ -107,7 +107,7 @@ public class AdjustmentPanel extends Panel {
         super();
         this.production = production;
         this.productionScene = scene;
-        setLocalBounds(Camera.WIDTH - 375,200,375, 700);
+        setLocalBounds(Camera.WIDTH - 375,160,375, 700);
         setColor(panelColor);
         inpBtn = new ItemWidget[4];
         outBtn = new ItemWidget[4];

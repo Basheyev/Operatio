@@ -36,6 +36,7 @@ public class ScenesPanel extends Panel {
 
     private Caption timeCaption;
     private Caption balanceCaption;
+    private Button coinButton;
 
     private Button menuButton;
     private Button pauseButton;
@@ -78,6 +79,11 @@ public class ScenesPanel extends Panel {
         balanceCaption.setTextColor(Color.WHITE);
         balanceCaption.setTextScale(1.5f);
         addChild(balanceCaption);
+
+        coinButton = buildButton(15, "Coin");
+        coinButton.setLocalBounds(1410, 8, 96, 96);
+        coinButton.setColor(0,0,0, 0);
+        addChild(coinButton);
 
         menuButton = buildButton(0, MENU);
         menuButton.setLocation(24,0);
