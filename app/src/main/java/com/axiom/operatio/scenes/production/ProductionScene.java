@@ -20,7 +20,6 @@ import com.axiom.operatio.scenes.inventory.InventoryScene;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-// todo Снизу экрана расположить информацию о деньгах и финотчета, а сверху сообщения и подсказки
 public class ProductionScene extends GameScene {
 
     public static final String SCENE_NAME = "Production";
@@ -76,17 +75,9 @@ public class ProductionScene extends GameScene {
 
     }
 
-    public void pause() {
-        if (!production.isPaused()) {
-            production.setPaused(true);
-            ProductionSceneUI.setPausedButtonState(true);
-        }
-        inputHandler.invalidateAllActions();
-    }
 
     @Override
-    public void changeScene() {
-    }
+    public void changeScene() { }
 
     @Override
     public void disposeScene() {

@@ -53,7 +53,7 @@ public class ModePanel extends Panel {
 
     public ModePanel() {
         super();
-        setLocalBounds(0,0,340,140);
+        setLocalBounds(780,0,340,140);
         setColor(panelColor);
         buildButtons();
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);

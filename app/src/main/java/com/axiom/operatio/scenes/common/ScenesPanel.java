@@ -37,10 +37,8 @@ public class ScenesPanel extends Panel {
     private Caption balanceCaption;
 
     private Button menuButton;
-    private Button optionsButton;
+    private Button pauseButton;
 
-    private StringBuffer timeString;
-    private StringBuffer balanceString;
     private double lastBalance = 0;
     private long lastDay = 0;
 
@@ -52,7 +50,7 @@ public class ScenesPanel extends Panel {
     private static final String PRODUCTION = ProductionScene.SCENE_NAME;
     private static final String TECHNOLOGY = "technology";
     private static final String REPORT = ReportScene.SCENE_NAME;
-    private static final String OPTIONS = "options";
+    private static final String PAUSE = "pause";
 
 
     public ScenesPanel(Production production) {
@@ -72,14 +70,12 @@ public class ScenesPanel extends Panel {
         timeCaption.setLocalBounds(384, 20, 256, 80);
         timeCaption.setTextColor(Color.WHITE);
         timeCaption.setTextScale(1.5f);
-        timeString = new StringBuffer(64);
         addChild(timeCaption);
 
         balanceCaption = new Caption("balance");
         balanceCaption.setLocalBounds(1500, 20, 256, 80);
         balanceCaption.setTextColor(Color.WHITE);
         balanceCaption.setTextScale(1.5f);
-        balanceString = new StringBuffer(64);
         addChild(balanceCaption);
 
         menuButton = buildButton(0, MENU);
@@ -107,10 +103,10 @@ public class ScenesPanel extends Panel {
         reportButton.setClickListener(listener);
         addChild(reportButton);
 
-        optionsButton = buildButton(1, OPTIONS);
-        optionsButton.setLocation(1792, 0);
-        optionsButton.setClickListener(listener);
-        addChild(optionsButton);
+        pauseButton = buildButton(2, PAUSE);
+        pauseButton.setLocation(1792, 0);
+        pauseButton.setClickListener(listener);
+        addChild(pauseButton);
 
     }
 
@@ -129,17 +125,14 @@ public class ScenesPanel extends Panel {
 
     @Override
     public void draw(Camera camera) {
-
         double currentBalance = Math.round(production.getCashBalance());
         long currentDay = production.getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES;
-
         if (currentBalance != lastBalance || currentDay != lastDay) {
             timeCaption.setText("Day: " + currentDay);
             balanceCaption.setText(Utils.moneyFormat(currentBalance));
             lastBalance = currentBalance;
             lastDay = currentDay;
         }
-
         highlightButton();
         super.draw(camera);
     }
@@ -152,18 +145,28 @@ public class ScenesPanel extends Panel {
             String tag = w.getTag();
 
             GameScene activeScene = SceneManager.getInstance().getActiveScene();
+            // Если выполнялось какое-то действие в производстве - отменяем
+            if (activeScene instanceof ProductionScene) {
+                ((ProductionScene) activeScene).getInputHandler().invalidateAllActions();
+            }
 
             if (tag.equals(MENU)) {
-                if (activeScene instanceof ProductionScene) {
-                    ((ProductionScene) activeScene).pause();
-                } else production.setPaused(true);
+                production.setPaused(true);
                 changeScene(MENU);
             }
             else if (tag.equals(INVENTORY)) changeScene(INVENTORY);
             else if (tag.equals(PRODUCTION)) changeScene(PRODUCTION);
             else if (tag.equals(TECHNOLOGY)) changeScene(TECHNOLOGY);
             else if (tag.equals(REPORT)) changeScene(REPORT);
-            else if (tag.equals(OPTIONS)) changeScene(OPTIONS);
+            else if (tag.equals(PAUSE)) {
+                if (production.isPaused()) {
+                    production.setPaused(false);
+                    setPausedButtonState(false);
+                } else {
+                    production.setPaused(true);
+                    setPausedButtonState(true);
+                }
+            }
         }
     };
 
@@ -172,8 +175,6 @@ public class ScenesPanel extends Panel {
         SceneManager sceneManager = SceneManager.getInstance();
         GameScene currentScene = sceneManager.getActiveScene();
         if (currentScene.getSceneName().equals(sceneName)) return;
-
-       // SoundRenderer.playSound(tickSound);
         sceneManager.setActiveScene(sceneName);
     }
 
@@ -191,6 +192,22 @@ public class ScenesPanel extends Panel {
         else if (currentScene.equals(PRODUCTION)) productionButton.setColor(Color.RED);
         else if (currentScene.equals(TECHNOLOGY)) technologyButton.setColor(Color.RED);
         else if (currentScene.equals(REPORT)) reportButton.setColor(Color.RED);
+
+        setPausedButtonState(production.isPaused());
+    }
+
+
+    public void setPausedButtonState(boolean paused) {
+        Sprite buttonSprite = pauseButton.getBackground();
+        if (paused) {
+            buttonSprite.setActiveFrame(3);
+            pauseButton.setTextColor(1,1,1,1);
+            pauseButton.setColor(1,0,0,1);
+        } else {
+            buttonSprite.setActiveFrame(2);
+            pauseButton.setTextColor(0,0,0,1);
+            pauseButton.setColor(0,1,0,1);
+        }
     }
 
 }

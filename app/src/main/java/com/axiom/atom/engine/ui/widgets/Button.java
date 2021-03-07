@@ -70,6 +70,8 @@ public class Button extends Widget {
         this.background = background;
     }
 
+    public Sprite getBackground() { return this.background; }
+
     public void setTextColor(float r, float g, float b, float a) {
         textColor[0] = r;
         textColor[1] = g;

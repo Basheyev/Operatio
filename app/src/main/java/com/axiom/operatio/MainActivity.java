@@ -47,9 +47,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         SceneManager sceneManager = SceneManager.getInstance();
         GameScene scene = sceneManager.getActiveScene();
-        String sceneName = scene.getSceneName();
-        if (sceneName.equals("Production")) {
-            ((ProductionScene) scene).pause();
+        if (scene instanceof ProductionScene) {
+            ProductionScene ps = ((ProductionScene) scene);
+            ps.getInputHandler().invalidateAllActions();
+            ps.getProduction().setPaused(true);
+            // fixme ставить на паузу даже если мы в других сценах
         }
         super.onPause();
         gameView.onPause();
