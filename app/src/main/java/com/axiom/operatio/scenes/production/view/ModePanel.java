@@ -75,8 +75,8 @@ public class ModePanel extends Panel {
         Sprite sprite;
 
         for (int i =0; i<3; i++) {
-            sprite = new Sprite(SceneManager.getResources(), R.drawable.mode_buttons, 4, 1);
-            sprite.setActiveFrame(i);
+            sprite = new Sprite(SceneManager.getResources(), R.drawable.ui_icons, 4, 4);
+            sprite.setActiveFrame(8 + i);
             button = new Button(sprite);
             button.setTag(""+i);
             button.setLocalBounds(25 + i * 100, 20, 90, 100);
