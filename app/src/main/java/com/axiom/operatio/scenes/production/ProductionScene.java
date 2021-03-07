@@ -103,6 +103,7 @@ public class ProductionScene extends GameScene {
             lastCashBalance = currentCashBalance;
         }
 
+        // todo эту проверку можно делать реже
         // Проверить не сменился ли уровень (обновить доступ к кнопкам)
         if (currentLevel != production.getLevel()) {
             currentLevel = production.getLevel();

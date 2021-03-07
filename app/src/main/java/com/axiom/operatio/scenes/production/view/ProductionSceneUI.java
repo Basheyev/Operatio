@@ -32,13 +32,13 @@ public class ProductionSceneUI {
         productionScene = scene;
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
 
-        blocksPanel = new BlocksPanel(scene);
+        blocksPanel = new BlocksPanel(productionScene);
         widget.addChild(blocksPanel);
 
-        modePanel = new ModePanel();
+        modePanel = new ModePanel(productionScene);
         widget.addChild(modePanel);
 
-        adjustmentPanel = new AdjustmentPanel(production);
+        adjustmentPanel = new AdjustmentPanel(production, productionScene);
         adjustmentPanel.hideBlockInfo();
         widget.addChild(adjustmentPanel);
 

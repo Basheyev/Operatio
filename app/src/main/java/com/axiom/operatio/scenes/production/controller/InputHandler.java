@@ -22,16 +22,10 @@ public class InputHandler {
     private BlockDeleteHandler blockDeleteHandler;
     private BlockAddMoveHandler blockAddMoveHandler;
     private BlockRotateHandler blockRotateHandler;
-
-
     private ProductionScene scene;
-    private Production production;
-    private ProductionRenderer productionRenderer;
 
     
     public InputHandler(ProductionScene scene, Production production, ProductionRenderer productionRenderer) {
-        this.production = production;
-        this.productionRenderer = productionRenderer;
         this.scene = scene;
         cameraMoveHandler = new CameraMoveHandler(this, scene, production, productionRenderer);
         cameraScaleHandler = new CameraScaleHandler(this, scene, production, productionRenderer);
@@ -99,7 +93,6 @@ public class InputHandler {
     public CameraScaleHandler getCameraScaleHandler() {
         return cameraScaleHandler;
     }
-
 
     public BlockAddMoveHandler getBlockAddMoveHandler() {
         return blockAddMoveHandler;

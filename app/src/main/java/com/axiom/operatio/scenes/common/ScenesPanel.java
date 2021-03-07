@@ -1,6 +1,7 @@
 package com.axiom.operatio.scenes.common;
 
 import android.graphics.Color;
+import android.view.MotionEvent;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameScene;
@@ -79,32 +80,32 @@ public class ScenesPanel extends Panel {
         addChild(balanceCaption);
 
         menuButton = buildButton(0, MENU);
-        menuButton.setLocation(0,0);
+        menuButton.setLocation(24,0);
         menuButton.setClickListener(listener);
         addChild(menuButton);
 
         inventoryButton = buildButton(4, INVENTORY);
-        inventoryButton.setLocation(718, 0);
+        inventoryButton.setLocation(680, 0);
         inventoryButton.setClickListener(listener);
         addChild(inventoryButton);
 
         productionButton = buildButton(5, PRODUCTION);
-        productionButton.setLocation(862, 0);
+        productionButton.setLocation(824, 0);
         productionButton.setClickListener(listener);
         addChild(productionButton);
 
         technologyButton = buildButton(6, TECHNOLOGY);
-        technologyButton.setLocation(1006, 0);
+        technologyButton.setLocation(968, 0);
         technologyButton.setClickListener(listener);
         addChild(technologyButton);
 
         reportButton = buildButton(7, REPORT);
-        reportButton.setLocation(1150, 0);
+        reportButton.setLocation(1112, 0);
         reportButton.setClickListener(listener);
         addChild(reportButton);
 
         pauseButton = buildButton(2, PAUSE);
-        pauseButton.setLocation(1792, 0);
+        pauseButton.setLocation(1768, 0);
         pauseButton.setClickListener(listener);
         addChild(pauseButton);
 
@@ -208,6 +209,19 @@ public class ScenesPanel extends Panel {
             pauseButton.setTextColor(0,0,0,1);
             pauseButton.setColor(0,1,0,1);
         }
+    }
+
+
+    @Override
+    public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
+        GameScene scene = SceneManager.getInstance().getActiveScene();
+        if (scene instanceof ProductionScene) {
+            ProductionScene productionScene = (ProductionScene) scene;
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                productionScene.getInputHandler().invalidateAllActionsButScale();
+            }
+        }
+        return super.onMotionEvent(event, worldX, worldY);
     }
 
 }

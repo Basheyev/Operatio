@@ -92,6 +92,7 @@ public class BlockAddMoveHandler {
                             production.setBlock(dragBlock, lastCol, lastRow);
                             production.selectBlock(lastCol, lastRow);
                         }
+                        invalidateAction();
                     }
                     // Если это было добавление то отжимаем кнопки
                     if (justCreatedBlock) {
@@ -103,7 +104,7 @@ public class BlockAddMoveHandler {
         }
     }
 
-    // Используется для добавления
+    // Используется для добавления нового блока
     public synchronized void startAction(Block block, float worldX, float worldY) {
         if (actionInProgress) return;
         justCreatedBlock = true; // Помечаем что это вновь созданные блок
@@ -125,5 +126,9 @@ public class BlockAddMoveHandler {
         }
         // Отменить действие
         actionInProgress = false;
+        // Отменить создание нового блока
+        ProductionSceneUI.getBlocksPanel().untoggleButtons();
+        // Убрать выделение блока
+        production.unselectBlock();
     }
 }

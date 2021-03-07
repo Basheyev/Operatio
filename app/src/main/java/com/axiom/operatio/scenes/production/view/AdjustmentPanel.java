@@ -1,6 +1,7 @@
 package com.axiom.operatio.scenes.production.view;
 
 import android.graphics.Color;
+import android.view.MotionEvent;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
@@ -20,15 +21,16 @@ import com.axiom.operatio.model.production.machine.Machine;
 import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
 import com.axiom.operatio.model.materials.Material;
+import com.axiom.operatio.scenes.production.ProductionScene;
 
 import static android.graphics.Color.DKGRAY;
 import static android.graphics.Color.GRAY;
 import static android.graphics.Color.WHITE;
 
-// TODO Добавить отображение информации перкрестка конвейера
 public class AdjustmentPanel extends Panel {
 
     protected Production production;
+    protected ProductionScene productionScene;
 
     public final int panelColor = 0xCC505050;
     protected Caption caption, inputsCaption, outputsCaption;
@@ -44,24 +46,7 @@ public class AdjustmentPanel extends Panel {
     private ItemWidget inpBtn[];
     private ItemWidget outBtn[];
     private int tickSound;
-    private boolean collapsed = false;
- /*   private int snd1, snd2, snd3, snd4, snd5;
-    private int sndConveyor, sndBuffer;*/
 
-
-    public static ClickListener panelListener = new ClickListener() {
-        @Override
-        public void onClick(Widget w) {
-            AdjustmentPanel panel = (AdjustmentPanel) w;
-            if (!panel.collapsed) {
-                panel.setLocation(Camera.WIDTH - 40,200);
-                panel.collapsed = true;
-            } else {
-                panel.setLocation(Camera.WIDTH - 375,200);
-                panel.collapsed = false;
-            }
-        }
-    };
 
     protected ClickListener clickListener = new ClickListener() {
         @Override
@@ -118,21 +103,20 @@ public class AdjustmentPanel extends Panel {
     };
 
 
-    public AdjustmentPanel(Production production) {
+    public AdjustmentPanel(Production production, ProductionScene scene) {
         super();
         this.production = production;
+        this.productionScene = scene;
         setLocalBounds(Camera.WIDTH - 375,200,375, 700);
         setColor(panelColor);
         inpBtn = new ItemWidget[4];
         outBtn = new ItemWidget[4];
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
         buildButtons();
-       // setClickListener(panelListener);
     }
 
 
     protected void buildButtons() {
-        Material m = Material.getMaterial(choosenOperationID);
 
         caption = new Caption("Block information");
         caption.setLocalBounds(40,599,300, 100);
@@ -215,6 +199,14 @@ public class AdjustmentPanel extends Panel {
             lastProductionCycle = currentCycle;
         }
         if (choosenBlock!=null) super.draw(camera);
+    }
+
+    @Override
+    public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
+        if (event.getAction()==MotionEvent.ACTION_UP) {
+            productionScene.getInputHandler().invalidateAllActionsButScale();
+        }
+        return super.onMotionEvent(event, worldX, worldY);
     }
 
     /**

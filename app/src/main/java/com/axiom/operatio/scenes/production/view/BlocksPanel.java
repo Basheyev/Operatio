@@ -1,6 +1,7 @@
 package com.axiom.operatio.scenes.production.view;
 
 import android.graphics.Color;
+import android.view.MotionEvent;
 
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Panel;
@@ -74,4 +75,11 @@ public class BlocksPanel extends Panel {
         return toggledButton;
     }
 
+    @Override
+    public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
+        if (event.getAction()==MotionEvent.ACTION_UP) {
+            productionScene.getInputHandler().invalidateAllActionsButScale();
+        }
+        return super.onMotionEvent(event, worldX, worldY);
+    }
 }

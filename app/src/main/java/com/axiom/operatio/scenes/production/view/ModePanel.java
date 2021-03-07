@@ -2,6 +2,7 @@ package com.axiom.operatio.scenes.production.view;
 
 import android.graphics.Color;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
@@ -12,12 +13,14 @@ import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
+import com.axiom.operatio.scenes.production.ProductionScene;
 
 import java.util.ArrayList;
 
 public class ModePanel extends Panel {
 
     public final int panelColor = 0xCC505050;
+    protected ProductionScene productionScene;
     protected int tickSound;
     protected String toggledButton;
 
@@ -51,8 +54,9 @@ public class ModePanel extends Panel {
     };
 
 
-    public ModePanel() {
+    public ModePanel(ProductionScene scene) {
         super();
+        this.productionScene = scene;
         setLocalBounds(780,0,340,140);
         setColor(panelColor);
         buildButtons();
@@ -87,4 +91,11 @@ public class ModePanel extends Panel {
         return toggledButton;
     }
 
+    @Override
+    public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
+        if (event.getAction()==MotionEvent.ACTION_UP) {
+            productionScene.getInputHandler().invalidateAllActionsButScale();
+        }
+        return super.onMotionEvent(event, worldX, worldY);
+    }
 }

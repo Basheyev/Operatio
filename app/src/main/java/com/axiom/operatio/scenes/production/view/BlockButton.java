@@ -86,11 +86,11 @@ public class BlockButton extends Button {
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                scene.getInputHandler().invalidateAllActions();
                 ProductionSceneUI.getModePanel().untoggleButtons();
-                panel.toggledButton = getTag();
                 Block block = createBlock(scene.getProduction(), getTag());
                 if (block!=null) {
-                    scene.getInputHandler().invalidateAllActions();
+                    panel.toggledButton = getTag();
                     double cash = scene.getProduction().getCashBalance();
                     if (cash - block.getPrice() >= 0) {
                         moveHandler.startAction(block, worldX, worldY);
