@@ -247,6 +247,7 @@ public abstract class Widget {
      * @return удалить ли событие, чтобы не передавать дальше (true - да, false - нет)
      */
     public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
+        if (!visible) return false;
         boolean eventHandeled = false;
         // Доставляем события дочерним виджетам
         Widget widget;

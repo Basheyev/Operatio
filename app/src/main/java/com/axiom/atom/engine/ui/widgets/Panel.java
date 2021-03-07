@@ -28,9 +28,4 @@ public class Panel extends Widget {
         super.draw(camera);
     }
 
-    @Override
-    public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
-        super.onMotionEvent(event, worldX, worldY);
-        return true; // если движение на панели движение - событие дальше не передаем
-    }
 }

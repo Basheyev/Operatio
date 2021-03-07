@@ -216,7 +216,10 @@ public class AdjustmentPanel extends Panel {
     public void showBlockInfo(Block block) {
         boolean blockChanged = false;
 
-        if (block==null) return;
+        if (block==null) {
+            visible = false;
+            return;
+        } else visible = true;
 
         if (block!=choosenBlock) {
             blockChanged = true;
@@ -261,6 +264,8 @@ public class AdjustmentPanel extends Panel {
             inpBtn[i].visible = false;
             outBtn[i].visible = false;
         }
+
+        visible = false;
     }
 
     /**

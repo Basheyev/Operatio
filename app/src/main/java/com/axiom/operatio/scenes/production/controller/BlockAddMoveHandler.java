@@ -128,7 +128,7 @@ public class BlockAddMoveHandler {
         actionInProgress = false;
         // Отменить создание нового блока
         ProductionSceneUI.getBlocksPanel().untoggleButtons();
-        // Убрать выделение блока
+        // Убрать выделение блока если там ничего нет
         production.unselectBlock();
     }
 }
