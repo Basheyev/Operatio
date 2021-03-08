@@ -205,9 +205,11 @@ public class MarketPanel extends Panel {
             } else if (w.getTag().equals("Auto-buy")) {
                 inventory.setAutoBuy(currentCommodity, autoBuyCB.isChecked());
                 autoSellCB.setChecked(false);
+                inventory.setAutoSell(currentCommodity, autoSellCB.isChecked());
             } else if (w.getTag().equals("Auto-sell")) {
                 inventory.setAutoSell(currentCommodity, autoSellCB.isChecked());
                 autoBuyCB.setChecked(false);
+                inventory.setAutoBuy(currentCommodity, autoBuyCB.isChecked());
             }
         }
 
