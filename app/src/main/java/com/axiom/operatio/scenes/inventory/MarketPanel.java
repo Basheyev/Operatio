@@ -19,16 +19,14 @@ import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 
-import static android.graphics.Color.GRAY;
-import static android.graphics.Color.WHITE;
-
 public class MarketPanel extends Panel {
+
+    public static final int panelColor = 0xCC505050;
 
     private Production production;
     private Inventory inventory;
-    //private Button cashBalance;
-    private CheckBox autoBuyCB, autoSellCB;
 
+    private CheckBox autoBuyCB, autoSellCB;
     private Caption caption;
     private Market market;
     private final double[] values;
@@ -42,50 +40,7 @@ public class MarketPanel extends Panel {
     private Button sellButton, dealSum, buyButton;
     private Button leftButton, quantityButton, rightButton;
 
-    private final int cashSound, tickSound, denySound;
-
-    protected ClickListener clickListener = new ClickListener() {
-        @Override
-        public void onClick(Widget w) {
-            if (w.getTag().equals("<")) {
-                quantity--;
-                if (quantity < 1) {
-                    quantity = 1;
-                    SoundRenderer.playSound(denySound);
-                } else {
-                    SoundRenderer.playSound(tickSound);
-                }
-                quantityButton.setText("" + quantity);
-
-            } else if (w.getTag().equals(">")) {
-                quantity++;
-                if (quantity > 100) {
-                    quantity = 100;
-                    SoundRenderer.playSound(denySound);
-                } else {
-                    SoundRenderer.playSound(tickSound);
-                }
-                quantityButton.setText("" + quantity);
-            } else if (w.getTag().equals("BUY")) {
-                market.buyOrder(inventory, currentCommodity, quantity);
-                materialsPanel.updateData();
-                SoundRenderer.playSound(tickSound);
-              //  SoundRenderer.playSound(cashSound);
-            } else if (w.getTag().equals("SELL")) {
-                market.sellOrder(inventory, currentCommodity, quantity);
-                materialsPanel.updateData();
-                SoundRenderer.playSound(tickSound);
-              //  SoundRenderer.playSound(cashSound);
-            } else if (w.getTag().equals("Auto-buy")) {
-                inventory.setAutoBuy(currentCommodity, autoBuyCB.isChecked());
-                autoSellCB.setChecked(false);
-            } else if (w.getTag().equals("Auto-sell")) {
-                inventory.setAutoSell(currentCommodity, autoSellCB.isChecked());
-                autoBuyCB.setChecked(false);
-            }
-        }
-
-    };
+    private final int tickSound, denySound;
 
 
     public MarketPanel(MaterialsPanel materialsPanel, Market market, Production production, Inventory inventory) {
@@ -98,83 +53,61 @@ public class MarketPanel extends Panel {
         values = new double[Market.HISTORY_LENGTH];
         counter = 0;
         commodityName = Material.getMaterial(currentCommodity).getName();
-        cashSound = SoundRenderer.loadSound(R.raw.cash_snd);
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
         denySound = SoundRenderer.loadSound(R.raw.deny_snd);;
 
-        setLocalBounds(900, 390, 1000, 550);
-        setColor(0xCC505050);
+        buildUI();
+
+    }
+
+
+    private void buildUI() {
+        setLocalBounds(874, 390, 1026, 550);
+        setColor(panelColor);
+
         caption = new Caption("Market");
         caption.setTextScale(1.5f);
-        caption.setTextColor(WHITE);
+        caption.setTextColor(Color.WHITE);
         caption.setLocalBounds(30, 450, 300, 100);
         addChild(caption);
 
-        buyButton = new Button("BUY");
-        buyButton.setTag("BUY");
-        buyButton.setLocalBounds(25, 35, 150, 80);
-        buyButton.setTextScale(1.5f);
-        buyButton.setTextColor(WHITE);
-        buyButton.setColor(Color.RED);
-        buyButton.setClickListener(clickListener);
-        addChild(buyButton);
+        buyButton = buildButton("BUY", 25, 35, 150, 80, Color.RED, 1.5f,true);
+        sellButton = buildButton("SELL", 800, 35, 150, 80, Color.GREEN, 1.5f, true);
+
+        leftButton = buildButton("<", 200, 35, 75, 80, Color.GRAY, 1,true);
+        quantityButton = buildButton("" + quantity, 275, 35, 150, 80, Color.BLACK, 1.5f, false);
+        rightButton = buildButton(">",425, 35, 75, 80,  Color.GRAY, 1,true);
+
+        String sumText = Utils.moneyFormat(production.getCashBalance());
+        dealSum = buildButton(sumText, 525, 35, 250, 80, Color.BLACK, 1.5f,false);
+
+        autoBuyCB = buildCheckBox("Auto-buy", 550, 475, 200, 100);
+        autoSellCB = buildCheckBox("Auto-sell", 800, 475, 200, 100);
+    }
 
 
-        leftButton = new Button("<");
-        leftButton.setLocalBounds( 200, 35, 75, 80);
-        leftButton.setTag("<");
-        leftButton.setColor(GRAY);
-        leftButton.setTextColor(WHITE);
-        leftButton.setClickListener(clickListener);
-        addChild(leftButton);
-
-        quantityButton = new Button("" + quantity);
-        quantityButton.setTextScale(1.5f);
-        quantityButton.setLocalBounds( 275, 35, 150, 80);
-        quantityButton.setColor(Color.BLACK);
-        quantityButton.setTextColor(WHITE);
-        addChild(quantityButton);
-
-        rightButton = new Button(">");
-        rightButton.setTag(">");
-        rightButton.setLocalBounds( 425, 35, 75, 80);
-        rightButton.setColor(GRAY);
-        rightButton.setTextColor(WHITE);
-        rightButton.setClickListener(clickListener);
-        addChild(rightButton);
-
-        dealSum = new Button(Utils.moneyFormat(production.getCashBalance()));
-        dealSum.setTextScale(1.5f);
-        dealSum.setLocalBounds( 525, 35, 250, 80);
-        dealSum.setColor(Color.BLACK);
-        dealSum.setTextColor(WHITE);
-        addChild(dealSum);
-
-        sellButton = new Button("SELL");
-        sellButton.setTag("SELL");
-        sellButton.setLocalBounds(800, 35, 150, 80);
-        sellButton.setTextScale(1.5f);
-        sellButton.setTextColor(WHITE);
-        sellButton.setColor(Color.GREEN);
-        sellButton.setClickListener(clickListener);
-        addChild(sellButton);
+    private Button buildButton(String txt, float x, float y, float w, float h, int back, float textScale, boolean listener) {
+        Button button = new Button(txt);
+        button.setTag(txt);
+        button.setLocalBounds(x, y, w, h);
+        button.setColor(back);
+        button.setTextScale(textScale);
+        button.setTextColor(Color.WHITE);
+        if (listener) button.setClickListener(clickListener);
+        addChild(button);
+        return button;
+    }
 
 
-        autoBuyCB = new CheckBox("Auto-buy", false);
-        autoBuyCB.setTag("Auto-buy");
-        autoBuyCB.setLocalBounds(550, 475, 200, 100);
-        autoBuyCB.setTextColor(WHITE);
-        autoBuyCB.setTextScale(1.5f);
-        autoBuyCB.setClickListener(clickListener);
-        addChild(autoBuyCB);
-
-        autoSellCB = new CheckBox("Auto-sell", false);
-        autoSellCB.setTag("Auto-sell");
-        autoSellCB.setLocalBounds(800, 475, 200, 100);
-        autoSellCB.setTextColor(WHITE);
-        autoSellCB.setTextScale(1.5f);
-        autoSellCB.setClickListener(clickListener);
-        addChild(autoSellCB);
+    private CheckBox buildCheckBox(String txt, float x, float y, float w, float h) {
+        CheckBox cb = new CheckBox(txt, false);
+        cb.setTag(txt);
+        cb.setLocalBounds(x,y,w,h);
+        cb.setTextColor(Color.WHITE);
+        cb.setTextScale(1.5f);
+        cb.setClickListener(clickListener);
+        addChild(cb);
+        return cb;
     }
 
 
@@ -237,5 +170,48 @@ public class MarketPanel extends Panel {
         }
 
     }
+
+
+    private ClickListener clickListener = new ClickListener() {
+        @Override
+        public void onClick(Widget w) {
+            if (w.getTag().equals("<")) {
+                quantity--;
+                if (quantity < 1) {
+                    quantity = 1;
+                    SoundRenderer.playSound(denySound);
+                } else {
+                    SoundRenderer.playSound(tickSound);
+                }
+                quantityButton.setText("" + quantity);
+
+            } else if (w.getTag().equals(">")) {
+                quantity++;
+                if (quantity > 100) {
+                    quantity = 100;
+                    SoundRenderer.playSound(denySound);
+                } else {
+                    SoundRenderer.playSound(tickSound);
+                }
+                quantityButton.setText("" + quantity);
+            } else if (w.getTag().equals("BUY")) {
+                market.buyOrder(inventory, currentCommodity, quantity);
+                materialsPanel.updateData();
+                SoundRenderer.playSound(tickSound);
+            } else if (w.getTag().equals("SELL")) {
+                market.sellOrder(inventory, currentCommodity, quantity);
+                materialsPanel.updateData();
+                SoundRenderer.playSound(tickSound);
+            } else if (w.getTag().equals("Auto-buy")) {
+                inventory.setAutoBuy(currentCommodity, autoBuyCB.isChecked());
+                autoSellCB.setChecked(false);
+            } else if (w.getTag().equals("Auto-sell")) {
+                inventory.setAutoSell(currentCommodity, autoSellCB.isChecked());
+                autoBuyCB.setChecked(false);
+            }
+        }
+
+    };
+
 
 }

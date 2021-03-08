@@ -11,14 +11,10 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
-import com.axiom.atom.engine.ui.listeners.ClickListener;
-import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.model.gameplay.Utils;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.ScenesPanel;
-import com.axiom.operatio.scenes.production.ProductionScene;
 
 /**
  * Сцена склада
@@ -27,15 +23,15 @@ public class InventoryScene extends GameScene {
 
     public static final String SCENE_NAME = "Inventory";
 
-    protected boolean initialized = false;
-    protected Production production;
-    protected ScenesPanel scenesPanel;
-    protected MaterialsPanel materialsPanel;
-    protected TechnologyPanel technologyPanel;
-    protected MarketPanel marketPanel;
-    protected int currentLevel = -1;
-    protected static Sprite background;
-    protected static int tickSound;
+    private boolean initialized = false;
+    private Production production;
+    private ScenesPanel scenesPanel;
+    private MaterialsPanel materialsPanel;
+    private TechnologyPanel technologyPanel;
+    private MarketPanel marketPanel;
+    private int currentLevel = -1;
+    private static Sprite background;
+    private static int tickSound;
     private long lastTime;
 
     public InventoryScene(Production production) {
@@ -143,5 +139,15 @@ public class InventoryScene extends GameScene {
 
     }
 
+    public MaterialsPanel getMaterialsPanel() {
+        return materialsPanel;
+    }
 
+    public TechnologyPanel getTechnologyPanel() {
+        return technologyPanel;
+    }
+
+    public MarketPanel getMarketPanel() {
+        return marketPanel;
+    }
 }

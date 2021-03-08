@@ -24,10 +24,11 @@ import static android.graphics.Color.WHITE;
  */
 public class MaterialsPanel extends Panel {
 
-    protected InventoryScene inventoryScene;
-    protected Production production;
-    protected ItemWidget[] itemWidget;
-    protected Material selectedMaterial;
+    private InventoryScene inventoryScene;
+    private Production production;
+    private ItemWidget[] itemWidget;
+    private Material selectedMaterial;
+
 
     public MaterialsPanel(Production production, InventoryScene scene) {
         super();
@@ -67,7 +68,7 @@ public class MaterialsPanel extends Panel {
 
     protected void buildUI() {
         Panel panel = this;
-        panel.setLocalBounds(50,60, 820, 880);
+        panel.setLocalBounds(24,60, 820, 880);
         panel.setColor(0xCC505050);
 
         Caption caption = new Caption("Materials inventory");
@@ -100,11 +101,13 @@ public class MaterialsPanel extends Panel {
         selectedMaterial = null;
     }
 
+
     public Material getSelectedMaterial() {
         return selectedMaterial;
     }
 
-    protected static ClickListener clickListener = new ClickListener() {
+
+    private ClickListener clickListener = new ClickListener() {
 
         protected int tickSound =-1;
 
@@ -125,14 +128,14 @@ public class MaterialsPanel extends Panel {
                 unselectAllButtons(w);
                 w.setColor(RED);
                 materialsPanel.selectedMaterial = material;
-                materialsPanel.inventoryScene.technologyPanel.updateData();
+                materialsPanel.inventoryScene.getTechnologyPanel().updateData();
                 SoundRenderer.playSound(tickSound);
             } else {
                 unselectAllButtons(w);
                 materialsPanel.selectedMaterial = null;
-                materialsPanel.inventoryScene.technologyPanel.updateData();
+                materialsPanel.inventoryScene.getTechnologyPanel().updateData();
             }
-            materialsPanel.inventoryScene.marketPanel.updateValues();
+            materialsPanel.inventoryScene.getMarketPanel().updateValues();
         }
 
         public void unselectAllButtons(Widget w) {
