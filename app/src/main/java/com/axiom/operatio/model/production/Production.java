@@ -26,6 +26,7 @@ import java.util.ArrayList;
  */
 public class Production implements JSONSerializable {
 
+    // todo сохранять положение камеры
     // todo ограничение площади производства (доступна минимальная часть и по мере уровней)
     // todo возможность покупки дополнительной площади и ограничения (покупка по квадратами)
 
@@ -127,7 +128,7 @@ public class Production implements JSONSerializable {
      */
     public void process() {
         if (!isPaused) {
-            long now = clock; //System.currentTimeMillis();
+            long now = clock;
             if (now - lastCycleTime > cycleMilliseconds) {
                 Block block;
                 boolean energyPayed;

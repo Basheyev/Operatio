@@ -21,6 +21,7 @@ import com.axiom.operatio.scenes.report.ReportScene;
 import com.axiom.operatio.scenes.inventory.InventoryScene;
 import com.axiom.operatio.scenes.mainmenu.MainMenuScene;
 import com.axiom.operatio.scenes.production.ProductionScene;
+import com.axiom.operatio.scenes.technology.TechnologyScene;
 
 /**
  * Панель переключения между сценами
@@ -50,7 +51,7 @@ public class ScenesPanel extends Panel {
     private static final String MENU = MainMenuScene.SCENE_NAME;
     private static final String INVENTORY = InventoryScene.SCENE_NAME;
     private static final String PRODUCTION = ProductionScene.SCENE_NAME;
-    private static final String TECHNOLOGY = "technology";
+    private static final String TECHNOLOGY = TechnologyScene.SCENE_NAME;
     private static final String REPORT = ReportScene.SCENE_NAME;
     private static final String PAUSE = "pause";
 

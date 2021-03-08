@@ -16,6 +16,7 @@ import com.axiom.operatio.scenes.production.view.ModePanel;
 import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 import com.axiom.operatio.scenes.inventory.InventoryScene;
+import com.axiom.operatio.scenes.technology.TechnologyScene;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,6 +59,7 @@ public class ProductionScene extends GameScene {
         if (!initialized) {
             sceneManager.addGameScene(new InventoryScene(production));
             sceneManager.addGameScene(new ReportScene(production));
+            sceneManager.addGameScene(new TechnologyScene(production));
             productionRenderer = new ProductionRenderer(production, initialCellWidth, initialCellHeight);
             inputHandler = new InputHandler(this, production, productionRenderer);
             ProductionSceneUI.buildUI(this, getResources(), getSceneWidget(), production);
