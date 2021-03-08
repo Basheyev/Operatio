@@ -34,7 +34,7 @@ public class ReportPanel extends Panel {
         super();
         this.production = production;
 
-        setLocalBounds(50,60, 1850, 880);
+        setLocalBounds(24,60, 1872, 880);
         setColor(0xCC505050);
 
         panelCaption = new Caption("Operations daily report");

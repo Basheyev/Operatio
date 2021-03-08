@@ -64,69 +64,44 @@ public class ScenesPanel extends Panel {
 
 
     private void buildUI() {
-
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
         setColor(panelColor);
         setLocalBounds(0, 960, 1920, 120);
 
-        timeCaption = new Caption("time");
-        timeCaption.setLocalBounds(384, 20, 256, 80);
-        timeCaption.setTextColor(Color.WHITE);
-        timeCaption.setTextScale(1.5f);
-        addChild(timeCaption);
-
-        balanceCaption = new Caption("balance");
-        balanceCaption.setLocalBounds(1500, 20, 256, 80);
-        balanceCaption.setTextColor(Color.WHITE);
-        balanceCaption.setTextScale(1.5f);
-        addChild(balanceCaption);
-
-        coinButton = buildButton(15, "Coin");
-        coinButton.setLocalBounds(1410, 8, 96, 96);
+        timeCaption = buildCaption("time", 384, 20, 256, 80);
+        balanceCaption = buildCaption("balance", 1500, 20, 256, 80);
+        coinButton = buildButton(15, "Coin", 1410, 8, 96, 96, false);
         coinButton.setColor(0,0,0, 0);
-        addChild(coinButton);
 
-        menuButton = buildButton(0, MENU);
-        menuButton.setLocation(24,0);
-        menuButton.setClickListener(listener);
-        addChild(menuButton);
-
-        inventoryButton = buildButton(4, INVENTORY);
-        inventoryButton.setLocation(680, 0);
-        inventoryButton.setClickListener(listener);
-        addChild(inventoryButton);
-
-        productionButton = buildButton(5, PRODUCTION);
-        productionButton.setLocation(824, 0);
-        productionButton.setClickListener(listener);
-        addChild(productionButton);
-
-        technologyButton = buildButton(6, TECHNOLOGY);
-        technologyButton.setLocation(968, 0);
-        technologyButton.setClickListener(listener);
-        addChild(technologyButton);
-
-        reportButton = buildButton(7, REPORT);
-        reportButton.setLocation(1112, 0);
-        reportButton.setClickListener(listener);
-        addChild(reportButton);
-
-        pauseButton = buildButton(2, PAUSE);
-        pauseButton.setLocation(1768, 0);
-        pauseButton.setClickListener(listener);
-        addChild(pauseButton);
+        menuButton = buildButton(0, MENU, 24, 0, 128, 128, true);
+        inventoryButton = buildButton(4, INVENTORY, 680, 0, 128, 128, true);
+        productionButton = buildButton(5, PRODUCTION, 824, 0, 128, 128, true);
+        technologyButton = buildButton(6, TECHNOLOGY, 968, 0, 128, 128, true);
+        reportButton = buildButton(7, REPORT, 1112, 0, 128, 128, true);
+        pauseButton = buildButton(2, PAUSE, 1768, 0, 128, 128, true);
 
     }
 
+    private Caption buildCaption(String txt, float x, float y, float w, float h) {
+        Caption caption = new Caption(txt);
+        caption.setLocalBounds(x, y, w, h);
+        caption.setTextColor(Color.WHITE);
+        caption.setTextScale(1.5f);
+        addChild(caption);
+        return caption;
+    }
 
-    private Button buildButton(int spriteIndex, String tag) {
+    private Button buildButton(int spriteIndex, String tag, float x, float y, float w, float h, boolean addListener) {
         Sprite icon = new Sprite(SceneManager.getResources(), R.drawable.ui_icons, 4, 4);
         icon.setActiveFrame(spriteIndex);
         Button button = new Button(icon);
-        button.setSize(128, 128);
+        button.setLocation(x, y);
+        button.setSize(w, h);
         button.setColor(Color.GRAY);
         button.setTextColor(1,1,1,1);
+        if (addListener) button.setClickListener(listener);
         button.setTag(tag);
+        addChild(button);
         return button;
     }
 
