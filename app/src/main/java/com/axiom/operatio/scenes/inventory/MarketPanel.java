@@ -62,27 +62,27 @@ public class MarketPanel extends Panel {
 
 
     private void buildUI() {
-        setLocalBounds(874, 390, 1026, 550);
+        setLocalBounds(874, 60, 1022, 880); // 330
         setColor(panelColor);
 
         caption = new Caption("Market");
         caption.setTextScale(1.5f);
         caption.setTextColor(Color.WHITE);
-        caption.setLocalBounds(30, 450, 300, 100);
+        caption.setLocalBounds(30, 780, 300, 100);
         addChild(caption);
 
-        buyButton = buildButton("BUY", 25, 35, 150, 80, Color.RED, 1.5f,true);
-        sellButton = buildButton("SELL", 800, 35, 150, 80, Color.GREEN, 1.5f, true);
+        buyButton = buildButton("BUY", 25, 365, 150, 80, Color.RED, 1.5f,true);
+        sellButton = buildButton("SELL", 800, 365, 150, 80, Color.GREEN, 1.5f, true);
 
-        leftButton = buildButton("<", 200, 35, 75, 80, Color.GRAY, 1,true);
-        quantityButton = buildButton("" + quantity, 275, 35, 150, 80, Color.BLACK, 1.5f, false);
-        rightButton = buildButton(">",425, 35, 75, 80,  Color.GRAY, 1,true);
+        leftButton = buildButton("<", 200, 365, 75, 80, Color.GRAY, 1,true);
+        quantityButton = buildButton("" + quantity, 275, 365, 150, 80, Color.BLACK, 1.5f, false);
+        rightButton = buildButton(">",425, 365, 75, 80,  Color.GRAY, 1,true);
 
         String sumText = Utils.moneyFormat(production.getCashBalance());
-        dealSum = buildButton(sumText, 525, 35, 250, 80, Color.BLACK, 1.5f,false);
+        dealSum = buildButton(sumText, 525, 365, 250, 80, Color.BLACK, 1.5f,false);
 
-        autoBuyCB = buildCheckBox("Auto-buy", 550, 475, 200, 100);
-        autoSellCB = buildCheckBox("Auto-sell", 800, 475, 200, 100);
+        autoBuyCB = buildCheckBox("Auto-buy", 550, 805, 200, 100);
+        autoSellCB = buildCheckBox("Auto-sell", 800, 805, 200, 100);
     }
 
 
@@ -143,7 +143,7 @@ public class MarketPanel extends Panel {
         synchronized (values) {
             float graphWidth = 960;
             float graphHeight = 300;
-            float floor = 150;
+            float floor = 150 + 330;
             float x = wBounds.min.x + 25;
             float y = wBounds.min.y + floor;
             float oldX = x;

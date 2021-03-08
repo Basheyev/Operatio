@@ -42,7 +42,7 @@ public class ProductionScene extends GameScene {
 
 
     public ProductionScene() {
-        production = new Production(8,6);
+        production = new Production(32,24);
     }
 
     public ProductionScene(JSONObject jsonProduction) throws JSONException {

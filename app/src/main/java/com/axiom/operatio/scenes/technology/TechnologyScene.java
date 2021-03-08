@@ -14,9 +14,6 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.ScenesPanel;
-import com.axiom.operatio.scenes.inventory.MarketPanel;
-import com.axiom.operatio.scenes.inventory.MaterialsPanel;
-import com.axiom.operatio.scenes.inventory.TechnologyPanel;
 
 public class TechnologyScene extends GameScene {
 
@@ -25,6 +22,8 @@ public class TechnologyScene extends GameScene {
     private boolean initialized = false;
     private Production production;
     private ScenesPanel scenesPanel;
+    private MaterialsTree materialsTree;
+    private RecipePanel recipePanel;
     private static Sprite background;
     private static int tickSound;
 
@@ -100,7 +99,28 @@ public class TechnologyScene extends GameScene {
         scenesPanel = new ScenesPanel(production);
         widget.addChild(scenesPanel);
 
+        materialsTree = new MaterialsTree(production, this);
+        widget.addChild(materialsTree);
+
+        recipePanel = new RecipePanel(materialsTree);
+        widget.addChild(recipePanel);
+
         initialized = true;
 
+    }
+
+
+    public ScenesPanel getScenesPanel() {
+        return scenesPanel;
+    }
+
+
+    public MaterialsTree getMaterialsTree() {
+        return materialsTree;
+    }
+
+
+    public RecipePanel getRecipePanel() {
+        return recipePanel;
     }
 }

@@ -1,4 +1,4 @@
-package com.axiom.operatio.scenes.inventory;
+package com.axiom.operatio.scenes.technology;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.sound.SoundRenderer;
@@ -19,36 +19,19 @@ import static android.graphics.Color.BLACK;
 import static android.graphics.Color.RED;
 import static android.graphics.Color.WHITE;
 
-/**
- * Панель отображения списка материалов с остатками на складе
- */
-public class MaterialsPanel extends Panel {
+public class MaterialsTree extends Panel {
 
-    private InventoryScene inventoryScene;
+    private TechnologyScene technologyScene;
     private Production production;
     private ItemWidget[] itemWidget;
     private Material selectedMaterial;
 
 
-    public MaterialsPanel(Production production, InventoryScene scene) {
+    public MaterialsTree(Production production, TechnologyScene scene) {
         super();
         this.production = production;
-        inventoryScene = scene;
+        technologyScene = scene;
         buildUI();
-    }
-
-
-    public void updateData() {
-        Inventory inventory = production.getInventory();
-        for (int i = 0; i< Material.getMaterialsAmount(); i++) {
-            Material material = Material.getMaterial(i);
-            int balance = inventory.getBalance(material);
-            if (balance > 0) {
-                itemWidget[i].setText("" + balance);
-            } else {
-                itemWidget[i].setText("");
-            }
-        }
     }
 
 
@@ -71,7 +54,7 @@ public class MaterialsPanel extends Panel {
         panel.setLocalBounds(24,60, 820, 880);
         panel.setColor(0xCC505050);
 
-        Caption caption = new Caption("Inventory");
+        Caption caption = new Caption("Materials");
         caption.setTextScale(1.5f);
         caption.setTextColor(WHITE);
         caption.setLocalBounds(30, panel.getHeight() - 100, 300, 100);
@@ -82,8 +65,7 @@ public class MaterialsPanel extends Panel {
         float x = 30, y = 30;
         for (int i=0; i< Material.getMaterialsAmount(); i++) {
             Material material = Material.getMaterial(i);
-            int balance = inventory.getBalance(material);
-            itemWidget[i] = new ItemWidget("" + balance);
+            itemWidget[i] = new ItemWidget("");
             itemWidget[i].setColor(BLACK);
             itemWidget[i].setBackground(material.getImage());
             itemWidget[i].setTextScale(1);
@@ -117,7 +99,7 @@ public class MaterialsPanel extends Panel {
             if (tickSound == -1) tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
             int materialID = Integer.parseInt(w.getTag());
             Material material = Material.getMaterial(materialID);
-            MaterialsPanel materialsPanel = (MaterialsPanel) w.getParent();
+            MaterialsTree materialsTree = (MaterialsTree) w.getParent();
 
             // fixme constant material ID
             ItemWidget item = (ItemWidget) w;
@@ -127,13 +109,14 @@ public class MaterialsPanel extends Panel {
             if (w.getColor()!=RED) {
                 unselectAllButtons(w);
                 w.setColor(RED);
-                materialsPanel.selectedMaterial = material;
+                materialsTree.selectedMaterial = material;
+                materialsTree.getTechnologyScene().getRecipePanel().updateData();
                 SoundRenderer.playSound(tickSound);
             } else {
                 unselectAllButtons(w);
-                materialsPanel.selectedMaterial = null;
+                materialsTree.selectedMaterial = null;
+                materialsTree.getTechnologyScene().getRecipePanel().updateData();
             }
-            materialsPanel.inventoryScene.getMarketPanel().updateValues();
         }
 
         public void unselectAllButtons(Widget w) {
@@ -141,10 +124,14 @@ public class MaterialsPanel extends Panel {
             for (int i=0; i<children.size(); i++) {
                 children.get(i).setColor(BLACK);
             }
-            MaterialsPanel materialsPanel = (MaterialsPanel) w.getParent();
+            MaterialsTree materialsPanel = (MaterialsTree) w.getParent();
             materialsPanel.selectedMaterial = null;
         }
 
     };
 
+
+    public TechnologyScene getTechnologyScene() {
+        return technologyScene;
+    }
 }

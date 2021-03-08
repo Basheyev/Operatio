@@ -1,4 +1,4 @@
-package com.axiom.operatio.scenes.inventory;
+package com.axiom.operatio.scenes.technology;
 
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.ui.widgets.Caption;
@@ -11,23 +11,23 @@ import com.axiom.operatio.scenes.production.view.ItemWidget;
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.WHITE;
 
-public class TechnologyPanel extends Panel {
+public class RecipePanel extends Panel {
 
-    protected MaterialsPanel materialsPanel;
+    protected MaterialsTree materialsTree;
     protected Caption caption, inputsCaption, machineCaption, outputsCaption;
     protected ItemWidget[] inpBtn, outBtn;
     protected ItemWidget machineButton;
 
-    public TechnologyPanel(MaterialsPanel panel) {
+    public RecipePanel(MaterialsTree panel) {
         super();
-        materialsPanel = panel;
+        materialsTree = panel;
         inpBtn = new ItemWidget[4];
         outBtn = new ItemWidget[4];
         buildUI();
     }
 
     public void updateData() {
-        Material selectedMaterial = materialsPanel.getSelectedMaterial();
+        Material selectedMaterial = materialsTree.getSelectedMaterial();
 
         // Если никакой материал не выбран
         if (selectedMaterial == null) {
@@ -37,12 +37,12 @@ public class TechnologyPanel extends Panel {
 
         findMachineAndOperations(selectedMaterial);
 
-        caption.setText(selectedMaterial.getName() + " technology");
+        caption.setText(selectedMaterial.getName() + " recipe");
     }
 
 
     private void clearFields() {
-        caption.setText("Technology");
+        caption.setText("Recipe");
         machineCaption.setText("Machine");
         for (int i=0; i<4; i++) {
             inpBtn[i].setBackground(null);
@@ -56,25 +56,25 @@ public class TechnologyPanel extends Panel {
 
     private void buildUI() {
         Panel panel = this;
-        panel.setLocalBounds(874,60, 1026, 300);
+        panel.setLocalBounds(874,60, 1026, 880);
         panel.setColor(0xCC505050);
 
-        caption = new Caption("Technology");
+        caption = new Caption("Recipe");
         caption.setTextScale(1.5f);
         caption.setTextColor(WHITE);
-        caption.setLocalBounds(30, 200, 300, 100);
+        caption.setLocalBounds(30, 730, 300, 100);
         panel.addChild(caption);
 
         // Список входных материалов
         inputsCaption = new Caption("Input materials:");
-        inputsCaption.setLocalBounds(40,130,250, 100);
+        inputsCaption.setLocalBounds(40,660,250, 100);
         inputsCaption.setTextScale(1.2f);
         inputsCaption.setTextColor(WHITE);
         addChild(inputsCaption);
 
         for (int i=0; i<4; i++) {
             inpBtn[i] = new ItemWidget("");
-            inpBtn[i].setLocalBounds(40 + i*80, 50, 64, 64);
+            inpBtn[i].setLocalBounds(40 + i*80, 580, 64, 64);
             inpBtn[i].setColor(BLACK);
             inpBtn[i].setTextColor(WHITE);
             inpBtn[i].setTextScale(1);
@@ -83,7 +83,7 @@ public class TechnologyPanel extends Panel {
 
         // Кнопка отображающая машину
         machineCaption = new Caption("Machine");
-        machineCaption.setLocalBounds(400,130,250, 100);
+        machineCaption.setLocalBounds(400,660,250, 100);
         machineCaption.setTextScale(1.2f);
         machineCaption.setTextColor(WHITE);
         addChild(machineCaption);
@@ -93,12 +93,12 @@ public class TechnologyPanel extends Panel {
         machineButton.opaque = false;
         machineButton.setTextColor(WHITE);
         machineButton.setTextScale(1);
-        machineButton.setLocalBounds(400, 20, 128, 128);
+        machineButton.setLocalBounds(400, 550, 128, 128);
         addChild(machineButton);
 
         // Список выходных материалов
         outputsCaption = new Caption("Output materials:");
-        outputsCaption.setLocalBounds(600,130,300, 100);
+        outputsCaption.setLocalBounds(600,660,300, 100);
         outputsCaption.setTextScale(1.2f);
         outputsCaption.setTextColor(WHITE);
         addChild(outputsCaption);
@@ -106,7 +106,7 @@ public class TechnologyPanel extends Panel {
 
         for (int i=0; i<4; i++) {
             outBtn[i] = new ItemWidget("");
-            outBtn[i].setLocalBounds(600 + i*80, 50, 64, 64);
+            outBtn[i].setLocalBounds(600 + i*80, 580, 64, 64);
             outBtn[i].setColor(BLACK);
             outBtn[i].setTextColor(WHITE);
             outBtn[i].setTextScale(1);

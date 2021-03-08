@@ -1,6 +1,5 @@
 package com.axiom.operatio.scenes.inventory;
 
-import android.graphics.Color;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
@@ -27,7 +26,6 @@ public class InventoryScene extends GameScene {
     private Production production;
     private ScenesPanel scenesPanel;
     private MaterialsPanel materialsPanel;
-    private TechnologyPanel technologyPanel;
     private MarketPanel marketPanel;
     private int currentLevel = -1;
     private static Sprite background;
@@ -124,8 +122,6 @@ public class InventoryScene extends GameScene {
         materialsPanel = new MaterialsPanel(production,this);
         widget.addChild(materialsPanel);
 
-        technologyPanel = new TechnologyPanel(materialsPanel);
-        widget.addChild(technologyPanel);
 
         marketPanel = new MarketPanel(
                 materialsPanel, production.getMarket(),
@@ -141,10 +137,6 @@ public class InventoryScene extends GameScene {
 
     public MaterialsPanel getMaterialsPanel() {
         return materialsPanel;
-    }
-
-    public TechnologyPanel getTechnologyPanel() {
-        return technologyPanel;
     }
 
     public MarketPanel getMarketPanel() {
