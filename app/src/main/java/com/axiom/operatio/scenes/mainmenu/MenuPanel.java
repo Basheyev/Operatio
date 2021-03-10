@@ -105,6 +105,7 @@ public class MenuPanel extends Panel {
         SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
         if (productionScene!=null) {
             Production production = productionScene.getProduction();
+            if (!production.isPaused()) production.setPaused(true);
             SharedPreferences.Editor editor = sharedPref.edit();
             String savedGame = production.serialize().toString();
             System.out.println("SAVING GAME:\n " + savedGame);

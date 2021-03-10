@@ -62,6 +62,11 @@ public class SceneManager {
         scn.resources = resources;
     }
 
+
+    public GameScene getScene(String name) {
+        return scenes.get(name);
+    }
+
     /**
      * Удалить игровую сцену из Менеджера игровых сцен<br>
      * Вызвать метод dispose() сцены для освобождения ресурсов

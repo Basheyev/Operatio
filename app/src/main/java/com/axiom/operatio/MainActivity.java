@@ -7,8 +7,12 @@ import android.os.Bundle;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.SceneManager;
+import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.scenes.inventory.InventoryScene;
 import com.axiom.operatio.scenes.mainmenu.MainMenuScene;
 import com.axiom.operatio.scenes.production.ProductionScene;
+import com.axiom.operatio.scenes.report.ReportScene;
+import com.axiom.operatio.scenes.technology.TechnologyScene;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,28 +34,36 @@ public class MainActivity extends AppCompatActivity {
         SceneManager sceneManager = SceneManager.getInstance();
         GameScene scene = sceneManager.getActiveScene();
         String sceneName = scene.getSceneName();
+
         switch (sceneName) {
-            case "Inventory":
-                sceneManager.setActiveScene("Production");
+            case ProductionScene.SCENE_NAME:
+                ((ProductionScene) scene).getProduction().setPaused(true);
+                sceneManager.setActiveScene(MainMenuScene.SCENE_NAME);
                 break;
-            case "Production":
-                sceneManager.setActiveScene("Menu");
+            case InventoryScene.SCENE_NAME:
+                sceneManager.setActiveScene(ProductionScene.SCENE_NAME);
                 break;
-            case "Menu":
+            case TechnologyScene.SCENE_NAME:
+                sceneManager.setActiveScene(ProductionScene.SCENE_NAME);
+                break;
+            case ReportScene.SCENE_NAME:
+                sceneManager.setActiveScene(ProductionScene.SCENE_NAME);
+                break;
+            case MainMenuScene.SCENE_NAME:
                 ((MainMenuScene) scene).getMenuPanel().exitGame();
                 break;
         }
     }
 
+
     @Override
     protected void onPause() {
         SceneManager sceneManager = SceneManager.getInstance();
-        GameScene scene = sceneManager.getActiveScene();
-        if (scene instanceof ProductionScene) {
+        GameScene scene = sceneManager.getScene(ProductionScene.SCENE_NAME);
+        if (scene != null) {
             ProductionScene ps = ((ProductionScene) scene);
             ps.getInputHandler().invalidateAllActions();
             ps.getProduction().setPaused(true);
-            // fixme ставить на паузу даже если мы в других сценах
         }
         super.onPause();
         gameView.onPause();

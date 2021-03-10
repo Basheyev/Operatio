@@ -16,7 +16,6 @@ import static com.axiom.operatio.model.production.block.Block.LEFT;
 import static com.axiom.operatio.model.production.block.Block.RIGHT;
 import static com.axiom.operatio.model.production.block.Block.UP;
 
-// TODO Сделать плавное движение материалов с учетом пауз конвейера
 
 public class ConveyorRenderer extends BlockRenderer {
 

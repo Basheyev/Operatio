@@ -80,9 +80,9 @@ public class ProductionRenderer {
 
     private void drawTile(Camera camera, int col, int row, int columns, int rows) {
         if (col < 0 || col >= columns || row < 0 || row >= rows) {
-            tileBlocked.draw(camera, col * cellWidth, row * cellHeight, cellWidth, cellHeight);
+            tileBlocked.draw(camera, col * cellWidth, row * cellHeight, cellWidth , cellHeight );
         } else {
-            tile.draw(camera, col * cellWidth, row * cellHeight, cellWidth, cellHeight);
+            tile.draw(camera, col * cellWidth, row * cellHeight, cellWidth, cellHeight );
         }
     }
 

@@ -101,10 +101,8 @@ public class MaterialsTree extends Panel {
             Material material = Material.getMaterial(materialID);
             MaterialsTree materialsTree = (MaterialsTree) w.getParent();
 
-            // fixme constant material ID
             ItemWidget item = (ItemWidget) w;
             if (!item.isActive()) return;
-            // if (materialID > 55 && materialID < 61) return;
 
             if (w.getColor()!=RED) {
                 unselectAllButtons(w);
