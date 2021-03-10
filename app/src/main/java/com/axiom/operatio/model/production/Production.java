@@ -30,29 +30,29 @@ public class Production implements JSONSerializable {
     // todo ограничение площади производства (доступна минимальная часть и по мере уровней)
     // todo возможность покупки дополнительной площади и ограничения (покупка по квадратами)
 
-    protected Inventory inventory;                  // Объект - склад
-    protected Market market;                        // Объект - рынок
-    protected Ledger ledger;                        // Объект - игровая статистика
-    protected LevelFactory levelFactory;            // Менеджер уровней
-    protected int level = 0;                        // Текущий уровень
-    protected int lastCompletedLevel = -1;          // Последний завершенный уровень
-    protected double cashBalance = 10000;           // Остатки денег
+    private Inventory inventory;                  // Объект - склад
+    private Market market;                        // Объект - рынок
+    private Ledger ledger;                        // Объект - игровая статистика
+    private LevelFactory levelFactory;            // Менеджер уровней
+    private int level = 0;                        // Текущий уровень
+    private int lastCompletedLevel = -1;          // Последний завершенный уровень
+    private double cashBalance = 10000;           // Остатки денег
 
-    protected ArrayList<Block> blocks;              // Список блоков производства
-    protected Block[][] grid;                       // Блоки привязанные к координатной сетке
-    protected int columns, rows;                    // Количество столбцеов и строк
+    private ArrayList<Block> blocks;              // Список блоков производства
+    private Block[][] grid;                       // Блоки привязанные к координатной сетке
+    private int columns, rows;                    // Количество столбцов и строк
 
-    protected long lastCycleTime;                   // Время последнего цикла (миллисекунды)
-    protected long cycleMilliseconds = 300;         // Длительносить цикла (миллисекунды)
-    protected long clock = 0;                       // Часы производства (с вычетом пауз игры)
-    protected long cycle;                           // Счётчик циклов производства
+    private long lastCycleTime;                   // Время последнего цикла (миллисекунды)
+    private long cycleMilliseconds = 300;         // Длительносить цикла (миллисекунды)
+    private long clock = 0;                       // Часы производства (с вычетом пауз игры)
+    private long cycle;                           // Счётчик циклов производства
 
-    protected boolean isPaused = false;             // Флаг паузы игры
-    protected long pauseStart = 0;                  // Время начала паузы в системном времени
-    protected long pausedTime = 0;                  // Сумма времени на паузы
+    private boolean isPaused = false;             // Флаг паузы игры
+    private long pauseStart = 0;                  // Время начала паузы в системном времени
+    private long pausedTime = 0;                  // Сумма времени на паузы
 
-    protected boolean blockSelected = false;        // Выбрал ли блок
-    protected int selectedCol, selectedRow;         // Столбец и строка выбранного блока
+    private boolean blockSelected = false;        // Выбрал ли блок
+    private int selectedCol, selectedRow;         // Столбец и строка выбранного блока
 
     private int levelCompletedSound;
 

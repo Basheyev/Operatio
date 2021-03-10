@@ -21,7 +21,11 @@ import com.axiom.operatio.scenes.technology.TechnologyScene;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 public class ProductionScene extends GameScene {
+
+    public static final int MAP_WIDTH = 32;
+    public static final int MAP_HEIGHT = 24;
 
     public static final String SCENE_NAME = "Production";
 
@@ -31,18 +35,18 @@ public class ProductionScene extends GameScene {
     private int currentLevel = -1;
 
     // Надо сделать сеттеры и геттеры
-    public BlocksPanel blocksPanel;
-    public ModePanel modePanel;
-    public AdjustmentPanel adjustmentPanel;
-    public float initialCellWidth = 128;                  // Ширина клетки
-    public float initialCellHeight = 128;                 // Высота клетки
+    private BlocksPanel blocksPanel;
+    private ModePanel modePanel;
+    private AdjustmentPanel adjustmentPanel;
+    private float initialCellWidth = 128;                  // Ширина клетки
+    private float initialCellHeight = 128;                 // Высота клетки
 
     private double lastCashBalance = 0;
     private boolean initialized = false;
 
 
     public ProductionScene() {
-        production = new Production(32,24);
+        production = new Production(MAP_WIDTH, MAP_HEIGHT);
     }
 
     public ProductionScene(JSONObject jsonProduction) throws JSONException {
@@ -90,20 +94,6 @@ public class ProductionScene extends GameScene {
     public void updateScene(float deltaTimeNs) {
 
         production.process();
-
-        double currentCashBalance = production.getCashBalance();
-        if ((long)lastCashBalance != (long)currentCashBalance) {
-            // fixme публиковать информаци на главной панели
-            /**
-            Button balance = ProductionSceneUI.getBalance();
-            LevelFactory lm = LevelFactory.getInstance();
-            Level level = lm.getLevel(production.getLevel());
-            String goal = level.getDescription();
-            // todo здесь может съедаться память если не использовать StringBuffer (если только уже это компилятор не недлает)
-            balance.setText("Level " + production.getLevel() + " Day " + (production.getCurrentCycle() / 60) + " " +
-                    Utils.moneyFormat(Math.round(production.getCashBalance())) + "\n" + goal);**/
-            lastCashBalance = currentCashBalance;
-        }
 
         // todo эту проверку можно делать реже
         // Проверить не сменился ли уровень (обновить доступ к кнопкам)
@@ -160,4 +150,15 @@ public class ProductionScene extends GameScene {
     }
 
 
+    public BlocksPanel getBlocksPanel() {
+        return blocksPanel;
+    }
+
+    public ModePanel getModePanel() {
+        return modePanel;
+    }
+
+    public AdjustmentPanel getAdjustmentPanel() {
+        return adjustmentPanel;
+    }
 }

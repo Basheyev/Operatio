@@ -135,7 +135,7 @@ public class AdjustmentPanel extends Panel {
             if (chosenBlock != null) showBlockInfo(chosenBlock);
             lastProductionCycle = currentCycle;
         }
-        // Если выбран блок - отрисловать
+        // Если выбран блок - отрисовать
         if (chosenBlock != null) super.draw(camera);
     }
 
@@ -212,7 +212,9 @@ public class AdjustmentPanel extends Panel {
     @Override
     public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
         if (event.getActionMasked()==MotionEvent.ACTION_UP) {
+            Block selectedBlock = production.getSelectedBlock();
             productionScene.getInputHandler().invalidateAllActions();
+            if (selectedBlock!=null) production.selectBlock(selectedBlock.column, selectedBlock.row);
         }
         return super.onMotionEvent(event, worldX, worldY);
     }

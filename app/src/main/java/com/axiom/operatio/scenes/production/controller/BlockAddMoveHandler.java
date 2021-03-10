@@ -70,6 +70,7 @@ public class BlockAddMoveHandler {
         cursorY = worldY;
         dragBlock = block;
         production.removeBlock(block, false);
+        productionRenderer.startBlockMoving(dragBlock, cursorX, cursorY);
         actionInProgress = true;
     }
 

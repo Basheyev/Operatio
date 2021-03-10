@@ -37,8 +37,8 @@ public class InputHandler {
 
     public void onMotion(MotionEvent event, float worldX, float worldY) {
 
-        boolean blockTooggled = scene.blocksPanel.getToggledButton() != null;
-        boolean modeToggled = scene.modePanel.getToggledButton() != null;
+        boolean blockTooggled = scene.getBlocksPanel().getToggledButton() != null;
+        boolean modeToggled = scene.getModePanel().getToggledButton() != null;
 
         // STATE
         int state = LOOK_AROUND;
@@ -46,9 +46,9 @@ public class InputHandler {
             state = BLOCK_ADD_MOVE;
         } else
         if (modeToggled) {
-            if (scene.modePanel.getToggledButton().equals("0")) state = BLOCK_ADD_MOVE;
-            if (scene.modePanel.getToggledButton().equals("1")) state = BLOCK_ROTATE;
-            if (scene.modePanel.getToggledButton().equals("2")) state = BLOCK_DELETE;
+            if (scene.getModePanel().getToggledButton().equals("0")) state = BLOCK_ADD_MOVE;
+            if (scene.getModePanel().getToggledButton().equals("1")) state = BLOCK_ROTATE;
+            if (scene.getModePanel().getToggledButton().equals("2")) state = BLOCK_DELETE;
         }
 
         switch (state) {

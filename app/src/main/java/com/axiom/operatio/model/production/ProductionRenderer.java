@@ -110,13 +110,13 @@ public class ProductionRenderer {
 
     public int getProductionColumn(float worldX) {
         int column = (int) (worldX / cellWidth);
-        if (column >= production.columns) column = -1;
+        if (column >= production.getColumns()) column = -1;
         return column;
     }
 
     public int getProductionRow(float worldY) {
         int row = (int) (worldY / cellHeight);
-        if (row >= production.columns) row = -1;
+        if (row >= production.getRows()) row = -1;
         return row;
     }
 
