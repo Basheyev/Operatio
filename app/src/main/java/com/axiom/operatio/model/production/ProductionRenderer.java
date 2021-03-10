@@ -2,18 +2,18 @@ package com.axiom.operatio.model.production;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
+import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Particles;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
 
-// FIXME Устранить артефакты при отрисовке пола
-// TODO Подсвечивать блоки в которых проблема (простой, неправильный материал и т.п.)
+
 public class ProductionRenderer {
 
-    protected Production production;
-    protected Sprite tile, tileBlocked, selection;
+    private Production production;
+    private Sprite tile, tileBlocked, selection;
 
     private Particles particles;
 
@@ -44,86 +44,68 @@ public class ProductionRenderer {
         this.cellHeight = cellHeight;
     }
 
+
     public void draw(Camera camera) {
-
         Block block;
-        BlockRenderer renderer;
-
         int columns = production.getColumns();
         int rows = production.getRows();
         int minCol = (int) (camera.getMinX() / cellWidth) - 1;
         int minRow = (int) (camera.getMinY() / cellHeight) - 1;
         int maxCol = minCol + (int) (Camera.WIDTH / cellWidth) + 2;
         int maxRow = minRow + (int) (Camera.HEIGHT / cellHeight) + 2;
+        int selectedRow = production.getSelectedRow();
+        int selectedCol = production.getSelectedCol();
 
-        for (int row=minRow; row <= maxRow; row++) {
-            for (int col=minCol; col <= maxCol; col++) {
+        GraphicsRender.clear();
 
-                if (col < 0 || col >= columns || row < 0 || row >= rows) {
-                    tileBlocked.draw(camera,
-                            col * cellWidth,
-                            row * cellHeight,
-                            cellWidth,
-                            cellHeight);
-                } else {
-                    tile.draw(camera,
-                            col * cellWidth,
-                            row * cellHeight,
-                            cellWidth,
-                            cellHeight);
-                }
-
+        for (int row = minRow; row <= maxRow; row++) {
+            for (int col = minCol; col <= maxCol; col++) {
+                // Отрисовываем плитку
+                drawTile(camera, col, row, columns, rows);
+                // Отрисовываем блок
                 block = production.getBlockAt(col, row);
-
-                if (block!=null) {
-                    renderer = block.getRenderer();
-                    if (renderer != null) {
-                        renderer.draw(camera,
-                                col * cellWidth,
-                                row * cellHeight,
-                                cellWidth,
-                                cellHeight);
-                    }
-                }
-
-                if (production.isBlockSelected()) {
-                    if (row==production.getSelectedRow() && col==production.getSelectedCol()) {
-                        drawSelection(camera, col, row);
-                        particles.draw(camera,
-                                col * cellWidth + cellWidth * 0.5f,
-                                row * cellHeight + cellHeight * 0.5f,
-                                cellWidth * 0.25f);
-                    }
+                if (block!=null) drawBlock(camera, block, col, row);
+                // Отрисовываем выделение и частицы
+                if (production.isBlockSelected() && row==selectedRow && col==selectedCol) {
+                    drawSelection(camera, col, row);
+                    drawParticles(camera, col, row);
                 }
             }
         }
 
-        // Отрисовываем передвигаемый блок
-        if (movingBlock!=null) {
-            BlockRenderer blockRenderer = movingBlock.getRenderer();
-            blockRenderer.draw(Camera.getInstance(),
-                    cursorX - cellWidth / 2, cursorY - cellHeight / 2,
-                    cellWidth, cellHeight);
+        // Отрисовываем передвигаемый блок поверх остальных
+        if (movingBlock!=null) drawMovingBlock();
+    }
+
+
+    private void drawTile(Camera camera, int col, int row, int columns, int rows) {
+        if (col < 0 || col >= columns || row < 0 || row >= rows) {
+            tileBlocked.draw(camera, col * cellWidth, row * cellHeight, cellWidth, cellHeight);
+        } else {
+            tile.draw(camera, col * cellWidth, row * cellHeight, cellWidth, cellHeight);
         }
     }
 
 
-    public int getProductionColumn(float worldX) {
-        int column = (int) (worldX / cellWidth);
-        if (column >= production.getColumns()) column = -1;
-        return column;
+    private void drawBlock(Camera camera, Block block, int col, int row) {
+        BlockRenderer renderer = block.getRenderer();
+        if (renderer != null) {
+            renderer.draw(camera,col * cellWidth, row * cellHeight, cellWidth, cellHeight);
+        }
     }
 
-    public int getProductionRow(float worldY) {
-        int row = (int) (worldY / cellHeight);
-        if (row >= production.getRows()) row = -1;
-        return row;
+
+    private void drawMovingBlock() {
+        BlockRenderer blockRenderer = movingBlock.getRenderer();
+        blockRenderer.draw(Camera.getInstance(),
+                cursorX - cellWidth / 2, cursorY - cellHeight / 2,
+                cellWidth, cellHeight);
     }
 
 
     private void drawSelection(Camera camera, int col, int row) {
-
         Block underlyingBlock = production.getBlockAt(col,row);
+
         if (underlyingBlock==null || movingBlock==null) {
             selection.setActiveFrame(67);
         } else {
@@ -139,37 +121,58 @@ public class ProductionRenderer {
     }
 
 
-    public void doScale(float scaleFactor) {
+    private void drawParticles(Camera camera, int col, int row) {
+        particles.draw(camera,
+                col * cellWidth + cellWidth * 0.5f,
+                row * cellHeight + cellHeight * 0.5f,
+                cellWidth * 0.25f);
+    }
 
+
+    public int getProductionColumn(float worldX) {
+        int column = (int) (worldX / cellWidth);
+        if (column >= production.getColumns()) column = -1;
+        return column;
+    }
+
+
+    public int getProductionRow(float worldY) {
+        int row = (int) (worldY / cellHeight);
+        if (row >= production.getRows()) row = -1;
+        return row;
+    }
+
+
+    public void doScale(float scaleFactor) {
         float newCellWidth = cellWidth * scaleFactor;
         float newCellHeight = cellHeight * scaleFactor;
-
         if (newCellWidth<128 || newCellHeight<128) { newCellWidth = 128; newCellHeight = 128; }
         if (newCellWidth>512 || newCellHeight>512) { newCellWidth = 512; newCellHeight = 512; }
-
         Camera camera = Camera.getInstance();
         float cx = camera.getX() * (newCellWidth / cellWidth);
         float cy = camera.getY() * (newCellWidth / cellHeight);
         camera.lookAt(cx, cy);
-
         cellWidth = newCellWidth;
         cellHeight = newCellHeight;
-
     }
+
 
     public float getCellWidth() {
         return cellWidth;
     }
 
+
     public float getCellHeight() {
         return cellHeight;
     }
+
 
     public void startBlockMoving(Block block, float cursorX, float cursorY) {
         movingBlock = block;
         this.cursorX = cursorX;
         this.cursorY = cursorY;
     }
+
 
     public void stopBlockMoving() {
         movingBlock = null;
@@ -180,7 +183,9 @@ public class ProductionRenderer {
         return particles;
     }
 
+
     public void setParticles(Particles particles) {
         this.particles = particles;
     }
+
 }
