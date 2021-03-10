@@ -26,26 +26,37 @@ public class ItemWidget extends Button {
             GraphicsRender.drawRectangle(bounds, parentScissor);
         }
 
-
-        // fixme конкурентное изменение текста и изображения!
-
         if (!active) return;
 
-        if (background !=null) {
-            background.zOrder = zOrder + 1;
-            background.draw(camera, bounds, parentScissor);
+        // Исключаем конкурентное изменение текста и изображения
+        synchronized (this) {
+            if (background != null) {
+                background.zOrder = zOrder + 1;
+                background.draw(camera, bounds, parentScissor);
+            }
+            if (text != null) {
+                GraphicsRender.setZOrder(zOrder + 2);
+                float textWidth = GraphicsRender.getTextWidth(text, textScale);
+                // float textHeight = GraphicsRender.getTextHeight(text,textScale);
+                GraphicsRender.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
+                GraphicsRender.drawText(text, bounds.max.x - textWidth - 1, bounds.min.y + 1, textScale, null);
+            }
         }
-
-        if (text!=null) {
-            GraphicsRender.setZOrder(zOrder + 2);
-            float textWidth = GraphicsRender.getTextWidth(text, textScale);
-            // float textHeight = GraphicsRender.getTextHeight(text,textScale);
-            GraphicsRender.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
-            GraphicsRender.drawText(text, bounds.max.x - textWidth - 1, bounds.min.y + 1, textScale, null);
-        }
-
     }
 
+    @Override
+    public void setText(String caption) {
+        synchronized (this) {
+            super.setText(caption);
+        }
+    }
+
+    @Override
+    public void setBackground(Sprite background) {
+        synchronized (this) {
+            super.setBackground(background);
+        }
+    }
 
     public boolean isActive() {
         return active;
