@@ -21,7 +21,9 @@ public class CameraMoveHandler {
     private boolean actionInProgress = false;
     private float cursorX, cursorY;
     private int lastCol, lastRow;
-
+    private float minX, minY, maxX, maxY;
+    private static float HORIZONTAL_MARGIN = 370;
+    private static float VERTICAL_MARGIN = 250;
 
     public CameraMoveHandler(Production prod, ProductionRenderer prodRender) {
         this.production = prod;
@@ -55,14 +57,30 @@ public class CameraMoveHandler {
 
 
     private void actionMove(float worldX, float worldY) {
+
+        float halfWidth = Camera.WIDTH * 0.5f;
+        float halfHeight = Camera.HEIGHT * 0.5f;
+        float cellWidth = productionRenderer.getCellWidth();
+        float cellHeight = productionRenderer.getCellHeight();
+        int columns = production.getColumns();
+        int rows = production.getRows();
+
+        minX = -HORIZONTAL_MARGIN + halfWidth;
+        minY = -VERTICAL_MARGIN + halfHeight;
+        maxX = cellWidth * columns + HORIZONTAL_MARGIN - halfWidth;
+        maxY = cellHeight * rows + VERTICAL_MARGIN - halfHeight;
+
         if (actionInProgress) {
             Camera camera = Camera.getInstance();
             float x = camera.getX() + (cursorX - worldX);
             float y = camera.getY() + (cursorY - worldY);
+            if (x < minX) x = minX;
+            if (x > maxX) x = maxX;
+            if (y < minY) y = minY;
+            if (y > maxY) y = maxY;
             camera.lookAt(x, y);
         }
     }
-
 
     private void actionUp(int column, int row) {
         if (actionInProgress) {
