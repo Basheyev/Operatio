@@ -6,9 +6,9 @@ import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.ui.widgets.Widget;
+import com.axiom.operatio.model.gameplay.Utils;
 
 /**
- * todo Компонент - линейная диаграмма
  * по горизонтали - время (количество отсчётов)
  * по вертикали - значение
  * оси подписаны по значениям и нанесена сетка (по 5-10 значений каждой оси)
@@ -32,6 +32,8 @@ public class LineChart extends Widget {
     private DataSeries[] dataSeries;
     private double totalMax = 0;
     private double totalMin = 0;
+    private String totalMaxStr;
+    private String totalMinStr;
     private static int padding = 16;
 
     /**
@@ -145,9 +147,9 @@ public class LineChart extends Widget {
         }
 
         GraphicsRender.setColor(Color.WHITE);
-        if (totalMax!=Double.MIN_VALUE && totalMin!=Double.MAX_VALUE) {
-            GraphicsRender.drawText("$" + Math.round(totalMax), wBounds.min.x + padding, wBounds.min.y + graphHeight, 1f);
-            GraphicsRender.drawText("$" + Math.round(totalMin), wBounds.min.x + padding, wBounds.min.y + padding, 1f);
+        if (totalMax != Double.MIN_VALUE && totalMin != Double.MAX_VALUE) {
+            GraphicsRender.drawText(totalMaxStr, wBounds.min.x + padding, wBounds.min.y + graphHeight, 1f);
+            GraphicsRender.drawText(totalMinStr, wBounds.min.x + padding, wBounds.min.y + padding, 1f);
         }
 
     }
@@ -185,6 +187,8 @@ public class LineChart extends Widget {
             }
         }
 
+        totalMaxStr = Utils.moneyAsString(Math.round(totalMax));
+        totalMinStr = Utils.moneyAsString(Math.round(totalMin));
     }
 
 }

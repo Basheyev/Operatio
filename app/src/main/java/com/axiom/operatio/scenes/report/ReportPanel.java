@@ -29,6 +29,8 @@ public class ReportPanel extends Panel {
     private ItemWidget[] boughtMaterials;
     private ItemWidget[] manufacturedMaterials;
     private ItemWidget[] soldMaterials;
+    private StringBuffer summary;
+
 
     public ReportPanel(Production production) {
         super();
@@ -36,6 +38,8 @@ public class ReportPanel extends Panel {
 
         setLocalBounds(24,60, 1872, 880);
         setColor(0xCC505050);
+
+        summary = new StringBuffer(512);
 
         panelCaption = new Caption("Operations daily report");
         panelCaption.setTextScale(1.7f);
@@ -129,9 +133,8 @@ public class ReportPanel extends Panel {
      */
     public void updateData() {
         Ledger ledger = production.getLedger();
-        String revenueText = "Sold: " + Utils.moneyFormat(Math.round(ledger.getLastPeriodRevenue())) + "\n";
-        String expensesText = "Purchased: " + Utils.moneyFormat(Math.round(ledger.getLastPeriodExpenses())) + "\n";
-        //expensesText += "\n" + boughtCounter + ". Maintenance - " + Utils.moneyFormat(ledger.getTotalMaintenanceCost());
+        String revenueText = "Sold: " + Utils.moneyAsString(Math.round(ledger.getLastPeriodRevenue())) + "\n";
+        String expensesText = "Purchased: " + Utils.moneyAsString(Math.round(ledger.getLastPeriodExpenses())) + "\n";
 
         synchronized (this) {
 
@@ -183,34 +186,46 @@ public class ReportPanel extends Panel {
 
             }
 
-            double totalRevenue = ledger.getTotalRevenue();
-            double margin = 0;
-            if (totalRevenue > 0) margin = Math.round(ledger.getTotalMargin() / totalRevenue * 100);
-
-            String report = "Income: " + Utils.moneyFormat(Math.round(ledger.getLastPeriodRevenue())) +
-                    "\nExpenses: " + Utils.moneyFormat(Math.round(ledger.getLastPeriodExpenses()))  +
-                    "\nMargin: " + Utils.moneyFormat(Math.round(ledger.getLastPeriodMargin()))
-                    + "\n\nTotal margin: " + Utils.moneyFormat(Math.round(ledger.getTotalMargin())) + " ("
-                    + margin + "%)"
-                    + "\nCash: " + Utils.moneyFormat(Math.round(production.getCashBalance()))
-                    + "\nAssets: " + Utils.moneyFormat(Math.round(production.getAssetsValuation()))
-                    + "\nWork in progress: " + Utils.moneyFormat(Math.round(production.getWorkInProgressValuation()))
-                    + "\nInventory: " + Utils.moneyFormat(Math.round(production.getInventory().getValuation()))
-                    + "\n\nCapitalization: " + Utils.moneyFormat(Math.round(ledger.getCapitalization()));
-
+            updateSummary(ledger);
+            incomeCaption.setText(revenueText);
+            expenseCaption.setText(expensesText);
+            reportCaption.setText(summary);
 
             LevelFactory lm = LevelFactory.getInstance();
             Level level = lm.getLevel(production.getLevel());
-            // todo здесь может съедаться память если не использовать StringBuffer (если только уже это компилятор не недлает)
             String goal = "Level " + production.getLevel() + " - " + level.getDescription();
             panelCaption.setText(goal);
 
-
-
-            incomeCaption.setText(revenueText);
-            expenseCaption.setText(expensesText);
-            reportCaption.setText(report);
         }
+    }
+
+
+    private void updateSummary(Ledger ledger) {
+        double totalRevenue = ledger.getTotalRevenue();
+        double margin = 0;
+        if (totalRevenue > 0) margin = Math.round(ledger.getTotalMargin() / totalRevenue * 100);
+        summary.delete(0, summary.length());
+        summary.append("Income: ");
+        summary.append(Utils.moneyAsBuffer(Math.round(ledger.getLastPeriodRevenue())));
+        summary.append("\nExpenses: ");
+        summary.append(Utils.moneyAsBuffer(Math.round(ledger.getLastPeriodExpenses())));
+        summary.append("\nMargin: ");
+        summary.append(Utils.moneyAsBuffer(Math.round(ledger.getLastPeriodMargin())));
+        summary.append("\n\nTotal margin: ");
+        summary.append( Utils.moneyAsBuffer(Math.round(ledger.getTotalMargin())));
+        summary.append(" (");
+        summary.append(margin);
+        summary.append("%)");
+        summary.append("\nCash: ");
+        summary.append(Utils.moneyAsBuffer(Math.round(production.getCashBalance())));
+        summary.append("\nAssets: ");
+        summary.append(Utils.moneyAsBuffer(Math.round(production.getAssetsValuation())));
+        summary.append("\nWork in progress: ");
+        summary.append(Utils.moneyAsBuffer(Math.round(production.getWorkInProgressValuation())));
+        summary.append("\nInventory: ");
+        summary.append(Utils.moneyAsBuffer(Math.round(production.getInventory().getValuation())));
+        summary.append("\n\nCapitalization: ");
+        summary.append(Utils.moneyAsBuffer(Math.round(ledger.getCapitalization())));
     }
 
 

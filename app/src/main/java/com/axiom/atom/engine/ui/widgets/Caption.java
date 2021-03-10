@@ -8,7 +8,7 @@ import com.axiom.atom.engine.graphics.renderers.Text;
 public class Caption extends Widget {
 
     protected Text textRenderer;
-    protected String caption;
+    protected CharSequence caption;
     protected float[] textColor = {0,0,0,1};
     protected float scale = 1.0f;
 
@@ -29,7 +29,7 @@ public class Caption extends Widget {
         if (caption != null) {
             textRenderer.zOrder = zOrder + 2;
             textRenderer.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
-            // fixme зафиксировано выравнивание по левому краму (надо дробить на строки и выравнивать каждую)
+            // fixme зафиксировано выравнивание по левому краю (надо дробить на строки и выравнивать каждую)
             textRenderer.draw(camera, caption, bounds.min.x, bounds.center.y - textHeight/2, scale, scissors);
         }
 
@@ -51,7 +51,7 @@ public class Caption extends Widget {
                 ((rgba >> 24) & 0xff) / 255.0f);
     }
 
-    public void setText(String caption) {
+    public void setText(CharSequence caption) {
         if (caption!=null) this.caption = caption;
     }
 

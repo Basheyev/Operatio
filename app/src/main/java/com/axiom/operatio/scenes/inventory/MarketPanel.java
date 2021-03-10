@@ -78,7 +78,7 @@ public class MarketPanel extends Panel {
         quantityButton = buildButton("" + quantity, 275, 365, 150, 80, Color.BLACK, 1.5f, false);
         rightButton = buildButton(">",425, 365, 75, 80,  Color.GRAY, 1,true);
 
-        String sumText = Utils.moneyFormat(production.getCashBalance());
+        String sumText = Utils.moneyAsString(production.getCashBalance());
         dealSum = buildButton(sumText, 525, 365, 250, 80, Color.BLACK, 1.5f,false);
 
         autoBuyCB = buildCheckBox("Auto-buy", 550, 805, 200, 100);
@@ -125,7 +125,8 @@ public class MarketPanel extends Panel {
             maxValue = market.getHistoryMaxValue(currentCommodity);
             counter = market.getHistoryLength(currentCommodity);
             market.getHistoryValues(currentCommodity, values);
-            dealSum.setText(Utils.moneyFormat(quantity * market.getValue(currentCommodity)));
+            dealSum.setText(Utils.moneyAsString(quantity * market.getValue(currentCommodity)));
+            caption.setText(commodityName + " - " + Utils.moneyAsString(market.getValue(currentCommodity)));
         }
     }
 
@@ -137,7 +138,6 @@ public class MarketPanel extends Panel {
         AABB wBounds = getWorldBounds();
         AABB scissor = getScissors();
 
-        caption.setText(commodityName + " - " + Utils.moneyFormat(market.getValue(currentCommodity)));
         GraphicsRender.setZOrder(zOrder + 1);
 
         synchronized (values) {

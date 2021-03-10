@@ -95,7 +95,6 @@ public class ProductionScene extends GameScene {
 
         production.process();
 
-        // todo эту проверку можно делать реже
         // Проверить не сменился ли уровень (обновить доступ к кнопкам)
         if (currentLevel != production.getLevel()) {
             currentLevel = production.getLevel();

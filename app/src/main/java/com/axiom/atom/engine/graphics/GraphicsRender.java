@@ -141,6 +141,11 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
             renderScene();
         } catch (Exception e) {
             e.printStackTrace();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

@@ -61,7 +61,7 @@ public class BlockButton extends Button {
         int startFrame = (id - 2) * 8;
         int animation = background.addAnimation(startFrame, startFrame + 7, 8, true);
         background.setActiveAnimation(animation);
-        setText(Utils.moneyFormat(Math.round(MachineType.getMachineType(id-2).getPrice())));
+        setText(Utils.moneyAsString(Math.round(MachineType.getMachineType(id-2).getPrice())));
     }
 
 

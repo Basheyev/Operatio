@@ -112,7 +112,7 @@ public class ScenesPanel extends Panel {
         long currentDay = production.getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES;
         if (currentBalance != lastBalance || currentDay != lastDay) {
             timeCaption.setText("Day: " + currentDay);
-            balanceCaption.setText(Utils.moneyFormat(currentBalance));
+            balanceCaption.setText(Utils.moneyAsString(currentBalance));
             lastBalance = currentBalance;
             lastDay = currentDay;
         }
