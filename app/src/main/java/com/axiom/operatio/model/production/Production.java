@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.data.JSONSerializable;
+import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.gameplay.Level;
@@ -28,7 +29,7 @@ public class Production implements JSONSerializable {
 
     // todo сохранять положение камеры
     // todo ограничение площади производства (доступна минимальная часть и по мере уровней)
-    // todo возможность покупки дополнительной площади и ограничения (покупка по квадратами)
+    // todo возможность покупки дополнительной площади и ограничения (покупка квадратами)
 
     private Inventory inventory;                  // Объект - склад
     private Market market;                        // Объект - рынок
@@ -36,7 +37,7 @@ public class Production implements JSONSerializable {
     private LevelFactory levelFactory;            // Менеджер уровней
     private int level = 0;                        // Текущий уровень
     private int lastCompletedLevel = -1;          // Последний завершенный уровень
-    private double cashBalance = 10000;           // Остатки денег
+    private double cashBalance = 10000;           // Стартовые деньги
 
     private ArrayList<Block> blocks;              // Список блоков производства
     private Block[][] grid;                       // Блоки привязанные к координатной сетке
@@ -96,6 +97,13 @@ public class Production implements JSONSerializable {
         blockSelected = jsonObject.getBoolean("blockSelected");
         selectedCol = jsonObject.getInt("selectedCol");
         selectedRow = jsonObject.getInt("selectedRow");
+        try {
+            float cameraX = (float) jsonObject.getDouble("cameraX");
+            float cameraY = (float) jsonObject.getDouble("cameraY");
+            Camera.getInstance().lookAt(cameraX, cameraY);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         JSONArray jsonArray = jsonObject.getJSONArray("blocks");
         blocks = new ArrayList<Block>(jsonArray.length());
@@ -387,7 +395,8 @@ public class Production implements JSONSerializable {
             jsonObject.put("blockSelected", blockSelected);
             jsonObject.put("selectedCol", selectedCol);
             jsonObject.put("selectedRow", selectedRow);
-
+            jsonObject.put("cameraX", Camera.getInstance().getX());
+            jsonObject.put("cameraY", Camera.getInstance().getY());
 
             JSONArray jsonArray = new JSONArray();
             for (int i=0; i<blocks.size(); i++) {
