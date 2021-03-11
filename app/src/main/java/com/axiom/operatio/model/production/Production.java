@@ -40,6 +40,7 @@ public class Production implements JSONSerializable {
 
     private ArrayList<Block> blocks;              // Список блоков производства
     private Block[][] grid;                       // Блоки привязанные к координатной сетке
+    private boolean[][] unlocked;                 // Разлокированные клетки производства
     private int columns, rows;                    // Количество столбцов и строк
 
     private long lastCycleTime;                   // Время последнего цикла (миллисекунды)
@@ -65,6 +66,10 @@ public class Production implements JSONSerializable {
         this.columns = columns;
         this.rows = rows;
         grid = new Block[rows][columns];
+        unlocked = new boolean[rows][columns];
+        setAreaUnlocked(0,0, columns, rows, false);
+        setAreaUnlocked(0,0,8, 6, true);
+
         blocks = new ArrayList<Block>(100);
         inventory = new Inventory(this);
         market = new Market(this);
@@ -85,6 +90,7 @@ public class Production implements JSONSerializable {
         this.columns = columns;
         this.rows = rows;
         grid = new Block[rows][columns];
+        unlocked = new boolean[rows][columns];
         level = jsonObject.getInt("level");
         lastCycleTime = jsonObject.getLong("lastCycleTime");
         cycleMilliseconds = jsonObject.getLong("cycleMilliseconds");
@@ -110,6 +116,19 @@ public class Production implements JSONSerializable {
             JSONObject jsonBlock = jsonArray.getJSONObject(i);
             Block block = Block.deserialize(this, jsonBlock);
             setBlock(block, block.column, block.row);
+        }
+
+        try {
+            JSONArray jsonUnlocked = jsonObject.getJSONArray("unlocked");
+            for (int i=rows-1; i>=0; i--) {
+                JSONArray jsonUnlockedRow = jsonUnlocked.getJSONArray(i);
+                for (int j=columns-1; j>=0; j--) {
+                    unlocked[i][j] = jsonUnlockedRow.getBoolean(j);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            setAreaUnlocked(0,0, columns, rows, true);
         }
 
         JSONObject jsonInventory = jsonObject.getJSONObject("inventory");
@@ -178,6 +197,19 @@ public class Production implements JSONSerializable {
 
     }
 
+    public void setAreaUnlocked(int col, int row, int w, int h, boolean state) {
+        if (col < 0) col = 0;
+        if (row < 0) row = 0;
+        if (col >= columns) col = columns - 1;
+        if (row >= rows) row = rows - 1;
+        if (col + w >= columns) w = (columns - col) - 1;
+        if (row + h >= rows) h = (rows - row) - 1;
+        for (int y=row; y<row+h; y++) {
+            for (int x=col; x<col+w; x++) {
+                unlocked[y][x] = state;
+            }
+        }
+    }
 
     private void checkLevelConditions() {
         // Проверка условий уровня
@@ -237,6 +269,12 @@ public class Production implements JSONSerializable {
             default:
                 return null;
         }
+    }
+
+    public boolean isUnlocked(int col, int row) {
+        if (col < 0 || col >= columns) return false;
+        if (row < 0 || row >= rows) return false;
+        return unlocked[row][col];
     }
 
 
@@ -403,7 +441,17 @@ public class Production implements JSONSerializable {
                 jsonArray.put(jsonBlock);
             }
 
+            JSONArray jsonUnlocked = new JSONArray();
+            for (int i=0; i<rows; i++) {
+                JSONArray jsonUnlockedRow = new JSONArray();
+                for (int j=0; j<columns; j++) {
+                    jsonUnlockedRow.put(unlocked[i][j]);
+                }
+                jsonUnlocked.put(jsonUnlockedRow);
+            }
+
             jsonObject.put("blocks", jsonArray);
+            jsonObject.put("unlocked", jsonUnlocked);
             jsonObject.put("inventory", inventory.serialize());
             jsonObject.put("ledger", ledger.serialize());
 

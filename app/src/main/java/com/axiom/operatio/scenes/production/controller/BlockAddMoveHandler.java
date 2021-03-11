@@ -93,7 +93,7 @@ public class BlockAddMoveHandler {
             productionRenderer.stopBlockMoving();
             // Если блок добавлен в пределах карты производства
             if (column >= 0 && row >= 0 && column < cols && row < rows) {
-                if (block == null) setBlockTo(column, row);
+                if (block == null && production.isUnlocked(column, row)) setBlockTo(column, row);
                 else returnBlockBack(column, row);
             } else {
                 if (!justCreatedBlock) returnBlockBack(lastCol, lastRow);
