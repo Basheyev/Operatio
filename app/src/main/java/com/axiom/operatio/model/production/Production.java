@@ -203,8 +203,8 @@ public class Production implements JSONSerializable {
         if (row < 0) row = 0;
         if (col >= columns) col = columns - 1;
         if (row >= rows) row = rows - 1;
-        if (col + w >= columns) w = (columns - col) - 1;
-        if (row + h >= rows) h = (rows - row) - 1;
+        if (col + w >= columns) w = (columns - col);
+        if (row + h >= rows) h = (rows - row);
         for (int y=row; y<row+h; y++) {
             for (int x=col; x<col+w; x++) {
                 unlocked[y][x] = state;

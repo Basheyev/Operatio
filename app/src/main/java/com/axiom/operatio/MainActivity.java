@@ -3,6 +3,7 @@ package com.axiom.operatio;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.GameView;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         gameScene = new MainMenuScene();
         gameView = GameView.getInstance(this, gameScene);
         setContentView(gameView);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
