@@ -60,7 +60,7 @@ public class ModePanel extends Panel {
     public ModePanel(ProductionScene scene) {
         super();
         this.productionScene = scene;
-        setLocalBounds(780,0,340,140);
+        setLocalBounds(730,0,440,140);
         setColor(panelColor);
         buildButtons();
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
@@ -77,7 +77,7 @@ public class ModePanel extends Panel {
         Widget button;
         Sprite sprite;
 
-        for (int i =0; i<3; i++) {
+        for (int i =0; i<4; i++) {
             sprite = new Sprite(SceneManager.getResources(), R.drawable.ui_icons, 4, 4);
             sprite.setActiveFrame(8 + i);
             button = new Button(sprite);

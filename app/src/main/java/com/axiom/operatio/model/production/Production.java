@@ -27,8 +27,9 @@ import java.util.ArrayList;
  */
 public class Production implements JSONSerializable {
 
-    // todo ограничение площади производства (доступна минимальная часть и по мере уровней)
-    // todo возможность покупки дополнительной площади и ограничения (покупка квадратами)
+    public static final int START_MONEY = 10000;  // Начальная сумма денег
+    public static final int TILE_PRICE = 500;     // Цена одной плитки площади
+    public static final int CYCLE_TIME = 300;     // Длительность цикла в миллесекундах
 
     private Inventory inventory;                  // Объект - склад
     private Market market;                        // Объект - рынок
@@ -36,7 +37,7 @@ public class Production implements JSONSerializable {
     private LevelFactory levelFactory;            // Менеджер уровней
     private int level = 0;                        // Текущий уровень
     private int lastCompletedLevel = -1;          // Последний завершенный уровень
-    private double cashBalance = 10000;           // Стартовые деньги
+    private double cashBalance = START_MONEY;     // Стартовые деньги
 
     private ArrayList<Block> blocks;              // Список блоков производства
     private Block[][] grid;                       // Блоки привязанные к координатной сетке
@@ -44,7 +45,7 @@ public class Production implements JSONSerializable {
     private int columns, rows;                    // Количество столбцов и строк
 
     private long lastCycleTime;                   // Время последнего цикла (миллисекунды)
-    private long cycleMilliseconds = 300;         // Длительносить цикла (миллисекунды)
+    private long cycleMilliseconds = CYCLE_TIME;  // Длительносить цикла (миллисекунды)
     private long clock = 0;                       // Часы производства (с вычетом пауз игры)
     private long cycle;                           // Счётчик циклов производства
 

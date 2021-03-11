@@ -16,12 +16,14 @@ public class InputHandler {
     public static final int BLOCK_ADD_MOVE = 1;
     public static final int BLOCK_DELETE = 2;
     public static final int BLOCK_ROTATE = 3;
+    public static final int BUY_TILE = 4;
 
     private CameraMoveHandler cameraMoveHandler;
     private CameraScaleHandler cameraScaleHandler;
     private BlockDeleteHandler blockDeleteHandler;
     private BlockAddMoveHandler blockAddMoveHandler;
     private BlockRotateHandler blockRotateHandler;
+    private BuyTileHandler buyTileHandler;
     private ProductionScene scene;
 
     
@@ -32,6 +34,7 @@ public class InputHandler {
         blockAddMoveHandler = new BlockAddMoveHandler(this, scene, production, productionRenderer);
         blockDeleteHandler = new BlockDeleteHandler(this, production, productionRenderer);
         blockRotateHandler = new BlockRotateHandler(this, production, productionRenderer);
+        buyTileHandler = new BuyTileHandler(this, production, productionRenderer);
     }
 
 
@@ -46,9 +49,11 @@ public class InputHandler {
             state = BLOCK_ADD_MOVE;
         } else
         if (modeToggled) {
-            if (scene.getModePanel().getToggledButton().equals("0")) state = BLOCK_ADD_MOVE;
-            if (scene.getModePanel().getToggledButton().equals("1")) state = BLOCK_ROTATE;
-            if (scene.getModePanel().getToggledButton().equals("2")) state = BLOCK_DELETE;
+            String mode = scene.getModePanel().getToggledButton();
+            if (mode.equals("0")) state = BLOCK_ADD_MOVE;
+            if (mode.equals("1")) state = BLOCK_ROTATE;
+            if (mode.equals("2")) state = BLOCK_DELETE;
+            if (mode.equals("3")) state = BUY_TILE;
         }
 
         switch (state) {
@@ -56,6 +61,7 @@ public class InputHandler {
             case BLOCK_ADD_MOVE: blockAddMoveHandler.onMotion(event, worldX, worldY); break;
             case BLOCK_DELETE: blockDeleteHandler.onMotion(event, worldX, worldY); break;
             case BLOCK_ROTATE: blockRotateHandler.onMotion(event, worldX, worldY); break;
+            case BUY_TILE: buyTileHandler.onMotion(event, worldX, worldY); break;
         }
 
     }
@@ -74,6 +80,7 @@ public class InputHandler {
         blockAddMoveHandler.invalidateAction();
         blockRotateHandler.invalidateAction();
         cameraMoveHandler.invalidateAction();
+        buyTileHandler.invalidateAction();
     }
 
     public CameraMoveHandler getCameraMoveHandler() {
@@ -96,4 +103,7 @@ public class InputHandler {
         return blockRotateHandler;
     }
 
+    public BuyTileHandler getBuyTileHandler() {
+        return buyTileHandler;
+    }
 }

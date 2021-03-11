@@ -13,7 +13,7 @@ import com.axiom.operatio.model.production.block.BlockRenderer;
 public class ProductionRenderer {
 
     private Production production;
-    private Sprite tile, tileBlocked, selection;
+    private Sprite tile, tileBlocked, outsideTile, selection;
 
     private Particles particles;
 
@@ -31,11 +31,15 @@ public class ProductionRenderer {
         tileBlocked = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
         tileBlocked.setActiveFrame(70);
         tileBlocked.zOrder = 0;
+        outsideTile = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+        outsideTile.setActiveFrame(87);
+        outsideTile.zOrder = 0;
         selection = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
         selection.setActiveFrame(67);
         selection.zOrder = 500;
 
-        Sprite particleSprite = new Sprite(SceneManager.getResources(), R.drawable.vfx);
+        Sprite particleSprite = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+        particleSprite.setActiveFrame(86);
         particles = new Particles(particleSprite,16, 1000, 100);
         particles.zOrder = 8;
 
@@ -80,7 +84,7 @@ public class ProductionRenderer {
 
     private void drawTile(Camera camera, int col, int row, int columns, int rows) {
         if (col < 0 || col >= columns || row < 0 || row >= rows) {
-            // тут рисуем площадь за пределами производства
+            outsideTile.draw(camera, col * cellWidth, row * cellHeight, cellWidth , cellHeight );
         } else if (!production.isUnlocked(col, row)) {
             tileBlocked.draw(camera, col * cellWidth, row * cellHeight, cellWidth , cellHeight );
         } else {
