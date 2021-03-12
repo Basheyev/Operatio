@@ -12,6 +12,12 @@ import com.axiom.operatio.model.production.block.BlockRenderer;
 
 public class ProductionRenderer {
 
+    public static final int MIN_CELL_SIZE = 128;
+    public static final int MAX_CELL_SIZE = 512;
+    public static final int INITIAL_CELL_WIDTH = MIN_CELL_SIZE;
+    public static final int INITIAL_CELL_HEIGHT = MIN_CELL_SIZE;
+
+
     private Production production;
     private Sprite tile, tileBlocked, outsideTile, selection;
 
@@ -24,7 +30,8 @@ public class ProductionRenderer {
     private float cursorX, cursorY;
 
 
-    public ProductionRenderer(Production production, float cellWidth, float cellHeight) {
+    protected ProductionRenderer(Production production) {
+
         tile = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
         tile.setActiveFrame(68);
         tile.zOrder = 0;
@@ -44,8 +51,8 @@ public class ProductionRenderer {
         particles.zOrder = 8;
 
         this.production = production;
-        this.cellWidth = cellWidth;
-        this.cellHeight = cellHeight;
+        this.cellWidth = INITIAL_CELL_WIDTH;
+        this.cellHeight = INITIAL_CELL_HEIGHT;
     }
 
 
@@ -152,8 +159,10 @@ public class ProductionRenderer {
     public void doScale(float scaleFactor) {
         float newCellWidth = cellWidth * scaleFactor;
         float newCellHeight = cellHeight * scaleFactor;
-        if (newCellWidth<128 || newCellHeight<128) { newCellWidth = 128; newCellHeight = 128; }
-        if (newCellWidth>512 || newCellHeight>512) { newCellWidth = 512; newCellHeight = 512; }
+        float min = MIN_CELL_SIZE;
+        float max = MAX_CELL_SIZE;
+        if (newCellWidth < min || newCellHeight < min) { newCellWidth = min; newCellHeight = min; }
+        if (newCellWidth > max || newCellHeight > max) { newCellWidth = max; newCellHeight = max; }
         Camera camera = Camera.getInstance();
         float cx = camera.getX() * (newCellWidth / cellWidth);
         float cy = camera.getY() * (newCellWidth / cellHeight);
@@ -172,6 +181,13 @@ public class ProductionRenderer {
         return cellHeight;
     }
 
+
+    public void setCellSize(float width, float height) {
+        if (width<128 || height<128) { width = 128; height = 128; }
+        if (width>512 || height>512) { width = 512; height = 512; }
+        cellWidth = width;
+        cellHeight = height;
+    }
 
     public void startBlockMoving(Block block, float cursorX, float cursorY) {
         movingBlock = block;

@@ -56,6 +56,7 @@ public class Production implements JSONSerializable {
     private boolean blockSelected = false;        // Выбрал ли блок
     private int selectedCol, selectedRow;         // Столбец и строка выбранного блока
 
+    private ProductionRenderer renderer = null;
     private int levelCompletedSound;
 
 
@@ -75,7 +76,7 @@ public class Production implements JSONSerializable {
         inventory = new Inventory(this);
         market = new Market(this);
         ledger = new Ledger(this);
-
+        renderer = new ProductionRenderer(this);
     }
 
 
@@ -103,10 +104,15 @@ public class Production implements JSONSerializable {
         blockSelected = jsonObject.getBoolean("blockSelected");
         selectedCol = jsonObject.getInt("selectedCol");
         selectedRow = jsonObject.getInt("selectedRow");
+        renderer = new ProductionRenderer(this);
+
         try {
             float cameraX = (float) jsonObject.getDouble("cameraX");
             float cameraY = (float) jsonObject.getDouble("cameraY");
+            float cellWidth = (float) jsonObject.getDouble("cellWidth");
+            float cellHeight = (float) jsonObject.getDouble("cellHeight");
             Camera.getInstance().lookAt(cameraX, cameraY);
+            renderer.setCellSize(cellWidth, cellHeight);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -414,6 +420,9 @@ public class Production implements JSONSerializable {
         return isPaused;
     }
 
+    public ProductionRenderer getRenderer() {
+        return renderer;
+    }
 
     public JSONObject serialize() {
 
@@ -433,8 +442,12 @@ public class Production implements JSONSerializable {
             jsonObject.put("blockSelected", blockSelected);
             jsonObject.put("selectedCol", selectedCol);
             jsonObject.put("selectedRow", selectedRow);
+
+            // Camera & Zoom
             jsonObject.put("cameraX", Camera.getInstance().getX());
             jsonObject.put("cameraY", Camera.getInstance().getY());
+            jsonObject.put("cellWidth", renderer.getCellWidth());
+            jsonObject.put("cellHeight", renderer.getCellHeight());
 
             JSONArray jsonArray = new JSONArray();
             for (int i=0; i<blocks.size(); i++) {
