@@ -22,14 +22,14 @@ public class MachineRenderer extends BlockRenderer {
         int ID = machine.getType().ID;
 
         sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-        sprite.zOrder = 6;
+        sprite.zOrder = 7;
         idleAnimation = sprite.addAnimation(ID * 8, ID * 8, 8, true);
         busyAnimation = sprite.addAnimation(ID * 8, ID * 8 + 7, 8, true);
         sprite.setActiveAnimation(idleAnimation);
 
         fault = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
         fault.setActiveFrame(71);
-        fault.zOrder = 7;
+        fault.zOrder = 8;
 
         conveyorRenderer = new ConveyorRenderer(machine);
     }
