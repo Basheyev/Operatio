@@ -64,7 +64,7 @@ public class ProductionScene extends GameScene {
             sceneManager.addGameScene(new InventoryScene(production));
             sceneManager.addGameScene(new ReportScene(production));
             sceneManager.addGameScene(new TechnologyScene(production));
-            productionRenderer = new ProductionRenderer(production, initialCellWidth, initialCellHeight);
+            productionRenderer = production.getRenderer();
             inputHandler = new InputHandler(this, production, productionRenderer);
             ProductionSceneUI.buildUI(this, getResources(), getSceneWidget(), production);
             blocksPanel = ProductionSceneUI.getBlocksPanel();
