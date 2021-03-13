@@ -1,16 +1,24 @@
 package com.axiom.operatio.scenes.technology;
 
+import android.util.Log;
+
+import com.axiom.atom.R;
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.graphics.renderers.Text;
+import com.axiom.atom.engine.sound.SoundRenderer;
+import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
+import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
-import com.axiom.operatio.scenes.production.view.ItemWidget;
+import com.axiom.operatio.scenes.common.ItemWidget;
+
+import java.util.Iterator;
 
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.WHITE;
@@ -66,10 +74,12 @@ public class RecipePanel extends Panel {
         }
     }
 
+
     private void buildUI() {
         Panel panel = this;
         panel.setLocalBounds(874,60, 1026, 880);
         panel.setColor(0xCC505050);
+        // panel.setColor(0,0,0,0.5f);
 
         caption = new Caption("Recipe");
         caption.setTextScale(1.5f);
@@ -91,12 +101,14 @@ public class RecipePanel extends Panel {
             inpBtn[i].setColor(BLACK);
             inpBtn[i].setTextColor(WHITE);
             inpBtn[i].setTextScale(1);
+            inpBtn[i].setClickListener(clickListener);
             addChild(inpBtn[i]);
             inpCap[i] = new Caption("");
             inpCap[i].setLocalBounds(30 , 580 - i*80, 280, 64);
             inpCap[i].setTextColor(WHITE);
             inpCap[i].setTextScale(1.2f);
             inpCap[i].setHorizontalAlignment(Text.ALIGN_RIGHT);
+            inpCap[i].setClickListener(clickListener);
             addChild(inpCap[i]);
         }
 
@@ -171,8 +183,6 @@ public class RecipePanel extends Panel {
         machineCaption.setText(machineType.getName() + "\n " + "operation #" +  operationID);
         machineButton.setBackground(machineImage);
 
-        //machineButton.setText("Operation #" +);
-
         Operation operation = machineType.getOperation(operationID);
 
         Material[] inputs =  operation.getInputMaterials();
@@ -182,12 +192,16 @@ public class RecipePanel extends Panel {
 
         for (int i=0; i<4; i++) {
             if (i<inputs.length) {
+                String materialTag = "" + inputs[i].getMaterialID();
                 inpBtn[i].setBackground(inputs[i].getImage());
-                inpBtn[i].setText("" + inputAmount[i]);
+                inpBtn[i].setText("x" + inputAmount[i]);
+                inpBtn[i].setTag(materialTag);
                 inpCap[i].setText(inputs[i].getName());
+                inpCap[i].setTag(materialTag);
             } else {
                 inpBtn[i].setBackground(null);
                 inpBtn[i].setText("");
+                inpBtn[i].setTag(null);
                 inpCap[i].setText("");
             }
         }
@@ -196,7 +210,7 @@ public class RecipePanel extends Panel {
         for (int i=0; i<4; i++) {
             if (i<outputs.length) {
                 outBtn[i].setBackground(outputs[i].getImage());
-                outBtn[i].setText("" + outputAmount[i]);
+                outBtn[i].setText("x" + outputAmount[i]);
                 outCap[i].setText(outputs[i].getName());
             } else {
                 outBtn[i].setBackground(null);
@@ -220,7 +234,7 @@ public class RecipePanel extends Panel {
 
         GraphicsRender.setZOrder(zOrder + 1);
         GraphicsRender.setLineThickness(6);
-        GraphicsRender.setColor(YELLOW);
+        GraphicsRender.setColor(1,1,0,0.7f);
 
         for (int i=0; i<4; i++) if (inpBtn[i].getBackground()!=null) {
             AABB mat = inpBtn[i].getWorldBounds();
@@ -233,4 +247,26 @@ public class RecipePanel extends Panel {
         }
 
     }
+
+
+    private ClickListener clickListener = new ClickListener() {
+
+        protected int tickSound =-1;
+
+        @Override
+        public void onClick(Widget w) {
+            if (tickSound == -1) tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
+            String materialTag = w.getTag();
+            if (materialTag != null) {
+                try {
+                    int materialID = Integer.parseInt(w.getTag());
+                    materialsTree.setSelectedMaterial(Material.getMaterial(materialID));
+                    SoundRenderer.playSound(tickSound);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    };
 }
