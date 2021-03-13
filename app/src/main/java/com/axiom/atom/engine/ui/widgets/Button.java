@@ -4,11 +4,13 @@ import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
+import com.axiom.atom.engine.graphics.renderers.Text;
 
-import org.jetbrains.annotations.Nullable;
+import static android.graphics.Color.RED;
 
 public class Button extends Widget {
 
+    protected Text textRenderer;
     protected Sprite background;
     protected String text;
     protected float[] textColor = {0,0,0,1};
@@ -17,6 +19,9 @@ public class Button extends Widget {
     public Button() {
         super();
         text = "";
+        textRenderer = new Text("sans-serif");
+        textRenderer.setHorizontalAlignment(Text.ALIGN_CENTER);
+        textRenderer.setVerticalAlignment(Text.ALIGN_CENTER);
         setSize(64, 64);
         setColor(0.5f, 0.7f, 0.5f, 0.9f);
     }
@@ -39,8 +44,8 @@ public class Button extends Widget {
     public void draw(Camera camera) {
         if (parent==null || !visible) return;
         AABB bounds = getWorldBounds();
-        // AABB scissors = getScissors();
         AABB parentScissor = parent.getScissors();
+        float spaceWidth = textRenderer.getCharWidth(' ', textScale);
 
         if (opaque) {
             GraphicsRender.setZOrder(zOrder);
@@ -54,13 +59,14 @@ public class Button extends Widget {
         }
 
         if (text!=null) {
-            GraphicsRender.setZOrder(zOrder + 2);
-            float textWidth = GraphicsRender.getTextWidth(text, textScale);
-            float textHeight = GraphicsRender.getTextHeight(text,textScale);
-            GraphicsRender.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
-            GraphicsRender.drawText(text, bounds.center.x - textWidth/2, bounds.center.y - (textHeight/2), textScale, parentScissor);
-            // Пока не обрезаем текст для повышения производительности
-            // GraphicsRender.drawText(text, bounds.center.x - textWidth/2, bounds.center.y - (textHeight/2), textScale, scissors);
+            float x = bounds.min.x + spaceWidth;
+            float y = bounds.center.y;
+            if (getHorizontalAlignment()==Text.ALIGN_CENTER) x = bounds.center.x;
+            if (getHorizontalAlignment()==Text.ALIGN_RIGHT) x = bounds.max.x - spaceWidth;
+
+            textRenderer.setZOrder(zOrder + 2);
+            textRenderer.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
+            textRenderer.draw(camera, text, x, y, textScale, parentScissor);
         }
 
         super.draw(camera);
@@ -92,6 +98,14 @@ public class Button extends Widget {
 
     public void setText(String caption) {
         if (caption!=null) this.text = caption;
+    }
+
+    public void setHorizontalAlignment(int alignment) {
+        this.textRenderer.setHorizontalAlignment(alignment);
+    }
+
+    public int getHorizontalAlignment() {
+        return textRenderer.getHorizontalAlignment();
     }
 
 }

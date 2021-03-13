@@ -5,6 +5,8 @@ import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Text;
 
+import static android.graphics.Color.RED;
+
 public class Caption extends Widget {
 
     private Text textRenderer;
@@ -15,28 +17,31 @@ public class Caption extends Widget {
     public Caption(String text) {
         super();
         textRenderer = new Text("sans-serif");
+        textRenderer.setHorizontalAlignment(Text.ALIGN_LEFT);
+        textRenderer.setVerticalAlignment(Text.ALIGN_CENTER);
         caption = text;
     }
 
     @Override
     public void draw(Camera camera) {
         if (parent==null || !visible) return;
+
         if (caption != null) {
 
             AABB bounds = getWorldBounds();
             AABB scissors = parent.getScissors();
 
-            float textHeight = textRenderer.getTextHeight(caption, scale);
+            float xpos = bounds.min.x; // ALIGN_LEFT
+            if (getHorzinontalAlignment()==Text.ALIGN_RIGHT) xpos = bounds.max.x;
+            if (getHorzinontalAlignment()==Text.ALIGN_CENTER) xpos = bounds.center.x;
 
-            float xpos = bounds.min.x;
-            if (getAlignment()==Text.ALIGN_RIGHT) xpos = bounds.max.x;
-            if (getAlignment()==Text.ALIGN_CENTER) xpos = bounds.center.x;
-
-            // fixme добавить выравнивание по середине и по право краю при многострочном
+            float ypos = bounds.max.y; // ALIGN_TOP
+            if (getVerticalAlignment()==Text.ALIGN_BOTTOM) ypos = bounds.min.y;
+            if (getVerticalAlignment()==Text.ALIGN_CENTER) ypos = bounds.center.y;
 
             textRenderer.setZOrder(zOrder + 2);
             textRenderer.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
-            textRenderer.draw(camera, caption, xpos, bounds.center.y - textHeight/2, scale, scissors);
+            textRenderer.draw(camera, caption, xpos, ypos, scale, scissors);
         }
 
         super.draw(camera);
@@ -65,11 +70,21 @@ public class Caption extends Widget {
         this.scale = scale;
     }
 
-    public void setAlignment(int alignment) {
-        this.textRenderer.setAlignment(alignment);
+    public void setHorizontalAlignment(int alignment) {
+        textRenderer.setHorizontalAlignment(alignment);
     }
 
-    public int getAlignment() {
-        return textRenderer.getAlignment();
+    public int getHorzinontalAlignment() {
+        return textRenderer.getHorizontalAlignment();
     }
+
+    public void setVerticalAlignment(int alignment) {
+        textRenderer.setVerticalAlignment(alignment);
+    }
+
+    public int getVerticalAlignment() {
+        return textRenderer.getVerticalAlignment();
+    }
+
+
 }

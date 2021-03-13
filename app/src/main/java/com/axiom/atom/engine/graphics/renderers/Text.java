@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 
 import com.axiom.atom.engine.core.geometry.AABB;
+import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.Texture;
 import com.axiom.atom.engine.graphics.gles2d.TextureAtlas;
@@ -23,9 +24,12 @@ import java.util.HashMap;
  */
 public class Text {
 
-    public static final int ALIGN_LEFT = 0;
-    public static final int ALIGN_RIGHT = 1;
-    public static final int ALIGN_CENTER = 2;
+    public static final int ALIGN_NONE = 0;
+    public static final int ALIGN_LEFT = 1;
+    public static final int ALIGN_RIGHT = 2;
+    public static final int ALIGN_CENTER = 3;
+    public static final int ALIGN_TOP = 4;
+    public static final int ALIGN_BOTTOM = 5;
 
     protected static HashMap<String, RasterizedFont> fonts = new HashMap<>();
     protected static int fontSize = 24;     // Размер генерируемого шрифта в пикселях
@@ -41,7 +45,10 @@ public class Text {
 
     private int zOrder = 0;
     private RasterizedFont font;
-    private int alignment = ALIGN_LEFT;
+    private float[] color = { 1, 1, 1, 1};
+    private int horizontalAlignment = ALIGN_NONE;
+    private int verticalAlignment = ALIGN_NONE;
+    private ArrayList<TextureRegion> charRegions;
 
 
     /**
@@ -50,6 +57,8 @@ public class Text {
      */
     public Text(String fontName) {
         this.font = rasterizeFont(fontName, fontSize);
+        // Получаем все кадры (символы) спрайта
+        charRegions = font.fontSprite.getAtlas().getRegions();
     }
 
     /**
@@ -73,6 +82,8 @@ public class Text {
         fnt.xOffset = new float[fnt.totalChars];
         fnt.yOffset = new float[fnt.totalChars];
         fnt.maxLineHeight = getTextHeight("|", 1);
+        // Получаем все кадры (символы) спрайта
+        charRegions = font.fontSprite.getAtlas().getRegions();
         this.font = fnt;
     }
 
@@ -100,14 +111,21 @@ public class Text {
     public void draw(Camera camera, CharSequence text, float x, float y, float scale, AABB scissor) {
         // Указываем спрайту z-слой на котором рисуем
         font.fontSprite.zOrder = zOrder;
+        font.fontSprite.setColor(color[0], color[1], color[2], color[3]);
+
         // Начальные координаты
-        float cursorX = x;
+        float textHeight = getTextHeight(text, scale);
+        float firstLineHeight = getTextLineHeight(text, 0, scale);
         float cursorY = y;
+        if (verticalAlignment == ALIGN_TOP) cursorY = y - firstLineHeight;
+        if (verticalAlignment == ALIGN_BOTTOM) cursorY = y + textHeight - firstLineHeight;
+        if (verticalAlignment == ALIGN_CENTER) cursorY = y + (textHeight / 2) - firstLineHeight;
 
         // Учитываем выравнивание
-        float lineWidth = getTextLineWidth(text, 0, scale);
-        if (alignment==ALIGN_RIGHT) cursorX = x - lineWidth;
-        if (alignment==ALIGN_CENTER) cursorX = x - (lineWidth / 2);
+        float firstLineWidth = getTextLineWidth(text, 0, scale);
+        float cursorX = x;
+        if (horizontalAlignment == ALIGN_RIGHT) cursorX = x - firstLineWidth;
+        if (horizontalAlignment == ALIGN_CENTER) cursorX = x - (firstLineWidth / 2);
 
         char symbol, lastSymbol = 0;
         int symbolIndex;
@@ -121,9 +139,9 @@ public class Text {
                 cursorY -= font.maxLineHeight * scale;        // Смещаемся по вертикали вниз
                 cursorX = x;
                 // Вычисляем X координату начала следующей строки с учётом вырванивания
-                lineWidth = getTextLineWidth(text, i + 1, scale);
-                if (alignment==ALIGN_RIGHT) cursorX = x - lineWidth;
-                if (alignment==ALIGN_CENTER) cursorX = x - (lineWidth / 2);
+                firstLineWidth = getTextLineWidth(text, i + 1, scale);
+                if (horizontalAlignment ==ALIGN_RIGHT) cursorX = x - firstLineWidth;
+                if (horizontalAlignment ==ALIGN_CENTER) cursorX = x - (firstLineWidth / 2);
                 lastSymbol = symbol;
                 continue;                                     // Переходим к следующему символу
             }
@@ -151,6 +169,19 @@ public class Text {
         }
     }
 
+
+    public float getCharWidth(char symbol, float scale) {
+        int index = symbol - ' ';
+        float charWidth = (index >= 0 && index < charRegions.size()) ? charRegions.get(index).width : 0;
+        return charWidth * scale;
+    }
+
+    public float getCharHeight(char symbol, float scale) {
+        int index = symbol - ' ';
+        float charHeight = (index > 0 && index < charRegions.size()) ? charRegions.get(index).height : 0;
+        return charHeight * scale;
+    }
+
     /**
      * Считает ширину текста с учетом параметров шрифта до символа переноса каретки
      * @param text последовательность символов
@@ -158,21 +189,28 @@ public class Text {
      * @param scale масштаб
      * @return ширина текста
      */
-    private float getTextLineWidth(CharSequence text, int startPos, float scale) {
+    public float getTextLineWidth(CharSequence text, int startPos, float scale) {
         if (startPos < 0 || startPos >= text.length()) return 0;
-        ArrayList<TextureRegion> regions = font.fontSprite.getAtlas().getRegions();
-        char symbol;
-        int symbolIndex;
-        int symbolWidth;
         float lineWidth = 0;
         for (int i=startPos; i<text.length(); i++) {
-            symbol = text.charAt(i);
+            char symbol = text.charAt(i);
             if (symbol=='\n') break;
-            symbolIndex = symbol - ' ';
-            symbolWidth = (symbolIndex >= 0 && symbolIndex < regions.size()) ? regions.get(symbolIndex).width : 0;
-            lineWidth += symbolWidth * scale * font.spacing;
+            lineWidth += getCharWidth(symbol, scale) * font.spacing;
         }
         return lineWidth;
+    }
+
+
+    public float getTextLineHeight(CharSequence text, int startPos, float scale) {
+        if (startPos < 0 || startPos >= text.length()) return 0;
+        float lineHeight = 0;
+        for (int i=startPos; i<text.length(); i++) {
+            char symbol = text.charAt(i);
+            if (symbol=='\n') break;
+            float charHeight = getCharHeight(symbol, scale);
+            if (charHeight > lineHeight) lineHeight = charHeight;
+        }
+        return lineHeight;
     }
 
     /**
@@ -183,10 +221,7 @@ public class Text {
      */
     public float getTextWidth(CharSequence text, float scale) {
         // Получаем все кадры (символы) спрайта
-        ArrayList<TextureRegion> regions = font.fontSprite.getAtlas().getRegions();
         char symbol;
-        int symbolIndex;
-        int symbolWidth;
         float maxLineWidth = 0;
         float totalLineWidth = 0;
         for (int i=0; i<text.length(); i++) {
@@ -196,26 +231,28 @@ public class Text {
                 totalLineWidth = 0;
                 continue;
             }
-            symbolIndex = symbol - ' ';
-            symbolWidth = (symbolIndex >= 0 && symbolIndex < regions.size()) ? regions.get(symbolIndex).width : 0;
-            totalLineWidth += symbolWidth * scale * font.spacing;
+            totalLineWidth += getCharWidth(symbol, scale) * font.spacing;
         }
         if (totalLineWidth > maxLineWidth) maxLineWidth = totalLineWidth;
         return maxLineWidth;
     }
 
+
     public float getTextHeight(CharSequence text, float scale) {
-        // Получаем все кадры (символы) спрайта
-        ArrayList<TextureRegion> regions = font.fontSprite.getAtlas().getRegions();
-        int symbolIndex;
-        int symbolHeight;
-        int maxHeight = 0;
+        float charHeight;
+        float maxHeight = 0;
+        int linesCounter = 0;
         for (int i=0; i<text.length(); i++) {
-            symbolIndex = text.charAt(i) - ' ';
-            symbolHeight = (symbolIndex > 0 && symbolIndex < regions.size()) ? regions.get(symbolIndex).height : 0;
-            if (symbolHeight > maxHeight) maxHeight = symbolHeight;
+            char symbol = text.charAt(i);
+            if (symbol=='\n') {
+                linesCounter++;
+                maxHeight = 0;
+                continue;
+            }
+            charHeight = getCharHeight(symbol, scale);
+            if (charHeight > maxHeight) maxHeight = charHeight;
         }
-        return maxHeight * scale;
+        return (linesCounter * font.maxLineHeight * scale) + maxHeight;
     }
 
 
@@ -226,8 +263,12 @@ public class Text {
                 ((rgba      ) & 0xff) / 255.0f);
     }
 
+
     public void setColor(float r, float g, float b, float a) {
-        font.fontSprite.setColor(r, g, b, a);
+        color[0] = r;
+        color[1] = g;
+        color[2] = b;
+        color[3] = a;
     }
 
 
@@ -241,13 +282,22 @@ public class Text {
     }
 
 
-    public int getAlignment() {
-        return alignment;
+    public int getHorizontalAlignment() {
+        return horizontalAlignment;
     }
 
 
-    public void setAlignment(int alignment) {
-        this.alignment = alignment;
+    public void setHorizontalAlignment(int horizontalAlignment) {
+        this.horizontalAlignment = horizontalAlignment;
+    }
+
+
+    public int getVerticalAlignment() {
+        return verticalAlignment;
+    }
+
+    public void setVerticalAlignment(int verticalAlignment) {
+        this.verticalAlignment = verticalAlignment;
     }
 
     /**
@@ -323,7 +373,7 @@ public class Text {
                 int x2 = 1 + x * size + symbolRectangle.right;
                 int y2 = 1 + y * size + symbolRectangle.bottom;
 
-                // Dычисляем смещение символа по вертикали
+                // Вычисляем смещение символа по вертикали
                 rasterizedFont.yOffset[symbolIndex] = -symbolRectangle.bottom;
 
                 // Считаем высоту и ширину символа
