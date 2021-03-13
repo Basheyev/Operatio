@@ -149,7 +149,6 @@ public class BlockButton extends Button {
     public void draw(Camera camera) {
         if (parent==null || !visible) return;
         AABB bounds = getWorldBounds();
-        // AABB scissors = getScissors();
         AABB parentScissor = parent.getScissors();
 
         if (opaque) {
@@ -159,21 +158,18 @@ public class BlockButton extends Button {
         }
 
         if (background !=null) {
-            background.zOrder = zOrder + 1;
+            background.setZOrder(zOrder + 1);
             background.draw(camera, bounds, parentScissor);
         }
 
         if (text!=null) {
             GraphicsRender.setZOrder(zOrder + 2);
             float textWidth = GraphicsRender.getTextWidth(text, textScale);
-            float textHeight = GraphicsRender.getTextHeight(text,textScale);
             GraphicsRender.setColor(0.0f,0.0f,0.0f, 0.7f);
             GraphicsRender.drawRectangle(bounds.min.x, bounds.min.y, bounds.width, 30);
             GraphicsRender.setZOrder(zOrder + 3);
             GraphicsRender.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
             GraphicsRender.drawText(text, bounds.max.x - textWidth - 5, bounds.min.y + 5, textScale, parentScissor);
-            // Пока не обрезаем текст для повышения производительности
-            // GraphicsRender.drawText(text, bounds.center.x - textWidth/2, bounds.center.y - (textHeight/2), textScale, scissors);
         }
         //super.draw(camera);
     }

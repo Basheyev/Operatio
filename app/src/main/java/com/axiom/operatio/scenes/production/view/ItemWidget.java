@@ -4,6 +4,7 @@ import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
+import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.atom.engine.ui.widgets.Button;
 
 public class ItemWidget extends Button {
@@ -12,6 +13,8 @@ public class ItemWidget extends Button {
 
     public ItemWidget(String text) {
         super(text);
+        textRenderer.setHorizontalAlignment(Text.ALIGN_RIGHT);
+        textRenderer.setVerticalAlignment(Text.ALIGN_BOTTOM);
     }
 
     @Override
@@ -31,15 +34,13 @@ public class ItemWidget extends Button {
         // Исключаем конкурентное изменение текста и изображения
         synchronized (this) {
             if (background != null) {
-                background.zOrder = zOrder + 1;
+                background.setZOrder(zOrder + 1);
                 background.draw(camera, bounds, parentScissor);
             }
             if (text != null) {
-                GraphicsRender.setZOrder(zOrder + 2);
-                float textWidth = GraphicsRender.getTextWidth(text, textScale);
-                // float textHeight = GraphicsRender.getTextHeight(text,textScale);
-                GraphicsRender.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
-                GraphicsRender.drawText(text, bounds.max.x - textWidth - 1, bounds.min.y + 1, textScale, null);
+                textRenderer.setZOrder(zOrder + 2);
+                textRenderer.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
+                textRenderer.draw(camera, text, bounds.max.x - 1, bounds.min.y + 1, textScale, parentScissor);
             }
         }
     }
