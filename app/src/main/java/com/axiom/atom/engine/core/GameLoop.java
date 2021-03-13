@@ -166,9 +166,12 @@ public class GameLoop extends Thread {
         while (inputEventQueue.size() > 0) {
             Object event = inputEventQueue.poll(); // Берем очередное событие ввода
             if (event!=null) {
-                if (event instanceof MotionEvent) processMotionEvent(scene, (MotionEvent) event);
-                if (event instanceof ScaleEvent) processScaleEvent(scene, (ScaleEvent) event);
-                // Здесь можно развить тему добавляя события других типов
+                try {
+                    if (event instanceof MotionEvent) processMotionEvent(scene, (MotionEvent) event);
+                    if (event instanceof ScaleEvent) processScaleEvent(scene, (ScaleEvent) event);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
