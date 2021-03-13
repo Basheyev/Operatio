@@ -4,6 +4,7 @@ import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
+import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.operatio.model.materials.Material;
@@ -73,7 +74,7 @@ public class RecipePanel extends Panel {
         caption = new Caption("Recipe");
         caption.setTextScale(1.5f);
         caption.setTextColor(WHITE);
-        caption.setLocalBounds(30, panel.getHeight() - 100, 300, 100);
+        caption.setLocalBounds(30, panel.getHeight() - 100, 500, 100);
         panel.addChild(caption);
 
         // Список входных материалов
@@ -81,7 +82,7 @@ public class RecipePanel extends Panel {
         inputsCaption.setLocalBounds(144,650,250, 100);
         inputsCaption.setTextScale(1.2f);
         inputsCaption.setTextColor(WHITE);
-        inputsCaption.setAlignment(Caption.ALIGN_RIGHT);
+        inputsCaption.setHorizontalAlignment(Text.ALIGN_RIGHT);
         addChild(inputsCaption);
 
         for (int i=0; i<4; i++) {
@@ -95,16 +96,18 @@ public class RecipePanel extends Panel {
             inpCap[i].setLocalBounds(30 , 580 - i*80, 280, 64);
             inpCap[i].setTextColor(WHITE);
             inpCap[i].setTextScale(1.2f);
-            inpCap[i].setAlignment(Caption.ALIGN_RIGHT);
+            inpCap[i].setHorizontalAlignment(Text.ALIGN_RIGHT);
             addChild(inpCap[i]);
         }
 
         // Кнопка отображающая машину
         machineCaption = new Caption("Machine");
-        machineCaption.setLocalBounds(450,550,128, 100);
+        machineCaption.setLocalBounds(450,600,128, 100);
         machineCaption.setTextScale(1.2f);
         machineCaption.setTextColor(WHITE);
-        machineCaption.setAlignment(Caption.ALIGN_CENTER);
+        machineCaption.setHorizontalAlignment(Text.ALIGN_CENTER);
+        machineCaption.setVerticalAlignment(Text.ALIGN_BOTTOM);
+
         addChild(machineCaption);
 
         // Кнопка отображающая машину
@@ -135,7 +138,7 @@ public class RecipePanel extends Panel {
             outCap[i].setLocalBounds(714 , 580 - i*80, 280, 64);
             outCap[i].setTextColor(WHITE);
             outCap[i].setTextScale(1.2f);
-            outCap[i].setAlignment(Caption.ALIGN_LEFT);
+            outCap[i].setHorizontalAlignment(Text.ALIGN_LEFT);
             addChild(outCap[i]);
         }
 
@@ -165,9 +168,10 @@ public class RecipePanel extends Panel {
     protected void showMachineAndOperation(MachineType machineType, int operationID) {
 
         Sprite machineImage = machineType.getImage();
-        machineCaption.setText(machineType.getName());
+        machineCaption.setText(machineType.getName() + "\n " + "operation #" +  operationID);
         machineButton.setBackground(machineImage);
-        machineButton.setText("Operation #" + operationID);
+
+        //machineButton.setText("Operation #" +);
 
         Operation operation = machineType.getOperation(operationID);
 
@@ -205,12 +209,12 @@ public class RecipePanel extends Panel {
 
     @Override
     public void draw(Camera camera) {
-        drawLines();
+        drawFlowLines();
         super.draw(camera);
     }
 
 
-    private void drawLines() {
+    private void drawFlowLines() {
 
         AABB mch = machineButton.getWorldBounds();
 
