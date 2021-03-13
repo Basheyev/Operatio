@@ -11,7 +11,7 @@ import com.axiom.operatio.model.gameplay.LevelFactory;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
-import com.axiom.operatio.scenes.production.view.ItemWidget;
+import com.axiom.operatio.scenes.common.ItemWidget;
 
 import java.util.ArrayList;
 

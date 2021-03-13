@@ -48,7 +48,13 @@ public class ScenesPanel extends Panel {
 
     private int tickSound;
 
-    private static final int panelColor = 0xCC505050;
+    private static final int PANEL_COLOR = 0xCC505050;
+    private static final int UNSELECTED = Color.GRAY;
+    private static final int SELECTED = Color.RED;
+    private static final int PAUSED = Color.RED;
+    private static final int PLAYING = Color.GREEN;
+    private static final int TEXT_COLOR = Color.WHITE;
+
     private static final String MENU = MainMenuScene.SCENE_NAME;
     private static final String INVENTORY = InventoryScene.SCENE_NAME;
     private static final String PRODUCTION = ProductionScene.SCENE_NAME;
@@ -66,7 +72,7 @@ public class ScenesPanel extends Panel {
 
     private void buildUI() {
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
-        setColor(panelColor);
+        setColor(PANEL_COLOR);
         setLocalBounds(0, 960, 1920, 120);
 
         timeCaption = buildCaption("time", 384, 20, 256, 80);
@@ -86,7 +92,7 @@ public class ScenesPanel extends Panel {
     private Caption buildCaption(String txt, float x, float y, float w, float h) {
         Caption caption = new Caption(txt);
         caption.setLocalBounds(x, y, w, h);
-        caption.setTextColor(Color.WHITE);
+        caption.setTextColor(TEXT_COLOR);
         caption.setTextScale(1.5f);
         caption.setVerticalAlignment(Text.ALIGN_CENTER);
         addChild(caption);
@@ -99,8 +105,8 @@ public class ScenesPanel extends Panel {
         Button button = new Button(icon);
         button.setLocation(x, y);
         button.setSize(w, h);
-        button.setColor(Color.GRAY);
-        button.setTextColor(1,1,1,1);
+        button.setColor(UNSELECTED);
+        button.setTextColor(TEXT_COLOR);
         if (addListener) button.setClickListener(listener);
         button.setTag(tag);
         addChild(button);
@@ -168,15 +174,15 @@ public class ScenesPanel extends Panel {
         GameScene activeScene = SceneManager.getInstance().getActiveScene();
         String currentScene = activeScene.getSceneName();
 
-        inventoryButton.setColor(Color.GRAY);
-        productionButton.setColor(Color.GRAY);
-        technologyButton.setColor(Color.GRAY);
-        reportButton.setColor(Color.GRAY);
+        inventoryButton.setColor(UNSELECTED);
+        productionButton.setColor(UNSELECTED);
+        technologyButton.setColor(UNSELECTED);
+        reportButton.setColor(UNSELECTED);
 
-        if (currentScene.equals(INVENTORY)) inventoryButton.setColor(Color.RED);
-        else if (currentScene.equals(PRODUCTION)) productionButton.setColor(Color.RED);
-        else if (currentScene.equals(TECHNOLOGY)) technologyButton.setColor(Color.RED);
-        else if (currentScene.equals(REPORT)) reportButton.setColor(Color.RED);
+        if (currentScene.equals(INVENTORY)) inventoryButton.setColor(SELECTED);
+        else if (currentScene.equals(PRODUCTION)) productionButton.setColor(SELECTED);
+        else if (currentScene.equals(TECHNOLOGY)) technologyButton.setColor(SELECTED);
+        else if (currentScene.equals(REPORT)) reportButton.setColor(SELECTED);
 
         setPausedButtonState(production.isPaused());
     }
@@ -186,12 +192,10 @@ public class ScenesPanel extends Panel {
         Sprite buttonSprite = pauseButton.getBackground();
         if (paused) {
             buttonSprite.setActiveFrame(3);
-            pauseButton.setTextColor(1,1,1,1);
-            pauseButton.setColor(1,0,0,1);
+            pauseButton.setColor(PAUSED);
         } else {
             buttonSprite.setActiveFrame(2);
-            pauseButton.setTextColor(0,0,0,1);
-            pauseButton.setColor(0,1,0,1);
+            pauseButton.setColor(PLAYING);
         }
     }
 

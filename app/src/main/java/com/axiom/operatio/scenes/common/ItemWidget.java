@@ -1,4 +1,4 @@
-package com.axiom.operatio.scenes.production.view;
+package com.axiom.operatio.scenes.common;
 
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
@@ -40,7 +40,7 @@ public class ItemWidget extends Button {
             if (text != null) {
                 textRenderer.setZOrder(zOrder + 2);
                 textRenderer.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
-                textRenderer.draw(camera, text, bounds.max.x - 1, bounds.min.y + 1, textScale, parentScissor);
+                textRenderer.draw(camera, text, bounds.max.x - 2, bounds.min.y + 2, textScale, parentScissor);
             }
         }
     }

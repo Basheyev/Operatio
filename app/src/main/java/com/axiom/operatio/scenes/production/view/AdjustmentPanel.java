@@ -21,6 +21,7 @@ import com.axiom.operatio.model.production.machine.Machine;
 import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
 import com.axiom.operatio.model.materials.Material;
+import com.axiom.operatio.scenes.common.ItemWidget;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
 import static android.graphics.Color.DKGRAY;

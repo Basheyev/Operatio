@@ -11,7 +11,7 @@ import com.axiom.operatio.model.gameplay.LevelFactory;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
-import com.axiom.operatio.scenes.production.view.ItemWidget;
+import com.axiom.operatio.scenes.common.ItemWidget;
 
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.RED;
@@ -106,6 +106,25 @@ public class MaterialsTree extends Panel {
         return selectedMaterial;
     }
 
+    public void setSelectedMaterial(Material material) {
+        if (material==null) return;
+        unselectAllButtons();
+        itemWidget[material.getMaterialID()].setColor(SELECTED);
+        selectedMaterial = material;
+        getTechnologyScene().getRecipePanel().updateData();
+    }
+
+    public void unselectAllButtons() {
+        LevelFactory levelFactory = LevelFactory.getInstance();
+        Level currentLevel = levelFactory.getLevel(production.getLevel());
+        for (int i=0; i< Material.getMaterialsAmount(); i++) {
+            int backgroundColor = UNAVAILABLE;
+            if (currentLevel.isMaterialAvailable(i)) backgroundColor = AVAILABLE;
+            itemWidget[i].setColor(backgroundColor);
+        }
+        selectedMaterial = null;
+    }
+
 
     private ClickListener clickListener = new ClickListener() {
 
@@ -136,15 +155,8 @@ public class MaterialsTree extends Panel {
         }
 
         public void unselectAllButtons(Widget w) {
-            LevelFactory levelFactory = LevelFactory.getInstance();
-            Level currentLevel = levelFactory.getLevel(production.getLevel());
-            for (int i=0; i< Material.getMaterialsAmount(); i++) {
-                int backgroundColor = UNAVAILABLE;
-                if (currentLevel.isMaterialAvailable(i)) backgroundColor = AVAILABLE;
-                itemWidget[i].setColor(backgroundColor);
-            }
             MaterialsTree materialsTree = (MaterialsTree) w.getParent();
-            materialsTree.selectedMaterial = null;
+            materialsTree.unselectAllButtons();
         }
 
     };

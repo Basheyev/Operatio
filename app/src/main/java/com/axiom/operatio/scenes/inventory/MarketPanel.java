@@ -74,9 +74,9 @@ public class MarketPanel extends Panel {
         buyButton = buildButton("BUY", 25, 365, 150, 80, Color.RED, 1.5f,true);
         sellButton = buildButton("SELL", 800, 365, 150, 80, Color.GREEN, 1.5f, true);
 
-        leftButton = buildButton("<", 200, 365, 75, 80, Color.GRAY, 1,true);
+        leftButton = buildButton("<", 200, 365, 75, 80, Color.GRAY, 1.5f,true);
         quantityButton = buildButton("" + quantity, 275, 365, 150, 80, Color.BLACK, 1.5f, false);
-        rightButton = buildButton(">",425, 365, 75, 80,  Color.GRAY, 1,true);
+        rightButton = buildButton(">",425, 365, 75, 80,  Color.GRAY, 1.5f,true);
 
         String sumText = Utils.moneyAsString(production.getCashBalance());
         dealSum = buildButton(sumText, 525, 365, 250, 80, Color.BLACK, 1.5f,false);

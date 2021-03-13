@@ -13,7 +13,7 @@ import com.axiom.operatio.model.gameplay.Utils;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
-import com.axiom.operatio.scenes.production.view.ItemWidget;
+import com.axiom.operatio.scenes.common.ItemWidget;
 
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.GREEN;
