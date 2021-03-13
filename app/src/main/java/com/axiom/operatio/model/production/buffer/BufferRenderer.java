@@ -15,7 +15,7 @@ public class BufferRenderer extends BlockRenderer {
     public BufferRenderer(Buffer buffer) {
         this.buffer = buffer;
         sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks,8,11);
-        sprite.zOrder = 5;
+        sprite.setZOrder(5);
     }
 
     public void draw(Camera camera, float x, float y, float width, float height) {

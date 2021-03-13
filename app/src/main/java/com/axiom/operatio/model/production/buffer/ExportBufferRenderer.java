@@ -15,7 +15,7 @@ public class ExportBufferRenderer extends BlockRenderer {
     public ExportBufferRenderer(ExportBuffer exportBuffer) {
         this.exportBuffer = exportBuffer;
         sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks,8,11);
-        sprite.zOrder = 7;
+        sprite.setZOrder(7);
     }
 
     public void draw(Camera camera, float x, float y, float width, float height) {

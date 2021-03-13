@@ -12,10 +12,10 @@ import com.axiom.operatio.model.production.block.BlockRenderer;
 
 public class ProductionRenderer {
 
-    public static final int MIN_CELL_SIZE = 128;
-    public static final int MAX_CELL_SIZE = 512;
-    public static final int INITIAL_CELL_WIDTH = MIN_CELL_SIZE;
-    public static final int INITIAL_CELL_HEIGHT = MIN_CELL_SIZE;
+    public static final int MIN_CELL_SIZE = 64;
+    public static final int MAX_CELL_SIZE = 384;
+    public static final int INITIAL_CELL_WIDTH = (MAX_CELL_SIZE + MIN_CELL_SIZE) / 2;
+    public static final int INITIAL_CELL_HEIGHT = (MAX_CELL_SIZE + MIN_CELL_SIZE) / 2;
 
 
     private Production production;
@@ -34,16 +34,16 @@ public class ProductionRenderer {
 
         tile = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
         tile.setActiveFrame(68);
-        tile.zOrder = 0;
+        tile.setZOrder(0);
         tileBlocked = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
         tileBlocked.setActiveFrame(70);
-        tileBlocked.zOrder = 0;
+        tileBlocked.setZOrder(0);
         outsideTile = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
         outsideTile.setActiveFrame(87);
-        outsideTile.zOrder = 0;
+        outsideTile.setZOrder(0);
         selection = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
         selection.setActiveFrame(67);
-        selection.zOrder = 500;
+        selection.setZOrder(500);
 
         Sprite particleSprite = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
         particleSprite.setActiveFrame(86);

@@ -29,7 +29,7 @@ public class ConveyorRenderer extends BlockRenderer {
     public ConveyorRenderer(Block block) {
         this.block = block;
         sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks,8,11);
-        sprite.zOrder = 5;
+        sprite.setZOrder(5);
         createAnimations();
         arrangeAnimation(block.getInputDirection(), block.getOutputDirection());
         timeStarted = block.getProduction().getClockMilliseconds();
@@ -146,7 +146,7 @@ public class ConveyorRenderer extends BlockRenderer {
 
             // Отрисовать вход/выход
             drawInOut(camera, block.getInputDirection(), block.getOutputDirection(),
-                    x, y, width, height, sprite.zOrder + 2);
+                    x, y, width, height, sprite.getZOrder() + 2);
         }
 
     }
@@ -261,7 +261,7 @@ public class ConveyorRenderer extends BlockRenderer {
 
         Sprite materialSprite = item.getMaterial().getImage();
 
-        materialSprite.zOrder = sprite.zOrder + 1;
+        materialSprite.setZOrder(sprite.getZOrder() + 1);
         materialSprite.draw(camera,
                 x + xpos * width + width / 4,
                 y + ypos * height + height / 4,
