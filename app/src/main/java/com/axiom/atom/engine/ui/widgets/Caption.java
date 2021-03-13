@@ -7,15 +7,11 @@ import com.axiom.atom.engine.graphics.renderers.Text;
 
 public class Caption extends Widget {
 
-    public static final int ALIGN_LEFT = 0;
-    public static final int ALIGN_CENTER = 1;
-    public static final int ALIGN_RIGHT = 2;
-
     private Text textRenderer;
     private CharSequence caption;
     private float[] textColor = {0,0,0,1};
     private float scale = 1.0f;
-    private int alignment = ALIGN_LEFT;
+    private int alignment = Text.ALIGN_LEFT;
 
     public Caption(String text) {
         super();
@@ -35,10 +31,12 @@ public class Caption extends Widget {
             float textHeight = textRenderer.getTextHeight(caption, scale);
 
             float xpos = bounds.min.x;
-            if (alignment==ALIGN_RIGHT) xpos = bounds.max.x - textWidth;
-            if (alignment==ALIGN_CENTER) xpos = bounds.center.x - (textWidth / 2);
+            if (alignment==Text.ALIGN_RIGHT) xpos = bounds.max.x - textWidth;
+            if (alignment==Text.ALIGN_CENTER) xpos = bounds.center.x - (textWidth / 2);
 
-            textRenderer.zOrder = zOrder + 2;
+            // fixme добавить выравнивание по середине и по право краю при многострочном
+
+            textRenderer.setZOrder(zOrder + 2);
             textRenderer.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
             textRenderer.draw(camera, caption, xpos, bounds.center.y - textHeight/2, scale, scissors);
         }

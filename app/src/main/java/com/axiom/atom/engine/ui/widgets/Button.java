@@ -49,7 +49,7 @@ public class Button extends Widget {
         }
 
         if (background !=null) {
-            background.zOrder = zOrder + 1;
+            background.setZOrder(zOrder + 1);
             background.draw(camera, bounds, parentScissor);
         }
 
