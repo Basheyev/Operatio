@@ -28,8 +28,15 @@ public class Caption extends Widget {
 
         if (caption != null) {
 
+            if (caption.length()==0) return;
+
             AABB bounds = getWorldBounds();
             AABB scissors = parent.getScissors();
+
+            /*/ fixme debug
+            GraphicsRender.setZOrder(zOrder + 1);
+            GraphicsRender.setColor(1,1,0,0.5f);
+            GraphicsRender.drawRectangle(bounds, null);*/
 
             float xpos = bounds.min.x; // ALIGN_LEFT
             if (getHorzinontalAlignment()==Text.ALIGN_RIGHT) xpos = bounds.max.x;

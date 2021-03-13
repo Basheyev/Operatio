@@ -106,6 +106,7 @@ public class MaterialsTree extends Panel {
         return selectedMaterial;
     }
 
+
     public void setSelectedMaterial(Material material) {
         if (material==null) return;
         unselectAllButtons();
@@ -113,6 +114,7 @@ public class MaterialsTree extends Panel {
         selectedMaterial = material;
         getTechnologyScene().getRecipePanel().updateData();
     }
+
 
     public void unselectAllButtons() {
         LevelFactory levelFactory = LevelFactory.getInstance();

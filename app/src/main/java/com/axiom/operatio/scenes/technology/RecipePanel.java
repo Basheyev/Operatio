@@ -26,6 +26,10 @@ import static android.graphics.Color.YELLOW;
 
 public class RecipePanel extends Panel {
 
+    public static final String INPUTS = "Inputs";
+    public static final String OUTPUTS = "Outputs";
+    public static final String RECIPE = "Recipe";
+
     private MaterialsTree materialsTree;
     private Caption caption, inputsCaption, machineCaption, outputsCaption;
     private ItemWidget[] inpBtn, outBtn;
@@ -53,19 +57,25 @@ public class RecipePanel extends Panel {
 
         if (findMachineAndOperations(selectedMaterial)) {
             caption.setText(selectedMaterial.getName() + " recipe");
+            inputsCaption.setText(INPUTS);
+            outputsCaption.setText(OUTPUTS);
         } else {
-            caption.setText("Recipe");
+            clearFields();
         }
     }
 
 
     private void clearFields() {
-        caption.setText("Recipe");
-        machineCaption.setText("Machine");
+        caption.setText(RECIPE);
+        inputsCaption.setText("");
+        outputsCaption.setText("");
+        machineCaption.setText("No recipe");
         for (int i=0; i<4; i++) {
             inpBtn[i].setBackground(null);
             inpBtn[i].setText("");
+            inpBtn[i].setTag(null);
             inpCap[i].setText("");
+            inpCap[i].setTag(null);
             machineButton.setBackground(null);
             machineButton.setText("");
             outBtn[i].setBackground(null);
@@ -79,16 +89,15 @@ public class RecipePanel extends Panel {
         Panel panel = this;
         panel.setLocalBounds(874,60, 1026, 880);
         panel.setColor(0xCC505050);
-        // panel.setColor(0,0,0,0.5f);
 
-        caption = new Caption("Recipe");
+        caption = new Caption(RECIPE);
         caption.setTextScale(1.5f);
         caption.setTextColor(WHITE);
         caption.setLocalBounds(30, panel.getHeight() - 100, 500, 100);
         panel.addChild(caption);
 
         // Список входных материалов
-        inputsCaption = new Caption("Input materials:");
+        inputsCaption = new Caption("");
         inputsCaption.setLocalBounds(144,650,250, 100);
         inputsCaption.setTextScale(1.2f);
         inputsCaption.setTextColor(WHITE);
@@ -113,7 +122,7 @@ public class RecipePanel extends Panel {
         }
 
         // Кнопка отображающая машину
-        machineCaption = new Caption("Machine");
+        machineCaption = new Caption("");
         machineCaption.setLocalBounds(450,600,128, 100);
         machineCaption.setTextScale(1.2f);
         machineCaption.setTextColor(WHITE);
@@ -132,7 +141,7 @@ public class RecipePanel extends Panel {
         addChild(machineButton);
 
         // Список выходных материалов
-        outputsCaption = new Caption("Output materials:");
+        outputsCaption = new Caption("");
         outputsCaption.setLocalBounds(630,650,300, 100);
         outputsCaption.setTextScale(1.2f);
         outputsCaption.setTextColor(WHITE);
@@ -153,6 +162,8 @@ public class RecipePanel extends Panel {
             outCap[i].setHorizontalAlignment(Text.ALIGN_LEFT);
             addChild(outCap[i]);
         }
+
+        clearFields();
 
     }
 
@@ -203,6 +214,7 @@ public class RecipePanel extends Panel {
                 inpBtn[i].setText("");
                 inpBtn[i].setTag(null);
                 inpCap[i].setText("");
+                inpCap[i].setTag(null);
             }
         }
 
@@ -223,8 +235,17 @@ public class RecipePanel extends Panel {
 
     @Override
     public void draw(Camera camera) {
+        drawRecipeBackground();
         drawFlowLines();
         super.draw(camera);
+    }
+
+
+    private void drawRecipeBackground() {
+        AABB bnds = getWorldBounds();
+        GraphicsRender.setZOrder(zOrder + 1);
+        GraphicsRender.setColor(0.08f,0,0.16f,0.8f);
+        GraphicsRender.drawRectangle(bnds.min.x, bnds.min.y + 250, bnds.width, 530);
     }
 
 
@@ -232,9 +253,9 @@ public class RecipePanel extends Panel {
 
         AABB mch = machineButton.getWorldBounds();
 
-        GraphicsRender.setZOrder(zOrder + 1);
+        GraphicsRender.setZOrder(zOrder + 2);
         GraphicsRender.setLineThickness(6);
-        GraphicsRender.setColor(1,1,0,0.7f);
+        GraphicsRender.setColor(0.8f,0.8f,0,0.6f);
 
         for (int i=0; i<4; i++) if (inpBtn[i].getBackground()!=null) {
             AABB mat = inpBtn[i].getWorldBounds();

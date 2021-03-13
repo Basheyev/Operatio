@@ -405,7 +405,7 @@ public class AdjustmentPanel extends Panel {
         rightButton.visible = true;
 
         inputsCaption.visible = true;
-        inputsCaption.setText(material.getName() + "\n\n"
+        inputsCaption.setText(material.getName() + "\n"
                 + "Balance: " + production.getInventory().getBalance(material) + " items");
         outputsCaption.visible = true;
         outputsCaption.setText("");
