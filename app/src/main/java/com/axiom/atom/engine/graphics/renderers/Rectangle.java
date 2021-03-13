@@ -15,7 +15,7 @@ import com.axiom.atom.engine.core.geometry.AABB;
  */
 public class Rectangle extends Quad {
 
-    public int zOrder;
+    //public int zOrder;
     protected static Program program = null;
 
     private final String vertexShaderCode =

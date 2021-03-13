@@ -11,12 +11,12 @@ import com.axiom.atom.engine.graphics.gles2d.Texture;
  */
 public class Quad {
 
-    public int zOrder;                          // Слой отрисовки (Z-порядок)
-    public Program program;                     // Используемая программа шейдеров
-    public Texture texture;                     // Текстура прямоугольника (null если её нет)
-    public AABB scissor;                        // Область отсечения в физических координатах экрана
+    protected int zOrder;                       // Слой отрисовки (Z-порядок)
+    protected Program program;                  // Используемая программа шейдеров
+    protected Texture texture;                  // Текстура прямоугольника (null если её нет)
+    protected AABB scissor;                     // Область отсечения в физических координатах экрана
 
-    public float[] vertices =                   // Вершины прямоугольника (2 треугольника - 18 коорд)
+    protected float[] vertices =                // Вершины прямоугольника (2 треугольника - 18 коорд)
             {      -0.5f,  0.5f,  0.0f,         // левый верхний угол
                    -0.5f, -0.5f,  0.0f,         // левый нижний угол
                     0.5f,  0.5f,  0.0f,         // правый верхний угол
@@ -26,7 +26,7 @@ public class Quad {
                     0.5f, -0.5f,  0.0f,         // правый нижний угол
             };
 
-    public float[] texCoords =                  // текстурные координаты спрайта
+    protected float[] texCoords =               // текстурные координаты спрайта
             {
                     0.0f, 1.0f,                 // левый верхний угол
                     0.0f, 0.0f,                 // левый нижний угол
@@ -37,7 +37,7 @@ public class Quad {
                     1.0f, 0.0f                  // правый нижний угол
             };
 
-    public float[] color =                      // цвет примитива если нет текстуры
+    protected float[] color =                   // цвет примитива если нет текстуры
             { 0.3f, 0.5f, 0.9f, 1.0f };
 
     protected float rotation = 0;               // Угол поворота в радианах
@@ -242,4 +242,12 @@ public class Quad {
         return rotation;
     }
 
+
+    public int getZOrder() {
+        return zOrder;
+    }
+
+    public void setZOrder(int zOrder) {
+        this.zOrder = zOrder;
+    }
 }

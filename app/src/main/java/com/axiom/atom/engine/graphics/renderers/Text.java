@@ -23,6 +23,10 @@ import java.util.HashMap;
  */
 public class Text {
 
+    public static final int ALIGN_LEFT = 0;
+    public static final int ALIGN_CENTER = 1;
+    public static final int ALIGN_RIGHT = 2;
+
     protected static HashMap<String, RasterizedFont> fonts = new HashMap<>();
     protected static int fontSize = 24;     // Размер генерируемого шрифта в пикселях
 
@@ -35,8 +39,9 @@ public class Text {
         protected float spacing;            // Расстояние между символами
     }
 
-    public int zOrder = 0;
-    protected RasterizedFont font;
+    private int zOrder = 0;
+    private RasterizedFont font;
+    private int alignment;
 
 
     /**
@@ -102,7 +107,7 @@ public class Text {
         char symbol, lastSymbol = 0;
         int symbolIndex;
 
-        for (int i=0; i< text.length(); i++) {                // Для каждого символа в строке
+        for (int i=0; i < text.length(); i++) {                // Для каждого символа в строке
 
             symbol = text.charAt(i);                          // Берём очередной символ в строке
             symbolIndex = symbol - ' ';                       // Вычисляем его индекс (кадра)
@@ -191,6 +196,22 @@ public class Text {
 
     public void setColor(float r, float g, float b, float a) {
         font.fontSprite.setColor(r, g, b, a);
+    }
+
+    public int getZOrder() {
+        return zOrder;
+    }
+
+    public void setZOrder(int zOrder) {
+        this.zOrder = zOrder;
+    }
+
+    public int getAlignment() {
+        return alignment;
+    }
+
+    public void setAlignment(int alignment) {
+        this.alignment = alignment;
     }
 
     /**

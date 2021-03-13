@@ -9,8 +9,6 @@ import com.axiom.atom.engine.graphics.gles2d.Shader;
 
 public class Line extends Quad {
 
-    public int zOrder;
-
     private float lineThickness = 5f;
 
     protected static Program program = null;
