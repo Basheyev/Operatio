@@ -3,6 +3,7 @@ package com.axiom.operatio.scenes.report;
 import android.graphics.Color;
 
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.operatio.model.gameplay.Ledger;
@@ -44,7 +45,7 @@ public class ReportPanel extends Panel {
         panelCaption = new Caption("Operations daily report");
         panelCaption.setTextScale(1.7f);
         panelCaption.setTextColor(WHITE);
-        panelCaption.setLocalBounds(30, getHeight() - 100, 300, 100);
+        panelCaption.setLocalBounds(30, getHeight() - 100, 350, 100);
         addChild(panelCaption);
 
         expenseCaption = new Caption("Purchase");
@@ -114,7 +115,8 @@ public class ReportPanel extends Panel {
         reportCaption = new Caption("Cashflow");
         reportCaption.setTextColor(WHITE);
         reportCaption.setTextScale(1.3f);
-        reportCaption.setLocalBounds(1400, 720, 300, 100);
+        reportCaption.setLocalBounds(1400, 435, 400, 350);
+        reportCaption.setVerticalAlignment(Text.ALIGN_TOP);
         addChild(reportCaption);
 
 
