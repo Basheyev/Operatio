@@ -298,9 +298,9 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
 
     public static void setZOrder(int zOrder) {
         if (render==null) return;
-        render.rectangleRender.zOrder = zOrder;
-        render.textRender.zOrder = zOrder;
-        render.lineRender.zOrder = zOrder;
+        render.rectangleRender.setZOrder(zOrder);
+        render.textRender.setZOrder(zOrder);
+        render.lineRender.setZOrder(zOrder);
     }
 
     public static void setLineThickness(float w) {
