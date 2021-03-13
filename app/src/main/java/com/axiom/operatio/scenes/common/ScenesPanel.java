@@ -8,6 +8,7 @@ import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
+import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
@@ -87,6 +88,7 @@ public class ScenesPanel extends Panel {
         caption.setLocalBounds(x, y, w, h);
         caption.setTextColor(Color.WHITE);
         caption.setTextScale(1.5f);
+        caption.setVerticalAlignment(Text.ALIGN_CENTER);
         addChild(caption);
         return caption;
     }
