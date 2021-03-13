@@ -7,10 +7,15 @@ import com.axiom.atom.engine.graphics.renderers.Text;
 
 public class Caption extends Widget {
 
-    protected Text textRenderer;
-    protected CharSequence caption;
-    protected float[] textColor = {0,0,0,1};
-    protected float scale = 1.0f;
+    public static final int ALIGN_LEFT = 0;
+    public static final int ALIGN_CENTER = 1;
+    public static final int ALIGN_RIGHT = 2;
+
+    private Text textRenderer;
+    private CharSequence caption;
+    private float[] textColor = {0,0,0,1};
+    private float scale = 1.0f;
+    private int alignment = ALIGN_LEFT;
 
     public Caption(String text) {
         super();
@@ -21,15 +26,21 @@ public class Caption extends Widget {
     @Override
     public void draw(Camera camera) {
         if (parent==null || !visible) return;
-        AABB bounds = getWorldBounds();
-        AABB scissors = parent.getScissors();
-
-        float textHeight = textRenderer.getTextHeight(caption, scale);
-
         if (caption != null) {
+
+            AABB bounds = getWorldBounds();
+            AABB scissors = parent.getScissors();
+
+            float textWidth = textRenderer.getTextWidth(caption, scale);
+            float textHeight = textRenderer.getTextHeight(caption, scale);
+
+            float xpos = bounds.min.x;
+            if (alignment==ALIGN_RIGHT) xpos = bounds.max.x - textWidth;
+            if (alignment==ALIGN_CENTER) xpos = bounds.center.x - (textWidth / 2);
+
             textRenderer.zOrder = zOrder + 2;
             textRenderer.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
-            textRenderer.draw(camera, caption, bounds.min.x, bounds.center.y - textHeight/2, scale, scissors);
+            textRenderer.draw(camera, caption, xpos, bounds.center.y - textHeight/2, scale, scissors);
         }
 
         super.draw(camera);
@@ -58,4 +69,11 @@ public class Caption extends Widget {
         this.scale = scale;
     }
 
+    public void setAlignment(int alignment) {
+        this.alignment = alignment;
+    }
+
+    public int getAlignment() {
+        return alignment;
+    }
 }
