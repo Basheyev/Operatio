@@ -11,7 +11,6 @@ public class Caption extends Widget {
     private CharSequence caption;
     private float[] textColor = {0,0,0,1};
     private float scale = 1.0f;
-    private int alignment = Text.ALIGN_LEFT;
 
     public Caption(String text) {
         super();
@@ -27,12 +26,11 @@ public class Caption extends Widget {
             AABB bounds = getWorldBounds();
             AABB scissors = parent.getScissors();
 
-            float textWidth = textRenderer.getTextWidth(caption, scale);
             float textHeight = textRenderer.getTextHeight(caption, scale);
 
             float xpos = bounds.min.x;
-            if (alignment==Text.ALIGN_RIGHT) xpos = bounds.max.x - textWidth;
-            if (alignment==Text.ALIGN_CENTER) xpos = bounds.center.x - (textWidth / 2);
+            if (getAlignment()==Text.ALIGN_RIGHT) xpos = bounds.max.x;
+            if (getAlignment()==Text.ALIGN_CENTER) xpos = bounds.center.x;
 
             // fixme добавить выравнивание по середине и по право краю при многострочном
 
@@ -68,10 +66,10 @@ public class Caption extends Widget {
     }
 
     public void setAlignment(int alignment) {
-        this.alignment = alignment;
+        this.textRenderer.setAlignment(alignment);
     }
 
     public int getAlignment() {
-        return alignment;
+        return textRenderer.getAlignment();
     }
 }

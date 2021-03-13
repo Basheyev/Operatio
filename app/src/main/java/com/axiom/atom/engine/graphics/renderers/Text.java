@@ -24,8 +24,8 @@ import java.util.HashMap;
 public class Text {
 
     public static final int ALIGN_LEFT = 0;
-    public static final int ALIGN_CENTER = 1;
-    public static final int ALIGN_RIGHT = 2;
+    public static final int ALIGN_RIGHT = 1;
+    public static final int ALIGN_CENTER = 2;
 
     protected static HashMap<String, RasterizedFont> fonts = new HashMap<>();
     protected static int fontSize = 24;     // Размер генерируемого шрифта в пикселях
@@ -41,7 +41,7 @@ public class Text {
 
     private int zOrder = 0;
     private RasterizedFont font;
-    private int alignment;
+    private int alignment = ALIGN_LEFT;
 
 
     /**
@@ -104,22 +104,31 @@ public class Text {
         float cursorX = x;
         float cursorY = y;
 
+        // Учитываем выравнивание
+        float lineWidth = getTextLineWidth(text, 0, scale);
+        if (alignment==ALIGN_RIGHT) cursorX = x - lineWidth;
+        if (alignment==ALIGN_CENTER) cursorX = x - (lineWidth / 2);
+
         char symbol, lastSymbol = 0;
         int symbolIndex;
 
-        for (int i=0; i < text.length(); i++) {                // Для каждого символа в строке
+        for (int i=0; i < text.length(); i++) {               // Для каждого символа в строке
 
             symbol = text.charAt(i);                          // Берём очередной символ в строке
             symbolIndex = symbol - ' ';                       // Вычисляем его индекс (кадра)
 
             if (symbol=='\n') {                               // Если это перенос строки,
                 cursorY -= font.maxLineHeight * scale;        // Смещаемся по вертикали вниз
-                cursorX = x;                                  // Переходим на начало строки
+                cursorX = x;
+                // Вычисляем X координату начала следующей строки с учётом вырванивания
+                lineWidth = getTextLineWidth(text, i + 1, scale);
+                if (alignment==ALIGN_RIGHT) cursorX = x - lineWidth;
+                if (alignment==ALIGN_CENTER) cursorX = x - (lineWidth / 2);
                 lastSymbol = symbol;
                 continue;                                     // Переходим к следующему символу
             }
 
-            // Если по какой-то причине индекс больше количества символов, идём дальше
+            // Если по какой-то причине индекс больше количества символов, пропускаем и идём дальше
             if (symbolIndex < 0 || symbolIndex >= font.totalChars) continue;
 
             // Если это не первый символ в строке добавляем смещение курсора предыдущего символа
@@ -142,6 +151,29 @@ public class Text {
         }
     }
 
+    /**
+     * Считает ширину текста с учетом параметров шрифта до символа переноса каретки
+     * @param text последовательность символов
+     * @param startPos стартовая индекс символа
+     * @param scale масштаб
+     * @return ширина текста
+     */
+    private float getTextLineWidth(CharSequence text, int startPos, float scale) {
+        if (startPos < 0 || startPos >= text.length()) return 0;
+        ArrayList<TextureRegion> regions = font.fontSprite.getAtlas().getRegions();
+        char symbol;
+        int symbolIndex;
+        int symbolWidth;
+        float lineWidth = 0;
+        for (int i=startPos; i<text.length(); i++) {
+            symbol = text.charAt(i);
+            if (symbol=='\n') break;
+            symbolIndex = symbol - ' ';
+            symbolWidth = (symbolIndex >= 0 && symbolIndex < regions.size()) ? regions.get(symbolIndex).width : 0;
+            lineWidth += symbolWidth * scale * font.spacing;
+        }
+        return lineWidth;
+    }
 
     /**
      * Считает ширину текста с учетом параметров шрифта
@@ -198,17 +230,21 @@ public class Text {
         font.fontSprite.setColor(r, g, b, a);
     }
 
+
     public int getZOrder() {
         return zOrder;
     }
+
 
     public void setZOrder(int zOrder) {
         this.zOrder = zOrder;
     }
 
+
     public int getAlignment() {
         return alignment;
     }
+
 
     public void setAlignment(int alignment) {
         this.alignment = alignment;
