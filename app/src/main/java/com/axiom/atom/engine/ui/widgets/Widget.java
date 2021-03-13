@@ -173,7 +173,7 @@ public abstract class Widget {
      * Возвращает границы виджета в мировых координатах (без учёта границ родительского виджета)
      * @return границы виджета в мировых координатах для отрисовки виджета
      */
-    protected AABB getWorldBounds() {
+    public AABB getWorldBounds() {
         if (parent != null) {
             AABB parentWorldBounds = parent.getWorldBounds();
             float x1, y1, x2, y2;
