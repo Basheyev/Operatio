@@ -27,7 +27,8 @@ public class TechnologyScene extends GameScene {
     private RecipePanel recipePanel;
     private static Sprite background;
     private static int tickSound;
-
+    private long lastTime;
+    private int currentLevel = -1;
 
     public TechnologyScene(Production production) {
         this.production = production;
@@ -41,6 +42,9 @@ public class TechnologyScene extends GameScene {
     @Override
     public void startScene() {
         if (!initialized) buildUI();
+        Market market = production.getMarket();
+        market.process();
+        materialsTree.updateData();
     }
 
     @Override
@@ -55,9 +59,26 @@ public class TechnologyScene extends GameScene {
 
     @Override
     public void updateScene(float deltaTime) {
+
+        long now = System.currentTimeMillis();
+
         Market market = production.getMarket();
         market.process();
         production.process();
+
+        // если прошла секунда времени
+        if (now - lastTime > 1000) {
+            materialsTree.updateData();
+            lastTime = now;
+        }
+
+
+        // Если сменился уровень
+        if (currentLevel != production.getLevel()) {
+            currentLevel = production.getLevel();
+            // Включить доступные машины на этом уровне
+            materialsTree.updatePermissions(production.getLevel());
+        }
 
     }
 
