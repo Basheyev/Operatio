@@ -22,14 +22,14 @@ public class MachineRenderer extends BlockRenderer {
         int ID = machine.getType().ID;
 
         sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-        sprite.zOrder = 7;
+        sprite.setZOrder(7);
         idleAnimation = sprite.addAnimation(ID * 8, ID * 8, 8, true);
         busyAnimation = sprite.addAnimation(ID * 8, ID * 8 + 7, 8, true);
         sprite.setActiveAnimation(idleAnimation);
 
         fault = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
         fault.setActiveFrame(71);
-        fault.zOrder = 8;
+        fault.setZOrder(8);
 
         conveyorRenderer = new ConveyorRenderer(machine);
     }
@@ -54,7 +54,7 @@ public class MachineRenderer extends BlockRenderer {
 
         // Рисуем вход-выход
         drawInOut(camera, machine.getInputDirection(), machine.getOutputDirection(),
-                x, y, width, height, sprite.zOrder + 2);
+                x, y, width, height, sprite.getZOrder() + 2);
 
     }
 

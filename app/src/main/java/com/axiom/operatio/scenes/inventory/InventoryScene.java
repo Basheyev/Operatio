@@ -85,7 +85,7 @@ public class InventoryScene extends GameScene {
 
     @Override
     public void preRender(Camera camera) {
-        background.zOrder = 0;
+        background.setZOrder(0);
         background.draw(camera,camera.getMinX(),camera.getMinY(), Camera.WIDTH,Camera.HEIGHT);
     }
 
