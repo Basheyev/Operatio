@@ -13,13 +13,15 @@ import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.production.view.ItemWidget;
 
-import java.util.ArrayList;
-
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.RED;
 import static android.graphics.Color.WHITE;
 
 public class MaterialsTree extends Panel {
+
+    public static final int AVAILABLE = BLACK;
+    public static final int UNAVAILABLE = 0xA0220026;
+    public static final int SELECTED = RED;
 
     private TechnologyScene technologyScene;
     private Production production;
@@ -35,16 +37,27 @@ public class MaterialsTree extends Panel {
     }
 
 
+    public void updateData() {
+        Inventory inventory = production.getInventory();
+        for (int i = 0; i< Material.getMaterialsAmount(); i++) {
+            Material material = Material.getMaterial(i);
+            int balance = inventory.getBalance(material);
+            if (balance > 0) {
+                itemWidget[i].setText("" + balance);
+            } else {
+                itemWidget[i].setText("");
+            }
+        }
+    }
+
+
     public void updatePermissions(int level) {
         LevelFactory lm = LevelFactory.getInstance();
         Level currentLevel = lm.getLevel(level);
         for (int i=0; i<itemWidget.length; i++) {
-            ItemWidget item = itemWidget[i];
-            if (currentLevel.isMaterialAvailable(i)) {
-                item.setActive(true);
-            } else {
-                item.setActive(false);
-            }
+            int backgroundColor = UNAVAILABLE;
+            if (currentLevel.isMaterialAvailable(i)) backgroundColor = AVAILABLE;
+            itemWidget[i].setColor(backgroundColor);
         }
     }
 
@@ -60,13 +73,18 @@ public class MaterialsTree extends Panel {
         caption.setLocalBounds(30, panel.getHeight() - 100, 300, 100);
         panel.addChild(caption);
 
+        LevelFactory levelFactory = LevelFactory.getInstance();
+        Level currentLevel = levelFactory.getLevel(production.getLevel());
         Inventory inventory = production.getInventory();
+
         itemWidget = new ItemWidget[Material.getMaterialsAmount()];
         float x = 30, y = 30;
         for (int i=0; i< Material.getMaterialsAmount(); i++) {
             Material material = Material.getMaterial(i);
-            itemWidget[i] = new ItemWidget("");
-            itemWidget[i].setColor(BLACK);
+            itemWidget[i] = new ItemWidget("" + inventory.getBalance(material));
+            int backgroundColor = UNAVAILABLE;
+            if (currentLevel.isMaterialAvailable(i)) backgroundColor = AVAILABLE;
+            itemWidget[i].setColor(backgroundColor);
             itemWidget[i].setBackground(material.getImage());
             itemWidget[i].setTextScale(1);
             itemWidget[i].setTextColor(WHITE);
@@ -104,9 +122,9 @@ public class MaterialsTree extends Panel {
             ItemWidget item = (ItemWidget) w;
             if (!item.isActive()) return;
 
-            if (w.getColor()!=RED) {
+            if (w.getColor()!=SELECTED) {
                 unselectAllButtons(w);
-                w.setColor(RED);
+                w.setColor(SELECTED);
                 materialsTree.selectedMaterial = material;
                 materialsTree.getTechnologyScene().getRecipePanel().updateData();
                 SoundRenderer.playSound(tickSound);
@@ -118,12 +136,15 @@ public class MaterialsTree extends Panel {
         }
 
         public void unselectAllButtons(Widget w) {
-            ArrayList<Widget> children = w.getParent().getChildren();
-            for (int i=0; i<children.size(); i++) {
-                children.get(i).setColor(BLACK);
+            LevelFactory levelFactory = LevelFactory.getInstance();
+            Level currentLevel = levelFactory.getLevel(production.getLevel());
+            for (int i=0; i< Material.getMaterialsAmount(); i++) {
+                int backgroundColor = UNAVAILABLE;
+                if (currentLevel.isMaterialAvailable(i)) backgroundColor = AVAILABLE;
+                itemWidget[i].setColor(backgroundColor);
             }
-            MaterialsTree materialsPanel = (MaterialsTree) w.getParent();
-            materialsPanel.selectedMaterial = null;
+            MaterialsTree materialsTree = (MaterialsTree) w.getParent();
+            materialsTree.selectedMaterial = null;
         }
 
     };
