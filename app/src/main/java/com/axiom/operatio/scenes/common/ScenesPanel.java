@@ -67,8 +67,8 @@ public class ScenesPanel extends Panel {
 
     public ScenesPanel(Production production) {
         super();
-        buildUI();
         this.production = production;
+        buildUI();
     }
 
 
@@ -77,8 +77,12 @@ public class ScenesPanel extends Panel {
         setColor(PANEL_COLOR);
         setLocalBounds(0, 960, 1920, 120);
 
+        double currentBalance = Math.round(production.getCashBalance());
+        String balanceText = Utils.moneyAsString(currentBalance);
+        lastBalance = currentBalance;
+
         timeCaption = buildCaption("time", 384, 20, 256, 80);
-        balanceCaption = buildCaption("balance", 1500, 20, 256, 80);
+        balanceCaption = buildCaption(balanceText, 1500, 20, 256, 80);
         coinButton = buildButton(15, "Coin", 1410, 8, 96, 96, false);
         coinButton.setColor(0,0,0, 0);
 
@@ -87,6 +91,8 @@ public class ScenesPanel extends Panel {
         productionButton = buildButton(5, PRODUCTION, 824, 0, 128, 128, true);
         technologyButton = buildButton(6, TECHNOLOGY, 968, 0, 128, 128, true);
         reportButton = buildButton(7, REPORT, 1112, 0, 128, 128, true);
+
+        // fixme
         pauseButton = buildButton(2, PAUSE, 1768, 0, 128, 128, true);
 
     }
@@ -106,7 +112,11 @@ public class ScenesPanel extends Panel {
             Resources resources = SceneManager.getResources();
             uiIcons = new Sprite(resources, R.drawable.ui_icons, 4, 4);
         }
-        Sprite icon = uiIcons.getAsSprite(spriteIndex);
+        Sprite icon;
+        if (tag.equals(PAUSE)) {
+            icon = uiIcons.getAsSprite(spriteIndex,spriteIndex+1);
+        } else icon = uiIcons.getAsSprite(spriteIndex);
+
         Button button = new Button(icon);
         button.setLocation(x, y);
         button.setSize(w, h);
@@ -201,10 +211,10 @@ public class ScenesPanel extends Panel {
     public void setPausedButtonState(boolean paused) {
         Sprite buttonSprite = pauseButton.getBackground();
         if (paused) {
-            buttonSprite.setActiveFrame(3);
+            buttonSprite.setActiveFrame(1);
             pauseButton.setColor(PAUSED);
         } else {
-            buttonSprite.setActiveFrame(2);
+            buttonSprite.setActiveFrame(0);
             pauseButton.setColor(PLAYING);
         }
     }

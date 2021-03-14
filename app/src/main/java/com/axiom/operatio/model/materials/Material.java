@@ -95,7 +95,7 @@ public class Material {
         // Загружаем массив материалов
         JSONFileLoader jsonFileLoader = new JSONFileLoader(resources, R.raw.materials);
         try {
-            JSONArray jsonMaterials = new JSONArray(jsonFileLoader.getJsonFile());
+            JSONArray jsonMaterials = new JSONArray(jsonFileLoader.getJsonAsString());
             int ID, totalMaterials = jsonMaterials.length();
             materials = new Material[totalMaterials];
             for (int i=0; i < totalMaterials; i++) {

@@ -111,7 +111,7 @@ public class RecipePanel extends Panel {
             inpCap[i] = new Caption("");
             inpCap[i].setLocalBounds(30 , 580 - i*80, 280, 64);
             inpCap[i].setTextColor(WHITE);
-            inpCap[i].setTextScale(1.2f);
+            inpCap[i].setTextScale(1f);
             inpCap[i].setHorizontalAlignment(Text.ALIGN_RIGHT);
             inpCap[i].setClickListener(clickListener);
             addChild(inpCap[i]);
@@ -139,7 +139,7 @@ public class RecipePanel extends Panel {
         // Список выходных материалов
         outputsCaption = new Caption("");
         outputsCaption.setLocalBounds(630,650,300, 100);
-        outputsCaption.setTextScale(1.2f);
+        outputsCaption.setTextScale(1f);
         outputsCaption.setTextColor(WHITE);
         addChild(outputsCaption);
 
@@ -154,7 +154,7 @@ public class RecipePanel extends Panel {
             outCap[i] = new Caption("");
             outCap[i].setLocalBounds(714 , 580 - i*80, 280, 64);
             outCap[i].setTextColor(WHITE);
-            outCap[i].setTextScale(1.2f);
+            outCap[i].setTextScale(1f);
             outCap[i].setHorizontalAlignment(Text.ALIGN_LEFT);
             addChild(outCap[i]);
         }
@@ -195,7 +195,7 @@ public class RecipePanel extends Panel {
         machineDescription.append(machineType.getName());
         machineDescription.append("\noperation #");
         machineDescription.append(operationID + 1);
-        machineDescription.append("\ncost: ");
+        machineDescription.append("\n\n");
         machineDescription.append(Utils.moneyAsString(operation.getCost()));
         machineCaption.setText(machineDescription);
         machineButton.setBackground(machineImage);
@@ -212,7 +212,7 @@ public class RecipePanel extends Panel {
                 inpBtn[i].setBackground(inputs[i].getImage());
                 inpBtn[i].setText("x" + inputAmount[i]);
                 inpBtn[i].setTag(materialTag);
-                inpCap[i].setText(inputs[i].getName());
+                inpCap[i].setText(inputs[i].getName() + " - $" + Math.round(inputs[i].getPrice()));
                 inpCap[i].setTag(materialTag);
             } else {
                 inpBtn[i].setBackground(null);
@@ -228,7 +228,7 @@ public class RecipePanel extends Panel {
             if (i<outputs.length) {
                 outBtn[i].setBackground(outputs[i].getImage());
                 outBtn[i].setText("x" + outputAmount[i]);
-                outCap[i].setText(outputs[i].getName());
+                outCap[i].setText(outputs[i].getName() + " - $" + Math.round(outputs[i].getPrice()));
             } else {
                 outBtn[i].setBackground(null);
                 outBtn[i].setText("");

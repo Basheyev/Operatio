@@ -47,16 +47,17 @@ public class MachineRenderer extends BlockRenderer {
             sprite.animationPaused = production.isPaused();
         }
 
+        // Рисуем значок сбоя, если произошел сбой
+        if (machine.getState()==Machine.FAULT) {
+            sprite.animationPaused = true;
+            fault.draw(camera, x, y, width, height);
+        } else sprite.animationPaused = false;
+
         // Рисуем конвейер
         conveyorRenderer.draw(camera, x, y, width, height);
 
         // Рисуем машину
         sprite.draw(camera, x, y, width, height);
-
-        // Рисуем значок сбоя, если произошел сбой
-        if (machine.getState()==Machine.FAULT) {
-            fault.draw(camera, x, y, width, height);
-        }
 
         // Рисуем вход-выход
         drawInOut(camera, machine.getInputDirection(), machine.getOutputDirection(),
@@ -68,12 +69,8 @@ public class MachineRenderer extends BlockRenderer {
         conveyorRenderer.arrangeAnimation(inputDirection, outputDirection);
     }
 
-    public void setIdleAnimation(boolean doNotWait) {
-        if (doNotWait) {
-            sprite.setActiveAnimation(idleAnimation);
-        } else {
-            if (sprite.getTimesPlayed() > 0) sprite.setActiveAnimation(idleAnimation);
-        }
+    public void setIdleAnimation() {
+        if (sprite.getTimesPlayed() > 0) sprite.setActiveAnimation(idleAnimation);
     }
 
     public void setBusyAnimation() {

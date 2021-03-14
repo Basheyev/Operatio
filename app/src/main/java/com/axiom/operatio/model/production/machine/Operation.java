@@ -6,7 +6,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class Operation {
+
+    protected static ArrayList<Operation> allOperations = null;  // Список всех типов машин
 
     private MachineType machineType;          // Тип машины на которой выполняется
     private int ID;                           // Код операции
@@ -19,6 +23,7 @@ public class Operation {
 
 
     public Operation(MachineType type, JSONObject op) {
+        if (allOperations ==null) allOperations = new ArrayList<>();
         try {
             machineType = type;
             ID = op.getInt("operationID");
@@ -36,11 +41,21 @@ public class Operation {
             JSONArray jsonInputAmount = op.getJSONArray("inputQuantities");
             for (int j = 0; j < inputAmount.length; j++)  inputAmount[j] = jsonInputAmount.getInt(j);
             cost = cycles * machineType.getCycleCost();
+            allOperations.add(this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
+
+    public static Operation getOperation(int ID) {
+        if (allOperations ==null) return null;
+        for (int i = 0; i< allOperations.size(); i++) {
+            Operation operation = allOperations.get(i);
+            if (operation.getID()==ID) return operation;
+        }
+        return null;
+    }
 
     public int getID() {
         return ID;
