@@ -1,0 +1,322 @@
+[
+  {
+    "ID": 0,
+    "name": "Steel",
+    "price": 2
+  },
+  {
+    "ID": 1,
+    "name": "Aluminium",
+    "price": 5
+  },
+  {
+    "ID": 2,
+    "name": "Copper",
+    "price": 6
+  },
+  {
+    "ID": 3,
+    "name": "Rubber",
+    "price": 2
+  },
+  {
+    "ID": 4,
+    "name": "Sand",
+    "price": 1
+  },
+  {
+    "ID": 5,
+    "name": "Plastic granules",
+    "price": 4
+  },
+  {
+    "ID": 6,
+    "name": "Silicon monocrystal",
+    "price": 5
+  },
+  {
+    "ID": 7,
+    "name": "Lithium",
+    "price": 12
+  },
+  {
+    "ID": 8,
+    "name": "Steel plate",
+    "price": 6
+  },
+  {
+    "ID": 9,
+    "name": "Aluminium plate",
+    "price": 9
+  },
+  {
+    "ID": 10,
+    "name": "Copper plate",
+    "price": 10
+  },
+  {
+    "ID": 11,
+    "name": "Rubber plate",
+    "price": 6
+  },
+  {
+    "ID": 12,
+    "name": "Glass plate",
+    "price": 6
+  },
+  {
+    "ID": 13,
+    "name": "Plastic board",
+    "price": 8
+  },
+  {
+    "ID": 14,
+    "name": "Fiberglass board",
+    "price": 10
+  },
+  {
+    "ID": 15,
+    "name": "Silicon wafer",
+    "price": 2
+  },
+  {
+    "ID": 16,
+    "name": "Steel rod",
+    "price": 4
+  },
+  {
+    "ID": 17,
+    "name": "Screw",
+    "price": 2
+  },
+  {
+    "ID": 18,
+    "name": "Aluminium profile",
+    "price": 6
+  },
+  {
+    "ID": 19,
+    "name": "Aluminium tube",
+    "price": 6
+  },
+  {
+    "ID": 20,
+    "name": "Copper wire",
+    "price": 7
+  },
+  {
+    "ID": 21,
+    "name": "Copper tube",
+    "price": 7
+  },
+  {
+    "ID": 22,
+    "name": "Rubber tube",
+    "price": 4
+  },
+  {
+    "ID": 23,
+    "name": "Electronic component",
+    "price": 3
+  },
+  {
+    "ID": 24,
+    "name": "Heater",
+    "price": 26
+  },
+  {
+    "ID": 25,
+    "name": "Electric motor",
+    "price": 34
+  },
+  {
+    "ID": 26,
+    "name": "Cooler",
+    "price": 26
+  },
+  {
+    "ID": 27,
+    "name": "Wheel",
+    "price": 14
+  },
+  {
+    "ID": 28,
+    "name": "Propeller",
+    "price": 4
+  },
+  {
+    "ID": 29,
+    "name": "Circuit board",
+    "price": 10
+  },
+  {
+    "ID": 30,
+    "name": "Microchip",
+    "price": 6
+  },
+  {
+    "ID": 31,
+    "name": "Lithium Ion Battery",
+    "price": 15
+  },
+  {
+    "ID": 32,
+    "name": "Electric Stove Parts",
+    "price": 54
+  },
+  {
+    "ID": 33,
+    "name": "Refrigerator Parts",
+    "price": 105
+  },
+  {
+    "ID": 34,
+    "name": "Washing Machine Parts",
+    "price": 90
+  },
+  {
+    "ID": 35,
+    "name": "Microwave Oven Parts",
+    "price": 71
+  },
+  {
+    "ID": 36,
+    "name": "Robot Vacuum Parts",
+    "price": 216
+  },
+  {
+    "ID": 37,
+    "name": "Motherboard",
+    "price": 60
+  },
+  {
+    "ID": 38,
+    "name": "Display",
+    "price": 60
+  },
+  {
+    "ID": 39,
+    "name": "Power Supply Unit",
+    "price": 26
+  },
+  {
+    "ID": 40,
+    "name": "Electric Stove Body",
+    "price": 17
+  },
+  {
+    "ID": 41,
+    "name": "Refrigerator Body",
+    "price": 78
+  },
+  {
+    "ID": 42,
+    "name": "Washing Machine Body",
+    "price": 86
+  },
+  {
+    "ID": 43,
+    "name": "Microwave Oven Body",
+    "price": 44
+  },
+  {
+    "ID": 44,
+    "name": "Robot Vacuum Body",
+    "price": 12
+  },
+  {
+    "ID": 45,
+    "name": "TV Body",
+    "price": 40
+  },
+  {
+    "ID": 46,
+    "name": "Mobile Body",
+    "price": 18
+  },
+  {
+    "ID": 47,
+    "name": "Quadcopter Body",
+    "price": 12
+  },
+  {
+    "ID": 48,
+    "name": "Electric Stove",
+    "price": 107
+  },
+  {
+    "ID": 49,
+    "name": "Refrigerator",
+    "price": 314
+  },
+  {
+    "ID": 50,
+    "name": "Washing Machine",
+    "price": 303
+  },
+  {
+    "ID": 51,
+    "name": "Microwave Oven",
+    "price": 211
+  },
+  {
+    "ID": 52,
+    "name": "Robot Vacuum",
+    "price": 381
+  },
+  {
+    "ID": 53,
+    "name": "TV Parts",
+    "price": 189
+  },
+  {
+    "ID": 54,
+    "name": "Mobile Parts",
+    "price": 140
+  },
+  {
+    "ID": 55,
+    "name": "Quadcopter Parts",
+    "price": 182
+  },
+  {
+    "ID": 56,
+    "name": "reserved",
+    "price": 0
+  },
+  {
+    "ID": 57,
+    "name": "reserved",
+    "price": 0
+  },
+  {
+    "ID": 58,
+    "name": "reserved",
+    "price": 0
+  },
+  {
+    "ID": 59,
+    "name": "reserved",
+    "price": 0
+  },
+  {
+    "ID": 60,
+    "name": "reserved",
+    "price": 0
+  },
+  {
+    "ID": 61,
+    "name": "TV",
+    "price": 644
+  },
+  {
+    "ID": 62,
+    "name": "Mobile",
+    "price": 300
+  },
+  {
+    "ID": 63,
+    "name": "Quadcopter",
+    "price": 290
+  }
+]
