@@ -87,6 +87,7 @@ public class Material {
      * @param resources ресурсы приложения
      */
     protected static void loadMaterialsData(Resources resources) {
+        Sprite allMaterials = new Sprite(resources, R.drawable.materials, 8, 8);
         // Загружаем массив материалов
         CSVTable csv = new CSVTable(resources, R.raw.materials);
         int ID, totalMaterials = csv.getRowCount();
@@ -94,9 +95,7 @@ public class Material {
         for (int i = 0; i < totalMaterials; i++) {
             ID = csv.getIntValue(i, 0);
             if (ID >= 0 && ID < materials.length) {
-                // TODO Можно более экономно создавать спрайт не делая атлас каждый раз
-                Sprite image = new Sprite(resources, R.drawable.materials, 8, 8);
-                image.setActiveFrame(ID);
+                Sprite image = allMaterials.getAsSprite(ID);
                 materials[ID] = new Material(ID,  image, csv.getValue(i, 1).trim(), csv.getDoubleValue(i, 2));
             }
         }

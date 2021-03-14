@@ -1,5 +1,7 @@
 package com.axiom.operatio.model.production.machine;
 
+import android.content.res.Resources;
+
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
@@ -9,6 +11,8 @@ import com.axiom.operatio.model.production.block.BlockRenderer;
 import com.axiom.operatio.model.production.conveyor.ConveyorRenderer;
 
 public class MachineRenderer extends BlockRenderer {
+
+    protected static Sprite allMachines = null;
 
     protected Machine machine;                             // Отрисовываемая машина
     protected Sprite sprite;                               // Анимации машины
@@ -20,15 +24,17 @@ public class MachineRenderer extends BlockRenderer {
     public MachineRenderer(Machine machine) {
         this.machine = machine;
         int ID = machine.getType().ID;
+        if (allMachines==null) {
+            Resources resources = SceneManager.getResources();
+            allMachines = new Sprite(resources, R.drawable.blocks, 8, 11);
+        }
 
-        sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+        sprite = allMachines.getAsSprite(ID * 8, ID * 8 + 7);
         sprite.setZOrder(7);
-        idleAnimation = sprite.addAnimation(ID * 8, ID * 8, 8, true);
-        busyAnimation = sprite.addAnimation(ID * 8, ID * 8 + 7, 8, true);
+        idleAnimation = sprite.addAnimation(0, 0, 8, true);
+        busyAnimation = sprite.addAnimation(0, 7, 8, true);
         sprite.setActiveAnimation(idleAnimation);
-
-        fault = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-        fault.setActiveFrame(71);
+        fault = allMachines.getAsSprite(71);
         fault.setZOrder(8);
 
         conveyorRenderer = new ConveyorRenderer(machine);

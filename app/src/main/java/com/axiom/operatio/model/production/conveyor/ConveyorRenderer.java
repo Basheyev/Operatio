@@ -1,5 +1,7 @@
 package com.axiom.operatio.model.production.conveyor;
 
+import android.content.res.Resources;
+
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.data.Channel;
@@ -19,6 +21,7 @@ import static com.axiom.operatio.model.production.block.Block.UP;
 
 public class ConveyorRenderer extends BlockRenderer {
 
+    protected static Sprite allConveyors = null;
     protected Block block;
     protected Sprite sprite;
 
@@ -28,7 +31,12 @@ public class ConveyorRenderer extends BlockRenderer {
 
     public ConveyorRenderer(Block block) {
         this.block = block;
-        sprite = new Sprite(SceneManager.getResources(), R.drawable.blocks,8,11);
+        if (allConveyors==null) {
+            Resources resources = SceneManager.getResources();
+            allConveyors = new Sprite(resources, R.drawable.blocks, 8, 11);
+        }
+
+        sprite = allConveyors.getAsSprite(40, 63);
         sprite.setZOrder(5);
         createAnimations();
         arrangeAnimation(block.getInputDirection(), block.getOutputDirection());
@@ -36,9 +44,9 @@ public class ConveyorRenderer extends BlockRenderer {
     }
 
     private void createAnimations() {
-        animStraight = sprite.addAnimation(40,47, 15, true);
-        animUpToRight = sprite.addAnimation(48,55, 15, true);
-        animRightToUp = sprite.addAnimation(56,63, 15, true);
+        animStraight = sprite.addAnimation(0,7, 15, true);
+        animUpToRight = sprite.addAnimation(8,15, 15, true);
+        animRightToUp = sprite.addAnimation(16,23, 15, true);
     }
 
 
@@ -170,14 +178,10 @@ public class ConveyorRenderer extends BlockRenderer {
         float progressBias = cycleBias * stridePerItem;
         int finishedCounter = conveyor.getOutputQueue().size();
 
-        //Sprite materialSprite;
         for (int i=0; i<outputQueue.size(); i++) {
             Item item = outputQueue.get(i);
             if (item==null) continue;
             progress = 1.0f - (i * stridePerItem) + progressBias - stridePerItem;
-            //materialSprite = item.getMaterial().getImage();
-            //materialSprite.useColor = true;
-            //materialSprite.setColor(Color.RED);
             drawItem (camera, x, y, width, height, item, progress);
         }
 
@@ -192,9 +196,6 @@ public class ConveyorRenderer extends BlockRenderer {
                 progress = maxProgress;
                 maxProgress -= stridePerItem;
             }
-            //materialSprite = item.getMaterial().getImage();
-            //materialSprite.useColor = true;
-            //materialSprite.setColor(Color.GREEN);
             drawItem (camera, x, y, width, height, item, progress);
         }
 
