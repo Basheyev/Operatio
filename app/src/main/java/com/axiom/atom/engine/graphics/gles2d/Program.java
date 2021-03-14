@@ -25,13 +25,20 @@ public class Program implements GLESObject {
     //---------------------------------------------------------------------------
 
     @Override
-    public void loadObjectToGPU() {
+    public void loadToGPU() {
         programID = GLES20.glCreateProgram();
         GLES20.glAttachShader(programID, vertexShader.getShaderID());
         GLES20.glAttachShader(programID, fragmentShader.getShaderID());
         GLES20.glLinkProgram(programID);
         initialized = true;
     }
+
+    @Override
+    public void deleteFromGPU() {
+        GLES20.glDeleteProgram(programID);
+        initialized = false;
+    }
+
 
     //---------------------------------------------------------------------------
 

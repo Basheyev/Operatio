@@ -129,7 +129,7 @@ public class Texture implements GLESObject {
      * Загружает объект GLES в память GPU в потоке GLThread
      */
     @Override
-    public void loadObjectToGPU() {
+    public void loadToGPU() {
         int[] temp = new int[1];
         int filtering = linearFiltering ? GLES20.GL_LINEAR : GLES20.GL_NEAREST;
         // Создаём текстуру
@@ -145,6 +145,14 @@ public class Texture implements GLESObject {
         // высвобождаем ресурсы изображения из оперативной памяти, так как уже загрузили в GPU
         flippedBitmap.recycle();
         flippedBitmap = null;
+    }
+
+
+    @Override
+    public void deleteFromGPU() {
+        int[] temp = new int[1];
+        temp[0] = textureID;
+        GLES20.glDeleteTextures(1, temp, 0);
     }
 
     /**

@@ -2,9 +2,7 @@ package com.axiom.atom.engine.graphics;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import android.util.Log;
 
-import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
@@ -15,7 +13,6 @@ import com.axiom.atom.engine.graphics.gles2d.GLESObject;
 import com.axiom.atom.engine.graphics.renderers.Line;
 import com.axiom.atom.engine.graphics.renderers.Rectangle;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
-import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.atom.engine.core.geometry.AABB;
 
@@ -35,8 +32,9 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
     //-------------------------------------------------------------------------------------
     // Список объектов которые должны быть инициализированы в потоке/контексте OpenGL
     //-------------------------------------------------------------------------------------
-    public static final int LAZY_LOAD_QUEUE_LENGTH = 1024;     // Максимальная длина очереди
-    protected static Channel<GLESObject> loadQueue;            // Очередь "ленивой" загрузки
+    public static final int LAZY_LOAD_QUEUE_LENGTH = 1024;   // Максимальная длина очереди
+    protected static Channel<GLESObject> loadQueue;          // Очередь "ленивой" загрузки
+    protected static Channel<GLESObject> loadedObjects;      // Список загруженных объектов
 
     //-------------------------------------------------------------------------------------
     // Основные объекты графического рендера
@@ -55,6 +53,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
     private long totalRenderTime = 0;                  // Общее время рендеринга в секунду
     private long averageRenderTime;                    // Среднее время рендеринга одного кадра
     private long fpsLastEvaluationTime = 0;            // Последнее время расчёта FPS (нс)
+    private boolean exitGameFlag = false;
 
     /**
      * Возвращает единственный экземпляр графического рендера (Singleton)
@@ -79,6 +78,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
         this.sceneManager = sceneManager;
         // Инициализируем статические переменные
         loadQueue = new Channel<>(LAZY_LOAD_QUEUE_LENGTH);
+        loadedObjects = new Channel<>(LAZY_LOAD_QUEUE_LENGTH);
         camera = Camera.getInstance(gameView);
     }
 
@@ -111,20 +111,34 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
     /**
      * Отложенная загрузка программ, шейдеров и текстур в GPU
      */
-    protected void performLazyLoadToGPU() {
-        GLESObject task;
-        long startTime = System.currentTimeMillis();
-        int tasksAmount = loadQueue.size();
-
+    protected void loadObjectsToGPU() {
+        GLESObject glObject;
         while (loadQueue.size() > 0) {
-            task = loadQueue.poll();
-            if (task!=null) {
-                task.loadObjectToGPU();
-                Log.i("LOAD TO GPU", task.toString());
+            glObject = loadQueue.poll();
+            if (glObject!=null) {
+                long startTime = System.currentTimeMillis();
+                // Загружаем объект в видео память
+                glObject.loadToGPU();
+                loadedObjects.add(glObject);
+                // Если загрузка объекта продилась больше 50мс
+                // остальное загрузим на следующем кадре
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                if (elapsedTime > 50) break;
             }
         }
-
     }
+
+
+    protected void deleteObjectsFromGPU() {
+        GLESObject glObject;
+        while (loadedObjects.size() > 0) {
+            glObject = loadedObjects.poll();
+            if (glObject != null) {
+                glObject.deleteFromGPU();
+            }
+        }
+    }
+
 
     //------------------------------------------------------------------------------------------
     // Методы отрисовки кадра сцены
@@ -135,10 +149,23 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
      */
     public void onDrawFrame(GL10 gl) {
         try {
+
+            // Если выставлен флаг завершения игры - удалить объекты
+            if (exitGameFlag) {
+                deleteObjectsFromGPU();
+                return;
+            }
+
             // Если есть очередь "отложенных" загрузок, выполняем
-            if (loadQueue.size() > 0) performLazyLoadToGPU();
+            if (loadQueue.size() > 0) {
+                loadObjectsToGPU();
+                // Не рисуем сцену пока не загрузили все объекты
+                return;
+            }
+
             // Отрисовываем активную сцену
             renderScene();
+
         } catch (Exception e) {
             e.printStackTrace();
             try {
@@ -240,6 +267,11 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
         return render.fps;
     }
 
+    public static void release() {
+        if (render==null) return;
+        render.exitGameFlag = true;
+    }
+
     //-------------------------------------------------------------------------------------
     // Методы для упрощенной отрисовки текста и прямоугольников
     //-------------------------------------------------------------------------------------
@@ -249,7 +281,9 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
     }
 
     public static void clear() {
-        GLES20.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT
+                | GLES20.GL_COLOR_BUFFER_BIT);
     }
 
     public static void drawText(String text, float x, float y, float scale) {

@@ -34,7 +34,7 @@ public class Shader implements GLESObject {
     }
 
     @Override
-    public void loadObjectToGPU() {
+    public void loadToGPU() {
         shaderID = GLES20.glCreateShader(shaderType);
         if (shaderID==0) Log.e ("SHADER", "Failed to create shader.");
         GLES20.glShaderSource(shaderID, shaderCode);
@@ -50,6 +50,12 @@ public class Shader implements GLESObject {
             GLES20.glDeleteShader(vertexShaderHandle);
             vertexShaderHandle = 0;
         }*/
+    }
+
+
+    @Override
+    public void deleteFromGPU() {
+        GLES20.glDeleteShader(shaderID);
     }
 
     /**

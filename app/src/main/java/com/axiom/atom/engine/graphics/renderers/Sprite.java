@@ -444,6 +444,9 @@ public class Sprite extends Quad {
 
     /**
      * Сгенерировать новый спрайт на основе диапазона кадров (индексов текстурных регионов)
+     * @param startFrame начальный индекс региона (номер кадра)
+     * @param stopFrame конечный индекс региона (номер кадра)
+     * @return новый спрайт с указанными регионами
      */
     public Sprite getAsSprite(int startFrame, int stopFrame) {
         int maxIndex = getFramesAmount() - 1;

@@ -14,6 +14,8 @@ public interface GLESObject {
      * в потоке GLThread (один поток = один контекст) мы добавляем задачи в очередь
      * чтобы потом вызвать initializeOnGLThread() из потока GLThread
      */
-    void loadObjectToGPU();
+    void loadToGPU();
+
+    void deleteFromGPU();
 
 }
