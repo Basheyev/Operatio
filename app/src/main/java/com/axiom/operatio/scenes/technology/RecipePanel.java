@@ -1,7 +1,5 @@
 package com.axiom.operatio.scenes.technology;
 
-import android.util.Log;
-
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
@@ -18,11 +16,8 @@ import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
 import com.axiom.operatio.scenes.common.ItemWidget;
 
-import java.util.Iterator;
-
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.WHITE;
-import static android.graphics.Color.YELLOW;
 
 public class RecipePanel extends Panel {
 
@@ -174,7 +169,7 @@ public class RecipePanel extends Panel {
             MachineType mt = MachineType.getMachineType(i);
             Operation[] op = mt.getOperations();
             for (int j=0; j<op.length; j++) {
-                Material[] outputs = op[j].getOutputMaterials();
+                Material[] outputs = op[j].getOutputs();
                 for (int k=0; k<outputs.length; k++) {
                     if (outputs[k].equals(selectedMaterial)) {
                         showMachineAndOperation(mt, j);
@@ -191,14 +186,14 @@ public class RecipePanel extends Panel {
     protected void showMachineAndOperation(MachineType machineType, int operationID) {
 
         Sprite machineImage = machineType.getImage();
-        machineCaption.setText(machineType.getName() + "\n " + "operation #" +  operationID);
+        machineCaption.setText(machineType.getName() + "\n " + "operation #" +  (operationID+1));
         machineButton.setBackground(machineImage);
 
         Operation operation = machineType.getOperation(operationID);
 
-        Material[] inputs =  operation.getInputMaterials();
+        Material[] inputs =  operation.getInputs();
         int[] inputAmount = operation.getInputAmount();
-        Material[] outputs = operation.getOutputMaterials();
+        Material[] outputs = operation.getOutputs();
         int[] outputAmount = operation.getOutputAmount();
 
         for (int i=0; i<4; i++) {

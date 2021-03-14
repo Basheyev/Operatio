@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 /**
  * Построитель уровней
+ * todo ПЕРЕЙТИ НА ФОРМАТ МИССИЙ С НАКОПЛЕНИЕМ ОТКРЫТИЙ
  * todo вынести данные уровней в файл ресурса
  */
 public class LevelFactory {

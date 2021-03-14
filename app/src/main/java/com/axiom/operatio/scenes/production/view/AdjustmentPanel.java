@@ -280,9 +280,9 @@ public class AdjustmentPanel extends Panel {
         Operation[] allOperations = machineType.getOperations();
 
         Operation currentOperation = machineType.getOperation(opID);
-        Material[] inputMaterials = currentOperation.getInputMaterials();
+        Material[] inputMaterials = currentOperation.getInputs();
         int[] inputAmount = currentOperation.getInputAmount();
-        Material[] outputMaterials = currentOperation.getOutputMaterials();
+        Material[] outputMaterials = currentOperation.getOutputs();
         int[] outputAmount = currentOperation.getOutputAmount();
 
         leftButton.visible = true;
