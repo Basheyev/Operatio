@@ -11,6 +11,7 @@ import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
+import com.axiom.operatio.model.gameplay.Utils;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
@@ -183,13 +184,22 @@ public class RecipePanel extends Panel {
     }
 
 
+    private StringBuffer machineDescription = new StringBuffer(256);
+
     protected void showMachineAndOperation(MachineType machineType, int operationID) {
 
+        Operation operation = machineType.getOperation(operationID);
         Sprite machineImage = machineType.getImage();
-        machineCaption.setText(machineType.getName() + "\n " + "operation #" +  (operationID+1));
+
+        machineDescription.delete(0, machineDescription.length());
+        machineDescription.append(machineType.getName());
+        machineDescription.append("\noperation #");
+        machineDescription.append(operationID + 1);
+        machineDescription.append("\ncost: ");
+        machineDescription.append(Utils.moneyAsString(operation.getCost()));
+        machineCaption.setText(machineDescription);
         machineButton.setBackground(machineImage);
 
-        Operation operation = machineType.getOperation(operationID);
 
         Material[] inputs =  operation.getInputs();
         int[] inputAmount = operation.getInputAmount();
