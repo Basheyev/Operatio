@@ -1,5 +1,6 @@
 package com.axiom.operatio.scenes.production.view;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.MotionEvent;
 
@@ -31,6 +32,7 @@ public class BlockButton extends Button {
     private int tickSound;
     private int denySound;
 
+    private static Sprite allMachines = null;
 
     public BlockButton(ProductionScene scene, BlocksPanel panel, int id) {
         super();
@@ -38,6 +40,11 @@ public class BlockButton extends Button {
         this.scene = scene;
         setTextColor(Color.WHITE);
         setTextScale(1f);
+
+        if (allMachines==null) {
+            Resources resources = SceneManager.getResources();
+            allMachines = new Sprite(resources, R.drawable.blocks, 8, 11);
+        }
 
         if (id==0) initializeAnimationButton(40, 47, 15, Conveyor.PRICE);    // Если это конвейер
         else if (id==1) initializeAnimationButton(72, 79, 8, Buffer.PRICE); // Если это буфер
@@ -57,24 +64,24 @@ public class BlockButton extends Button {
 
 
     private void initializeMachineButton(int id) {
-        background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
         int startFrame = (id - 2) * 8;
-        int animation = background.addAnimation(startFrame, startFrame + 7, 8, true);
+        background = allMachines.getAsSprite(startFrame, startFrame + 7);
+        int animation = background.addAnimation(0, 7, 8, true);
         background.setActiveAnimation(animation);
         setText(Utils.moneyAsString(Math.round(MachineType.getMachineType(id-2).getPrice())));
     }
 
 
     private void initializeImageButton(int activeFrame, int price) {
-        background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+        background = allMachines.getAsSprite(activeFrame);
         background.setActiveFrame(activeFrame);
         if (price > 0) setText("$" + price); else setText("");
     }
 
 
     private void initializeAnimationButton(int startFrame, int stopFrame, int fps, int price) {
-        background = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-        int animation = background.addAnimation(startFrame, stopFrame, fps,true);
+        background = allMachines.getAsSprite(startFrame, stopFrame);
+        int animation = background.addAnimation(0, stopFrame - startFrame, fps,true);
         background.setActiveAnimation(animation);
         setText("$" + price);
     }

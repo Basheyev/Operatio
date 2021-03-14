@@ -1,5 +1,6 @@
 package com.axiom.operatio.scenes.common;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.MotionEvent;
 
@@ -62,6 +63,7 @@ public class ScenesPanel extends Panel {
     private static final String REPORT = ReportScene.SCENE_NAME;
     private static final String PAUSE = "pause";
 
+    private static Sprite uiIcons = null;
 
     public ScenesPanel(Production production) {
         super();
@@ -100,8 +102,11 @@ public class ScenesPanel extends Panel {
     }
 
     private Button buildButton(int spriteIndex, String tag, float x, float y, float w, float h, boolean addListener) {
-        Sprite icon = new Sprite(SceneManager.getResources(), R.drawable.ui_icons, 4, 4);
-        icon.setActiveFrame(spriteIndex);
+        if (uiIcons==null) {
+            Resources resources = SceneManager.getResources();
+            uiIcons = new Sprite(resources, R.drawable.ui_icons, 4, 4);
+        }
+        Sprite icon = uiIcons.getAsSprite(spriteIndex);
         Button button = new Button(icon);
         button.setLocation(x, y);
         button.setSize(w, h);
@@ -118,12 +123,17 @@ public class ScenesPanel extends Panel {
     public void draw(Camera camera) {
         double currentBalance = Math.round(production.getCashBalance());
         long currentDay = production.getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES;
-        if (currentBalance != lastBalance || currentDay != lastDay) {
+
+        if (currentDay != lastDay) {
             timeCaption.setText("Day: " + currentDay);
-            balanceCaption.setText(Utils.moneyAsString(currentBalance));
-            lastBalance = currentBalance;
             lastDay = currentDay;
         }
+
+        if (currentBalance != lastBalance) {
+            balanceCaption.setText(Utils.moneyAsString(currentBalance));
+            lastBalance = currentBalance;
+        }
+
         highlightButton();
         super.draw(camera);
     }

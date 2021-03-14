@@ -1,5 +1,6 @@
 package com.axiom.operatio.scenes.production.view;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -26,6 +27,7 @@ public class ModePanel extends Panel {
     private ProductionScene productionScene;
     private int tickSound;
     private String toggledButton;
+    private static Sprite uiIcons = null;
 
     protected ClickListener listener = new ClickListener() {
         @Override
@@ -77,9 +79,13 @@ public class ModePanel extends Panel {
         Widget button;
         Sprite sprite;
 
+        if (uiIcons==null) {
+            Resources resources = SceneManager.getResources();
+            uiIcons = new Sprite(resources, R.drawable.ui_icons, 4, 4);
+        }
+
         for (int i =0; i<4; i++) {
-            sprite = new Sprite(SceneManager.getResources(), R.drawable.ui_icons, 4, 4);
-            sprite.setActiveFrame(8 + i);
+            sprite = uiIcons.getAsSprite(8 + i);
             button = new Button(sprite);
             button.setTag(""+i);
             button.setLocalBounds(25 + i * 100, 20, 90, 100);

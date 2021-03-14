@@ -1,5 +1,7 @@
 package com.axiom.operatio.model.production;
 
+import android.content.res.Resources;
+
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.GraphicsRender;
@@ -17,6 +19,7 @@ public class ProductionRenderer {
     public static final int INITIAL_CELL_WIDTH = (MAX_CELL_SIZE + MIN_CELL_SIZE) / 2;
     public static final int INITIAL_CELL_HEIGHT = (MAX_CELL_SIZE + MIN_CELL_SIZE) / 2;
 
+    private static Sprite tiles = null;
 
     private Production production;
     private Sprite tile, tileBlocked, outsideTile, selection;
@@ -31,22 +34,20 @@ public class ProductionRenderer {
 
 
     protected ProductionRenderer(Production production) {
-
-        tile = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-        tile.setActiveFrame(68);
+        if (tiles==null) {
+            Resources resources = SceneManager.getResources();
+            tiles = new Sprite(resources, R.drawable.blocks, 8, 11);
+        }
+        tile = tiles.getAsSprite(68);
         tile.setZOrder(0);
-        tileBlocked = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-        tileBlocked.setActiveFrame(70);
+        tileBlocked = tiles.getAsSprite(70);
         tileBlocked.setZOrder(0);
-        outsideTile = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-        outsideTile.setActiveFrame(87);
+        outsideTile = tiles.getAsSprite(87);
         outsideTile.setZOrder(0);
-        selection = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-        selection.setActiveFrame(67);
+        selection = tiles.getAsSprite(67);
         selection.setZOrder(500);
 
-        Sprite particleSprite = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-        particleSprite.setActiveFrame(86);
+        Sprite particleSprite = tiles.getAsSprite(86);
         particles = new Particles(particleSprite,16, 1000, 100);
         particles.zOrder = 8;
 

@@ -99,10 +99,10 @@ public class MachineType {
         }
 
         // Load machine sprites
+        Sprite allMachines = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
         for (int i=0; i < machineTypes.size(); i++) {
-            Sprite image = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
-            int startFrame = i * 8;
-            int animation = image.addAnimation(startFrame, startFrame + 7, 8, true);
+            Sprite image = allMachines.getAsSprite(i * 8, i * 8 + 7);
+            int animation = image.addAnimation(0, 7, 8, true);
             image.setActiveAnimation(animation);
             machineTypes.get(i).image = image;
         }
