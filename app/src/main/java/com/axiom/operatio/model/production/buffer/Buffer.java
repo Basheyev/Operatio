@@ -16,6 +16,8 @@ import org.json.JSONObject;
  */
 public class Buffer extends Block implements JSONSerializable {
 
+    public static final double CYCLE_COST = 0.01d;
+
     public static final int PRICE = 400;
     public static final int NO_KEEPING_UNIT = -1;      // Константа отсутствия такой ячейки хранения
     protected BufferKeepingUnit[] bufferKeepingUnit;   // Ячейки хранения материалов
@@ -160,6 +162,12 @@ public class Buffer extends Block implements JSONSerializable {
     public int getKeepingUnitTotal(int id) {
         if (id < 0 || id > 3) return NO_KEEPING_UNIT;
         return bufferKeepingUnit[id].total;
+    }
+
+
+    @Override
+    public double getCycleCost() {
+        return CYCLE_COST;
     }
 
     /**

@@ -132,6 +132,11 @@ public abstract class Block implements JSONSerializable {
         return state;
     }
 
+
+    public void setState(int newState) {
+        state = newState;
+    }
+
     /**
      * Возвращает общее количество предметов в блоке
      * @return общее количество предметов в блоке
@@ -195,6 +200,8 @@ public abstract class Block implements JSONSerializable {
             inventory.push(output.poll());
         }
     }
+
+    public abstract double getCycleCost();
 
     /**
      * Сериализует блок в JSONObject

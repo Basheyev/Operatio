@@ -2,22 +2,49 @@ package com.axiom.operatio.model.production.machine;
 
 import com.axiom.operatio.model.materials.Material;
 
-// todo add op cost
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Operation {
 
-    protected MachineType machineType;
-    protected int cycles;                // Время операции в циклах производства
-    protected Material[] outputs;       // Список кодов входящих материалов
-    protected Material[] inputs;        // Список кодов исходящих материалов
-    protected int[] outputAmount;               // Список количества входящих материалов
-    protected int[] inputAmount;                // Список количества исходящих материалов
-    protected long cost;                        // Стоимость операции
+    private MachineType machineType;          // Тип машины на которой выполняется
+    private int ID;                           // Код операции
+    private int cycles;                       // Время операции в циклах производства
+    private Material[] outputs;               // Список кодов входящих материалов
+    private Material[] inputs;                // Список кодов исходящих материалов
+    private int[] outputAmount;               // Список количества входящих материалов
+    private int[] inputAmount;                // Список количества исходящих материалов
+    private double cost;                      // Стоимость операции
 
 
-    public Operation(MachineType type) {
-        machineType = type;
+    public Operation(MachineType type, JSONObject op) {
+        try {
+            machineType = type;
+            ID = op.getInt("operationID");
+            cycles = op.getInt("cycles");
+            outputs = new Material[op.getInt("outputs")];
+            inputs = new Material[op.getInt("inputs")];
+            outputAmount = new int[outputs.length];
+            inputAmount = new int[inputs.length];
+            JSONArray jsonOutputIDs = op.getJSONArray("outputIDs");
+            for (int j = 0; j < outputs.length; j++) outputs[j] = Material.getMaterial(jsonOutputIDs.getInt(j));
+            JSONArray jsonInputIDs = op.getJSONArray("inputIDs");
+            for (int j = 0; j < inputs.length; j++) inputs[j] = Material.getMaterial(jsonInputIDs.getInt(j));
+            JSONArray jsonOutputAmount = op.getJSONArray("outputQuantities");
+            for (int j = 0; j < outputAmount.length; j++) outputAmount[j] = jsonOutputAmount.getInt(j);
+            JSONArray jsonInputAmount = op.getJSONArray("inputQuantities");
+            for (int j = 0; j < inputAmount.length; j++)  inputAmount[j] = jsonInputAmount.getInt(j);
+            cost = cycles * machineType.getCycleCost();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
+
+    public int getID() {
+        return ID;
+    }
 
     public boolean isCorrectInput(Material m) {
         for (Material material: inputs) {
@@ -100,4 +127,11 @@ public class Operation {
         return machineType;
     }
 
+    /**
+     * Возвращает стоимость выполнения операции
+     * @return стоимость операции
+     */
+    public double getCost() {
+        return cost;
+    }
 }

@@ -98,7 +98,7 @@ public class Machine extends Block implements JSONSerializable {
         // Подтверждаем, что есть необходимое количество каждого предмета по Операции
         if (operationInputVerified(matCounter)) {    // Начинаем работу машины
             setState(BUSY);                          // Устанавливаем состояние - BUSY
-            cyclesLeft = operation.cycles;    // Указываем количество циклов работы
+            cyclesLeft = operation.getCycles();      // Указываем количество циклов работы
         }
 
     }
@@ -122,8 +122,8 @@ public class Machine extends Block implements JSONSerializable {
             if (operationInputVerified(matCounter)) return;
 
             // Пытаемся взять материалы по списку входящих материалов
-            for (int i = 0; i<operation.inputs.length; i++) {
-                Material material = operation.inputs[i];
+            for (int i = 0; i<operation.getInputs().length; i++) {
+                Material material = operation.getInputs()[i];
                 for (int j=0; j<matCounter[i]; j++) {       // По количеству недостающих
                     if (inputBlock instanceof Buffer) {
                         Buffer inputBuffer = (Buffer) inputBlock;
@@ -158,7 +158,7 @@ public class Machine extends Block implements JSONSerializable {
      */
     protected boolean operationInputVerified(int[] matCounter) {
         // Копируем количество необходимого входного материала из описания операции в matCounter
-        System.arraycopy(operation.inputAmount, 0, matCounter,0, operation.inputAmount.length);
+        System.arraycopy(operation.getInputAmount(), 0, matCounter,0, operation.getInputAmount().length);
         // Алгоритм построен с учтом того, что все входящие материалы входят в рецепт операции
         for (int k=0; k<input.size(); k++) {
             Item item = input.get(k);
@@ -166,9 +166,9 @@ public class Machine extends Block implements JSONSerializable {
             // Берем код очередного материала из входящей очереди
             int materialID = item.getMaterial().getMaterialID();
             // Проверяем есть ли такой материал в списке входных материалов операции
-            for (int i = 0; i<operation.inputs.length; i++) {
+            for (int i = 0; i<operation.getInputs().length; i++) {
                 // Если нашли такой же материал, то уменьшаем счетчик необходимых материалов
-                if (operation.inputs[i].getMaterialID()==materialID) {
+                if (operation.getInputs()[i].getMaterialID()==materialID) {
                     matCounter[i]--;
                     break;
                 }
@@ -187,13 +187,13 @@ public class Machine extends Block implements JSONSerializable {
     protected void generateOutput() {
         Item item;
         Ledger ledger = production.getLedger();
-        for (int i=0; i<operation.outputAmount.length; i++) {
-            Material material = operation.outputs[i];
+        for (int i=0; i<operation.getOutputAmount().length; i++) {
+            Material material = operation.getOutputs()[i];
 
             // Регистрируем факт производства материала
-            ledger.registerCommodityManufactured(material.getMaterialID(), operation.outputAmount[i]);
+            ledger.registerCommodityManufactured(material.getMaterialID(), operation.getOutputAmount()[i]);
 
-            for (int j=0; j<operation.outputAmount[i]; j++) {
+            for (int j=0; j<operation.getOutputAmount()[i]; j++) {
                 item = new Item(material);
                 item.setOwner(production,this);
                 output.add(item);
@@ -224,14 +224,14 @@ public class Machine extends Block implements JSONSerializable {
         if (this.state==newState) return;
         switch (newState) {
             case Block.IDLE:
-                ((MachineRenderer) renderer).setIdleAnimation();
+                ((MachineRenderer) renderer).setIdleAnimation(false);
                 this.state = newState;
                 break;
             case Block.BUSY:
                 ((MachineRenderer) renderer).setBusyAnimation();
                 this.state = newState;
             case Block.FAULT:
-                ((MachineRenderer) renderer).setIdleAnimation();
+                ((MachineRenderer) renderer).setIdleAnimation(true);
                 this.state = newState;
                 break;
         }
@@ -240,6 +240,11 @@ public class Machine extends Block implements JSONSerializable {
 
     public MachineType getType() {
         return type;
+    }
+
+    @Override
+    public double getCycleCost() {
+        return type.getCycleCost();
     }
 
     public Operation getOperation() { return operation; }

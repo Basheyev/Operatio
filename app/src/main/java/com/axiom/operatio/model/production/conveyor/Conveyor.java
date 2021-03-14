@@ -6,14 +6,14 @@ import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.materials.Item;
-import com.axiom.operatio.model.production.buffer.BufferKeepingUnit;
 import com.axiom.operatio.model.production.buffer.ExportBuffer;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Conveyor extends Block implements JSONSerializable {
+
+    public static final double CYCLE_COST = 0.05f;
 
     public static final int DELIVERY_CYCLES = 5;
     public static final int PRICE = 100;
@@ -155,6 +155,10 @@ public class Conveyor extends Block implements JSONSerializable {
         return output;
     }
 
+    @Override
+    public double getCycleCost() {
+        return CYCLE_COST;
+    }
 
     public JSONObject serialize() {
         JSONObject jsonObject = super.serialize();

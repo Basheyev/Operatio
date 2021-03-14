@@ -16,7 +16,7 @@ public class MachineRenderer extends BlockRenderer {
 
     protected Machine machine;                             // Отрисовываемая машина
     protected Sprite sprite;                               // Анимации машины
-    protected Sprite fault;
+    protected Sprite fault;                                // Значек сбоя
     protected int idleAnimation;                           // Код анимации простоя
     protected int busyAnimation;                           // Код анимации занятости
     protected ConveyorRenderer conveyorRenderer;
@@ -68,9 +68,12 @@ public class MachineRenderer extends BlockRenderer {
         conveyorRenderer.arrangeAnimation(inputDirection, outputDirection);
     }
 
-    public void setIdleAnimation() {
-        if (sprite.getTimesPlayed()>0)
-        sprite.setActiveAnimation(idleAnimation);
+    public void setIdleAnimation(boolean doNotWait) {
+        if (doNotWait) {
+            sprite.setActiveAnimation(idleAnimation);
+        } else {
+            if (sprite.getTimesPlayed() > 0) sprite.setActiveAnimation(idleAnimation);
+        }
     }
 
     public void setBusyAnimation() {

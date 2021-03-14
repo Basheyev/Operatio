@@ -16,6 +16,7 @@ import org.json.JSONObject;
  */
 public class ImportBuffer extends Block implements JSONSerializable {
 
+    public static final double CYCLE_COST = 0.01d;
     public static final int PRICE = 800;
 
     protected Material importMaterial;
@@ -87,6 +88,12 @@ public class ImportBuffer extends Block implements JSONSerializable {
     @Override
     public void setDirections(int inDir, int outDir) {
         super.setDirections(NONE, NONE);
+    }
+
+
+    @Override
+    public double getCycleCost() {
+        return CYCLE_COST;
     }
 
     @Override

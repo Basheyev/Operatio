@@ -169,19 +169,10 @@ public class Production implements JSONSerializable {
                 int expenseType = Ledger.EXPENSE_BLOCK_OPERATION;
                 for (int i = 0; i < size; i++) {
                     block = blocks.get(i);
-                    energyPayed = false;
-                    // TODO Разные операционные косты надо брать у блока, а не у тут
-                    if (block instanceof Machine) {
-                        energyPayed = decreaseCashBalance(expenseType,0.1d);  // Берем по $0.1 за цикл машины
-                    } else if (block instanceof Conveyor) {
-                        energyPayed = decreaseCashBalance(expenseType,0.05d);  // Берем по $0.05 за конвейер
-                    } else {
-                        energyPayed = decreaseCashBalance(expenseType,0.01d); // Берем по $0.01 за буферы
-                    }
-                    if (energyPayed) {
-                        block.process();  // Если энергия оплачена отрабатываем
-                    } else {
-                        // TODO иначе показываем что не хватает на операцию (энергии)
+                    energyPayed = decreaseCashBalance(expenseType, block.getCycleCost());
+                    if (energyPayed) block.process();  // Если энергия оплачена отрабатываем
+                    else {
+                        block.setState(Block.FAULT);
                     }
                 }
                 // Выполнить симуляцию склада

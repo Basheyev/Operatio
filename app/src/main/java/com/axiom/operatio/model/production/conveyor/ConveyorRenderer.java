@@ -11,9 +11,11 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
 import com.axiom.operatio.model.materials.Item;
+import com.axiom.operatio.model.production.machine.Machine;
 
 import static com.axiom.operatio.model.production.block.Block.BUSY;
 import static com.axiom.operatio.model.production.block.Block.DOWN;
+import static com.axiom.operatio.model.production.block.Block.FAULT;
 import static com.axiom.operatio.model.production.block.Block.LEFT;
 import static com.axiom.operatio.model.production.block.Block.RIGHT;
 import static com.axiom.operatio.model.production.block.Block.UP;
@@ -24,6 +26,7 @@ public class ConveyorRenderer extends BlockRenderer {
     protected static Sprite allConveyors = null;
     protected Block block;
     protected Sprite sprite;
+    protected Sprite fault;                                // Значек сбоя
 
     protected int animStraight, animUpToRight, animRightToUp;
 
@@ -38,6 +41,10 @@ public class ConveyorRenderer extends BlockRenderer {
 
         sprite = allConveyors.getAsSprite(40, 63);
         sprite.setZOrder(5);
+
+        fault = allConveyors.getAsSprite(71);
+        fault.setZOrder(8);
+
         createAnimations();
         arrangeAnimation(block.getInputDirection(), block.getOutputDirection());
         timeStarted = block.getProduction().getClockMilliseconds();
@@ -140,7 +147,7 @@ public class ConveyorRenderer extends BlockRenderer {
         if (production!=null) gamePaused = production.isPaused();
 
         // Если конвейер занят или игра поставлена на паузу - остановить анимацию движения
-        if (block.getState()==BUSY || gamePaused)
+        if (block.getState()==BUSY || block.getState()==FAULT || gamePaused)
             sprite.animationPaused = true;
         else
             sprite.animationPaused = false;
@@ -155,6 +162,11 @@ public class ConveyorRenderer extends BlockRenderer {
             // Отрисовать вход/выход
             drawInOut(camera, block.getInputDirection(), block.getOutputDirection(),
                     x, y, width, height, sprite.getZOrder() + 2);
+        }
+
+        // Рисуем значок сбоя, если произошел сбой
+        if (block instanceof Conveyor && block.getState()== Conveyor.FAULT) {
+            fault.draw(camera, x, y, width, height);
         }
 
     }

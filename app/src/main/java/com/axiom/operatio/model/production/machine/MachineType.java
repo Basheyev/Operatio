@@ -29,8 +29,28 @@ public class MachineType {
     protected String name;                                 // Название
     protected Operation[] operations;                      // Доступные операции
     protected Sprite image;                                // Изображение машины
-    protected double price;
+    protected double price;                                // Стоимость машины
+    protected double cycleCost;                            // Стоимость цикла работы
     //---------------------------------------------------------------------------------
+
+    private MachineType(JSONObject jsonMachineType) {
+        try {
+            ID = jsonMachineType.getInt("ID");
+            name = jsonMachineType.getString("name");
+            int operationsCount = jsonMachineType.getInt("operationsCount");
+            operations = new Operation[operationsCount];
+            price = jsonMachineType.getInt("price");
+            cycleCost = jsonMachineType.getDouble("cycleCost");
+            JSONArray jsonOperations = jsonMachineType.getJSONArray("operations");
+            for (int j = 0; j < operationsCount; j++) {
+                JSONObject jsonOperation = jsonOperations.getJSONObject(j);
+                operations[j] = new Operation(this, jsonOperation);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * Выдаёт экземпляр описания машины
@@ -59,52 +79,19 @@ public class MachineType {
     private static void loadMachinesData(Resources resources) {
         JSONFileLoader fileLoader = new JSONFileLoader(resources, R.raw.machines);
         try {
-            JSONArray jsonMachines = new JSONArray(fileLoader.getJsonFile());
+            JSONArray jsonMachines = new JSONArray(fileLoader.getJsonAsString());
             int machinesCount = jsonMachines.length();
             machineTypes = new ArrayList<>(machinesCount);
             MachineType machineType;
             for (int i=0; i<machinesCount; i++) {
                 JSONObject jsonMachineType = jsonMachines.getJSONObject(i);
-                machineType = new MachineType();
-                machineType.ID = jsonMachineType.getInt("ID");
-                machineType.name = jsonMachineType.getString("name");
-                int operationsCount = jsonMachineType.getInt("operationsCount");
-                machineType.operations = new Operation[operationsCount];
-                machineType.price = jsonMachineType.getInt("price");
-                JSONArray jsonOperations = jsonMachineType.getJSONArray("operations");
-                for (int j=0; j<operationsCount; j++) {
-                    JSONObject jsonOperation = jsonOperations.getJSONObject(j);
-                    machineType.operations[j] = loadOperationData(machineType, jsonOperation);
-                }
+                machineType = new MachineType(jsonMachineType);
                 machineTypes.add(machineType);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-    }
-
-
-    private static Operation loadOperationData(MachineType machineType, JSONObject op) throws JSONException {
-        Operation operation = new Operation(machineType);
-        operation.cycles = op.getInt("cycles");
-        operation.outputs = new Material[op.getInt("outputs")];
-        operation.inputs = new Material[op.getInt("inputs")];
-        operation.outputAmount = new int[operation.outputs.length];
-        operation.inputAmount = new int[operation.inputs.length];
-        JSONArray jsonOutputIDs = op.getJSONArray("outputIDs");
-        for (int j = 0; j < operation.outputs.length; j++)
-            operation.outputs[j] = Material.getMaterial(jsonOutputIDs.getInt(j));
-        JSONArray jsonInputIDs = op.getJSONArray("inputIDs");
-        for (int j = 0; j < operation.inputs.length; j++)
-            operation.inputs[j] = Material.getMaterial(jsonInputIDs.getInt(j));
-        JSONArray jsonOutputAmount = op.getJSONArray("outputQuantities");
-        for (int j = 0; j < operation.outputAmount.length; j++)
-            operation.outputAmount[j] = jsonOutputAmount.getInt(j);
-        JSONArray jsonInputAmount = op.getJSONArray("inputQuantities");
-        for (int j = 0; j < operation.inputAmount.length; j++)
-            operation.inputAmount[j] = jsonInputAmount.getInt(j);;
-        return operation;
     }
 
 
@@ -123,18 +110,22 @@ public class MachineType {
         return ID;
     }
 
+    
     public String getName() {
         return name;
     }
+
 
     public Operation[] getOperations() {
         return operations;
     }
 
+
     public Operation getOperation(int ID) {
         if (ID < 0 || ID >= operations.length) return null;
         return operations[ID];
     }
+
 
     public int getOperationID(Operation op) {
         int size = operations.length;
@@ -144,35 +135,18 @@ public class MachineType {
         return -1;
     }
 
+
     public Sprite getImage() {
         return image;
     }
 
-    public double getPrice() { return price; }
 
-    //--------------------------------------------------------------------------------
-
-    /**
-     * Отладочный метод распечатки списка описания машин
-     */
-    public static void printDebug() {
-        MachineType m;
-        Operation op;
-        for (int i=0; i<machineTypes.size();i++) {
-            m = machineTypes.get(i);
-            System.out.println("Machine:" + m.name);
-            for (int j=0; j<m.operations.length; j++) {
-                op = m.operations[j];
-                System.out.print (op.outputs[0].getName() + " = ");
-                for (int k = 0; k<op.inputs.length; k++) {
-                    System.out.print (op.inputs[k].getName() +
-                            " x " + op.inputAmount[k] + " ");
-                }
-                System.out.println();
-            }
-        }
+    public double getPrice() {
+        return price;
     }
 
 
-
+    public double getCycleCost() {
+        return cycleCost;
+    }
 }

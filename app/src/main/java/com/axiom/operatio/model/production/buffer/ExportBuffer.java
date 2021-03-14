@@ -15,6 +15,7 @@ import org.json.JSONObject;
  */
 public class ExportBuffer extends Block implements JSONSerializable {
 
+    public static final double CYCLE_COST = 0.01d;
     public static final int PRICE = 800;
 
     public ExportBuffer(Production production) {
@@ -80,6 +81,11 @@ public class ExportBuffer extends Block implements JSONSerializable {
     @Override
     public void adjustFlowDirection() {
 
+    }
+
+    @Override
+    public double getCycleCost() {
+        return CYCLE_COST;
     }
 
     @Override
