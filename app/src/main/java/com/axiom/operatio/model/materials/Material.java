@@ -4,8 +4,13 @@ import android.content.res.Resources;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
+import com.axiom.atom.engine.data.JSONFileLoader;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.data.CSVTable;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Содержит данные и изображения материалов (materials.png, materials.csv)
@@ -89,16 +94,25 @@ public class Material {
     protected static void loadMaterialsData(Resources resources) {
         Sprite allMaterials = new Sprite(resources, R.drawable.materials, 8, 8);
         // Загружаем массив материалов
-        CSVTable csv = new CSVTable(resources, R.raw.materials);
-        int ID, totalMaterials = csv.getRowCount();
-        materials = new Material[totalMaterials];
-        for (int i = 0; i < totalMaterials; i++) {
-            ID = csv.getIntValue(i, 0);
-            if (ID >= 0 && ID < materials.length) {
-                Sprite image = allMaterials.getAsSprite(ID);
-                materials[ID] = new Material(ID,  image, csv.getValue(i, 1).trim(), csv.getDoubleValue(i, 2));
+        JSONFileLoader jsonFileLoader = new JSONFileLoader(resources, R.raw.materials);
+        try {
+            JSONArray jsonMaterials = new JSONArray(jsonFileLoader.getJsonFile());
+            int ID, totalMaterials = jsonMaterials.length();
+            materials = new Material[totalMaterials];
+            for (int i=0; i < totalMaterials; i++) {
+                JSONObject jsonMaterial = jsonMaterials.getJSONObject(i);
+                ID = jsonMaterial.getInt("ID");
+                if (ID >= 0 && ID < materials.length) {
+                    Sprite image = allMaterials.getAsSprite(ID);
+                    String name = jsonMaterial.getString("name");
+                    double price = jsonMaterial.getInt("price");
+                    materials[ID] = new Material(ID,  image, name, price);
+                }
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
         initialized = true;
     }
 

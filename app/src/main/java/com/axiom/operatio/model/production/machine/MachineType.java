@@ -57,7 +57,7 @@ public class MachineType {
 
 
     private static void loadMachinesData(Resources resources) {
-        JSONFileLoader fileLoader = new JSONFileLoader(resources, R.raw.machine_types);
+        JSONFileLoader fileLoader = new JSONFileLoader(resources, R.raw.machines);
         try {
             JSONArray jsonMachines = new JSONArray(fileLoader.getJsonFile());
             int machinesCount = jsonMachines.length();
