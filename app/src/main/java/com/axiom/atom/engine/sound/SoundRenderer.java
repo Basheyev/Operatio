@@ -35,7 +35,7 @@ public class SoundRenderer {
         initialized = true;
     }
 
-    public static void dispose() {
+    public static void release() {
         soundPool.release();
         soundPool = null;
         initialized = false;
