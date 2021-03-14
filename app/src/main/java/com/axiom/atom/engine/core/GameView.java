@@ -83,7 +83,8 @@ public class GameView extends GLSurfaceView {
         //-----------------------------------------------------------------------------------
         // Закрываем нашу активность и все её дочерние активности (освобождаем GL Context)
         //-----------------------------------------------------------------------------------
-        SoundRenderer.dispose();
+        GraphicsRender.release();
+        SoundRenderer.release();
         AppCompatActivity mainActivity = (AppCompatActivity) getContext();
         mainActivity.finishAffinity();
         System.runFinalization();
