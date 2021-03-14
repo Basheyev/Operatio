@@ -5,15 +5,22 @@ import com.axiom.operatio.model.materials.Material;
 // todo add op cost
 public class Operation {
 
-    protected int operationTime;                // Время операции в циклах производства
-    protected Material[] outputMaterials;       // Список кодов входящих материалов
-    protected Material[] inputMaterials;        // Список кодов исходящих материалов
+    protected MachineType machineType;
+    protected int cycles;                // Время операции в циклах производства
+    protected Material[] outputs;       // Список кодов входящих материалов
+    protected Material[] inputs;        // Список кодов исходящих материалов
     protected int[] outputAmount;               // Список количества входящих материалов
     protected int[] inputAmount;                // Список количества исходящих материалов
     protected long cost;                        // Стоимость операции
 
+
+    public Operation(MachineType type) {
+        machineType = type;
+    }
+
+
     public boolean isCorrectInput(Material m) {
-        for (Material material: inputMaterials) {
+        for (Material material: inputs) {
             if (material.equals(m)) return true;
         }
         return false;
@@ -49,24 +56,24 @@ public class Operation {
      * Возвращает время выполнения операции в циклах производства
      * @return Время выполнения операции в циклах производства
      */
-    public int getOperationTime() {
-        return operationTime;
+    public int getCycles() {
+        return cycles;
     }
 
     /**
      * Возвращает список типов материалов на выходе
      * @return список материалов на выходе
      */
-    public Material[] getOutputMaterials() {
-        return outputMaterials;
+    public Material[] getOutputs() {
+        return outputs;
     }
 
     /**
      * Возвращает список типов материалов на входе
      * @return список материалов на входе
      */
-    public Material[] getInputMaterials() {
-        return inputMaterials;
+    public Material[] getInputs() {
+        return inputs;
     }
 
     /**
@@ -83,6 +90,14 @@ public class Operation {
      */
     public int[] getInputAmount() {
         return inputAmount;
+    }
+
+    /**
+     * Возвращает тип машины которая выполняет эту операцию
+     * @return тип машины
+     */
+    public MachineType getMachineType() {
+        return machineType;
     }
 
 }

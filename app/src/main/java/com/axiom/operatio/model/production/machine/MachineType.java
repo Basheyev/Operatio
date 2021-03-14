@@ -1,13 +1,16 @@
 package com.axiom.operatio.model.production.machine;
 
 import android.content.res.Resources;
-import android.util.Log;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.data.CSVTable;
+import com.axiom.atom.engine.data.JSONFileLoader;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.materials.Material;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -35,70 +38,77 @@ public class MachineType {
      * @return экземпляр описания машины
      */
     public static MachineType getMachineType(int ID) {
-        if (!initialized) loadMachinesData(SceneManager.getResources());
+        if (!initialized) initialize();
         return machineTypes.get(ID);
     }
 
+
     public static int getMachineTypesCount() {
-        if (!initialized) loadMachinesData(SceneManager.getResources());
+        if (!initialized) initialize();
         return machineTypes.size();
     }
 
-    /**
-     * Загружает данные о машинах и операциях (пока без защиты от некорректных данных)
-     * @param resources ресурсы приложения
-     */
-    protected static void loadMachinesData(Resources resources) {
-        CSVTable csv = new CSVTable(resources, R.raw.machines);
-        machineTypes = new ArrayList<>(100);
-        MachineType machineType;
-        int total = csv.getRowCount();
-        for (int row=0; row<total; row++) {
-            machineType = new MachineType();
-            machineType.ID = csv.getIntValue(row,0);
-            machineType.name = csv.getValue(row,1).trim();
-            machineType.operations = new Operation[csv.getIntValue(row,2)];
-            machineType.price = csv.getIntValue(row, 3);
-            Operation operation;
-            try {
-                for (int i = 0; i < machineType.operations.length; i++) {
-                    row++;
-                    int col = 0;
-                    operation = new Operation();
-                    operation.operationTime = Integer.parseInt(csv.getValue(row, 0));
-                    col++;
-                    operation.outputMaterials = new Material[csv.getIntValue(row, 1)];
-                    col++;
-                    operation.inputMaterials = new Material[csv.getIntValue(row, 2)];
-                    col++;
-                    operation.outputAmount = new int[operation.outputMaterials.length];
-                    operation.inputAmount = new int[operation.inputMaterials.length];
-                    for (int j = 0; j < operation.outputMaterials.length; j++) {
-                        operation.outputMaterials[j] =
-                                Material.getMaterial(csv.getIntValue(row, col + j));
-                    }
-                    col += operation.outputMaterials.length;
-                    for (int j = 0; j < operation.inputMaterials.length; j++) {
-                        operation.inputMaterials[j] =
-                                Material.getMaterial(csv.getIntValue(row, col + j));
-                    }
-                    col += operation.inputMaterials.length;
-                    for (int j = 0; j < operation.outputAmount.length; j++) {
-                        operation.outputAmount[j] = csv.getIntValue(row, col + j);
-                    }
-                    col += operation.outputAmount.length;
-                    for (int j = 0; j < operation.inputAmount.length; j++) {
-                        operation.inputAmount[j] = csv.getIntValue(row, col + j);
-                    }
-                    machineType.operations[i] = operation;
+
+    private static void initialize() {
+        loadMachinesData(SceneManager.getResources());
+        loadMachineSprites();
+        initialized = true;
+    }
+
+
+    private static void loadMachinesData(Resources resources) {
+        JSONFileLoader fileLoader = new JSONFileLoader(resources, R.raw.machine_types);
+        try {
+            JSONArray jsonMachines = new JSONArray(fileLoader.getJsonFile());
+            int machinesCount = jsonMachines.length();
+            machineTypes = new ArrayList<>(machinesCount);
+            MachineType machineType;
+            for (int i=0; i<machinesCount; i++) {
+                JSONObject jsonMachineType = jsonMachines.getJSONObject(i);
+                machineType = new MachineType();
+                machineType.ID = jsonMachineType.getInt("ID");
+                machineType.name = jsonMachineType.getString("name");
+                int operationsCount = jsonMachineType.getInt("operationsCount");
+                machineType.operations = new Operation[operationsCount];
+                machineType.price = jsonMachineType.getInt("price");
+                JSONArray jsonOperations = jsonMachineType.getJSONArray("operations");
+                for (int j=0; j<operationsCount; j++) {
+                    JSONObject jsonOperation = jsonOperations.getJSONObject(j);
+                    machineType.operations[j] = loadOperationData(machineType, jsonOperation);
                 }
                 machineTypes.add(machineType);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
-        // Load machine sprites
+    }
+
+
+    private static Operation loadOperationData(MachineType machineType, JSONObject op) throws JSONException {
+        Operation operation = new Operation(machineType);
+        operation.cycles = op.getInt("cycles");
+        operation.outputs = new Material[op.getInt("outputs")];
+        operation.inputs = new Material[op.getInt("inputs")];
+        operation.outputAmount = new int[operation.outputs.length];
+        operation.inputAmount = new int[operation.inputs.length];
+        JSONArray jsonOutputIDs = op.getJSONArray("outputIDs");
+        for (int j = 0; j < operation.outputs.length; j++)
+            operation.outputs[j] = Material.getMaterial(jsonOutputIDs.getInt(j));
+        JSONArray jsonInputIDs = op.getJSONArray("inputIDs");
+        for (int j = 0; j < operation.inputs.length; j++)
+            operation.inputs[j] = Material.getMaterial(jsonInputIDs.getInt(j));
+        JSONArray jsonOutputAmount = op.getJSONArray("outputQuantities");
+        for (int j = 0; j < operation.outputAmount.length; j++)
+            operation.outputAmount[j] = jsonOutputAmount.getInt(j);
+        JSONArray jsonInputAmount = op.getJSONArray("inputQuantities");
+        for (int j = 0; j < operation.inputAmount.length; j++)
+            operation.inputAmount[j] = jsonInputAmount.getInt(j);;
+        return operation;
+    }
+
+
+    private static void loadMachineSprites() {
         Sprite allMachines = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
         for (int i=0; i < machineTypes.size(); i++) {
             Sprite image = allMachines.getAsSprite(i * 8, i * 8 + 7);
@@ -106,8 +116,6 @@ public class MachineType {
             image.setActiveAnimation(animation);
             machineTypes.get(i).image = image;
         }
-
-        initialized = true;
     }
 
 
@@ -155,9 +163,9 @@ public class MachineType {
             System.out.println("Machine:" + m.name);
             for (int j=0; j<m.operations.length; j++) {
                 op = m.operations[j];
-                System.out.print (op.outputMaterials[0].getName() + " = ");
-                for (int k=0; k<op.inputMaterials.length; k++) {
-                    System.out.print (op.inputMaterials[k].getName() +
+                System.out.print (op.outputs[0].getName() + " = ");
+                for (int k = 0; k<op.inputs.length; k++) {
+                    System.out.print (op.inputs[k].getName() +
                             " x " + op.inputAmount[k] + " ");
                 }
                 System.out.println();

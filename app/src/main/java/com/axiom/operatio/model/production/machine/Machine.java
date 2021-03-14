@@ -8,11 +8,9 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
-import com.axiom.operatio.model.production.buffer.BufferKeepingUnit;
 import com.axiom.operatio.model.production.buffer.ExportBuffer;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -100,7 +98,7 @@ public class Machine extends Block implements JSONSerializable {
         // Подтверждаем, что есть необходимое количество каждого предмета по Операции
         if (operationInputVerified(matCounter)) {    // Начинаем работу машины
             setState(BUSY);                          // Устанавливаем состояние - BUSY
-            cyclesLeft = operation.operationTime;    // Указываем количество циклов работы
+            cyclesLeft = operation.cycles;    // Указываем количество циклов работы
         }
 
     }
@@ -124,8 +122,8 @@ public class Machine extends Block implements JSONSerializable {
             if (operationInputVerified(matCounter)) return;
 
             // Пытаемся взять материалы по списку входящих материалов
-            for (int i=0; i<operation.inputMaterials.length; i++) {
-                Material material = operation.inputMaterials[i];
+            for (int i = 0; i<operation.inputs.length; i++) {
+                Material material = operation.inputs[i];
                 for (int j=0; j<matCounter[i]; j++) {       // По количеству недостающих
                     if (inputBlock instanceof Buffer) {
                         Buffer inputBuffer = (Buffer) inputBlock;
@@ -168,9 +166,9 @@ public class Machine extends Block implements JSONSerializable {
             // Берем код очередного материала из входящей очереди
             int materialID = item.getMaterial().getMaterialID();
             // Проверяем есть ли такой материал в списке входных материалов операции
-            for (int i=0; i<operation.inputMaterials.length; i++) {
+            for (int i = 0; i<operation.inputs.length; i++) {
                 // Если нашли такой же материал, то уменьшаем счетчик необходимых материалов
-                if (operation.inputMaterials[i].getMaterialID()==materialID) {
+                if (operation.inputs[i].getMaterialID()==materialID) {
                     matCounter[i]--;
                     break;
                 }
@@ -190,7 +188,7 @@ public class Machine extends Block implements JSONSerializable {
         Item item;
         Ledger ledger = production.getLedger();
         for (int i=0; i<operation.outputAmount.length; i++) {
-            Material material = operation.outputMaterials[i];
+            Material material = operation.outputs[i];
 
             // Регистрируем факт производства материала
             ledger.registerCommodityManufactured(material.getMaterialID(), operation.outputAmount[i]);
