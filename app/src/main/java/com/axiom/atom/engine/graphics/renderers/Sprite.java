@@ -428,6 +428,35 @@ public class Sprite extends Quad {
         return atlas;
     }
 
+
+    /**
+     * Сгенерировать новый спрайт на основе указанного кадра (индекса текстурного региона)
+     * @param frame индекс региона (номер кадра)
+     * @return новый спрайт с указанным регионом
+     */
+    public Sprite getAsSprite(int frame) {
+        if (frame < 0 || frame > atlas.size()) return null;
+        TextureAtlas newAtlas = new TextureAtlas(texture);
+        TextureRegion region = atlas.getRegion(frame);
+        newAtlas.addRegion(region.name, region.x, region.y, region.width, region.height);
+        return new Sprite(texture, newAtlas);
+    }
+
+    /**
+     * Сгенерировать новый спрайт на основе диапазона кадров (индексов текстурных регионов)
+     */
+    public Sprite getAsSprite(int startFrame, int stopFrame) {
+        int maxIndex = getFramesAmount() - 1;
+        if ((startFrame > maxIndex) || (stopFrame > maxIndex) ||
+            (startFrame < 0) || (stopFrame < 0) || (startFrame > stopFrame)) return null;
+        TextureAtlas newAtlas = new TextureAtlas(texture);
+        for (int i = startFrame; i <= stopFrame; i++) {
+            TextureRegion region = atlas.getRegion(i);
+            newAtlas.addRegion(region.name, region.x, region.y, region.width, region.height);
+        }
+        return new Sprite(texture, newAtlas);
+    }
+
     //-----------------------------------------------------------------------------------
     // Код вершинного шейдера спрайта
     //-----------------------------------------------------------------------------------
