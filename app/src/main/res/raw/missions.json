@@ -1,0 +1,91 @@
+[
+  {
+    "ID" : 0,
+    "name" : "Stub",
+    "description" : "Game initialization",
+    "prerequisiteIDs" : [],
+    "winConditions" : [
+      { "indicatorType" : 1, "materialID" : 8, "value" :  10}
+    ],
+    "permissionsReward" : {
+      "availableMaterials" : [0,8],
+      "availableMachines" : [0],
+      "availableOperations" : [1]
+    },
+    "moneyReward" : 10000
+  },
+  {
+    "ID" : 1,
+    "name" : "Manufacturing basics",
+    "description" : "Manufacture 10 steel plates",
+    "prerequisiteIDs" : [0],
+    "winConditions" : [
+      { "indicatorType" : 1, "materialID" : 8, "value" :  10}
+    ],
+    "permissionsReward" : {
+      "availableMaterials" : [1,2,3,4,5,6,7],
+      "availableMachines" : [],
+      "availableOperations" : []
+    },
+    "moneyReward" : 1000
+  },
+  {
+    "ID" : 2,
+    "name" : "Productivity basics",
+    "description" : "Reach 20 steel plates a day productivity",
+    "prerequisiteIDs" : [1],
+    "winConditions" : [
+      { "indicatorType" : 2, "materialID" : 8, "value" :  20}
+    ],
+    "permissionsReward" : {
+      "availableMaterials" : [2, 10],
+      "availableMachines" : [1],
+      "availableOperations" : [2]
+    },
+    "moneyReward" : 2000
+  },
+  {
+    "ID" : 3,
+    "name" : "Changeover basics",
+    "description" : "Manufacture 60 copper plates",
+    "prerequisiteIDs" : [2],
+    "winConditions" : [
+      { "indicatorType" : 1, "materialID" : 10, "value" :  60}
+    ],
+    "permissionsReward" : {
+      "availableMaterials" : [8,9,10,11,12,13,14,15],
+      "availableMachines" : [1,2,3],
+      "availableOperations" : [1,2,3,4,5,6,7]
+    },
+    "moneyReward" : 6000
+  },
+  {
+    "ID" : 4,
+    "name" : "Income basics",
+    "description" : "Reach $400 revenue per day",
+    "prerequisiteIDs" : [3],
+    "winConditions" : [
+      { "indicatorType" : 4, "materialID" : 0, "value" :  400}
+    ],
+    "permissionsReward" : {
+      "availableMaterials" : [16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39],
+      "availableMachines" : [4],
+      "availableOperations" : [11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,
+                               32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51]
+    },
+    "moneyReward" : 5000
+  },
+  {
+    "ID" : 5,
+    "name" : "Free play",
+    "description" : "Do everything you want",
+    "prerequisiteIDs" : [4],
+    "winConditions" : [ ],
+    "permissionsReward" : {
+      "availableMaterials" : [],
+      "availableMachines" : [],
+      "availableOperations" : []
+    },
+    "moneyReward" : 0
+  }
+]
