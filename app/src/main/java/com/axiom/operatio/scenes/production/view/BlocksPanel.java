@@ -3,11 +3,10 @@ package com.axiom.operatio.scenes.production.view;
 import android.graphics.Color;
 import android.view.MotionEvent;
 
-import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.model.gameplay.Level;
-import com.axiom.operatio.model.gameplay.LevelFactory;
+import com.axiom.operatio.model.gameplay.GamePermissions;
+import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
 import java.util.ArrayList;
@@ -45,16 +44,15 @@ public class BlocksPanel extends Panel {
     }
 
     public void updatePermissions(int level) {
-        LevelFactory lm = LevelFactory.getInstance();
-        Level currentLevel = lm.getLevel(level);
+        GamePermissions permissions = productionScene.getProduction().getPermissions();
         ArrayList<Widget> children = getChildren();
         for (int i=0; i<children.size(); i++) {
             BlockButton button = (BlockButton) children.get(i);
-            if (currentLevel.isBlockAvailable(Integer.parseInt(button.getTag()))) {
-                button.visible = true;
-            } else {
-                button.visible = false;
-            }
+            int blockID = Integer.parseInt(button.getTag());
+            // если это машина
+            if (blockID >= 2 && blockID <= 6) {
+                button.visible = permissions.isAvailable(MachineType.getMachineType(blockID - 2));
+            } else button.visible = true;
         }
     }
 

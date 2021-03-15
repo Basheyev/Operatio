@@ -6,9 +6,9 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
+import com.axiom.operatio.model.gameplay.GameManager;
+import com.axiom.operatio.model.gameplay.GameMission;
 import com.axiom.operatio.model.gameplay.Ledger;
-import com.axiom.operatio.model.gameplay.Level;
-import com.axiom.operatio.model.gameplay.LevelFactory;
 import com.axiom.operatio.model.common.FormatUtils;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Material;
@@ -193,9 +193,8 @@ public class ReportPanel extends Panel {
             expenseCaption.setText(expensesText);
             reportCaption.setText(summary);
 
-            LevelFactory lm = LevelFactory.getInstance();
-            Level level = lm.getLevel(production.getLevel());
-            String goal = "Level " + production.getLevel() + " - " + level.getDescription();
+            GameMission mission =  GameManager.getMission(production.getLevel());
+            String goal = mission.getName() + " #" + mission.getID() + " - " + mission.getDescription();
             panelCaption.setText(goal);
 
         }

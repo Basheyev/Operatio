@@ -6,8 +6,7 @@ import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.model.gameplay.Level;
-import com.axiom.operatio.model.gameplay.LevelFactory;
+import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
@@ -53,11 +52,10 @@ public class MaterialsPanel extends Panel {
 
 
     public void updatePermissions(int level) {
-        LevelFactory lm = LevelFactory.getInstance();
-        Level currentLevel = lm.getLevel(level);
+        GamePermissions permissions = production.getPermissions();
         for (int i=0; i<itemWidget.length; i++) {
             ItemWidget item = itemWidget[i];
-            if (currentLevel.isMaterialAvailable(i)) {
+            if (permissions.isAvailable(Material.getMaterial(i))) {
                 item.setActive(true);
             } else {
                 item.setActive(false);

@@ -1,15 +1,13 @@
 package com.axiom.operatio.model.production;
 
-import android.util.Log;
-
 import com.axiom.atom.R;
 import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
+import com.axiom.operatio.model.gameplay.GameManager;
+import com.axiom.operatio.model.gameplay.GameMission;
 import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.gameplay.Ledger;
-import com.axiom.operatio.model.gameplay.Level;
-import com.axiom.operatio.model.gameplay.LevelFactory;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;
@@ -26,18 +24,16 @@ import java.util.ArrayList;
  */
 public class Production implements JSONSerializable {
 
-    public static final int START_MONEY = 10000;  // Начальная сумма денег
     public static final int TILE_PRICE = 500;     // Цена одной плитки площади
     public static final int CYCLE_TIME = 300;     // Длительность цикла в миллесекундах
 
     private Inventory inventory;                  // Объект - склад
     private Market market;                        // Объект - рынок
     private Ledger ledger;                        // Объект - игровая статистика
-    private LevelFactory levelFactory;            // Менеджер уровней
     private GamePermissions permissions;          // Разрешения в игре
     private int level = 0;                        // Текущий уровень
     private int lastCompletedLevel = -1;          // Последний завершенный уровень
-    private double cashBalance = START_MONEY;     // Стартовые деньги
+    private double cashBalance = 0;               // Стартовые деньги
 
     private ArrayList<Block> blocks;              // Список блоков производства
     private Block[][] grid;                       // Блоки привязанные к координатной сетке
@@ -64,8 +60,6 @@ public class Production implements JSONSerializable {
 
         levelCompletedSound = SoundRenderer.loadSound(R.raw.yes_snd);
 
-        permissions = new GamePermissions();
-        levelFactory = LevelFactory.getInstance();
         this.columns = columns;
         this.rows = rows;
         grid = new Block[rows][columns];
@@ -78,6 +72,13 @@ public class Production implements JSONSerializable {
         market = new Market(this);
         ledger = new Ledger(this);
         renderer = new ProductionRenderer(this);
+
+        permissions = new GamePermissions();
+        GameMission stub = GameManager.getMission(0);
+        if (stub!=null) {
+            stub.earnReward(this);
+            level = 1;
+        }
     }
 
 
@@ -85,7 +86,7 @@ public class Production implements JSONSerializable {
 
         levelCompletedSound = SoundRenderer.loadSound(R.raw.yes_snd);
 
-        levelFactory = LevelFactory.getInstance();
+        //levelFactory = LevelFactory.getInstance();
         cashBalance = jsonObject.getLong("cashBalance");
         int columns = jsonObject.getInt("columns");
         int rows = jsonObject.getInt("rows");
@@ -158,6 +159,11 @@ public class Production implements JSONSerializable {
         } catch (JSONException e) {
             e.printStackTrace();
             permissions = new GamePermissions();
+            GameMission stub = GameManager.getMission(0);
+            if (stub!=null) {
+                stub.earnReward(this);
+                level = 1;
+            }
         }
     }
 
@@ -219,17 +225,12 @@ public class Production implements JSONSerializable {
 
     private void checkLevelConditions() {
         // Проверка условий уровня
-        Level theLevel = levelFactory.getLevel(level);
-        if (theLevel.checkWinConditions(this) && lastCompletedLevel != level) {
-            // todo выдать сообщение о прохождении уровня
-            Log.i("PRODUCTION", "LEVEL " + level + " COMPLETED!!!!");
-            // Выдать звук о прохождении уровня
+        GameMission mission = GameManager.getMission(level);
+        if (mission.checkWinConditions(this) && lastCompletedLevel != level) {
             SoundRenderer.playSound(levelCompletedSound);
-            // Забрать награду
-            cashBalance += theLevel.getReward();
-            // Перейти на следующий уровень если он есть
+            mission.earnReward(this);
             lastCompletedLevel = level;
-            if (level + 1 <= levelFactory.size() - 1) level++;
+            if (level + 1 <= GameManager.size() - 1) level++;
         }
     }
 

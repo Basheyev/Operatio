@@ -12,7 +12,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Права доступные игроку
+ * Права доступные игроку на экземпляре Производства
  */
 public class GamePermissions implements JSONSerializable {
 
@@ -64,26 +64,36 @@ public class GamePermissions implements JSONSerializable {
 
     //------------------------------------------------------------------------------------
 
-    public boolean addMaterialPermission(Material material) {
-        if (material==null) return false;
-        if (availableMaterials.contains(material)) return true;
+    public void addMaterialPermission(Material material) {
+        if (material==null) return;
+        if (availableMaterials.contains(material)) return;
         lastChangeTime = System.nanoTime();
-        return availableMaterials.add(material);
-    }
-
-    public boolean addMachinePermission(MachineType machine) {
-        if (machine==null) return false;
-        if (availableMachines.contains(machine)) return true;
-        lastChangeTime = System.nanoTime();
-        return availableMachines.add(machine);
+        availableMaterials.add(material);
     }
 
 
-    public boolean addOperationPermission(Operation operation) {
-        if (operation==null) return false;
-        if (availableOperations.contains(operation)) return true;
+    public void addMachinePermission(MachineType machine) {
+        if (machine==null) return;
+        if (availableMachines.contains(machine)) return;
         lastChangeTime = System.nanoTime();
-        return availableOperations.add(operation);
+        availableMachines.add(machine);
+    }
+
+
+    public void addOperationPermission(Operation operation) {
+        if (operation==null) return;
+        if (availableOperations.contains(operation)) return;
+        lastChangeTime = System.nanoTime();
+        availableOperations.add(operation);
+    }
+
+
+    public void addPermissions(GamePermissions permissions) {
+        if (permissions==null) return;
+        for (Material material: permissions.availableMaterials) addMaterialPermission(material);
+        for (MachineType machine: permissions.availableMachines) addMachinePermission(machine);
+        for (Operation operation: permissions.availableOperations) addOperationPermission(operation);
+        lastChangeTime = System.nanoTime();
     }
 
     //------------------------------------------------------------------------------------

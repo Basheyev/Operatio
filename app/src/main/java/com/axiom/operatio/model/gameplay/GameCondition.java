@@ -1,7 +1,10 @@
 package com.axiom.operatio.model.gameplay;
 
 
-public class LevelCondition {
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class GameCondition {
 
     public static final int MANUFACTURED_AMOUNT = 1;           // Произведенное количество
     public static final int MANUFACTURE_PRODUCTIVITY = 2;      // Продуктивность за день
@@ -11,18 +14,25 @@ public class LevelCondition {
     public static final int OPERATING_MARGIN = 6;              // Операционная маржинальность
     public static final int CAPITALIZATION = 7;                // Капитализация
 
-    protected int KPI;                                         // Показатель
+    protected int indicatorType;                               // Тип показателя
     protected int materialID;                                  // ID материала
     protected double value;                                    // Значение
 
-    public LevelCondition(int KPI, int materialID, double value) {
-        this.KPI = KPI;
+
+    public GameCondition(JSONObject condition) throws JSONException {
+        this.indicatorType = condition.getInt("indicatorType");
+        this.materialID = condition.getInt("materialID");
+        this.value = condition.getDouble("value");
+    }
+
+    public GameCondition(int indicatorType, int materialID, double value) {
+        this.indicatorType = indicatorType;
         this.materialID = materialID;
         this.value = value;
     }
 
     public boolean check(Ledger ledger) {
-        switch (KPI) {
+        switch (indicatorType) {
             case MANUFACTURED_AMOUNT:
                 return checkManufacturedAmount(ledger);
             case MANUFACTURE_PRODUCTIVITY:

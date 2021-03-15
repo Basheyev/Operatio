@@ -6,8 +6,7 @@ import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.model.gameplay.Level;
-import com.axiom.operatio.model.gameplay.LevelFactory;
+import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
@@ -52,11 +51,10 @@ public class MaterialsTree extends Panel {
 
 
     public void updatePermissions(int level) {
-        LevelFactory lm = LevelFactory.getInstance();
-        Level currentLevel = lm.getLevel(level);
+        GamePermissions permissions = production.getPermissions();
         for (int i=0; i<itemWidget.length; i++) {
             int backgroundColor = UNAVAILABLE;
-            if (currentLevel.isMaterialAvailable(i)) backgroundColor = AVAILABLE;
+            if (permissions.isAvailable(Material.getMaterial(i))) backgroundColor = AVAILABLE;
             itemWidget[i].setColor(backgroundColor);
         }
     }
@@ -73,8 +71,7 @@ public class MaterialsTree extends Panel {
         caption.setLocalBounds(30, panel.getHeight() - 100, 300, 100);
         panel.addChild(caption);
 
-        LevelFactory levelFactory = LevelFactory.getInstance();
-        Level currentLevel = levelFactory.getLevel(production.getLevel());
+        GamePermissions permissions = production.getPermissions();
         Inventory inventory = production.getInventory();
 
         itemWidget = new ItemWidget[Material.getMaterialsAmount()];
@@ -83,7 +80,8 @@ public class MaterialsTree extends Panel {
             Material material = Material.getMaterial(i);
             itemWidget[i] = new ItemWidget("" + inventory.getBalance(material));
             int backgroundColor = UNAVAILABLE;
-            if (currentLevel.isMaterialAvailable(i)) backgroundColor = AVAILABLE;
+            if (permissions.isAvailable(Material.getMaterial(i))) backgroundColor = AVAILABLE;
+
             itemWidget[i].setColor(backgroundColor);
             itemWidget[i].setBackground(material.getImage());
             itemWidget[i].setTextScale(1);
@@ -117,11 +115,10 @@ public class MaterialsTree extends Panel {
 
 
     public void unselectAllButtons() {
-        LevelFactory levelFactory = LevelFactory.getInstance();
-        Level currentLevel = levelFactory.getLevel(production.getLevel());
-        for (int i=0; i< Material.getMaterialsAmount(); i++) {
+        GamePermissions permissions = production.getPermissions();
+        for (int i=0; i<itemWidget.length; i++) {
             int backgroundColor = UNAVAILABLE;
-            if (currentLevel.isMaterialAvailable(i)) backgroundColor = AVAILABLE;
+            if (permissions.isAvailable(Material.getMaterial(i))) backgroundColor = AVAILABLE;
             itemWidget[i].setColor(backgroundColor);
         }
         selectedMaterial = null;
