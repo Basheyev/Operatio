@@ -3,7 +3,7 @@ package com.axiom.operatio.model.production;
 import android.util.Log;
 
 import com.axiom.atom.R;
-import com.axiom.atom.engine.data.JSONSerializable;
+import com.axiom.operatio.utils.JSONSerializable;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.gameplay.Ledger;
@@ -12,8 +12,6 @@ import com.axiom.operatio.model.gameplay.LevelFactory;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;
-import com.axiom.operatio.model.production.conveyor.Conveyor;
-import com.axiom.operatio.model.production.machine.Machine;
 
 import org.json.JSONArray;
 import org.json.JSONException;

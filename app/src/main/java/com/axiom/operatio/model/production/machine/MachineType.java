@@ -4,9 +4,8 @@ import android.content.res.Resources;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.data.JSONFileLoader;
+import com.axiom.atom.engine.data.JSONFile;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.operatio.model.materials.Material;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,9 +76,8 @@ public class MachineType {
 
 
     private static void loadMachinesData(Resources resources) {
-        JSONFileLoader fileLoader = new JSONFileLoader(resources, R.raw.machines);
         try {
-            JSONArray jsonMachines = new JSONArray(fileLoader.getJsonAsString());
+            JSONArray jsonMachines = JSONFile.loadArray(resources, R.raw.machines);
             int machinesCount = jsonMachines.length();
             machineTypes = new ArrayList<>(machinesCount);
             MachineType machineType;
@@ -110,7 +108,7 @@ public class MachineType {
         return ID;
     }
 
-    
+
     public String getName() {
         return name;
     }

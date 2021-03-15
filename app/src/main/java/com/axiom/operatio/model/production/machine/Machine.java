@@ -1,7 +1,7 @@
 package com.axiom.operatio.model.production.machine;
 
 import com.axiom.atom.engine.data.Channel;
-import com.axiom.atom.engine.data.JSONSerializable;
+import com.axiom.operatio.utils.JSONSerializable;
 import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.Production;

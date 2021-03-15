@@ -1,6 +1,6 @@
 package com.axiom.operatio.model.market;
 
-import com.axiom.atom.engine.data.JSONSerializable;
+import com.axiom.operatio.utils.JSONSerializable;
 import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Item;

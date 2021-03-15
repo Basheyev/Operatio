@@ -4,7 +4,7 @@ import android.content.res.Resources;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.data.JSONFileLoader;
+import com.axiom.atom.engine.data.JSONFile;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 
 import org.json.JSONArray;
@@ -93,9 +93,9 @@ public class Material {
     protected static void loadMaterialsData(Resources resources) {
         Sprite allMaterials = new Sprite(resources, R.drawable.materials, 8, 8);
         // Загружаем массив материалов
-        JSONFileLoader jsonFileLoader = new JSONFileLoader(resources, R.raw.materials);
+
         try {
-            JSONArray jsonMaterials = new JSONArray(jsonFileLoader.getJsonAsString());
+            JSONArray jsonMaterials = JSONFile.loadArray(resources, R.raw.materials);
             int ID, totalMaterials = jsonMaterials.length();
             materials = new Material[totalMaterials];
             for (int i=0; i < totalMaterials; i++) {

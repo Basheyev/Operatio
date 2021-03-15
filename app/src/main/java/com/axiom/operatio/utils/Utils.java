@@ -1,4 +1,4 @@
-package com.axiom.operatio.model.gameplay;
+package com.axiom.operatio.utils;
 
 
 import java.text.DecimalFormat;
@@ -13,22 +13,23 @@ public class Utils {
     private static final StringBuffer buffer = new StringBuffer(128);
     private static final FieldPosition position = new FieldPosition(0);
 
-    private static void initialize() {
+    private static void initializeFormatting() {
         moneyFormat = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
         moneyFormat.applyPattern("$###,###,###,###,###.##");
     }
 
-    public static StringBuffer moneyAsBuffer(double sum) {
-        if (moneyFormat==null) initialize();
+    public static void formatMoney(double sum, StringBuffer targetBuffer) {
+        if (targetBuffer==null) return;
+        if (moneyFormat==null) initializeFormatting();
         synchronized (buffer) {
             buffer.delete(0, buffer.length());
             moneyFormat.format(sum, buffer, position);
+            targetBuffer.append(buffer);
         }
-        return buffer;
     }
 
-    public static String moneyAsString(double sum) {
-        if (moneyFormat==null) initialize();
+    public static String formatMoney(double sum) {
+        if (moneyFormat==null) initializeFormatting();
         return moneyFormat.format(sum);
     }
 

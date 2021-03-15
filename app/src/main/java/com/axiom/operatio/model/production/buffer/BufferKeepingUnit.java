@@ -1,7 +1,6 @@
 package com.axiom.operatio.model.production.buffer;
 
-import com.axiom.atom.engine.data.JSONSerializable;
-import com.axiom.operatio.model.materials.Item;
+import com.axiom.operatio.utils.JSONSerializable;
 import com.axiom.operatio.model.materials.Material;
 
 import org.json.JSONException;

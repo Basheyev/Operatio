@@ -13,7 +13,7 @@ import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.CheckBox;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.model.gameplay.Utils;
+import com.axiom.operatio.utils.Utils;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.materials.Material;
@@ -78,7 +78,7 @@ public class MarketPanel extends Panel {
         quantityButton = buildButton("" + quantity, 275, 365, 150, 80, Color.BLACK, 1.5f, false);
         rightButton = buildButton(">",425, 365, 75, 80,  Color.GRAY, 1.5f,true);
 
-        String sumText = Utils.moneyAsString(production.getCashBalance());
+        String sumText = Utils.formatMoney(production.getCashBalance());
         dealSum = buildButton(sumText, 525, 365, 250, 80, Color.BLACK, 1.5f,false);
 
         autoBuyCB = buildCheckBox("Auto-buy", 550, 805, 200, 100);
@@ -125,8 +125,8 @@ public class MarketPanel extends Panel {
             maxValue = market.getHistoryMaxValue(currentCommodity);
             counter = market.getHistoryLength(currentCommodity);
             market.getHistoryValues(currentCommodity, values);
-            dealSum.setText(Utils.moneyAsString(quantity * market.getValue(currentCommodity)));
-            caption.setText(commodityName + " - " + Utils.moneyAsString(market.getValue(currentCommodity)));
+            dealSum.setText(Utils.formatMoney(quantity * market.getValue(currentCommodity)));
+            caption.setText(commodityName + " - " + Utils.formatMoney(market.getValue(currentCommodity)));
         }
     }
 

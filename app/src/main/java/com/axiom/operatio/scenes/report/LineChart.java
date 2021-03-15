@@ -6,7 +6,7 @@ import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.model.gameplay.Utils;
+import com.axiom.operatio.utils.Utils;
 
 /**
  * по горизонтали - время (количество отсчётов)
@@ -187,8 +187,8 @@ public class LineChart extends Widget {
             }
         }
 
-        totalMaxStr = Utils.moneyAsString(Math.round(totalMax));
-        totalMinStr = Utils.moneyAsString(Math.round(totalMin));
+        totalMaxStr = Utils.formatMoney(Math.round(totalMax));
+        totalMinStr = Utils.formatMoney(Math.round(totalMin));
     }
 
 }

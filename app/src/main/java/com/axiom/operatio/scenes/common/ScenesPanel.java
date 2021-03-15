@@ -17,7 +17,7 @@ import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.gameplay.Ledger;
-import com.axiom.operatio.model.gameplay.Utils;
+import com.axiom.operatio.utils.Utils;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.report.ReportScene;
 import com.axiom.operatio.scenes.inventory.InventoryScene;
@@ -78,7 +78,7 @@ public class ScenesPanel extends Panel {
         setLocalBounds(0, 960, 1920, 120);
 
         double currentBalance = Math.round(production.getCashBalance());
-        String balanceText = Utils.moneyAsString(currentBalance);
+        String balanceText = Utils.formatMoney(currentBalance);
         lastBalance = currentBalance;
 
         timeCaption = buildCaption("time", 384, 20, 256, 80);
@@ -140,7 +140,7 @@ public class ScenesPanel extends Panel {
         }
 
         if (currentBalance != lastBalance) {
-            balanceCaption.setText(Utils.moneyAsString(currentBalance));
+            balanceCaption.setText(Utils.formatMoney(currentBalance));
             lastBalance = currentBalance;
         }
 

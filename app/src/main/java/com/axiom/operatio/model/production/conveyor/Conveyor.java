@@ -1,7 +1,7 @@
 package com.axiom.operatio.model.production.conveyor;
 
 import com.axiom.atom.engine.data.Channel;
-import com.axiom.atom.engine.data.JSONSerializable;
+import com.axiom.operatio.utils.JSONSerializable;
 import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;

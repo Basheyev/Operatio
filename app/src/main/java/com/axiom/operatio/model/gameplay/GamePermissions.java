@@ -1,6 +1,6 @@
 package com.axiom.operatio.model.gameplay;
 
-import com.axiom.atom.engine.data.JSONSerializable;
+import com.axiom.operatio.utils.JSONSerializable;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
