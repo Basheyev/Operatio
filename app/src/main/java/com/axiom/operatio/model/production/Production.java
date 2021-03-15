@@ -6,6 +6,7 @@ import com.axiom.atom.R;
 import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
+import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.gameplay.Level;
 import com.axiom.operatio.model.gameplay.LevelFactory;
@@ -33,6 +34,7 @@ public class Production implements JSONSerializable {
     private Market market;                        // Объект - рынок
     private Ledger ledger;                        // Объект - игровая статистика
     private LevelFactory levelFactory;            // Менеджер уровней
+    private GamePermissions permissions;          // Разрешения в игре
     private int level = 0;                        // Текущий уровень
     private int lastCompletedLevel = -1;          // Последний завершенный уровень
     private double cashBalance = START_MONEY;     // Стартовые деньги
@@ -62,6 +64,7 @@ public class Production implements JSONSerializable {
 
         levelCompletedSound = SoundRenderer.loadSound(R.raw.yes_snd);
 
+        permissions = new GamePermissions();
         levelFactory = LevelFactory.getInstance();
         this.columns = columns;
         this.rows = rows;
@@ -140,15 +143,22 @@ public class Production implements JSONSerializable {
         inventory = new Inventory(this, jsonInventory);
         market = new Market(this);
 
-        JSONObject jsonLedger;
         try {
-            jsonLedger = jsonObject.getJSONObject("ledger");
+            JSONObject jsonLedger = jsonObject.getJSONObject("ledger");
             ledger = new Ledger(this, jsonLedger);
         } catch (JSONException e) {
             e.printStackTrace();
             ledger = new Ledger(this);
         }
 
+
+        try {
+            JSONObject jsonPermissions = jsonObject.getJSONObject("permissions");
+            permissions = new GamePermissions(jsonPermissions);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            permissions = new GamePermissions();
+        }
     }
 
 
@@ -401,6 +411,10 @@ public class Production implements JSONSerializable {
         }
     }
 
+    public GamePermissions getPermissions() {
+        return permissions;
+    }
+
     public int getLevel() {
         return level;
     }
@@ -457,6 +471,7 @@ public class Production implements JSONSerializable {
             jsonObject.put("unlocked", jsonUnlocked);
             jsonObject.put("inventory", inventory.toJSON());
             jsonObject.put("ledger", ledger.toJSON());
+            jsonObject.put("permissions", permissions.toJSON());
 
             return jsonObject;
 
