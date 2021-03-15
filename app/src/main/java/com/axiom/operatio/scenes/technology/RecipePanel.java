@@ -200,7 +200,6 @@ public class RecipePanel extends Panel {
         machineCaption.setText(machineDescription);
         machineButton.setBackground(machineImage);
 
-
         Material[] inputs =  operation.getInputs();
         int[] inputAmount = operation.getInputAmount();
         Material[] outputs = operation.getOutputs();
