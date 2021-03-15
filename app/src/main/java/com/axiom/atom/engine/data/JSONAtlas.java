@@ -20,32 +20,8 @@ public class JSONAtlas {
 
     public static TextureAtlas loadTextureAtlas(Resources resources, int imageID, int atlasID) {
         Texture texture = Texture.getInstance(resources, imageID);
-        String json = loadTextFile(resources, atlasID);
+        String json = JSONFile.loadFile(resources, atlasID);
         return parseJSonArray(texture, json);
-    }
-
-
-    protected static String loadTextFile(Resources resources, int atlasID) {
-        BufferedReader input = null;
-        StringBuilder data = new StringBuilder(16384);
-        String line;
-        try {
-            input = new BufferedReader(new InputStreamReader(resources.openRawResource(atlasID)));
-            while ((line = input.readLine()) != null) {
-                data.append(line);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return data.toString();
     }
 
 
