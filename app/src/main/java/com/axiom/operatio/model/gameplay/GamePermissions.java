@@ -1,6 +1,6 @@
 package com.axiom.operatio.model.gameplay;
 
-import com.axiom.operatio.utils.JSONSerializable;
+import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
@@ -109,7 +109,7 @@ public class GamePermissions implements JSONSerializable {
 
     //------------------------------------------------------------------------------------
     @Override
-    public JSONObject serialize() {
+    public JSONObject toJSON() {
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonMaterials = new JSONArray();
         JSONArray jsonMachines = new JSONArray();

@@ -1,7 +1,7 @@
 package com.axiom.operatio.model.production.conveyor;
 
 import com.axiom.atom.engine.data.Channel;
-import com.axiom.operatio.utils.JSONSerializable;
+import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
@@ -160,8 +160,8 @@ public class Conveyor extends Block implements JSONSerializable {
         return CYCLE_COST;
     }
 
-    public JSONObject serialize() {
-        JSONObject jsonObject = super.serialize();
+    public JSONObject toJSON() {
+        JSONObject jsonObject = super.toJSON();
         try {
             jsonObject.put("class", "Conveyor");
             jsonObject.put("deliveryCycles", deliveryCycles);

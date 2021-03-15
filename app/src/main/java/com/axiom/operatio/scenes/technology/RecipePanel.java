@@ -11,7 +11,7 @@ import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.utils.Utils;
+import com.axiom.operatio.model.common.FormatUtils;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
@@ -196,7 +196,7 @@ public class RecipePanel extends Panel {
         machineDescription.append("\noperation #");
         machineDescription.append(operationID + 1);
         machineDescription.append("\n\n");
-        machineDescription.append(Utils.formatMoney(operation.getCost()));
+        machineDescription.append(FormatUtils.formatMoney(operation.getCost()));
         machineCaption.setText(machineDescription);
         machineButton.setBackground(machineImage);
 

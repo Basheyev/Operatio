@@ -1,6 +1,6 @@
 package com.axiom.operatio.model.production.buffer;
 
-import com.axiom.operatio.utils.JSONSerializable;
+import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
@@ -192,13 +192,13 @@ public class Buffer extends Block implements JSONSerializable {
     }
 
     @Override
-    public JSONObject serialize() {
-        JSONObject jsonObject = super.serialize();
+    public JSONObject toJSON() {
+        JSONObject jsonObject = super.toJSON();
         try {
             jsonObject.put("class", "Buffer");
             JSONArray jsonArray = new JSONArray();
             for (int i=0; i<4; i++) {
-                jsonArray.put(bufferKeepingUnit[i].serialize());
+                jsonArray.put(bufferKeepingUnit[i].toJSON());
             }
             jsonObject.put("bufferKeepingUnit", jsonArray);
         } catch (JSONException e) {

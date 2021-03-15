@@ -1,4 +1,4 @@
-package com.axiom.operatio.utils;
+package com.axiom.operatio.model.common;
 
 
 import java.text.DecimalFormat;
@@ -7,10 +7,10 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 
-public class Utils {
+public class FormatUtils {
 
     private static DecimalFormat moneyFormat;
-    private static final StringBuffer buffer = new StringBuffer(128);
+    private static final StringBuffer buffer = new StringBuffer(32);
     private static final FieldPosition position = new FieldPosition(0);
 
     private static void initializeFormatting() {

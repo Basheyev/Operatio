@@ -1,6 +1,6 @@
 package com.axiom.operatio.model.production.buffer;
 
-import com.axiom.operatio.utils.JSONSerializable;
+import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
@@ -96,8 +96,8 @@ public class ImportBuffer extends Block implements JSONSerializable {
     }
 
     @Override
-    public JSONObject serialize() {
-        JSONObject jsonObject = super.serialize();
+    public JSONObject toJSON() {
+        JSONObject jsonObject = super.toJSON();
         try {
             jsonObject.put("class", "ImportBuffer");
             jsonObject.put("material", importMaterial.getMaterialID());

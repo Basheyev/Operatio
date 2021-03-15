@@ -12,7 +12,7 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.widgets.Button;
-import com.axiom.operatio.utils.Utils;
+import com.axiom.operatio.model.common.FormatUtils;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
@@ -68,7 +68,7 @@ public class BlockButton extends Button {
         background = allMachines.getAsSprite(startFrame, startFrame + 7);
         int animation = background.addAnimation(0, 7, 8, true);
         background.setActiveAnimation(animation);
-        setText(Utils.formatMoney(Math.round(MachineType.getMachineType(id-2).getPrice())));
+        setText(FormatUtils.formatMoney(Math.round(MachineType.getMachineType(id-2).getPrice())));
     }
 
 

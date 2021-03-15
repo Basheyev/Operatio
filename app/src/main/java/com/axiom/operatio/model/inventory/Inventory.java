@@ -1,7 +1,7 @@
 package com.axiom.operatio.model.inventory;
 
 import com.axiom.atom.engine.data.Channel;
-import com.axiom.operatio.utils.JSONSerializable;
+import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
@@ -184,7 +184,7 @@ public class Inventory implements JSONSerializable {
     }
 
 
-    public JSONObject serialize() {
+    public JSONObject toJSON() {
         try {
             JSONObject jsonObject = new JSONObject();
             JSONArray skuBalanceJson = new JSONArray();

@@ -1,6 +1,6 @@
 package com.axiom.operatio.model.market;
 
-import com.axiom.operatio.utils.JSONSerializable;
+import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Item;
@@ -161,7 +161,7 @@ public class Market implements JSONSerializable {
     }
 
     @Override
-    public JSONObject serialize() {
+    public JSONObject toJSON() {
         return null;
     }
 

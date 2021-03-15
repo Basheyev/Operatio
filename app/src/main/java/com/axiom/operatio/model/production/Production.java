@@ -3,7 +3,7 @@ package com.axiom.operatio.model.production;
 import android.util.Log;
 
 import com.axiom.atom.R;
-import com.axiom.operatio.utils.JSONSerializable;
+import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.gameplay.Ledger;
@@ -413,7 +413,7 @@ public class Production implements JSONSerializable {
         return renderer;
     }
 
-    public JSONObject serialize() {
+    public JSONObject toJSON() {
 
         try {
             JSONObject jsonObject = new JSONObject();
@@ -440,7 +440,7 @@ public class Production implements JSONSerializable {
 
             JSONArray jsonArray = new JSONArray();
             for (int i=0; i<blocks.size(); i++) {
-                JSONObject jsonBlock = blocks.get(i).serialize();
+                JSONObject jsonBlock = blocks.get(i).toJSON();
                 jsonArray.put(jsonBlock);
             }
 
@@ -455,8 +455,8 @@ public class Production implements JSONSerializable {
 
             jsonObject.put("blocks", jsonArray);
             jsonObject.put("unlocked", jsonUnlocked);
-            jsonObject.put("inventory", inventory.serialize());
-            jsonObject.put("ledger", ledger.serialize());
+            jsonObject.put("inventory", inventory.toJSON());
+            jsonObject.put("ledger", ledger.toJSON());
 
             return jsonObject;
 

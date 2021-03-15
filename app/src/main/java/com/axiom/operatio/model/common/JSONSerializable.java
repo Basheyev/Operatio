@@ -1,9 +1,9 @@
-package com.axiom.operatio.utils;
+package com.axiom.operatio.model.common;
 
 import org.json.JSONObject;
 
 public interface JSONSerializable {
 
-    JSONObject serialize();
+    JSONObject toJSON();
 
 }

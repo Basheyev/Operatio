@@ -9,7 +9,7 @@ import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.gameplay.Level;
 import com.axiom.operatio.model.gameplay.LevelFactory;
-import com.axiom.operatio.utils.Utils;
+import com.axiom.operatio.model.common.FormatUtils;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
@@ -135,8 +135,8 @@ public class ReportPanel extends Panel {
      */
     public void updateData() {
         Ledger ledger = production.getLedger();
-        String revenueText = "Sold: " + Utils.formatMoney(Math.round(ledger.getLastPeriodRevenue())) + "\n";
-        String expensesText = "Purchased: " + Utils.formatMoney(Math.round(ledger.getLastPeriodExpenses())) + "\n";
+        String revenueText = "Sold: " + FormatUtils.formatMoney(Math.round(ledger.getLastPeriodRevenue())) + "\n";
+        String expensesText = "Purchased: " + FormatUtils.formatMoney(Math.round(ledger.getLastPeriodExpenses())) + "\n";
 
         synchronized (this) {
 
@@ -208,26 +208,26 @@ public class ReportPanel extends Panel {
         if (totalRevenue > 0) margin = Math.round(ledger.getTotalMargin() / totalRevenue * 100);
         summary.delete(0, summary.length());
         summary.append("Income: ");
-        Utils.formatMoney(Math.round(ledger.getLastPeriodRevenue()), summary);
+        FormatUtils.formatMoney(Math.round(ledger.getLastPeriodRevenue()), summary);
         summary.append("\nExpenses: ");
-        Utils.formatMoney(Math.round(ledger.getLastPeriodExpenses()),summary);
+        FormatUtils.formatMoney(Math.round(ledger.getLastPeriodExpenses()),summary);
         summary.append("\nMargin: ");
-        Utils.formatMoney(Math.round(ledger.getLastPeriodMargin()),summary);
+        FormatUtils.formatMoney(Math.round(ledger.getLastPeriodMargin()),summary);
         summary.append("\n\nTotal margin: ");
-        Utils.formatMoney(Math.round(ledger.getTotalMargin()), summary);
+        FormatUtils.formatMoney(Math.round(ledger.getTotalMargin()), summary);
         summary.append(" (");
         summary.append(margin);
         summary.append("%)");
         summary.append("\nCash: ");
-        Utils.formatMoney(Math.round(production.getCashBalance()), summary);
+        FormatUtils.formatMoney(Math.round(production.getCashBalance()), summary);
         summary.append("\nAssets: ");
-        Utils.formatMoney(Math.round(production.getAssetsValuation()), summary);
+        FormatUtils.formatMoney(Math.round(production.getAssetsValuation()), summary);
         summary.append("\nWork in progress: ");
-        Utils.formatMoney(Math.round(production.getWorkInProgressValuation()),summary);
+        FormatUtils.formatMoney(Math.round(production.getWorkInProgressValuation()),summary);
         summary.append("\nInventory: ");
-        Utils.formatMoney(Math.round(production.getInventory().getValuation()), summary);
+        FormatUtils.formatMoney(Math.round(production.getInventory().getValuation()), summary);
         summary.append("\n\nCapitalization: ");
-        Utils.formatMoney(Math.round(ledger.getCapitalization()), summary);
+        FormatUtils.formatMoney(Math.round(ledger.getCapitalization()), summary);
     }
 
 

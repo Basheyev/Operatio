@@ -1,6 +1,6 @@
 package com.axiom.operatio.model.materials;
 
-import com.axiom.operatio.utils.JSONSerializable;
+import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 
@@ -45,7 +45,7 @@ public class Item implements JSONSerializable {
 
     //---------------------------------------------------------------------------
 
-    public JSONObject serialize() {
+    public JSONObject toJSON() {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("material", material.getMaterialID());

@@ -107,7 +107,7 @@ public class MenuPanel extends Panel {
             Production production = productionScene.getProduction();
             if (!production.isPaused()) production.setPaused(true);
             SharedPreferences.Editor editor = sharedPref.edit();
-            String savedGame = production.serialize().toString();
+            String savedGame = production.toJSON().toString();
             System.out.println("SAVING GAME:\n " + savedGame);
             editor.remove("Game");
             editor.putString("Game", savedGame);

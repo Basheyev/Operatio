@@ -1,7 +1,7 @@
 package com.axiom.operatio.model.production.machine;
 
 import com.axiom.atom.engine.data.Channel;
-import com.axiom.operatio.utils.JSONSerializable;
+import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.Production;
@@ -290,8 +290,8 @@ public class Machine extends Block implements JSONSerializable {
     }
 
 
-    public JSONObject serialize() {
-        JSONObject jsonObject = super.serialize();
+    public JSONObject toJSON() {
+        JSONObject jsonObject = super.toJSON();
         try {
             jsonObject.put("class", "Machine");
             jsonObject.put("machineType", type.getID());

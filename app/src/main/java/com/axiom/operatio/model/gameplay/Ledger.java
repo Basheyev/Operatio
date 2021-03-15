@@ -1,6 +1,6 @@
 package com.axiom.operatio.model.gameplay;
 
-import com.axiom.operatio.utils.JSONSerializable;
+import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.production.Production;
 
@@ -417,7 +417,7 @@ public class Ledger implements JSONSerializable {
 
 
     @Override
-    public JSONObject serialize() {
+    public JSONObject toJSON() {
         try {
             JSONObject jsonObject = new JSONObject();
 

@@ -2,7 +2,7 @@ package com.axiom.operatio.model.production.block;
 
 
 import com.axiom.atom.engine.data.Channel;
-import com.axiom.operatio.utils.JSONSerializable;
+import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.materials.Item;
@@ -205,7 +205,7 @@ public abstract class Block implements JSONSerializable {
      * Сериализует блок в JSONObject
      * @return JSONObject
      */
-    public JSONObject serialize() {
+    public JSONObject toJSON() {
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("ID", ID);
@@ -220,7 +220,7 @@ public abstract class Block implements JSONSerializable {
             // Сохраняем очередь входящих в обратном порядке
             JSONArray jsonInputArray = new JSONArray();
             for (int i=input.size()-1; i>=0; i--) {
-                JSONObject item = input.get(i).serialize();
+                JSONObject item = input.get(i).toJSON();
                 jsonInputArray.put(item);
             }
             jsonObject.put("input", jsonInputArray);
@@ -228,7 +228,7 @@ public abstract class Block implements JSONSerializable {
             // Сохраняем очередь исходящих в обратном порядке
             JSONArray jsonOutputArray = new JSONArray();
             for (int i=output.size()-1; i>=0; i--) {
-                JSONObject item = output.get(i).serialize();
+                JSONObject item = output.get(i).toJSON();
                 jsonOutputArray.put(item);
             }
             jsonObject.put("output", jsonOutputArray);
