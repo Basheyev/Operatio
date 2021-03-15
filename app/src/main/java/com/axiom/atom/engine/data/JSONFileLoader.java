@@ -3,7 +3,6 @@ package com.axiom.atom.engine.data;
 import android.content.res.Resources;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -37,7 +36,7 @@ public class JSONFileLoader {
     }
 
 
-    public String getJsonFile() {
+    public String getJsonAsString() {
         return jsonFile;
     }
 
