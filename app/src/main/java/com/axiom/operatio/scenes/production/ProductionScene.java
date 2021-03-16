@@ -38,12 +38,9 @@ public class ProductionScene extends GameScene {
     private BlocksPanel blocksPanel;
     private ModePanel modePanel;
     private AdjustmentPanel adjustmentPanel;
-    private float initialCellWidth = 128;                  // Ширина клетки
-    private float initialCellHeight = 128;                 // Высота клетки
 
-    private double lastCashBalance = 0;
     private boolean initialized = false;
-
+    private long permissionLastChangeTime = 0;
 
     public ProductionScene() {
         production = new Production(MAP_WIDTH, MAP_HEIGHT);
@@ -94,6 +91,13 @@ public class ProductionScene extends GameScene {
     public void updateScene(float deltaTimeNs) {
 
         production.process();
+
+        long changeTime = production.getPermissions().getLastChangeTime();
+        boolean permissionsChanged = false;
+        if (changeTime > permissionLastChangeTime) {
+            permissionsChanged = true;
+            permissionLastChangeTime = changeTime;
+        }
 
         // Проверить не сменился ли уровень (обновить доступ к кнопкам)
         if (currentLevel != production.getLevel()) {

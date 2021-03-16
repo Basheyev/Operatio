@@ -21,6 +21,7 @@ import com.axiom.operatio.scenes.common.ScenesPanel;
 public class InventoryScene extends GameScene {
 
     public static final String SCENE_NAME = "Inventory";
+    public static final long UPDATE_TIME = 1000;           // 1000 ms (1 секунда)
 
     private boolean initialized = false;
     private Production production;
@@ -70,7 +71,7 @@ public class InventoryScene extends GameScene {
         production.process();
 
         // если прошла секунда времени
-        if (now - lastTime > 1000) {
+        if (now - lastTime > UPDATE_TIME) {
             materialsPanel.updateData();
             marketPanel.updateValues();
             lastTime = now;

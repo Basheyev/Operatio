@@ -24,7 +24,6 @@ import static android.graphics.Color.BLACK;
 import static android.graphics.Color.WHITE;
 
 
-// todo кнопка покупки рецепта материала и операции
 public class RecipePanel extends Panel {
 
     public static final int RECIPE_PRICE = 500;

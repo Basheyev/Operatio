@@ -31,6 +31,7 @@ public class BlockButton extends Button {
     private BlocksPanel panel;
     private int tickSound;
     private int denySound;
+    private boolean active = true;
 
     private static Sprite allMachines = null;
 
@@ -89,6 +90,7 @@ public class BlockButton extends Button {
 
     @Override
     public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
+        if (!active) return true;
         BlockAddMoveHandler moveHandler = scene.getInputHandler().getBlockAddMoveHandler();
         int action = event.getActionMasked();
         switch (action) {
@@ -164,6 +166,8 @@ public class BlockButton extends Button {
             GraphicsRender.drawRectangle(bounds, parentScissor);
         }
 
+        if (!active) return;
+
         if (background !=null) {
             background.setZOrder(zOrder + 1);
             background.draw(camera, bounds, parentScissor);
@@ -178,9 +182,16 @@ public class BlockButton extends Button {
             GraphicsRender.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
             GraphicsRender.drawText(text, bounds.max.x - textWidth - 5, bounds.min.y + 5, textScale, parentScissor);
         }
-        //super.draw(camera);
+
     }
 
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
 }

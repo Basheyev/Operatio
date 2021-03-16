@@ -51,8 +51,8 @@ public class BlocksPanel extends Panel {
             int blockID = Integer.parseInt(button.getTag());
             // если это машина
             if (blockID >= 2 && blockID <= 6) {
-                button.visible = permissions.isAvailable(MachineType.getMachineType(blockID - 2));
-            } else button.visible = true;
+                button.setActive(permissions.isAvailable(MachineType.getMachineType(blockID - 2)));
+            } else button.setActive(true);
         }
     }
 

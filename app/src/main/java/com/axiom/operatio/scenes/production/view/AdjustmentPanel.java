@@ -11,6 +11,7 @@ import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
+import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.buffer.Buffer;
@@ -321,7 +322,8 @@ public class AdjustmentPanel extends Panel {
             outBtn[i].visible = true;
         }
 
-        changeoverButton.visible = true;
+        GamePermissions permissions = production.getPermissions();
+        changeoverButton.visible = permissions.isAvailable(currentOperation);
     }
 
 
