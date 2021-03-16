@@ -8,7 +8,7 @@
       { "indicatorType" : 1, "materialID" : 8, "value" :  10}
     ],
     "permissionsReward" : {
-      "availableMaterials" : [0,8],
+      "availableMaterials" : [0,1,2,3,4,5,6,7,8],
       "availableMachines" : [0],
       "availableOperations" : [1]
     },
@@ -23,7 +23,7 @@
       { "indicatorType" : 1, "materialID" : 8, "value" :  10}
     ],
     "permissionsReward" : {
-      "availableMaterials" : [1,2,3,4,5,6,7],
+      "availableMaterials" : [],
       "availableMachines" : [],
       "availableOperations" : []
     },
@@ -38,9 +38,9 @@
       { "indicatorType" : 2, "materialID" : 8, "value" :  20}
     ],
     "permissionsReward" : {
-      "availableMaterials" : [2, 10],
+      "availableMaterials" : [10],
       "availableMachines" : [1],
-      "availableOperations" : [2]
+      "availableOperations" : [3]
     },
     "moneyReward" : 2000
   },
@@ -53,8 +53,8 @@
       { "indicatorType" : 1, "materialID" : 10, "value" :  60}
     ],
     "permissionsReward" : {
-      "availableMaterials" : [8,9,10,11,12,13,14,15],
-      "availableMachines" : [1,2,3],
+      "availableMaterials" : [16,20],
+      "availableMachines" : [1,2],
       "availableOperations" : [1,2,3,4,5,6,7]
     },
     "moneyReward" : 6000
@@ -68,11 +68,9 @@
       { "indicatorType" : 4, "materialID" : 0, "value" :  400}
     ],
     "permissionsReward" : {
-      "availableMaterials" : [16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,
-                              40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,61,62,63],
-      "availableMachines" : [4],
-      "availableOperations" : [11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,
-                               32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51]
+      "availableMaterials" : [],
+      "availableMachines" : [],
+      "availableOperations" : [8,9,12]
     },
     "moneyReward" : 5000
   },
