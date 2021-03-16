@@ -32,7 +32,7 @@ public class Production implements JSONSerializable {
     private Ledger ledger;                        // Объект - игровая статистика
     private GamePermissions permissions;          // Разрешения в игре
     private int level = 0;                        // Текущий уровень
-    private int lastCompletedLevel = -1;          // Последний завершенный уровень
+    private int lastCompletedLevel = 0;           // Последний завершенный уровень
     private double cashBalance = 0;               // Стартовые деньги
 
     private ArrayList<Block> blocks;              // Список блоков производства
@@ -86,7 +86,6 @@ public class Production implements JSONSerializable {
 
         levelCompletedSound = SoundRenderer.loadSound(R.raw.yes_snd);
 
-        //levelFactory = LevelFactory.getInstance();
         cashBalance = jsonObject.getLong("cashBalance");
         int columns = jsonObject.getInt("columns");
         int rows = jsonObject.getInt("rows");
@@ -96,6 +95,7 @@ public class Production implements JSONSerializable {
         grid = new Block[rows][columns];
         unlocked = new boolean[rows][columns];
         level = jsonObject.getInt("level");
+//        lastCompletedLevel = level;
         lastCycleTime = jsonObject.getLong("lastCycleTime");
         cycleMilliseconds = jsonObject.getLong("cycleMilliseconds");
         clock = jsonObject.getLong("clock");

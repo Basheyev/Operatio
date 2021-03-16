@@ -8,11 +8,14 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
+import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.common.FormatUtils;
+import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.materials.Material;
+import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
 import com.axiom.operatio.scenes.common.ItemWidget;
@@ -20,25 +23,31 @@ import com.axiom.operatio.scenes.common.ItemWidget;
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.WHITE;
 
+
+// todo кнопка покупки рецепта материала и операции
 public class RecipePanel extends Panel {
+
+    public static final int RECIPE_PRICE = 500;
 
     public static final String INPUTS = "Inputs";
     public static final String OUTPUTS = "Outputs";
     public static final String RECIPE = "Recipe";
 
     private MaterialsTree materialsTree;
+    private Production production;
     private Caption caption, inputsCaption, machineCaption, outputsCaption;
     private ItemWidget[] inpBtn, outBtn;
     private ItemWidget machineButton;
     private Caption[] inpCap, outCap;
+    private Button researchButton;
 
-    public RecipePanel(MaterialsTree panel) {
+    private Operation selectedOperation;
+
+    public RecipePanel(MaterialsTree panel, Production production) {
         super();
-        materialsTree = panel;
-        inpBtn = new ItemWidget[4];
-        outBtn = new ItemWidget[4];
-        inpCap = new Caption[4];
-        outCap = new Caption[4];
+        this.materialsTree = panel;
+        this.production = production;
+        this.selectedOperation = null;
         buildUI();
     }
 
@@ -78,6 +87,7 @@ public class RecipePanel extends Panel {
             outBtn[i].setText("");
             outCap[i].setText("");
         }
+        selectedOperation = null;
     }
 
 
@@ -85,6 +95,11 @@ public class RecipePanel extends Panel {
         Panel panel = this;
         panel.setLocalBounds(874,60, 1026, 880);
         panel.setColor(0xCC505050);
+
+        inpBtn = new ItemWidget[4];
+        outBtn = new ItemWidget[4];
+        inpCap = new Caption[4];
+        outCap = new Caption[4];
 
         caption = new Caption(RECIPE);
         caption.setTextScale(1.5f);
@@ -159,21 +174,36 @@ public class RecipePanel extends Panel {
             addChild(outCap[i]);
         }
 
+        researchButton = new Button("Research");
+        researchButton.setLocalBounds(panel.getWidth() - 325,25,300,100);
+        researchButton.setTextScale(1.5f);
+        researchButton.setTextColor(WHITE);
+        researchButton.setClickListener(researchClickListener);
+        researchButton.visible = false;
+        addChild(researchButton);
+
         clearFields();
 
     }
 
 
     protected boolean findMachineAndOperations(Material selectedMaterial) {
+        GamePermissions permissions = production.getPermissions();
         int machineTypesCount = MachineType.getMachineTypesCount();
         for (int i=0; i<machineTypesCount; i++) {
-            MachineType mt = MachineType.getMachineType(i);
-            Operation[] op = mt.getOperations();
-            for (int j=0; j<op.length; j++) {
-                Material[] outputs = op[j].getOutputs();
+            MachineType machineType = MachineType.getMachineType(i);
+            Operation[] operation = machineType.getOperations();
+            for (int j=0; j<operation.length; j++) {
+                Material[] outputs = operation[j].getOutputs();
                 for (int k=0; k<outputs.length; k++) {
                     if (outputs[k].equals(selectedMaterial)) {
-                        showMachineAndOperation(mt, j);
+                        if (permissions.isAvailable(selectedMaterial)) {
+                            researchButton.visible = false;
+                        } else {
+                            researchButton.visible = true;
+                        }
+                        selectedOperation = machineType.getOperation(j);
+                        showMachineAndOperation(machineType, j);
                         return true;
                     }
                 }
@@ -294,4 +324,32 @@ public class RecipePanel extends Panel {
         }
 
     };
+
+
+
+    private ClickListener researchClickListener = new ClickListener() {
+
+        protected int buySound =-1;
+
+        @Override
+        public void onClick(Widget w) {
+            if (buySound == -1) buySound = SoundRenderer.loadSound(R.raw.cash_snd);
+            GamePermissions permissions = production.getPermissions();
+            Material material = materialsTree.getSelectedMaterial();
+            if (material!=null && selectedOperation!=null) {
+                if (!permissions.isAvailable(material)) {
+                    if (production.decreaseCashBalance(0, RECIPE_PRICE)) {
+                        SoundRenderer.playSound(buySound);
+                        permissions.addMaterialPermission(material);
+                        permissions.addOperationPermission(selectedOperation);
+                        permissions.addMachinePermission(selectedOperation.getMachineType());
+                    }
+                }
+            }
+        }
+
+    };
+
+
+
 }

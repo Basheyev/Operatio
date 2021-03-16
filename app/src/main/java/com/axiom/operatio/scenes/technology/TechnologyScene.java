@@ -15,7 +15,6 @@ import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.ScenesPanel;
 
-// todo открытие материалов должно покупаться в сцене технологии (даже если она доступна)
 public class TechnologyScene extends GameScene {
 
     public static final String SCENE_NAME = "Technology";
@@ -124,7 +123,7 @@ public class TechnologyScene extends GameScene {
         materialsTree = new MaterialsTree(production, this);
         widget.addChild(materialsTree);
 
-        recipePanel = new RecipePanel(materialsTree);
+        recipePanel = new RecipePanel(materialsTree, production);
         widget.addChild(recipePanel);
 
         initialized = true;

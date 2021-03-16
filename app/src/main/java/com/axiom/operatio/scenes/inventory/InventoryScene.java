@@ -31,6 +31,7 @@ public class InventoryScene extends GameScene {
     private static Sprite background;
     private static int tickSound;
     private long lastTime;
+    private long permissionLastChangeTime = 0;
 
     public InventoryScene(Production production) {
         this.production = production;
@@ -75,8 +76,15 @@ public class InventoryScene extends GameScene {
             lastTime = now;
         }
 
+        long changeTime = production.getPermissions().getLastChangeTime();
+        boolean permissionsChanged = false;
+        if (changeTime > permissionLastChangeTime) {
+            permissionsChanged = true;
+            permissionLastChangeTime = changeTime;
+        }
+
         // Если сменился уровень
-        if (currentLevel != production.getLevel()) {
+        if (currentLevel != production.getLevel() || permissionsChanged) {
             currentLevel = production.getLevel();
             // Включить доступные машины на этом уровне
             materialsPanel.updatePermissions(production.getLevel());

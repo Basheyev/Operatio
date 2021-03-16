@@ -91,8 +91,6 @@ public class ScenesPanel extends Panel {
         productionButton = buildButton(5, PRODUCTION, 824, 0, 128, 128, true);
         technologyButton = buildButton(6, TECHNOLOGY, 968, 0, 128, 128, true);
         reportButton = buildButton(7, REPORT, 1112, 0, 128, 128, true);
-
-        // fixme
         pauseButton = buildButton(2, PAUSE, 1768, 0, 128, 128, true);
 
     }
