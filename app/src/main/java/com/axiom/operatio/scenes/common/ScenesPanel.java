@@ -40,6 +40,7 @@ public class ScenesPanel extends Panel {
     private Caption timeCaption;
     private Caption balanceCaption;
     private Button coinButton;
+    private Button dayButton;
 
     private Button menuButton;
     private Button pauseButton;
@@ -81,7 +82,9 @@ public class ScenesPanel extends Panel {
         String balanceText = FormatUtils.formatMoney(currentBalance);
         lastBalance = currentBalance;
 
-        timeCaption = buildCaption("time", 384, 20, 256, 80);
+        timeCaption = buildCaption("time", 420, 20, 256, 80);
+        dayButton = buildButton(14, "Day", 330, 11, 96, 96, false);
+        dayButton.setColor(0,0,0, 0);
         balanceCaption = buildCaption(balanceText, 1500, 20, 256, 80);
         coinButton = buildButton(15, "Coin", 1410, 8, 96, 96, false);
         coinButton.setColor(0,0,0, 0);
@@ -133,7 +136,7 @@ public class ScenesPanel extends Panel {
         long currentDay = production.getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES;
 
         if (currentDay != lastDay) {
-            timeCaption.setText("Day: " + currentDay);
+            timeCaption.setText("" + currentDay);
             lastDay = currentDay;
         }
 
