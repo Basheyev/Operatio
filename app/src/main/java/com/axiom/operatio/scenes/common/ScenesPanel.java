@@ -114,6 +114,7 @@ public class ScenesPanel extends Panel {
             uiIcons = new Sprite(resources, R.drawable.ui_icons, 4, 4);
         }
         Sprite icon;
+        // Если это кнопка паузы - берем спрайт с двумя иконками Play/Pause
         if (tag.equals(PAUSE)) {
             icon = uiIcons.getAsSprite(spriteIndex,spriteIndex+1);
         } else icon = uiIcons.getAsSprite(spriteIndex);
