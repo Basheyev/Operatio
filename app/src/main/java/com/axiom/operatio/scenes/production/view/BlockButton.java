@@ -13,6 +13,7 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.operatio.model.common.FormatUtils;
+import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
@@ -22,6 +23,7 @@ import com.axiom.operatio.model.production.buffer.ImportBuffer;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
 import com.axiom.operatio.model.production.machine.Machine;
 import com.axiom.operatio.model.production.machine.MachineType;
+import com.axiom.operatio.model.production.machine.Operation;
 import com.axiom.operatio.scenes.production.ProductionScene;
 import com.axiom.operatio.scenes.production.controller.BlockAddMoveHandler;
 
@@ -149,8 +151,24 @@ public class BlockButton extends Button {
 
 
     private Machine createMachine(Production production, int machineType) {
+        GamePermissions permissions = production.getPermissions();
         MachineType mt = MachineType.getMachineType(machineType);
-        return new Machine(production, mt, mt.getOperations()[0], Machine.LEFT, Machine.RIGHT);
+        Operation[] machineOps = mt.getOperations();
+
+        // Ищем первую доступную операцию машины
+        Operation defaultOperation = null;
+        for (int i=0; i<machineOps.length; i++) {
+            if (permissions.isAvailable(machineOps[i])) {
+                defaultOperation = machineOps[i];
+                break;
+            }
+        }
+
+        // Если ни одна операция не доступна - машина недоступна
+        if (defaultOperation==null) return null;
+
+        //
+        return new Machine(production, mt, defaultOperation, Machine.LEFT, Machine.RIGHT);
     }
 
 

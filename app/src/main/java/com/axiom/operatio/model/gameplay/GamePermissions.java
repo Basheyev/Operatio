@@ -85,6 +85,13 @@ public class GamePermissions implements JSONSerializable {
         if (availableOperations.contains(operation)) return;
         lastChangeTime = System.nanoTime();
         availableOperations.add(operation);
+        // Добавляем машину к которой эта операция отностися
+        availableMachines.add(operation.getMachineType());
+        // Открываем выходные материалы операции
+        Material[] outputs = operation.getOutputs();
+        for (Material output : outputs) {
+            addMaterialPermission(output);
+        }
     }
 
 
@@ -102,14 +109,30 @@ public class GamePermissions implements JSONSerializable {
         return lastChangeTime;
     }
 
+
     public boolean isAvailable(Material material) {
         if (material==null) return false;
         return availableMaterials.contains(material);
     }
 
-    public boolean isAvailable(MachineType machine) {
-        if (machine==null) return false;
-        return availableMachines.contains(machine);
+
+    public boolean isAvailable(MachineType machineType) {
+        if (machineType==null) return false;
+        boolean available = availableMachines.contains(machineType);
+        // Если машина доступна, проверяем доступны ли операции
+        if (available) {
+            boolean hasAvailableOps = false;
+            // проверяем есть ли доступные операции машины
+            Operation[] machineOps = machineType.getOperations();
+            for (Operation machineOp : machineOps) {
+                if (isAvailable(machineOp)) {
+                    hasAvailableOps = true;
+                    break;
+                }
+            }
+            available = hasAvailableOps;
+        }
+        return available;
     }
 
     public boolean isAvailable(Operation operation) {
