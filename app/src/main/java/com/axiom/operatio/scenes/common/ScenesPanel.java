@@ -79,10 +79,12 @@ public class ScenesPanel extends Panel {
         setLocalBounds(0, 960, 1920, 120);
 
         double currentBalance = Math.round(production.getCashBalance());
+        long currentDay = production.getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES;
         String balanceText = FormatUtils.formatMoney(currentBalance);
+        String dayText = "" + currentDay;
         lastBalance = currentBalance;
 
-        timeCaption = buildCaption("time", 420, 20, 256, 80);
+        timeCaption = buildCaption(dayText, 420, 20, 256, 80);
         dayButton = buildButton(14, "Day", 330, 11, 96, 96, false);
         dayButton.setColor(0,0,0, 0);
         balanceCaption = buildCaption(balanceText, 1500, 20, 256, 80);
