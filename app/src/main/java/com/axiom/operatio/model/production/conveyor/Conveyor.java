@@ -84,7 +84,7 @@ public class Conveyor extends Block implements JSONSerializable {
     @Override
     public Item poll() {
         Item item = super.poll();
-        if (item!=null) lastPollTime = production.getClockMilliseconds();
+        if (item!=null) lastPollTime = production.getClock();
         return item;
     }
 
@@ -127,7 +127,7 @@ public class Conveyor extends Block implements JSONSerializable {
                     if (neightInputDirection==NONE || neighborInput==this) {
                         if (outputBlock.push(item)) {
                             output.remove(item);
-                            lastPollTime = production.getClockMilliseconds();
+                            lastPollTime = production.getClock();
                         }
                     }
                 }
