@@ -122,7 +122,7 @@ public class BlockAddMoveHandler {
             int expenseType = Ledger.EXPENSE_BLOCK_BOUGHT;
             production.decreaseCashBalance(expenseType, dragBlock.getPrice());
         }
-        dragBlock.adjustFlowDirection();
+        dragBlock.adjustDirection();
         opsPanel.showBlockInfo(dragBlock);
         production.selectBlock(column, row);
 

@@ -78,7 +78,7 @@ public class ExportBuffer extends Block implements JSONSerializable {
     }
 
     @Override
-    public void adjustFlowDirection() {
+    public void adjustDirection() {
 
     }
 

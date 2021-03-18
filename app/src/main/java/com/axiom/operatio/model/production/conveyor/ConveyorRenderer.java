@@ -24,7 +24,7 @@ import static com.axiom.operatio.model.production.block.Block.UP;
 public class ConveyorRenderer extends BlockRenderer {
 
     protected static Sprite allConveyors = null;
-    protected Block block;                                       // Блок к которму привзян рендер
+    protected Block block;                                       // Блок к которому привзян рендер
     protected Sprite sprite;                                     // Спрайт конвейера
     protected Sprite fault;                                      // Значек сбоя
     protected int animStraight, animUpToRight, animRightToUp;
