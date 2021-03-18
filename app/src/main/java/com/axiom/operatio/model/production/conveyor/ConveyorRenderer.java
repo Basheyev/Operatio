@@ -174,23 +174,17 @@ public class ConveyorRenderer extends BlockRenderer {
     }
 
 
-    protected void drawItem(Camera camera, float x, float y,
-                            float width, float height,
-                            Item item, float progress) {
-
+    protected void drawItem(Camera camera, float x, float y, float width, float height, Item item, float progress) {
 
         int inputDirection = block.getInputDirection();
         int outputDirection = block.getOutputDirection();
+
         progressToCoordinates(progress, inputDirection, outputDirection, coordBuffer);
         float xpos = coordBuffer.x;
         float ypos = coordBuffer.y;
         float minx = x + xpos * width + width / 4;
         float miny = y + ypos * height + height / 4;
-/*
-        String debug = (block.getProduction().getCurrentCycle() - item.getCycleOwned()) + "\n"+progress;
-        GraphicsRender.setColor(BLACK);
-        GraphicsRender.drawText(debug, tx + width /4,ty +height/4,1);
-*/
+
         Sprite materialSprite = item.getMaterial().getImage();
         materialSprite.setZOrder(sprite.getZOrder() + 1);
         materialSprite.draw(camera,minx,miny,width / 2, height / 2);
