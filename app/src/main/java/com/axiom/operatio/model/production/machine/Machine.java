@@ -221,20 +221,14 @@ public class Machine extends Block implements JSONSerializable {
 
 
     public void setState(int newState) {
-        if (this.state==newState) return;
+        if (getState()==newState) return;
+        MachineRenderer machineRenderer = (MachineRenderer) renderer;
         switch (newState) {
-            case Block.IDLE:
-                ((MachineRenderer) renderer).setIdleAnimation();
-                this.state = newState;
-                break;
-            case Block.BUSY:
-                ((MachineRenderer) renderer).setBusyAnimation();
-                this.state = newState;
-            case Block.FAULT:
-                ((MachineRenderer) renderer).setIdleAnimation();
-                this.state = newState;
-                break;
+            case Block.IDLE: machineRenderer.setIdleAnimation(); break;
+            case Block.BUSY: machineRenderer.setBusyAnimation(); break;
+            case Block.FAULT: machineRenderer.setIdleAnimation(); break;
         }
+        super.setState(newState);
     }
 
 

@@ -60,7 +60,7 @@ public class Buffer extends Block implements JSONSerializable {
      */
     public boolean push(Item item) {
         if (item==null) return false;
-        if (state==BUSY) return false;
+        if (getState()==BUSY) return false;
         if (input.size()>=inputCapacity) return false;
 
         // Узнаем есть ли ячейка под такой материал

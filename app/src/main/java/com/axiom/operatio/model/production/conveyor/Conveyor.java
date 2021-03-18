@@ -50,26 +50,26 @@ public class Conveyor extends Block implements JSONSerializable {
     @Override
     public void setOutputDirection(int outDir) {
         super.setOutputDirection(outDir);
-        ((ConveyorRenderer)renderer).arrangeAnimation(inputDirection, outputDirection);
+        ((ConveyorRenderer)renderer).adjustAnimation(inputDirection, outputDirection);
     }
 
     @Override
     public void setInputDirection(int inDir) {
         super.setInputDirection(inDir);
-        ((ConveyorRenderer)renderer).arrangeAnimation(inputDirection, outputDirection);
+        ((ConveyorRenderer)renderer).adjustAnimation(inputDirection, outputDirection);
     }
 
     @Override
     public void setDirections(int inDir, int outDir) {
         super.setDirections(inDir, outDir);
-        ((ConveyorRenderer)renderer).arrangeAnimation(inputDirection, outputDirection);
+        ((ConveyorRenderer)renderer).adjustAnimation(inputDirection, outputDirection);
     }
 
     @Override
     public boolean push(Item item) {
         // Если на конвейере уже максимальное количество предметов
         if (getItemsAmount() >= MAX_CAPACITY) {
-            state = BUSY;
+            setState(BUSY);
             return false;
         }
 
@@ -93,9 +93,9 @@ public class Conveyor extends Block implements JSONSerializable {
 
         // Если еще можем забрать предмет, забираем с входящего направления
         if (getItemsAmount() < MAX_CAPACITY) {
-            state = IDLE;
+            setState(IDLE);
             grabItemsFromInputDirection();
-        } else state = BUSY;
+        } else setState(BUSY);
 
         // Перемещаем на вывод все предметы время доставки которых подошло
         for (int i=0; i<input.size(); i++) {
@@ -106,7 +106,7 @@ public class Conveyor extends Block implements JSONSerializable {
             if (cyclesPassed >= deliveryCycles) {
                 item = input.poll();  // Удалаем из входящей очереди
                 output.add(item);     // Добавляем в выходящую очередь
-                state = IDLE;         // Состояние - IDLE (можем брать еще)
+                setState(IDLE);       // Состояние - IDLE (можем брать еще)
             }
         }
 

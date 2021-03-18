@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class Production implements JSONSerializable {
 
     public static final int TILE_PRICE = 500;     // Цена одной плитки площади
-    public static final int CYCLE_TIME = 300;     // Длительность цикла в миллесекундах
+    public static final int CYCLE_TIME = 1000;     // Длительность цикла в миллесекундах
 
     private Inventory inventory;                  // Объект - склад
     private Market market;                        // Объект - рынок
@@ -175,7 +175,8 @@ public class Production implements JSONSerializable {
      */
     public void process() {
         if (!isPaused) {
-            long now = clock;
+            updateClock();
+            long now = getClock();
             if (now - lastCycleTime > cycleMilliseconds) {
                 Block block;
                 boolean energyPayed;
@@ -202,12 +203,40 @@ public class Production implements JSONSerializable {
                 cycle++;
                 lastCycleTime = now;
             }
-            // Учитываем время производства в миллисекундах с учетом пауз игры
-            clock = System.currentTimeMillis() - pausedTime;
         }
-
-
     }
+
+
+    private synchronized void updateClock() {
+        // Учитываем время производства в миллисекундах с учетом пауз игры
+        clock = System.currentTimeMillis() - pausedTime;
+    }
+
+    /**
+     * Возвращает время производства в миллисекундах с учетом пауз игры
+     * @return время в миллисекундах
+     */
+    public synchronized long getClock() {
+        return clock;
+    }
+
+
+    public void setPaused(boolean pause) {
+        if (pause) {
+            if (isPaused) {
+                long now = System.currentTimeMillis();
+                pausedTime += (now - pauseStart);
+            }
+            pauseStart = System.currentTimeMillis();
+            isPaused = true;
+        } else {
+            long now = System.currentTimeMillis();
+            pausedTime += (now - pauseStart);
+            isPaused = false;
+        }
+    }
+
+
 
     public void setAreaUnlocked(int col, int row, int w, int h, boolean state) {
         if (col < 0) col = 0;
@@ -232,15 +261,6 @@ public class Production implements JSONSerializable {
             lastCompletedLevel = level;
             if (level + 1 <= GameManager.size() - 1) level++;
         }
-    }
-
-
-    /**
-     * Возвращает время производства в миллисекундах с учетом пауз игры
-     * @return время в миллисекундах
-     */
-    public long getClockMilliseconds() {
-        return clock;
     }
 
 
@@ -397,20 +417,6 @@ public class Production implements JSONSerializable {
         blockSelected = false;
     }
 
-    public void setPaused(boolean pause) {
-        if (pause) {
-            if (isPaused) {
-                long now = System.currentTimeMillis();
-                pausedTime += (now - pauseStart);
-            }
-            pauseStart = System.currentTimeMillis();
-            isPaused = true;
-        } else {
-            long now = System.currentTimeMillis();
-            pausedTime += (now - pauseStart);
-            isPaused = false;
-        }
-    }
 
     public GamePermissions getPermissions() {
         return permissions;

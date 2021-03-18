@@ -66,7 +66,7 @@ public class MachineRenderer extends BlockRenderer {
     }
 
     public void arrangeAnimation(int inputDirection, int outputDirection) {
-        conveyorRenderer.arrangeAnimation(inputDirection, outputDirection);
+        conveyorRenderer.adjustAnimation(inputDirection, outputDirection);
     }
 
     public void setIdleAnimation() {

@@ -26,8 +26,9 @@ public abstract class Block implements JSONSerializable {
     protected static int blockCounter = 0;
 
     protected int ID;                                 // ID блока
-    protected double price;
+    protected double price;                           // Цена блока
     protected int state = IDLE;                       // Текущее состояние блока
+    protected long stateChangeTime;                   // Время последнего изменения состояния
     protected int inputDirection, outputDirection;    // Направление ввода и вывода
     protected int inputCapacity, outputCapacity;      // Максимальая вместимость блока в предметах
     protected Channel<Item> input;                    // Буферы ввода предметов
@@ -75,7 +76,7 @@ public abstract class Block implements JSONSerializable {
      */
     public boolean push(Item item) {
         if (item==null) return false;
-        if (state==BUSY) return false;
+        if (getState()==BUSY) return false;
         if (input.size()>=inputCapacity) return false;
         item.setOwner(production, this);
         input.add(item);
@@ -133,6 +134,11 @@ public abstract class Block implements JSONSerializable {
 
     public void setState(int newState) {
         state = newState;
+        stateChangeTime = production.getClock();
+    }
+
+    public long getStateChangeTime() {
+        return stateChangeTime;
     }
 
     /**
@@ -219,7 +225,7 @@ public abstract class Block implements JSONSerializable {
 
             // Сохраняем очередь входящих в обратном порядке
             JSONArray jsonInputArray = new JSONArray();
-            for (int i=input.size()-1; i>=0; i--) {
+            for (int i=0; i<input.size(); i++) {
                 JSONObject item = input.get(i).toJSON();
                 jsonInputArray.put(item);
             }
@@ -227,7 +233,7 @@ public abstract class Block implements JSONSerializable {
 
             // Сохраняем очередь исходящих в обратном порядке
             JSONArray jsonOutputArray = new JSONArray();
-            for (int i=output.size()-1; i>=0; i--) {
+            for (int i=0; i<output.size(); i++) {
                 JSONObject item = output.get(i).toJSON();
                 jsonOutputArray.put(item);
             }

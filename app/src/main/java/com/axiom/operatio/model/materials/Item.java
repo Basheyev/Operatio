@@ -40,7 +40,7 @@ public class Item implements JSONSerializable {
     public void setOwner(Production production, Block owner) {
         this.owner = owner;
         this.cycleOwned = production.getCurrentCycle();
-        this.timeOwned = production.getClockMilliseconds();
+        this.timeOwned = production.getClock();
     }
 
     //---------------------------------------------------------------------------

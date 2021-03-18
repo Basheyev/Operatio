@@ -4,6 +4,7 @@ import android.content.res.Resources;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
+import com.axiom.atom.engine.core.geometry.Vector;
 import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
@@ -11,7 +12,6 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
 import com.axiom.operatio.model.materials.Item;
-import com.axiom.operatio.model.production.machine.Machine;
 
 import static com.axiom.operatio.model.production.block.Block.BUSY;
 import static com.axiom.operatio.model.production.block.Block.DOWN;
@@ -24,13 +24,12 @@ import static com.axiom.operatio.model.production.block.Block.UP;
 public class ConveyorRenderer extends BlockRenderer {
 
     protected static Sprite allConveyors = null;
-    protected Block block;
-    protected Sprite sprite;
-    protected Sprite fault;                                // Значек сбоя
-
+    protected Block block;                                       // Блок к которму привзян рендер
+    protected Sprite sprite;                                     // Спрайт конвейера
+    protected Sprite fault;                                      // Значек сбоя
     protected int animStraight, animUpToRight, animRightToUp;
 
-    protected long timeStarted;
+    private Vector coordBuffer = new Vector();
 
     public ConveyorRenderer(Block block) {
         this.block = block;
@@ -46,9 +45,9 @@ public class ConveyorRenderer extends BlockRenderer {
         fault.setZOrder(8);
 
         createAnimations();
-        arrangeAnimation(block.getInputDirection(), block.getOutputDirection());
-        timeStarted = block.getProduction().getClockMilliseconds();
+        adjustAnimation(block.getInputDirection(), block.getOutputDirection());
     }
+
 
     private void createAnimations() {
         animStraight = sprite.addAnimation(0,7, 15, true);
@@ -59,83 +58,42 @@ public class ConveyorRenderer extends BlockRenderer {
 
     /**
      * Подготовить анимацию с учетом направления входа и выхода
-     * @param inputDirection
-     * @param outputDirection
+     * @param inputDirection направление входа
+     * @param outputDirection направление выхода
      */
-    public void arrangeAnimation(int inputDirection, int outputDirection) {
+    public void adjustAnimation(int inputDirection, int outputDirection) {
+        if (inputDirection== LEFT && outputDirection== RIGHT)
+            adjustSprite(animStraight, 0, false, false);
+        if (inputDirection== RIGHT && outputDirection== LEFT)
+            adjustSprite(animStraight, 0, true, false);
+        if (inputDirection== DOWN && outputDirection== UP)
+            adjustSprite(animStraight, (float) Math.PI / 2, false, false);
+        if (inputDirection== UP && outputDirection== DOWN)
+            adjustSprite(animStraight, (float) -Math.PI / 2, false, false);
+        if (inputDirection== UP && outputDirection== RIGHT)
+            adjustSprite(animUpToRight, 0, false, false);
+        if (inputDirection== RIGHT && outputDirection== UP)
+            adjustSprite(animRightToUp, 0, false, false);
+        if (inputDirection== LEFT && outputDirection== UP)
+            adjustSprite(animRightToUp, 0, true, false);
+        if (inputDirection== LEFT && outputDirection== DOWN)
+            adjustSprite(animRightToUp, 0, true, true);
+        if (inputDirection== DOWN && outputDirection== LEFT)
+            adjustSprite(animUpToRight, 0, true, true);
+        if (inputDirection== RIGHT && outputDirection== DOWN)
+            adjustSprite(animRightToUp, 0, false, true);
+        if (inputDirection== DOWN && outputDirection== RIGHT)
+            adjustSprite(animUpToRight, 0, false, true);
+        if (inputDirection== UP && outputDirection== LEFT)
+            adjustSprite(animUpToRight, 0, true, false);
+    }
 
-        if (inputDirection== LEFT && outputDirection== RIGHT) {
-            sprite.setActiveAnimation(animStraight);
-            sprite.setRotation(0);
-            sprite.flipHorizontally(false);
-            sprite.flipVertically(false);
-        }
-        if (inputDirection== RIGHT && outputDirection== LEFT) {
-            sprite.setActiveAnimation(animStraight);
-            sprite.setRotation(0);
-            sprite.flipHorizontally(true);
-            sprite.flipVertically(false);
-        }
-        if (inputDirection== DOWN && outputDirection== UP) {
-            sprite.setActiveAnimation(animStraight);
-            sprite.setRotation((float) Math.PI / 2);
-            sprite.flipHorizontally(false);
-            sprite.flipVertically(false);
-        }
-        if (inputDirection== UP && outputDirection== DOWN) {
-            sprite.setActiveAnimation(animStraight);
-            sprite.setRotation((float) -Math.PI / 2);
-            sprite.flipHorizontally(false);
-            sprite.flipVertically(false);
-        }
-        if (inputDirection== UP && outputDirection== RIGHT) {
-            sprite.setActiveAnimation(animUpToRight);
-            sprite.setRotation(0);
-            sprite.flipHorizontally(false);
-            sprite.flipVertically(false);
-        }
-        if (inputDirection== RIGHT && outputDirection== UP) {
-            sprite.setActiveAnimation(animRightToUp);
-            sprite.setRotation(0);
-            sprite.flipHorizontally(false);
-            sprite.flipVertically(false);
-        }
-        if (inputDirection== LEFT && outputDirection== UP) {
-            sprite.setActiveAnimation(animRightToUp);
-            sprite.setRotation(0);
-            sprite.flipHorizontally(true);
-            sprite.flipVertically(false);
-        }
-        if (inputDirection== LEFT && outputDirection== DOWN) {
-            sprite.setActiveAnimation(animRightToUp);
-            sprite.setRotation(0);
-            sprite.flipHorizontally(true);
-            sprite.flipVertically(true);
-        }
-        if (inputDirection== DOWN && outputDirection== LEFT) {
-            sprite.setActiveAnimation(animUpToRight);
-            sprite.setRotation(0);
-            sprite.flipHorizontally(true);
-            sprite.flipVertically(true);
-        }
-        if (inputDirection== RIGHT && outputDirection== DOWN) {
-            sprite.setActiveAnimation(animRightToUp);
-            sprite.setRotation(0);
-            sprite.flipHorizontally(false);
-            sprite.flipVertically(true);
-        }
-        if (inputDirection== DOWN && outputDirection== RIGHT) {
-            sprite.setActiveAnimation(animUpToRight);
-            sprite.setRotation(0);
-            sprite.flipHorizontally(false);
-            sprite.flipVertically(true);
-        }
-        if (inputDirection== UP && outputDirection== LEFT) {
-            sprite.setActiveAnimation(animUpToRight);
-            sprite.setRotation(0);
-            sprite.flipHorizontally(true);
-            sprite.flipVertically(false);
-        }
+
+    private void adjustSprite(int activeAnimation, float rotation, boolean horizontalFlip, boolean verticalFlip) {
+        sprite.setActiveAnimation(activeAnimation);
+        sprite.setRotation(rotation);
+        sprite.flipHorizontally(horizontalFlip);
+        sprite.flipVertically(verticalFlip);
     }
 
 
@@ -147,9 +105,9 @@ public class ConveyorRenderer extends BlockRenderer {
         if (production!=null) gamePaused = production.isPaused();
 
         // Если конвейер занят или игра поставлена на паузу - остановить анимацию движения
-        if (block.getState()==BUSY || block.getState()==FAULT || gamePaused)
+        if (block.getState()==BUSY || block.getState()==FAULT || gamePaused) {
             sprite.animationPaused = true;
-        else
+        } else
             sprite.animationPaused = false;
 
         // Отрисовать сам конвейер
@@ -174,7 +132,7 @@ public class ConveyorRenderer extends BlockRenderer {
 
     protected void drawItems(Camera camera, float x, float y, float width, float height) {
 
-        Conveyor conveyor = (Conveyor) this.block;                       // Конвейер
+        Conveyor conveyor = (Conveyor) this.block;                  // Конвейер
         Channel<Item> inputQueue = conveyor.getInputQueue();        // Входящая очередь
         Channel<Item> outputQueue = conveyor.getOutputQueue();      // Исходящая очередь
         float cycleTime = this.block.getProduction().getCycleTimeMs();   // Длительность цикла в мс.
@@ -182,11 +140,12 @@ public class ConveyorRenderer extends BlockRenderer {
         float deliveryTime = deliveryCycles * cycleTime;            // Время доставки в мс.
         float capacity = conveyor.getTotalCapacity();               // Вместимость конвейера в предметах
         float stridePerItem = 1.0f / (capacity / 2.0f);             // Шаг для одного предмета
-        float progress = 1.0f;
+        float progress;
 
-        long now = conveyor.getProduction().getClockMilliseconds();
+        long now = conveyor.getProduction().getClock();
         float cycleBias = (now - conveyor.lastPollTime) / cycleTime;
         if (cycleBias > 1.0f) cycleBias = 1.0f;
+
         float progressBias = cycleBias * stridePerItem;
         int finishedCounter = conveyor.getOutputQueue().size();
 
@@ -202,7 +161,8 @@ public class ConveyorRenderer extends BlockRenderer {
         for (int i=0; i<inputQueue.size(); i++) {
             Item item = inputQueue.get(i);
             if (item == null) continue;
-            now = conveyor.getProduction().getClockMilliseconds();
+            // fixme BUG: если конвейер остановлен Bias время item продолжает идти (считать время остановки)
+            now = conveyor.getProduction().getClock();
             progress = (now - item.getTimeOwned()) /  deliveryTime;
             if (progress > maxProgress) {
                 progress = maxProgress;
@@ -221,67 +181,80 @@ public class ConveyorRenderer extends BlockRenderer {
 
         int inputDirection = block.getInputDirection();
         int outputDirection = block.getOutputDirection();
+        progressToCoordinates(progress, inputDirection, outputDirection, coordBuffer);
 
-        if (inputDirection==LEFT && outputDirection==RIGHT) {
+        Sprite materialSprite = item.getMaterial().getImage();
+
+        float tx = x + xpos * width + width / 4;
+        float ty = y + ypos * height + height / 4;
+/*
+        String debug = (block.getProduction().getCurrentCycle() - item.getCycleOwned()) + "\n"+progress;
+        GraphicsRender.setColor(BLACK);
+        GraphicsRender.drawText(debug, tx + width /4,ty +height/4,1);
+*/
+        materialSprite.setZOrder(sprite.getZOrder() + 1);
+        materialSprite.draw(camera,tx,ty,width / 2, height / 2);
+
+    }
+
+
+    private void progressToCoordinates(float progress, int inpDir, int outDir, Vector result) {
+        float rads, xpos = 0, ypos = 0;
+
+        if (inpDir==LEFT && outDir==RIGHT) {
             xpos = progress - 0.5f;
             ypos = 0;
-        } else if (inputDirection==RIGHT && outputDirection==LEFT) {
+        } else if (inpDir==RIGHT && outDir==LEFT) {
             xpos = 1 - progress - 0.5f;
             ypos = 0;
-        } else if (inputDirection==DOWN && outputDirection== UP) {
+        } else if (inpDir==DOWN && outDir== UP) {
             xpos = 0;
             ypos = progress - 0.5f;
-        } else if (inputDirection== UP && outputDirection==DOWN) {
+        } else if (inpDir== UP && outDir==DOWN) {
             xpos = 0;
             ypos = 1 - progress - 0.5f;
         }
         //-----------------------------------------------------------------------
-        else if (inputDirection== RIGHT && outputDirection==UP) {
-            float rads = (float) ((Math.PI*1.5) - (Math.PI/2 * progress));
+        else if (inpDir== RIGHT && outDir==UP) {
+            rads = (float) ((Math.PI*1.5) - (Math.PI/2 * progress));
             xpos = (float) (Math.cos(rads) + 1) / 2;
             ypos = (float) (Math.sin(rads) + 1) / 2;
-        } else if (inputDirection== DOWN && outputDirection==RIGHT) {
-            float rads = (float) ((Math.PI) - (Math.PI/2 * progress));
+        } else if (inpDir== DOWN && outDir==RIGHT) {
+            rads = (float) ((Math.PI) - (Math.PI/2 * progress));
             xpos = (float) (Math.cos(rads) + 1) / 2;
             ypos = (float) (Math.sin(rads) - 1) / 2;
-        } else if (inputDirection== LEFT && outputDirection==DOWN) {
-            float rads = (float) ((Math.PI/2) - (Math.PI/2 * progress));
+        } else if (inpDir== LEFT && outDir==DOWN) {
+            rads = (float) ((Math.PI/2) - (Math.PI/2 * progress));
             xpos = (float) (Math.cos(rads) - 1) / 2;
             ypos = (float) (Math.sin(rads) - 1) / 2;
-        } else if (inputDirection== UP && outputDirection==LEFT) {
-            float rads = (float) -(Math.PI/2 * progress);
+        } else if (inpDir== UP && outDir==LEFT) {
+            rads = (float) -(Math.PI/2 * progress);
             xpos = (float) (Math.cos(rads) - 1) / 2;
             ypos = (float) (Math.sin(rads) + 1) / 2;
         }
         //-------------------------------------------------------------------------
-        else if (inputDirection== UP && outputDirection==RIGHT) {
-            float rads = (float) (Math.PI + (Math.PI / 2 * progress));
+        else if (inpDir== UP && outDir==RIGHT) {
+            rads = (float) (Math.PI + (Math.PI / 2 * progress));
             xpos = (float) (Math.cos(rads) + 1) / 2;
             ypos = (float) (Math.sin(rads) + 1) / 2;
-        } else if (inputDirection== LEFT && outputDirection==UP) {
-            float rads = (float) ((Math.PI * 1.5) + (Math.PI / 2 * progress));
+        } else if (inpDir== LEFT && outDir==UP) {
+            rads = (float) ((Math.PI * 1.5) + (Math.PI / 2 * progress));
             xpos = (float) (Math.cos(rads) - 1) / 2;
             ypos = (float) (Math.sin(rads) + 1) / 2;
-        } else if (inputDirection== DOWN && outputDirection==LEFT) {
-            float rads = (float) (Math.PI / 2 * progress);
+        } else if (inpDir== DOWN && outDir==LEFT) {
+            rads = (float) (Math.PI / 2 * progress);
             xpos = (float) (Math.cos(rads) - 1) / 2;
             ypos = (float) (Math.sin(rads) - 1) / 2;
-        } else if (inputDirection== RIGHT && outputDirection==DOWN) {
-            float rads = (float) (Math.PI/2 + (Math.PI/2 * progress));
+        } else if (inpDir== RIGHT && outDir==DOWN) {
+            rads = (float) (Math.PI/2 + (Math.PI/2 * progress));
             xpos = (float) (Math.cos(rads) + 1) / 2;
             ypos = (float) (Math.sin(rads) - 1) / 2;
         }
 
-        Sprite materialSprite = item.getMaterial().getImage();
-
-        materialSprite.setZOrder(sprite.getZOrder() + 1);
-        materialSprite.draw(camera,
-                x + xpos * width + width / 4,
-                y + ypos * height + height / 4,
-                width / 2, height / 2);
+        result.x = xpos;
+        result.y = ypos;
 
     }
-
 
 
 }

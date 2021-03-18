@@ -50,7 +50,7 @@ public class Market implements JSONSerializable {
 
 
     public synchronized void process() {
-        long now = production.getClockMilliseconds();
+        long now = production.getClock();
         if (now - lastCycleTime < cycleMilliseconds) return;
 
         for (int commodityID = 0; commodityID < marketValue.length; commodityID++) {
