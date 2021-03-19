@@ -1,9 +1,5 @@
 package com.axiom.operatio.model.production.block;
 
-import com.axiom.operatio.model.production.buffer.Buffer;
-import com.axiom.operatio.model.production.buffer.ExportBuffer;
-import com.axiom.operatio.model.production.buffer.ImportBuffer;
-
 import static com.axiom.operatio.model.production.block.Block.NONE;
 import static com.axiom.operatio.model.production.block.Block.LEFT;
 import static com.axiom.operatio.model.production.block.Block.UP;
@@ -12,14 +8,9 @@ import static com.axiom.operatio.model.production.block.Block.DOWN;
 
 
 /**
- * Класс отвечающий за настройку входов и выходов блока при добавлении и поворотах блока
+ * Наладчик направления потока материалов блока
  */
 public class BlockAdjuster {
-
-
-    //--------------------------------------------------------------------------------------
-    // Установка направления потока материалов
-    //--------------------------------------------------------------------------------------
 
     /**
      * Устанавливает направления потока материалов с учётом соседних блоков
@@ -114,40 +105,6 @@ public class BlockAdjuster {
 
 
     /**
-     * Поворачивает направление потока материалов по часовой стрелке с отражением через шаг
-     */
-    private static void rotateClockwise(Block block) {
-        if (block.directionFlip) {
-            int currentInpDir = block.getInputDirection();
-            int currentOutDir = block.getOutputDirection();
-            int newInpDir = nextClockwiseDirection(currentInpDir);
-            int newOutDir = currentOutDir;
-            if (newInpDir == currentOutDir) {
-                newInpDir = currentInpDir;
-                newOutDir = nextClockwiseDirection(currentOutDir);
-            }
-            block.setDirections(newInpDir, newOutDir);
-            block.directionFlip = false;
-        } else {
-            block.flipDirection();
-            block.directionFlip = true;
-        }
-    }
-
-
-    /**
-     * Поворачивает направление потока материалов на 90 градусов
-     */
-    private static void rotateClockwise90(Block block) {
-        int currentInpDir = block.getInputDirection();
-        int currentOutDir = block.getOutputDirection();
-        int newInpDir = nextClockwiseDirection(currentInpDir);
-        int newOutDir = nextClockwiseDirection(currentOutDir);
-        block.setDirections(newInpDir, newOutDir);
-    }
-
-
-    /**
      * Поворачивает направление потока материалов при одном соседе
      */
     private static void rotateOneNeighbor(Block block, int side) {
@@ -197,9 +154,45 @@ public class BlockAdjuster {
     }
 
 
+
     //----------------------------------------------------------------------------------------------
     // Вспомогательные методы
     //----------------------------------------------------------------------------------------------
+
+
+    /**
+     * Поворачивает направление потока материалов по часовой стрелке с отражением через шаг
+     */
+    private static void rotateClockwise(Block block) {
+        if (block.directionFlip) {
+            int currentInpDir = block.getInputDirection();
+            int currentOutDir = block.getOutputDirection();
+            int newInpDir = nextClockwiseDirection(currentInpDir);
+            int newOutDir = currentOutDir;
+            if (newInpDir == currentOutDir) {
+                newInpDir = currentInpDir;
+                newOutDir = nextClockwiseDirection(currentOutDir);
+            }
+            block.setDirections(newInpDir, newOutDir);
+            block.directionFlip = false;
+        } else {
+            block.flipDirection();
+            block.directionFlip = true;
+        }
+    }
+
+
+    /**
+     * Поворачивает направление потока материалов на 90 градусов
+     */
+    private static void rotateClockwise90(Block block) {
+        int currentInpDir = block.getInputDirection();
+        int currentOutDir = block.getOutputDirection();
+        int newInpDir = nextClockwiseDirection(currentInpDir);
+        int newOutDir = nextClockwiseDirection(currentOutDir);
+        block.setDirections(newInpDir, newOutDir);
+    }
+
 
     /**
      * Следующее направление по часовой стрелке
@@ -212,6 +205,7 @@ public class BlockAdjuster {
         if (direction > DOWN) direction = LEFT;
         return direction;
     }
+
 
     /**
      * Противоположное направление
