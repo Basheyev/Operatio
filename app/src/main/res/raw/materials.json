@@ -82,7 +82,7 @@
   {
     "ID": 16,
     "name": "Steel rod",
-    "price": 4
+    "price": 3
   },
   {
     "ID": 17,
@@ -92,22 +92,22 @@
   {
     "ID": 18,
     "name": "Aluminium profile",
-    "price": 6
+    "price": 5
   },
   {
     "ID": 19,
     "name": "Aluminium tube",
-    "price": 6
+    "price": 5
   },
   {
     "ID": 20,
     "name": "Copper wire",
-    "price": 7
+    "price": 6
   },
   {
     "ID": 21,
     "name": "Copper tube",
-    "price": 7
+    "price": 6
   },
   {
     "ID": 22,
@@ -117,42 +117,42 @@
   {
     "ID": 23,
     "name": "Electronic component",
-    "price": 3
+    "price": 2
   },
   {
     "ID": 24,
     "name": "Heater",
-    "price": 26
+    "price": 20
   },
   {
     "ID": 25,
     "name": "Electric motor",
-    "price": 34
+    "price": 26
   },
   {
     "ID": 26,
     "name": "Cooler",
-    "price": 26
+    "price": 20
   },
   {
     "ID": 27,
     "name": "Wheel",
-    "price": 14
+    "price": 11
   },
   {
     "ID": 28,
     "name": "Propeller",
-    "price": 4
+    "price": 2
   },
   {
     "ID": 29,
     "name": "Circuit board",
-    "price": 10
+    "price": 8
   },
   {
     "ID": 30,
     "name": "Microchip",
-    "price": 6
+    "price": 4
   },
   {
     "ID": 31,
@@ -162,57 +162,57 @@
   {
     "ID": 32,
     "name": "Electric Stove Parts",
-    "price": 54
+    "price": 41
   },
   {
     "ID": 33,
     "name": "Refrigerator Parts",
-    "price": 105
+    "price": 66
   },
   {
     "ID": 34,
     "name": "Washing Machine Parts",
-    "price": 90
+    "price": 70
   },
   {
     "ID": 35,
     "name": "Microwave Oven Parts",
-    "price": 71
+    "price": 55
   },
   {
     "ID": 36,
     "name": "Robot Vacuum Parts",
-    "price": 216
+    "price": 142
   },
   {
     "ID": 37,
     "name": "Motherboard",
-    "price": 60
+    "price": 41
   },
   {
     "ID": 38,
     "name": "Display",
-    "price": 60
+    "price": 32
   },
   {
     "ID": 39,
     "name": "Power Supply Unit",
-    "price": 26
+    "price": 21
   },
   {
     "ID": 40,
     "name": "Electric Stove Body",
-    "price": 17
+    "price": 19
   },
   {
     "ID": 41,
     "name": "Refrigerator Body",
-    "price": 78
+    "price": 69
   },
   {
     "ID": 42,
     "name": "Washing Machine Body",
-    "price": 86
+    "price": 77
   },
   {
     "ID": 43,
@@ -227,12 +227,12 @@
   {
     "ID": 45,
     "name": "TV Body",
-    "price": 40
+    "price": 35
   },
   {
     "ID": 46,
     "name": "Mobile Body",
-    "price": 18
+    "price": 17
   },
   {
     "ID": 47,
@@ -242,42 +242,42 @@
   {
     "ID": 48,
     "name": "Electric Stove",
-    "price": 107
+    "price": 114
   },
   {
     "ID": 49,
     "name": "Refrigerator",
-    "price": 314
+    "price": 220
   },
   {
     "ID": 50,
     "name": "Washing Machine",
-    "price": 303
+    "price": 237
   },
   {
     "ID": 51,
     "name": "Microwave Oven",
-    "price": 211
+    "price": 170
   },
   {
     "ID": 52,
     "name": "Robot Vacuum",
-    "price": 381
+    "price": 245
   },
   {
     "ID": 53,
     "name": "TV Parts",
-    "price": 189
+    "price": 138
   },
   {
     "ID": 54,
     "name": "Mobile Parts",
-    "price": 140
+    "price": 104
   },
   {
     "ID": 55,
     "name": "Quadcopter Parts",
-    "price": 182
+    "price": 133
   },
   {
     "ID": 56,
@@ -307,16 +307,16 @@
   {
     "ID": 61,
     "name": "TV",
-    "price": 644
+    "price": 374
   },
   {
     "ID": 62,
     "name": "Mobile",
-    "price": 300
+    "price": 192
   },
   {
     "ID": 63,
     "name": "Quadcopter",
-    "price": 290
+    "price": 199
   }
 ]
