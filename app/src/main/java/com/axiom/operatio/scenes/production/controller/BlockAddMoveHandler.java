@@ -9,6 +9,7 @@ import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.block.Block;
+import com.axiom.operatio.model.production.block.BlockAdjuster;
 import com.axiom.operatio.scenes.production.ProductionScene;
 import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
@@ -122,7 +123,7 @@ public class BlockAddMoveHandler {
             int expenseType = Ledger.EXPENSE_BLOCK_BOUGHT;
             production.decreaseCashBalance(expenseType, dragBlock.getPrice());
         }
-        dragBlock.adjustDirection();
+        BlockAdjuster.adjustFlow(dragBlock);
         opsPanel.showBlockInfo(dragBlock);
         production.selectBlock(column, row);
 

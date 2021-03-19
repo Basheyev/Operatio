@@ -5,6 +5,7 @@ import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.model.production.block.BlockBuilder;
 import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
@@ -33,7 +34,7 @@ public class Machine extends Block implements JSONSerializable {
 
     public Machine(Production production, JSONObject jsonObject, int inDir, int inCapaciy, int outDir, int outCapacity) {
         super(production, inDir, inCapaciy, outDir, outCapacity);
-        deserializeCommonFields(this, jsonObject);
+        BlockBuilder.parseCommonFields(this, jsonObject);
         try {
             type = MachineType.getMachineType(jsonObject.getInt("machineType"));
             price = type.price;

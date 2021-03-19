@@ -21,9 +21,25 @@ import org.json.JSONObject;
  */
 public abstract class Block implements JSONSerializable {
 
+    //---------------------------------------------------------------------------------------
+    // Состояние блока
+    //---------------------------------------------------------------------------------------
+    public static final int IDLE = 0;
+    public static final int BUSY = 1;
+    public static final int FAULT = -1;
+
+    //---------------------------------------------------------------------------------------
+    // Ориентация (по часовой стрелке)
+    //---------------------------------------------------------------------------------------
+    public static final int NONE = 0;
+    public static final int LEFT = 1;
+    public static final int UP = 2;
+    public static final int RIGHT = 3;
+    public static final int DOWN = 4;
+
+
     protected Production production;                  // Производство к которомуо относится блок
-    protected static int blockCounter = 0;
-    protected int ID;                                 // ID блока
+    protected long ID;                                // ID блока
     protected double price;                           // Цена блока
     protected int state = IDLE;                       // Текущее состояние блока
     protected long stateChangeTime;                   // Время последнего изменения состояния
@@ -33,8 +49,7 @@ public abstract class Block implements JSONSerializable {
     protected Channel<Item> output;                   // Буферы вывода предметов
     public int column, row;                           // Координаты блока в сетке карты
     protected BlockRenderer renderer;                 // Отрисовщик
-
-    public boolean directionFlip = false;
+    protected boolean directionFlip = false;          // Флаг отражения направления потока
 
     /**
      * Конструктор блока производства
@@ -43,7 +58,7 @@ public abstract class Block implements JSONSerializable {
      * @param outCapacity размер буфера вывода в количестве предметов
      */
     public Block(Production production, int inDir, int inCapacity, int outDir, int outCapacity) {
-        this.ID = blockCounter++;
+        this.ID = System.currentTimeMillis();
         this.production = production;
         this.inputDirection = inDir;
         this.inputCapacity = inCapacity;
@@ -54,18 +69,18 @@ public abstract class Block implements JSONSerializable {
     }
 
 
-    public void setOutputDirection(int outDir) {
-        this.outputDirection = outDir;
-    }
+    /**
+     * Обрабатывает входной поток предметов в выходной поток предметов
+     */
+    public abstract void process();
 
-    public void setInputDirection(int inDir) {
-        this.inputDirection = inDir;
-    }
 
-    public void setDirections(int inDir, int outDir) {
-        setInputDirection(inDir);
-        setOutputDirection(outDir);
-    }
+    /**
+     * Возвращает стоимость одного цикла работы блока
+     * @return стоимость
+     */
+    public abstract double getCycleCost();
+
 
     /**
      * Добавляет предмет во входную очередь блока
@@ -73,8 +88,8 @@ public abstract class Block implements JSONSerializable {
      * @return true - если блок принял предмет, false - если нет
      */
     public boolean push(Item item) {
-        if (item==null) return false;
-        if (getState()==BUSY) return false;
+        if (item == null) return false;
+        if (getState() == BUSY) return false;
         if (input.size() >= inputCapacity) return false;
         item.setOwner(production, this);
         input.add(item);
@@ -104,7 +119,6 @@ public abstract class Block implements JSONSerializable {
 
     /**
      * Забирает один предмет из блока по направлению входа
-     * @return true - если получилось забрать, false - если нет
      */
     protected void grabItemsFromInputDirection() {
         Block inputBlock = production.getBlockAt(this, inputDirection);
@@ -156,53 +170,127 @@ public abstract class Block implements JSONSerializable {
         return input.size() + output.size();
     }
 
+    /**
+     * Возвращает общую вместимость блока по материалам
+     * @return вместимость в количестве материалов
+     */
     public int getCapacity() {
         return inputCapacity + outputCapacity;
     }
 
+
+    /**
+     * Указать направление выхода материалов
+     * @param outDir направление
+     */
+    public void setOutputDirection(int outDir) {
+        this.outputDirection = outDir;
+    }
+
+
+    /**
+     * Указать направление входа материалов
+     * @param inDir направление
+     */
+    public void setInputDirection(int inDir) {
+        this.inputDirection = inDir;
+    }
+
+
+    /**
+     * Установить направления потока материалов
+     * @param inDir направление входа
+     * @param outDir направление выхода
+     */
+    public void setDirections(int inDir, int outDir) {
+        setInputDirection(inDir);
+        setOutputDirection(outDir);
+    }
+
+
+    /**
+     * Возвращает направление входа материалов
+     * @return направление
+     */
     public int getInputDirection() {
         return inputDirection;
     }
 
+
+    /**
+     * Возвращает направление выхода материалов
+     * @return направление
+     */
     public int getOutputDirection() {
         return outputDirection;
     }
 
+
+    /**
+     * Возвращает блок по указнному направлению относительно текущего
+     * @param direction направление
+     * @return блок сосед
+     */
+    public Block getNeighbour(int direction) {
+        return production.getBlockAt(this, direction);
+    }
+
+
+    /**
+     * Возвращает рендер блока для отрисовки
+     * @return рендер блока
+     */
     public BlockRenderer getRenderer() {
         return renderer;
     }
 
+    /**
+     * Возвращает производство к которому привязан блок
+     * @return производство
+     */
     public Production getProduction() {
         return production;
     }
 
-    public int getID() {
+    /**
+     * Возвращает ID блока
+     * @return ID блока
+     */
+    public long getID() {
         return ID;
     }
 
+    /**
+     * Возвращает стоимость блока
+     * @return стоимость блока
+     */
     public double getPrice() {
         return price;
     }
 
-
+    /**
+     * Считает стоимость всех материалов в блоке
+     * @return общая стоимость всех материалов
+     */
     public double getItemsPrice() {
         double sum = 0;
         Item item;
-
         for (int i=0; i<input.size(); i++) {
             item = input.get(i);
             sum += item.getMaterial().getPrice();
         }
-
         for (int i=0; i<output.size(); i++) {
             item = output.get(i);
             sum += item.getMaterial().getPrice();
         }
-
         return sum;
     }
 
 
+    /**
+     * Возвращает все материалы в блоке на указнный склад
+     * @param inventory склад
+     */
     public void returnItemsTo(Inventory inventory) {
         int inputItemsCount = input.size();
         for (int i=0; i<inputItemsCount; i++) {
@@ -215,7 +303,57 @@ public abstract class Block implements JSONSerializable {
     }
 
 
-    public abstract double getCycleCost();
+
+    /**
+     * По указанному направлению есть блок источник материалов
+     * @param direction направление
+     * @return true - да, false - нет
+     */
+    public boolean isSourceAvailable(int direction) {
+        Block neighbor = getNeighbour(direction);
+        if (neighbor==null) return false;
+        Block neighborOutput = production.getBlockAt(neighbor, neighbor.getOutputDirection());
+        return neighborOutput==this || neighbor instanceof Buffer || neighbor instanceof ImportBuffer;
+    }
+
+
+    /**
+     * По указанному направлению есть блок приемник материалов
+     * @param direction направление
+     * @return true - да, false - нет
+     */
+    public boolean isDestinationAvailable(int direction) {
+        Block neighbor = getNeighbour(direction);
+        if (neighbor==null) return false;
+        Block neighborInput = production.getBlockAt(neighbor, neighbor.getInputDirection());
+        return neighborInput==this || neighbor instanceof Buffer || neighbor instanceof ExportBuffer;
+    }
+
+
+    /**
+     * Проверяет смотрит ли выход или вход указанного соседа на этот блок
+     * @param direction указанный блок
+     * @return true - да, false - нет
+     */
+    public boolean hasInOutFrom(int direction) {
+        Block block = getNeighbour(direction);
+        if (block==null) return false;
+        boolean hasInput = (production.getBlockAt(block, block.getInputDirection())==this);
+        boolean hasOutput = (production.getBlockAt(block, block.getOutputDirection())==this);
+        boolean itsBuffer = block instanceof Buffer;
+        boolean itsImportBuffer = block instanceof ImportBuffer;
+        boolean itsExportBuffer = block instanceof ExportBuffer;
+        return hasInput || hasOutput || itsBuffer || itsImportBuffer || itsExportBuffer;
+    }
+
+
+    /**
+     * Зеркально отражает направление потока материалов
+     */
+    public void flipDirection() {
+        setDirections(outputDirection, inputDirection);
+    }
+
 
     /**
      * Сериализует блок в JSONObject
@@ -259,306 +397,4 @@ public abstract class Block implements JSONSerializable {
     }
 
 
-    public static Block deserialize(Production production, JSONObject jsonObject) {
-        Block block = null;
-        try {
-            String type = jsonObject.getString("class");
-            int inputDirection = jsonObject.getInt("inputDirection");
-            int outputDirection = jsonObject.getInt("outputDirection");
-            int inputCapacity = jsonObject.getInt("inputCapacity");
-            int outputCapacity = jsonObject.getInt("outputCapacity");
-
-            switch (type) {
-                case "Buffer":
-                    block = new Buffer(production, jsonObject, inputCapacity);
-                    break;
-                case "Conveyor":
-                    block = new Conveyor(production, jsonObject, inputDirection, outputDirection);
-                    break;
-                case "Machine":
-                    block = new Machine(production, jsonObject, inputDirection, inputCapacity, outputDirection, outputCapacity);
-                    break;
-                case "ImportBuffer":
-                    block = new ImportBuffer(production, jsonObject);
-                    break;
-                case "ExportBuffer":
-                    block = new ExportBuffer(production, jsonObject);
-                    break;
-                default:
-                    throw new JSONException("Unknown block");
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return block;
-    }
-
-
-    protected static void deserializeCommonFields(Block block, JSONObject jsonObject) {
-        try {
-            block.ID = jsonObject.getInt("ID");
-            block.state = jsonObject.getInt("state");
-            block.inputDirection = jsonObject.getInt("inputDirection");
-            block.outputDirection = jsonObject.getInt("outputDirection");
-            block.inputCapacity = jsonObject.getInt("inputCapacity");
-            block.outputCapacity = jsonObject.getInt("outputCapacity");
-            block.column = jsonObject.getInt("column");
-            block.row = jsonObject.getInt("row");
-
-            JSONArray jsonInputArray = jsonObject.getJSONArray("input");
-            for (int i = 0; i < jsonInputArray.length(); i++) {
-                JSONObject jsonItem = (JSONObject) jsonInputArray.get(i);
-                Item item = Item.deserialize(jsonItem, block);
-                block.input.add(item);
-            }
-
-            JSONArray jsonOutputArray = jsonObject.getJSONArray("output");
-            for (int i = 0; i < jsonOutputArray.length(); i++) {
-                JSONObject jsonItem = (JSONObject) jsonOutputArray.get(i);
-                Item item = Item.deserialize(jsonItem, block);
-                block.output.add(item);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
-    /**
-     * Обрабатывает входной поток предметов в выходной поток предметов
-     */
-    public abstract void process();
-
-
-    //---------------------------------------------------------------------------------------
-    // Состояние блока
-    //---------------------------------------------------------------------------------------
-    public static final int IDLE = 0;
-    public static final int BUSY = 1;
-    public static final int FAULT = -1;
-
-    //---------------------------------------------------------------------------------------
-    // Ориентация (по часовой стрелке)
-    //---------------------------------------------------------------------------------------
-    public static final int NONE = 0;
-    public static final int LEFT = 1;
-    public static final int UP = 2;
-    public static final int RIGHT = 3;
-    public static final int DOWN = 4;
-
-    /**
-     * Следующее направление по часовой стрелке
-     * @param direction текущее направление
-     * @return следующее направление по часовой стрелке
-     */
-    public static int nextClockwiseDirection(int direction) {
-        if (direction==NONE || direction < 0) return NONE;
-        direction++;
-        if (direction > DOWN) direction = LEFT;
-        return direction;
-    }
-
-    /**
-     * Противоположное направление
-     * @param direction направление
-     * @return противоположное направление
-     */
-    public static int oppositeDirection(int direction) {
-        if (direction==LEFT) return RIGHT;
-        if (direction==RIGHT) return LEFT;
-        if (direction==UP) return DOWN;
-        if (direction==DOWN) return UP;
-        return NONE;
-    }
-
-
-    //--------------------------------------------------------------------------------------
-    // Установка направления потока материалов
-    //--------------------------------------------------------------------------------------
-
-    /**
-     * Устанавливает направления потока материалов с учётом соседних блоков
-     */
-    public void adjustDirection() {
-        boolean upper = hasInOutFrom(UP);
-        boolean down  = hasInOutFrom(DOWN);
-        boolean left  = hasInOutFrom(LEFT);
-        boolean right = hasInOutFrom(RIGHT);
-        int neighborsCount = (upper ? 1:0) + (down ? 1:0) + (left ? 1:0) + (right ? 1:0);
-        if (neighborsCount == 1) {
-            int neighborSide = (upper ? UP : down ? DOWN : left ? LEFT : RIGHT);
-            adjustOneNeighbor(neighborSide);
-        }
-        else if (neighborsCount == 2) {
-            if (left && right) adjustTwoNeighbors(LEFT, RIGHT);
-            if (left && upper) adjustTwoNeighbors(LEFT, UP);
-            if (left && down) adjustTwoNeighbors(LEFT, DOWN);
-            if (right && upper) adjustTwoNeighbors(RIGHT, UP);
-            if (right && down) adjustTwoNeighbors(RIGHT, DOWN);
-            if (upper && down) adjustTwoNeighbors(UP, DOWN);
-        }
-
-    }
-
-
-    /**
-     * Устанавливает направление потока материалов если есть один сосед
-     * @param side с какой стороны находится соседний блок
-     */
-    private void adjustOneNeighbor(int side) {
-        if (isSourceAvailable(side)) {
-            setDirections(side, oppositeDirection(side));
-        } else if (isDestinationAvailable(side)) {
-            setDirections(oppositeDirection(side), side);
-        }
-    }
-
-
-    /**
-     * Устанавливает направление потока материалов если есть два соседа
-     * @param side1 сторона первого соседа
-     * @param side2 сторона второго соседа
-     */
-    private void adjustTwoNeighbors(int side1, int side2) {
-        if (hasInOutFrom(side1) && !hasInOutFrom(side2)) {
-            adjustOneNeighbor(side1);
-        } else if (!hasInOutFrom(side1)) {
-            adjustOneNeighbor(side2);
-        } else if (isDestinationAvailable(side1) && isSourceAvailable(side2)) {
-            setDirections(side2, side1);
-        } else if (isSourceAvailable(side1) && isDestinationAvailable(side2)) {
-            setDirections(side1, side2);
-        }
-    }
-
-
-    //--------------------------------------------------------------------------------------
-    // Поворот направления потока материалов
-    //--------------------------------------------------------------------------------------
-
-    /**
-     * Поворачивает направление потока материалов
-     */
-    public void rotateDirection() {
-        boolean upper = hasInOutFrom(UP);
-        boolean down  = hasInOutFrom(DOWN);
-        boolean left  = hasInOutFrom(LEFT);
-        boolean right = hasInOutFrom(RIGHT);
-        int neighborsCount = (upper ? 1:0) + (down ? 1:0) + (left ? 1:0) + (right ? 1:0);
-
-        if (neighborsCount==0) {
-            rotateClockwise();
-        } else {
-            if (neighborsCount==1) {
-                int neighborSide = (upper ? UP : down ? DOWN : left ? LEFT : RIGHT);
-                rotateOneNeighbor(neighborSide);
-            } else if (neighborsCount==2) {
-                if (left && right) rotateTwoNeighbors(LEFT, RIGHT);
-                if (left && upper) rotateTwoNeighbors(LEFT, UP);
-                if (left && down) rotateTwoNeighbors(LEFT, DOWN);
-                if (right && upper) rotateTwoNeighbors(RIGHT, UP);
-                if (right && down) rotateTwoNeighbors(RIGHT, DOWN);
-                if (upper && down) rotateTwoNeighbors(UP, DOWN);
-            } else {
-                // todo более умный поворот при 3-4 соседа
-                rotateClockwise();
-            }
-        }
-
-    }
-
-
-    /**
-     * Поворачивает направление потока материалов на 90 градусов
-     */
-    private void rotateClockwise() {
-        int currentInpDir = getInputDirection();
-        int currentOutDir = getOutputDirection();
-        int newInpDir = nextClockwiseDirection(currentInpDir);
-        int newOutDir = nextClockwiseDirection(currentOutDir);
-        setDirections(newInpDir, newOutDir);
-    }
-
-
-    /**
-     * Поворачивает направление потока материалов при одном соседе
-     */
-    private void rotateOneNeighbor(int side) {
-        if (isSourceAvailable(side)) {
-            int newOutDir = nextClockwiseDirection(outputDirection);
-            if (newOutDir == inputDirection) newOutDir = nextClockwiseDirection(newOutDir);
-            setDirections(side, newOutDir);
-        } else if (isDestinationAvailable(side)) {
-            int newInpDir = nextClockwiseDirection(inputDirection);
-            if (newInpDir == outputDirection) newInpDir = nextClockwiseDirection(newInpDir);
-            setDirections(newInpDir, side);
-        }
-    }
-
-
-
-    /**
-     * Поворачивает направление потока материалов при двух соседях
-     */
-    private void rotateTwoNeighbors(int side1, int side2) {
-        boolean side1Available = hasInOutFrom(side1);
-        boolean side2Available = hasInOutFrom(side2);
-        if (!side1Available && !side2Available) rotateClockwise();
-        else if (side1Available && !side2Available) rotateOneNeighbor(side1);
-        else if (!side1Available && side2Available) rotateOneNeighbor(side2);
-        else {
-            if (isSourceAvailable(side1) && isSourceAvailable(side2)) flipDirection(); else
-            if (isSourceAvailable(side1)) rotateOneNeighbor(side1); else
-            if (isSourceAvailable(side2)) rotateOneNeighbor(side2);
-        }
-    }
-
-
-    //----------------------------------------------------------------------------------------------
-    // Вспомогательные методы
-    //----------------------------------------------------------------------------------------------
-
-    private Block getNeighbour(int direction) {
-        return production.getBlockAt(this, direction);
-    }
-
-
-    private boolean isSourceAvailable(int direction) {
-        Block neighbor = getNeighbour(direction);
-        if (neighbor==null) return false;
-        Block neighborOutput = production.getBlockAt(neighbor, neighbor.getOutputDirection());
-        return neighborOutput==this || neighbor instanceof Buffer || neighbor instanceof ImportBuffer;
-    }
-
-
-    private boolean isDestinationAvailable(int direction) {
-        Block neighbor = getNeighbour(direction);
-        if (neighbor==null) return false;
-        Block neighborInput = production.getBlockAt(neighbor, neighbor.getInputDirection());
-        return neighborInput==this || neighbor instanceof Buffer || neighbor instanceof ExportBuffer;
-    }
-
-
-    /**
-     * Проверяет смотрит ли выход или вход указанного соседа на этот блок
-     * @param direction указанный блок
-     * @return true - да, false - нет
-     */
-    private boolean hasInOutFrom(int direction) {
-        Block block = getNeighbour(direction);
-        if (block==null) return false;
-        boolean hasInput = (production.getBlockAt(block, block.getInputDirection())==this);
-        boolean hasOutput = (production.getBlockAt(block, block.getOutputDirection())==this);
-        boolean itsBuffer = block instanceof Buffer;
-        boolean itsImportBuffer = block instanceof ImportBuffer;
-        boolean itsExportBuffer = block instanceof ExportBuffer;
-        return hasInput || hasOutput || itsBuffer || itsImportBuffer || itsExportBuffer;
-    }
-
-
-    private void flipDirection() {
-        setDirections(outputDirection, inputDirection);
-    }
 }

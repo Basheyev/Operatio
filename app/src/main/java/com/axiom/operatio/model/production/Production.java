@@ -11,6 +11,7 @@ import com.axiom.operatio.model.gameplay.Ledger;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;
+import com.axiom.operatio.model.production.block.BlockBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -123,7 +124,7 @@ public class Production implements JSONSerializable {
         blocks = new ArrayList<Block>(jsonArray.length());
         for (int i=0; i<jsonArray.length(); i++) {
             JSONObject jsonBlock = jsonArray.getJSONObject(i);
-            Block block = Block.deserialize(this, jsonBlock);
+            Block block = BlockBuilder.deserialize(this, jsonBlock);
             setBlock(block, block.column, block.row);
         }
 

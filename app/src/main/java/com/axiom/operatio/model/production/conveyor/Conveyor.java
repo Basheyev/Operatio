@@ -2,6 +2,7 @@ package com.axiom.operatio.model.production.conveyor;
 
 import com.axiom.atom.engine.data.Channel;
 import com.axiom.operatio.model.common.JSONSerializable;
+import com.axiom.operatio.model.production.block.BlockBuilder;
 import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
@@ -34,7 +35,7 @@ public class Conveyor extends Block implements JSONSerializable {
     public Conveyor(Production production, JSONObject jsonObject, int inDir, int outDir) {
         super(production, inDir, MAX_CAPACITY, outDir, MAX_CAPACITY);
         price = PRICE;
-        deserializeCommonFields(this, jsonObject);
+        BlockBuilder.parseCommonFields(this, jsonObject);
 
         try {
             deliveryCycles = jsonObject.getInt("deliveryCycles");

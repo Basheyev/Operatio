@@ -6,6 +6,7 @@ import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;
+import com.axiom.operatio.model.production.block.BlockBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +32,7 @@ public class ImportBuffer extends Block implements JSONSerializable {
     public ImportBuffer(Production production, JSONObject jsonObject) {
         super(production, Block.NONE, 1, Block.NONE, 4);
         price = PRICE;
-        deserializeCommonFields(this, jsonObject);
+        BlockBuilder.parseCommonFields(this, jsonObject);
         try {
             int materialID = jsonObject.getInt("material");
             importMaterial = Material.getMaterial(materialID);

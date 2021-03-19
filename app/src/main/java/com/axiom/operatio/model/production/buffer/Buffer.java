@@ -5,6 +5,7 @@ import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.materials.Item;
+import com.axiom.operatio.model.production.block.BlockBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,7 +41,7 @@ public class Buffer extends Block implements JSONSerializable {
     public Buffer(Production production, JSONObject jsonObject, int capacity) {
         super(production, Block.NONE, capacity, Block.NONE, 1);
         price = PRICE;
-        deserializeCommonFields(this, jsonObject);
+        BlockBuilder.parseCommonFields(this, jsonObject);
         try {
             JSONArray jsonArray = jsonObject.getJSONArray("bufferKeepingUnit");
             bufferKeepingUnit = new BufferKeepingUnit[4];

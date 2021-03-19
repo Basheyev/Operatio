@@ -5,6 +5,7 @@ import android.view.MotionEvent;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.block.Block;
+import com.axiom.operatio.model.production.block.BlockAdjuster;
 import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 
@@ -52,7 +53,7 @@ public class BlockRotateHandler {
     private void rotateBlock(int column, int row, Block block) {
         if (actionInProgress && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
             if (block!=null) {
-                block.rotateDirection();
+                BlockAdjuster.rotateFlow(block);
                 AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
                 opsPanel.showBlockInfo(block);
                 production.selectBlock(column, row);

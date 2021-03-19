@@ -5,6 +5,7 @@ import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
+import com.axiom.operatio.model.production.block.BlockBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,7 +27,7 @@ public class ExportBuffer extends Block implements JSONSerializable {
     public ExportBuffer(Production production, JSONObject jsonObject) {
         super(production, Block.NONE, 1, Block.NONE, 1);
         price = PRICE;
-        deserializeCommonFields(this, jsonObject);
+        BlockBuilder.parseCommonFields(this, jsonObject);
         renderer = new ExportBufferRenderer(this);
     }
 
@@ -75,11 +76,6 @@ public class ExportBuffer extends Block implements JSONSerializable {
     @Override
     public int getCapacity() {
         return 1;
-    }
-
-    @Override
-    public void adjustDirection() {
-
     }
 
     @Override
