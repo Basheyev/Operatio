@@ -43,7 +43,7 @@ public class BlocksPanel extends Panel {
         }
     }
 
-    public void updatePermissions(int level) {
+    public void updatePermissions() {
         GamePermissions permissions = productionScene.getProduction().getPermissions();
         ArrayList<Widget> children = getChildren();
         for (int i=0; i<children.size(); i++) {
