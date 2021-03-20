@@ -23,6 +23,7 @@ public class GameMission {
     private double moneyReward;
     protected boolean completed;
 
+
     protected GameMission(JSONObject mission) {
         try {
             ID = mission.getInt("ID");
@@ -38,19 +39,19 @@ public class GameMission {
     }
 
 
-    private int[] parseIntArray(JSONArray jsonArray) throws JSONException {
-        int[] array = new int[jsonArray.length()];
-        for (int i=0; i<jsonArray.length(); i++) {
-            array[i] = jsonArray.getInt(i);
+    private int[] parseIntArray(JSONArray jsonIntArray) throws JSONException {
+        int[] array = new int[jsonIntArray.length()];
+        for (int i=0; i<jsonIntArray.length(); i++) {
+            array[i] = jsonIntArray.getInt(i);
         }
         return array;
     }
 
 
-    private GameCondition[] parseConditionsArray(JSONArray jsonArray) throws JSONException {
-        GameCondition[] array = new GameCondition[jsonArray.length()];
-        for (int i=0; i<jsonArray.length(); i++) {
-            array[i] = new GameCondition(jsonArray.getJSONObject(i));
+    private GameCondition[] parseConditionsArray(JSONArray jsonConditions) throws JSONException {
+        GameCondition[] array = new GameCondition[jsonConditions.length()];
+        for (int i=0; i<jsonConditions.length(); i++) {
+            array[i] = new GameCondition(jsonConditions.getJSONObject(i));
         }
         return array;
     }

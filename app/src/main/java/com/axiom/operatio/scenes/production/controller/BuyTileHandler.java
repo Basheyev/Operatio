@@ -4,7 +4,7 @@ import android.view.MotionEvent;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.sound.SoundRenderer;
-import com.axiom.operatio.model.gameplay.Ledger;
+import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.ProductionRenderer;
 

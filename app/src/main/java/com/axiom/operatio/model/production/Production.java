@@ -7,7 +7,7 @@ import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.gameplay.GameManager;
 import com.axiom.operatio.model.gameplay.GameMission;
 import com.axiom.operatio.model.gameplay.GamePermissions;
-import com.axiom.operatio.model.gameplay.Ledger;
+import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;

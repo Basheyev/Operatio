@@ -179,7 +179,7 @@ public class ConveyorRenderer extends BlockRenderer {
         int inputDirection = block.getInputDirection();
         int outputDirection = block.getOutputDirection();
 
-        progressToCoordinates(progress, inputDirection, outputDirection, coordBuffer);
+        calculateCoordinates(progress, inputDirection, outputDirection, coordBuffer);
         float xpos = coordBuffer.x;
         float ypos = coordBuffer.y;
         float minx = x + xpos * width + width / 4;
@@ -192,7 +192,7 @@ public class ConveyorRenderer extends BlockRenderer {
     }
 
 
-    private void progressToCoordinates(float progress, int inpDir, int outDir, Vector result) {
+    private void calculateCoordinates(float progress, int inpDir, int outDir, Vector result) {
         float rads, xpos = 0, ypos = 0;
 
         if (inpDir==LEFT && outDir==RIGHT) {

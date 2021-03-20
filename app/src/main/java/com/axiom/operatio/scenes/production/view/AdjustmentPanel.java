@@ -30,7 +30,7 @@ import static android.graphics.Color.GRAY;
 import static android.graphics.Color.WHITE;
 
 /**
- * Панель настройки блока todo Ограничить операции согласно GamePermissions
+ * Панель настройки блока
  */
 public class AdjustmentPanel extends Panel {
 

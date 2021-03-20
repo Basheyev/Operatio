@@ -1,6 +1,8 @@
 package com.axiom.operatio.model.gameplay;
 
 
+import com.axiom.operatio.model.ledger.Ledger;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,28 +27,23 @@ public class GameCondition {
         this.value = condition.getDouble("value");
     }
 
+
     public GameCondition(int indicatorType, int materialID, double value) {
         this.indicatorType = indicatorType;
         this.materialID = materialID;
         this.value = value;
     }
 
+
     public boolean check(Ledger ledger) {
         switch (indicatorType) {
-            case MANUFACTURED_AMOUNT:
-                return checkManufacturedAmount(ledger);
-            case MANUFACTURE_PRODUCTIVITY:
-                return checkManufacturedProductivity(ledger);
-            case SOLD_AMOUNT:
-                return checkSoldAmount(ledger);
-            case REVENUE_PER_DAY:
-                return checkRevenuePerDay(ledger);
-            case CASH_BALANCE:
-                return checkCashBalance(ledger);
-            case OPERATING_MARGIN:
-                return checkOperatingMargin(ledger);
-            case CAPITALIZATION:
-                return checkCapitalization(ledger);
+            case MANUFACTURED_AMOUNT: return checkManufacturedAmount(ledger);
+            case MANUFACTURE_PRODUCTIVITY: return checkManufacturedProductivity(ledger);
+            case SOLD_AMOUNT: return checkSoldAmount(ledger);
+            case REVENUE_PER_DAY: return checkRevenuePerDay(ledger);
+            case CASH_BALANCE: return checkCashBalance(ledger);
+            case OPERATING_MARGIN: return checkOperatingMargin(ledger);
+            case CAPITALIZATION: return checkCapitalization(ledger);
         }
         return false;
     }

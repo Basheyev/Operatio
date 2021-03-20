@@ -8,9 +8,10 @@ import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.operatio.model.gameplay.GameManager;
 import com.axiom.operatio.model.gameplay.GameMission;
-import com.axiom.operatio.model.gameplay.Ledger;
+import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.common.FormatUtils;
 import com.axiom.operatio.model.inventory.Inventory;
+import com.axiom.operatio.model.ledger.LedgerPeriod;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.ItemWidget;
@@ -32,6 +33,8 @@ public class ReportPanel extends Panel {
     private ItemWidget[] soldMaterials;
     private StringBuffer summary;
 
+    private double[] revenueData = new double[Ledger.HISTORY_LENGTH];
+    private double[] expensesData = new double[Ledger.HISTORY_LENGTH];
 
     public ReportPanel(Production production) {
         super();
@@ -123,10 +126,21 @@ public class ReportPanel extends Panel {
         chart = new LineChart(2);
         chart.setLocalBounds(25,435, 1350, 350);
         Ledger ledger = production.getLedger();
-        chart.updateData(0, ledger.getHistoryRevenue(), ledger.getHistoryCounter(), GREEN);
-        chart.updateData(1, ledger.getHistoryExpenses(), ledger.getHistoryCounter(), Color.RED);
+        loadLedgerDataToChart(ledger);
         addChild(chart);
 
+    }
+
+
+
+    private void loadLedgerDataToChart(Ledger ledger) {
+        LedgerPeriod[] history = ledger.getHistory();
+        for (int i=0; i<ledger.getHistoryCounter(); i++) {
+            revenueData[i] = history[i].getRevenue();
+            expensesData[i] = history[i].getExpenses();
+        }
+        chart.updateData(0, revenueData, ledger.getHistoryCounter(), GREEN);
+        chart.updateData(1, expensesData, ledger.getHistoryCounter(), Color.RED);
     }
 
 
@@ -141,8 +155,9 @@ public class ReportPanel extends Panel {
         synchronized (this) {
 
             // Обновить график
-            chart.updateData(0, ledger.getHistoryRevenue(), ledger.getHistoryCounter(), GREEN);
-            chart.updateData(1, ledger.getHistoryExpenses(), ledger.getHistoryCounter(), Color.RED);
+            loadLedgerDataToChart(ledger);
+            //chart.updateData(0, ledger.getHistoryRevenue(), ledger.getHistoryCounter(), GREEN);
+            //chart.updateData(1, ledger.getHistoryExpenses(), ledger.getHistoryCounter(), Color.RED);
 
             // Очистить все ячейки отображения материалов
             for (int i = 0; i < manufacturedMaterials.length; i++) {

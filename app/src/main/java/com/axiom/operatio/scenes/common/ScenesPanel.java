@@ -16,7 +16,7 @@ import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.model.gameplay.Ledger;
+import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.common.FormatUtils;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.report.ReportScene;

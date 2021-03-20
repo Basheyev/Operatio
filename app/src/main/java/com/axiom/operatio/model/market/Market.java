@@ -1,7 +1,7 @@
 package com.axiom.operatio.model.market;
 
 import com.axiom.operatio.model.common.JSONSerializable;
-import com.axiom.operatio.model.gameplay.Ledger;
+import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
