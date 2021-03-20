@@ -78,7 +78,7 @@ public class ScenesPanel extends Panel {
         setColor(PANEL_COLOR);
         setLocalBounds(0, 960, 1920, 120);
 
-        double currentBalance = Math.round(production.getCashBalance());
+        double currentBalance = Math.round(production.getLedger().getCashBalance());
         long currentDay = production.getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES;
         String balanceText = FormatUtils.formatMoney(currentBalance);
         String dayText = "" + currentDay;
@@ -135,7 +135,7 @@ public class ScenesPanel extends Panel {
 
     @Override
     public void draw(Camera camera) {
-        double currentBalance = Math.round(production.getCashBalance());
+        double currentBalance = Math.round(production.getLedger().getCashBalance());
         long currentDay = production.getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES;
 
         if (currentDay != lastDay) {

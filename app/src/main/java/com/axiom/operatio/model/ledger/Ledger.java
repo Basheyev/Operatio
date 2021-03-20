@@ -22,8 +22,9 @@ public class Ledger implements JSONSerializable {
     public static final int REVENUE_BLOCK_SOLD      = 0x1001;    // Выручка от продажи блока
     public static final int REVENUE_MATERIAL_SOLD   = 0x1002;    // Выручка от продажи материала
     //---------------------------------------------------------------------------------------------
-    private Production production;
-    private long startingCycle = 0;
+    private Production production;                               // Производство
+    private double cashBalance;                                  // Текущий остаток денег
+    private long startingCycle = 0;                              // Цикл производства - начала учёта
     //---------------------------------------------------------------------------------------------
     public static final int HISTORY_LENGTH = 32;                 // Максимальная длина истории
     private LedgerPeriod total;                                  // Данные за весь период
@@ -45,6 +46,7 @@ public class Ledger implements JSONSerializable {
             materialRecords[i] = new MaterialRecord();
         }
 
+        cashBalance = 0;
         total = new LedgerPeriod();
         currentPeriod = new LedgerPeriod();
         lastPeriod = new LedgerPeriod();
@@ -60,6 +62,7 @@ public class Ledger implements JSONSerializable {
         this(production);
         try {
             startingCycle = jsonObject.getLong("startingCycle");
+            cashBalance = jsonObject.getDouble("cashBalance");
             total = new LedgerPeriod(jsonObject.getJSONObject("total"));
             currentPeriod = new LedgerPeriod(jsonObject.getJSONObject("currentPeriod"));
             lastPeriod = new LedgerPeriod(jsonObject.getJSONObject("lastPeriod"));
@@ -79,11 +82,40 @@ public class Ledger implements JSONSerializable {
     }
 
 
+    @Override
+    public JSONObject toJSON() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("class", "Ledger");
+            jsonObject.put("startingCycle", startingCycle);
+            jsonObject.put("cashBalance", cashBalance);
+            jsonObject.put("total", total.toJSON());
+            jsonObject.put("currentPeriod", currentPeriod.toJSON());
+            jsonObject.put("lastPeriod", lastPeriod.toJSON());
+            JSONArray jsonHistory = new JSONArray();
+            for (int i=0; i<historyCounter; i++) {
+                jsonHistory.put(history[i].toJSON());
+            }
+            jsonObject.put("history", jsonHistory);
+            JSONArray jsonMaterialRecords = new JSONArray();
+            for (int i=0; i< Inventory.SKU_COUNT; i++) {
+                jsonMaterialRecords.put(materialRecords[i].toJSON());
+            }
+            jsonObject.put("materialRecords", jsonMaterialRecords);
+            return jsonObject;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * Вычисляет отчёт по периоду
      */
     public void process() {
-        currentPeriod.cashBalance = production.getCashBalance();
+
+        currentPeriod.cashBalance = getCashBalance();
+
         long currentCycle = production.getCurrentCycle();
         if (currentCycle > startingCycle + OPERATIONAL_DAY_CYCLES) {
             calculateMaterialsPeriod();
@@ -130,10 +162,10 @@ public class Ledger implements JSONSerializable {
     }
 
     public double getCapitalization() {
-        double assetsValuation = production.getAssetsValuation();                  // Активы
-        double inventoryValuation = production.getInventory().getValuation();      // Материалы на складе
-        double workInProgressValuation = production.getWorkInProgressValuation();  // Материалы в цеху
-        double cash = production.getCashBalance();                                 // Деньги
+        double assetsValuation = production.getAssetsValuation();                      // Активы
+        double inventoryValuation = production.getInventory().getValuation();          // Материалы на складе
+        double workInProgressValuation = production.getWorkInProgressValuation();      // Материалы в цеху
+        double cash = getCashBalance();                                                // Деньги
         return cash + assetsValuation + inventoryValuation + workInProgressValuation;  // Капитализация
     }
 
@@ -239,35 +271,24 @@ public class Ledger implements JSONSerializable {
     }
 
 
-    @Override
-    public JSONObject toJSON() {
-        try {
-            JSONObject jsonObject = new JSONObject();
-
-            jsonObject.put("class", "Ledger");
-            jsonObject.put("startingCycle", startingCycle);
-
-            jsonObject.put("total", total.toJSON());
-            jsonObject.put("currentPeriod", currentPeriod.toJSON());
-            jsonObject.put("lastPeriod", lastPeriod.toJSON());
-
-            JSONArray jsonHistory = new JSONArray();
-            for (int i=0; i<historyCounter; i++) {
-                jsonHistory.put(history[i].toJSON());
-            }
-            jsonObject.put("history", jsonHistory);
-
-            JSONArray jsonMaterialRecords = new JSONArray();
-            for (int i=0; i< Inventory.SKU_COUNT; i++) {
-                jsonMaterialRecords.put(materialRecords[i].toJSON());
-            }
-            jsonObject.put("materialRecords", jsonMaterialRecords);
-
-            return jsonObject;
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public double getCashBalance() {
+        return cashBalance;
     }
+
+
+    public boolean decreaseCashBalance(int type, double value) {
+        double result = cashBalance - value;
+        if (result < 0) return false;
+        registerExpense(type, value);
+        cashBalance = result;
+        return true;
+    }
+
+    public double increaseCashBalance(int type, double value) {
+        cashBalance += value;
+        registerRevenue(type, value);
+        return cashBalance;
+    }
+
+
 }

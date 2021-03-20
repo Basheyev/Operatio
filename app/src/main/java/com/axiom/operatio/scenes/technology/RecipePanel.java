@@ -326,7 +326,7 @@ public class RecipePanel extends Panel {
             Material material = materialsTree.getSelectedMaterial();
             if (material!=null && selectedOperation!=null) {
                 if (!permissions.isAvailable(material) || !permissions.isAvailable(selectedOperation)) {
-                    if (production.decreaseCashBalance(0, RECIPE_PRICE)) {
+                    if (production.getLedger().decreaseCashBalance(0, RECIPE_PRICE)) {
                         SoundRenderer.playSound(buySound);
                         permissions.addMaterialPermission(material);
                         permissions.addOperationPermission(selectedOperation);

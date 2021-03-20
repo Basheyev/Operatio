@@ -32,6 +32,25 @@ public class LedgerPeriod implements JSONSerializable {
     }
 
 
+    @Override
+    public JSONObject toJSON() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("currentPeriodRevenue", revenue);
+            jsonObject.put("currentPeriodExpenses", expenses);
+            jsonObject.put("currentPeriodMargin", margin);
+            jsonObject.put("currentCashBalance", cashBalance);
+            jsonObject.put("periodMaintenanceCost", maintenanceCost);
+            jsonObject.put("periodAssetsBought", assetsBought);
+            jsonObject.put("periodAssetsSold", assetsSold);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
+
+
+
     public void clear() {
         revenue = 0;
         expenses = 0;
@@ -63,24 +82,6 @@ public class LedgerPeriod implements JSONSerializable {
 
     public double getMargin() {
         return margin;
-    }
-
-
-    @Override
-    public JSONObject toJSON() {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("currentPeriodRevenue", revenue);
-            jsonObject.put("currentPeriodExpenses", expenses);
-            jsonObject.put("currentPeriodMargin", margin);
-            jsonObject.put("currentCashBalance", cashBalance);
-            jsonObject.put("periodMaintenanceCost", maintenanceCost);
-            jsonObject.put("periodAssetsBought", assetsBought);
-            jsonObject.put("periodAssetsSold", assetsSold);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject;
     }
 
 }

@@ -62,7 +62,7 @@ public class BlockDeleteHandler {
         if (actionInProgress && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
             if (block!=null) {
                 production.removeBlock(block,true);
-                production.increaseCashBalance(Ledger.REVENUE_BLOCK_SOLD, block.getPrice());
+                production.getLedger().increaseCashBalance(Ledger.REVENUE_BLOCK_SOLD, block.getPrice());
                 production.unselectBlock();
                 AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
                 opsPanel.hideBlockInfo();

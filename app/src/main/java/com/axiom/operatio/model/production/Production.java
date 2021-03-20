@@ -34,7 +34,6 @@ public class Production implements JSONSerializable {
     private GamePermissions permissions;          // Разрешения в игре
     private int level = 0;                        // Текущий уровень
     private int lastCompletedLevel = 0;           // Последний завершенный уровень
-    private double cashBalance = 0;               // Стартовые деньги fixme перенести в Ledger
 
     private ArrayList<Block> blocks;              // Список блоков производства
     private Block[][] grid;                       // Блоки привязанные к координатной сетке
@@ -87,7 +86,7 @@ public class Production implements JSONSerializable {
 
         levelCompletedSound = SoundRenderer.loadSound(R.raw.yes_snd);
 
-        cashBalance = jsonObject.getLong("cashBalance");
+//        cashBalance = jsonObject.getLong("cashBalance");
         int columns = jsonObject.getInt("columns");
         int rows = jsonObject.getInt("rows");
 
@@ -185,7 +184,7 @@ public class Production implements JSONSerializable {
                 int expenseType = Ledger.EXPENSE_BLOCK_OPERATION;
                 for (int i = 0; i < size; i++) {
                     block = blocks.get(i);
-                    energyPayed = decreaseCashBalance(expenseType, block.getCycleCost());
+                    energyPayed = ledger.decreaseCashBalance(expenseType, block.getCycleCost());
                     if (energyPayed) block.process();  // Если энергия оплачена отрабатываем
                     else {
                         block.setState(Block.FAULT);
@@ -439,7 +438,7 @@ public class Production implements JSONSerializable {
 
         try {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("cashBalance", cashBalance);
+ //           jsonObject.put("cashBalance", cashBalance);
             jsonObject.put("columns", columns);
             jsonObject.put("rows", rows);
             jsonObject.put("level", level);
@@ -490,22 +489,6 @@ public class Production implements JSONSerializable {
         return null;
     }
 
-    public double getCashBalance() {
-        return cashBalance;
-    }
 
-    public boolean decreaseCashBalance(int type, double value) {
-        double result = cashBalance - value;
-        if (result < 0) return false;
-        ledger.registerExpense(type, value);
-        cashBalance = result;
-        return true;
-    }
-
-    public double increaseCashBalance(int type, double value) {
-        cashBalance += value;
-        ledger.registerRevenue(type, value);
-        return cashBalance;
-    }
 
 }

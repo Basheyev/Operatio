@@ -123,7 +123,7 @@ public class Market implements JSONSerializable {
         int quantity = 0;
         int expenseType = Ledger.EXPENSE_MATERIAL_BOUGHT;
         for (int i=0; i < amount; i++) {
-            if (!production.decreaseCashBalance(expenseType, commodityPrice)) break;
+            if (!production.getLedger().decreaseCashBalance(expenseType, commodityPrice)) break;
             inventory.push(new Item(Material.getMaterial(commodity)));
             quantity++;
         }
@@ -140,7 +140,7 @@ public class Market implements JSONSerializable {
         for (int i=0; i < amount; i++) {
             item = inventory.poll(Material.getMaterial(commodity));
             if (item==null) break;
-            production.increaseCashBalance(incomeType, commodityPrice);
+            production.getLedger().increaseCashBalance(incomeType, commodityPrice);
             quantity++;
         }
         if (quantity > 0) {

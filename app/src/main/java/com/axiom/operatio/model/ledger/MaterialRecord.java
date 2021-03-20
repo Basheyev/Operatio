@@ -87,4 +87,11 @@ public class MaterialRecord implements JSONSerializable {
     }
 
 
+    public int getSoldAmountByPeriod() {
+        return soldAmountByPeriod;
+    }
+
+    public int getBoughtAmountByPeriod() {
+        return boughtAmountByPeriod;
+    }
 }

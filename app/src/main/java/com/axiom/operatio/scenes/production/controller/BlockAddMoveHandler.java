@@ -121,7 +121,7 @@ public class BlockAddMoveHandler {
         // Если был создан новый блок - вычесть деньги
         if (justCreatedBlock) {
             int expenseType = Ledger.EXPENSE_BLOCK_BOUGHT;
-            production.decreaseCashBalance(expenseType, dragBlock.getPrice());
+            production.getLedger().decreaseCashBalance(expenseType, dragBlock.getPrice());
         }
         BlockAdjuster.adjustFlow(dragBlock);
         opsPanel.showBlockInfo(dragBlock);

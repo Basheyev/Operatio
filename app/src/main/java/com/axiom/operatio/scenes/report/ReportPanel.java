@@ -156,8 +156,6 @@ public class ReportPanel extends Panel {
 
             // Обновить график
             loadLedgerDataToChart(ledger);
-            //chart.updateData(0, ledger.getHistoryRevenue(), ledger.getHistoryCounter(), GREEN);
-            //chart.updateData(1, ledger.getHistoryExpenses(), ledger.getHistoryCounter(), Color.RED);
 
             // Очистить все ячейки отображения материалов
             for (int i = 0; i < manufacturedMaterials.length; i++) {
@@ -172,7 +170,7 @@ public class ReportPanel extends Panel {
             for (int i = 0; i < Inventory.SKU_COUNT; i++) {
 
                 // Вывести объем закупа
-                int boughtAmount = ledger.getCommodityBoughtByPeriod(i);
+                int boughtAmount = ledger.getMaterialRecord(i).getBoughtAmountByPeriod();
                 if (boughtAmount > 0 && boughtCounter < boughtMaterials.length) {
                     Material material = Material.getMaterial(i);
                     boughtMaterials[boughtCounter].setBackground(material.getImage());
@@ -182,7 +180,7 @@ public class ReportPanel extends Panel {
                 }
 
                 // Вывести продуктивность производства
-                int manufacturedAmount = ledger.getProductivity(i);
+                int manufacturedAmount = ledger.getMaterialRecord(i).getProductivity();
                 if (manufacturedAmount > 0 && manufacturedCounter < manufacturedMaterials.length) {
                     Material material = Material.getMaterial(i);
                     manufacturedMaterials[manufacturedCounter].setBackground(material.getImage());
@@ -192,7 +190,7 @@ public class ReportPanel extends Panel {
                 }
 
                 // Вывести объем продаж
-                int soldAmount = ledger.getCommoditySoldByPeriod(i);
+                int soldAmount = ledger.getMaterialRecord(i).getSoldAmountByPeriod();
                 if (soldAmount > 0 && soldCounter < soldMaterials.length) {
                     Material material = Material.getMaterial(i);
                     soldMaterials[soldCounter].setBackground(material.getImage());
@@ -233,7 +231,7 @@ public class ReportPanel extends Panel {
         summary.append(margin);
         summary.append("%)");
         summary.append("\nCash: ");
-        FormatUtils.formatMoney(Math.round(production.getCashBalance()), summary);
+        FormatUtils.formatMoney(Math.round(production.getLedger().getCashBalance()), summary);
         summary.append("\nAssets: ");
         FormatUtils.formatMoney(Math.round(production.getAssetsValuation()), summary);
         summary.append("\nWork in progress: ");

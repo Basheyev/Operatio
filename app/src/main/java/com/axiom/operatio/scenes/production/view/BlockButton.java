@@ -113,7 +113,7 @@ public class BlockButton extends Button {
         Block block = createBlock(scene.getProduction(), getTag());
         if (block!=null) {
             panel.setToggledButton(getTag());
-            double cash = scene.getProduction().getCashBalance();
+            double cash = scene.getProduction().getLedger().getCashBalance();
             if (cash - block.getPrice() >= 0) {
                 moveHandler.startAction(block, worldX, worldY);
                 SoundRenderer.playSound(tickSound);

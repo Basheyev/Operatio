@@ -78,7 +78,7 @@ public class MarketPanel extends Panel {
         quantityButton = buildButton("" + quantity, 275, 365, 150, 80, Color.BLACK, 1.5f, false);
         rightButton = buildButton(">",425, 365, 75, 80,  Color.GRAY, 1.5f,true);
 
-        String sumText = FormatUtils.formatMoney(production.getCashBalance());
+        String sumText = FormatUtils.formatMoney(production.getLedger().getCashBalance());
         dealSum = buildButton(sumText, 525, 365, 250, 80, Color.BLACK, 1.5f,false);
 
         autoBuyCB = buildCheckBox("Auto-buy", 550, 805, 200, 100);
