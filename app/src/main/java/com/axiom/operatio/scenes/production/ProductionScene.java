@@ -24,44 +24,44 @@ import org.json.JSONObject;
 
 public class ProductionScene extends GameScene {
 
-    // fixme это должно быть не здесь
-   // public static final int MAP_WIDTH = 32;
-   // public static final int MAP_HEIGHT = 24;
-
     public static final String SCENE_NAME = "Production";
 
     private Production production;
     private InputHandler inputHandler;
     private ProductionRenderer productionRenderer;
-    private int currentLevel = -1;
-
-    // Надо сделать сеттеры и геттеры
     private BlocksPanel blocksPanel;
     private ModePanel modePanel;
     private AdjustmentPanel adjustmentPanel;
 
     private boolean initialized = false;
+    private int currentLevel = -1;
     private long permissionLastChangeTime = 0;
+
 
     public ProductionScene() {
         production = new Production();
     }
 
+
     public ProductionScene(JSONObject jsonProduction) throws JSONException {
         production = new Production(jsonProduction);
     }
+
 
     @Override
     public String getSceneName() {
         return SCENE_NAME;
     }
 
+
     @Override
     public void startScene() {
         if (!initialized) {
+
             sceneManager.addGameScene(new InventoryScene(production));
-            sceneManager.addGameScene(new ReportScene(production));
             sceneManager.addGameScene(new TechnologyScene(production));
+            sceneManager.addGameScene(new ReportScene(production));
+
             productionRenderer = production.getRenderer();
             inputHandler = new InputHandler(this, production, productionRenderer);
             ProductionSceneUI.buildUI(this, getResources(), getSceneWidget(), production);
@@ -75,7 +75,7 @@ public class ProductionScene extends GameScene {
         }
 
         // Включить доступные машины на этом уровне
-        blocksPanel.updatePermissions(production.getLevel());
+        blocksPanel.updatePermissions();
 
     }
 
@@ -85,6 +85,10 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void disposeScene() {
+        // Выгружаем из памяти текущие игровые сцены
+        sceneManager.removeGameScene(ReportScene.SCENE_NAME);
+        sceneManager.removeGameScene(TechnologyScene.SCENE_NAME);
+        sceneManager.removeGameScene(InventoryScene.SCENE_NAME);
         production.clearBlocks();
     }
 
@@ -101,10 +105,10 @@ public class ProductionScene extends GameScene {
         }
 
         // Проверить не сменился ли уровень (обновить доступ к кнопкам)
-        if (currentLevel != production.getLevel()) {
+        if (currentLevel != production.getLevel() || permissionsChanged) {
             currentLevel = production.getLevel();
             // Включить доступные машины на этом уровне
-            blocksPanel.updatePermissions(production.getLevel());
+            blocksPanel.updatePermissions();
         }
     }
 

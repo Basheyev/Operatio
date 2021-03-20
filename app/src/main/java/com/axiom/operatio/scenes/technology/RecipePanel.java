@@ -331,6 +331,7 @@ public class RecipePanel extends Panel {
                         permissions.addMaterialPermission(material);
                         permissions.addOperationPermission(selectedOperation);
                         permissions.addMachinePermission(selectedOperation.getMachineType());
+                        w.visible = false;
                     }
                 }
             }
