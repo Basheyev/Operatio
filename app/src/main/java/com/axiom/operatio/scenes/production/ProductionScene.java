@@ -24,8 +24,9 @@ import org.json.JSONObject;
 
 public class ProductionScene extends GameScene {
 
-    public static final int MAP_WIDTH = 32;
-    public static final int MAP_HEIGHT = 24;
+    // fixme это должно быть не здесь
+   // public static final int MAP_WIDTH = 32;
+   // public static final int MAP_HEIGHT = 24;
 
     public static final String SCENE_NAME = "Production";
 
@@ -43,7 +44,7 @@ public class ProductionScene extends GameScene {
     private long permissionLastChangeTime = 0;
 
     public ProductionScene() {
-        production = new Production(MAP_WIDTH, MAP_HEIGHT);
+        production = new Production();
     }
 
     public ProductionScene(JSONObject jsonProduction) throws JSONException {

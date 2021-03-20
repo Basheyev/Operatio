@@ -25,7 +25,12 @@ import java.util.ArrayList;
  */
 public class Production implements JSONSerializable {
 
+    public static final int MAP_WIDTH = 32;
+    public static final int MAP_HEIGHT = 24;
+    public static final int UNLOCKED_WIDTH = 8;
+    public static final int UNLOCKED_HEIGHT = 6;
     public static final int TILE_PRICE = 500;     // Цена одной плитки площади
+
     public static final int CYCLE_TIME = 300;     // Длительность цикла в миллесекундах
 
     private Inventory inventory;                  // Объект - склад
@@ -56,16 +61,16 @@ public class Production implements JSONSerializable {
     private int levelCompletedSound;
 
 
-    public Production(int columns, int rows) {
+    public Production() {
 
         levelCompletedSound = SoundRenderer.loadSound(R.raw.yes_snd);
 
-        this.columns = columns;
-        this.rows = rows;
+        this.columns = MAP_WIDTH;
+        this.rows = MAP_HEIGHT;
         grid = new Block[rows][columns];
         unlocked = new boolean[rows][columns];
         setAreaUnlocked(0,0, columns, rows, false);
-        setAreaUnlocked(0,0,8, 6, true);
+        setAreaUnlocked(0,0,UNLOCKED_WIDTH, UNLOCKED_HEIGHT, true);
 
         blocks = new ArrayList<Block>(100);
         inventory = new Inventory(this);
