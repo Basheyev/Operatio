@@ -149,8 +149,8 @@ public class ReportPanel extends Panel {
      */
     public void updateData() {
         Ledger ledger = production.getLedger();
-        String revenueText = "Sold: " + FormatUtils.formatMoney(Math.round(ledger.getLastPeriodRevenue())) + "\n";
-        String expensesText = "Purchased: " + FormatUtils.formatMoney(Math.round(ledger.getLastPeriodExpenses())) + "\n";
+        String revenueText = "Sold: " + FormatUtils.formatMoney(Math.round(ledger.getLastPeriod().getRevenue())) + "\n";
+        String expensesText = "Purchased: " + FormatUtils.formatMoney(Math.round(ledger.getLastPeriod().getExpenses())) + "\n";
 
         synchronized (this) {
 
@@ -217,18 +217,18 @@ public class ReportPanel extends Panel {
 
 
     private void updateSummary(Ledger ledger) {
-        double totalRevenue = ledger.getTotalRevenue();
+        double totalRevenue = ledger.getTotal().getRevenue();
         double margin = 0;
-        if (totalRevenue > 0) margin = Math.round(ledger.getTotalMargin() / totalRevenue * 100);
+        if (totalRevenue > 0) margin = Math.round(ledger.getTotal().getMargin() / totalRevenue * 100);
         summary.delete(0, summary.length());
         summary.append("Income: ");
-        FormatUtils.formatMoney(Math.round(ledger.getLastPeriodRevenue()), summary);
+        FormatUtils.formatMoney(Math.round(ledger.getLastPeriod().getRevenue()), summary);
         summary.append("\nExpenses: ");
-        FormatUtils.formatMoney(Math.round(ledger.getLastPeriodExpenses()),summary);
+        FormatUtils.formatMoney(Math.round(ledger.getLastPeriod().getExpenses()),summary);
         summary.append("\nMargin: ");
-        FormatUtils.formatMoney(Math.round(ledger.getLastPeriodMargin()),summary);
+        FormatUtils.formatMoney(Math.round(ledger.getLastPeriod().getMargin()),summary);
         summary.append("\n\nTotal margin: ");
-        FormatUtils.formatMoney(Math.round(ledger.getTotalMargin()), summary);
+        FormatUtils.formatMoney(Math.round(ledger.getTotal().getMargin()), summary);
         summary.append(" (");
         summary.append(margin);
         summary.append("%)");

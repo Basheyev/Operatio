@@ -50,19 +50,19 @@ public class GameCondition {
 
 
     private boolean checkManufacturedAmount(Ledger ledger) {
-        return ledger.getManufacturedAmount(materialID) >= value;
+        return ledger.getMaterialRecord(materialID).getManufacturedTotal() >= value;
     }
 
     private boolean checkManufacturedProductivity(Ledger ledger) {
-        return ledger.getProductivity(materialID) >= value;
+        return ledger.getMaterialRecord(materialID).getProductivity() >= value;
     }
 
     public boolean checkSoldAmount(Ledger ledger) {
-        return ledger.getCommoditySoldAmount(materialID) >= value;
+        return ledger.getMaterialRecord(materialID).getSoldAmountTotal() >= value;
     }
 
     public boolean checkRevenuePerDay(Ledger ledger) {
-        return ledger.getLastPeriodRevenue() >= value;
+        return ledger.getLastPeriod().getRevenue() >= value;
     }
 
     public boolean checkCashBalance(Ledger ledger) {
@@ -70,7 +70,7 @@ public class GameCondition {
     }
 
     public boolean checkOperatingMargin(Ledger ledger) {
-        return ledger.getTotalMargin() >= value;
+        return ledger.getTotal().getMargin() >= value;
     }
 
     public boolean checkCapitalization(Ledger ledger) {

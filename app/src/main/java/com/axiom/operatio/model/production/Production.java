@@ -34,7 +34,7 @@ public class Production implements JSONSerializable {
     private GamePermissions permissions;          // Разрешения в игре
     private int level = 0;                        // Текущий уровень
     private int lastCompletedLevel = 0;           // Последний завершенный уровень
-    private double cashBalance = 0;               // Стартовые деньги
+    private double cashBalance = 0;               // Стартовые деньги fixme перенести в Ledger
 
     private ArrayList<Block> blocks;              // Список блоков производства
     private Block[][] grid;                       // Блоки привязанные к координатной сетке
