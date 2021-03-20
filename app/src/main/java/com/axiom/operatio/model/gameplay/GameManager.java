@@ -1,41 +1,45 @@
 package com.axiom.operatio.model.gameplay;
 
-import com.axiom.atom.R;
+import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.data.JSONFile;
-
-import org.json.JSONArray;
-import org.json.JSONException;
+import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.scenes.mainmenu.MainMenuScene;
+import com.axiom.operatio.scenes.production.ProductionScene;
 
 public class GameManager {
 
-    private static GameMission[] missions = null;
 
+    public GameManager() {
 
-    public static GameMission getMission(int index) {
-        if (missions==null) loadMissions();
-        if (index < 0 || index >= missions.length) return null;
-        return missions[index];
+    }
+
+    public ProductionScene newGame() {
+        return null;
     }
 
 
-    public static int size() {
-        if (missions==null) loadMissions();
-        return missions.length;
+    public ProductionScene loadGame() {
+        return null;
     }
 
 
-    private static void loadMissions() {
-        JSONArray jsonMissions = JSONFile.loadArray(SceneManager.getResources(), R.raw.missions);
-        missions = new GameMission[jsonMissions.length()];
-        try {
-            for (int i = 0; i < jsonMissions.length(); i++) {
-                missions[i] = new GameMission(jsonMissions.getJSONObject(i));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+    public boolean saveGame(Production production) {
+
+
+        return false;
+    }
+
+
+    private void clearGameScenes() {
+        SceneManager sceneManager = SceneManager.getInstance();
+        GameScene activeScene = sceneManager.getActiveScene();
+        if (!activeScene.getSceneName().equals(MainMenuScene.SCENE_NAME)) {
+            sceneManager.setActiveScene(MainMenuScene.SCENE_NAME);
         }
+        sceneManager.removeGameScene(ProductionScene.SCENE_NAME);
     }
+
+
 
 
 }

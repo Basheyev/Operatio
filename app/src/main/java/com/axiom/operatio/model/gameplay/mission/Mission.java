@@ -1,10 +1,6 @@
-package com.axiom.operatio.model.gameplay;
+package com.axiom.operatio.model.gameplay.mission;
 
-import android.content.res.Resources;
-
-import com.axiom.atom.R;
-import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.data.JSONFile;
+import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.production.Production;
 
 import org.json.JSONArray;
@@ -12,19 +8,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class GameMission {
+public class Mission {
 
     private int ID;
     private String name;
     private String description;
     private int[] prerequisiteIDs;
-    private GameCondition[] winConditions;
+    private Condition[] winConditions;
     private GamePermissions permissionsReward;
     private double moneyReward;
     protected boolean completed;
 
 
-    protected GameMission(JSONObject mission) {
+    protected Mission(JSONObject mission) {
         try {
             ID = mission.getInt("ID");
             name = mission.getString("name");
@@ -48,10 +44,10 @@ public class GameMission {
     }
 
 
-    private GameCondition[] parseConditionsArray(JSONArray jsonConditions) throws JSONException {
-        GameCondition[] array = new GameCondition[jsonConditions.length()];
+    private Condition[] parseConditionsArray(JSONArray jsonConditions) throws JSONException {
+        Condition[] array = new Condition[jsonConditions.length()];
         for (int i=0; i<jsonConditions.length(); i++) {
-            array[i] = new GameCondition(jsonConditions.getJSONObject(i));
+            array[i] = new Condition(jsonConditions.getJSONObject(i));
         }
         return array;
     }
@@ -61,7 +57,7 @@ public class GameMission {
         // Если условий победы нет - выигрыша нет
         if (winConditions==null) return false;
         // Если не выполнилось хоть одно условия - выигрыша нет
-        for (GameCondition winCondition : winConditions) {
+        for (Condition winCondition : winConditions) {
             if (!winCondition.check(production.getLedger())) return false;
         }
         // Иначе выигрыш
@@ -91,7 +87,7 @@ public class GameMission {
         return prerequisiteIDs;
     }
 
-    public GameCondition[] getWinConditions() {
+    public Condition[] getWinConditions() {
         return winConditions;
     }
 
