@@ -28,13 +28,6 @@ public class GameCondition {
     }
 
 
-    public GameCondition(int indicatorType, int materialID, double value) {
-        this.indicatorType = indicatorType;
-        this.materialID = materialID;
-        this.value = value;
-    }
-
-
     public boolean check(Ledger ledger) {
         switch (indicatorType) {
             case MANUFACTURED_AMOUNT: return checkManufacturedAmount(ledger);
