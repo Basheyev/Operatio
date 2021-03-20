@@ -117,9 +117,11 @@ public class ConveyorRenderer extends BlockRenderer {
             // Отрисовать предметы на нём
             drawItems(camera, x, y, width, height);
 
-            // Отрисовать вход/выход
-            drawInOut(camera, block.getInputDirection(), block.getOutputDirection(),
-                    x, y, width, height, sprite.getZOrder() + 2);
+            // Отрисовать вход/выход если игра на паузе
+            if (gamePaused) {
+                drawInOut(camera, block.getInputDirection(), block.getOutputDirection(),
+                        x, y, width, height, sprite.getZOrder() + 2);
+            }
         }
 
         // Рисуем значок сбоя, если произошел сбой

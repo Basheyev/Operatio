@@ -60,9 +60,10 @@ public class MachineRenderer extends BlockRenderer {
         sprite.draw(camera, x, y, width, height);
 
         // Рисуем вход-выход
-        drawInOut(camera, machine.getInputDirection(), machine.getOutputDirection(),
-                x, y, width, height, sprite.getZOrder() + 2);
-
+        if (production.isPaused()) {
+            drawInOut(camera, machine.getInputDirection(), machine.getOutputDirection(),
+                    x, y, width, height, sprite.getZOrder() + 2);
+        }
     }
 
     public void arrangeAnimation(int inputDirection, int outputDirection) {

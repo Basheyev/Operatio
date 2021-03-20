@@ -2,6 +2,7 @@ package com.axiom.operatio.model.production.block;
 
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.operatio.model.production.Production;
 
 public abstract class BlockRenderer {
 
