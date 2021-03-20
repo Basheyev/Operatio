@@ -76,7 +76,7 @@ public class TechnologyScene extends GameScene {
         if (currentLevel != production.getLevel()) {
             currentLevel = production.getLevel();
             // Включить доступные машины на этом уровне
-            materialsTree.updatePermissions(production.getLevel());
+            materialsTree.updatePermissions();
         }
 
     }

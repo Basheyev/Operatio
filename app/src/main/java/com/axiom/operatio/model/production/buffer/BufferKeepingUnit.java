@@ -14,7 +14,7 @@ public class BufferKeepingUnit implements JSONSerializable {
     public JSONObject toJSON() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("material", material!=null ? material.getMaterialID() : -1);
+            jsonObject.put("material", material!=null ? material.getID() : -1);
             jsonObject.put("capacity", capacity);
             jsonObject.put("total", total);
         } catch (JSONException e) {

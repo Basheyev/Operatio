@@ -41,6 +41,7 @@ public class RecipePanel extends Panel {
     private Button researchButton;
 
     private Operation selectedOperation;
+    private StringBuffer machineDescription = new StringBuffer(256);
 
     public RecipePanel(MaterialsTree panel, Production production) {
         super();
@@ -185,39 +186,27 @@ public class RecipePanel extends Panel {
 
     }
 
-
     protected boolean findMachineAndOperations(Material selectedMaterial) {
         GamePermissions permissions = production.getPermissions();
-        int machineTypesCount = MachineType.getMachineTypesCount();
-        for (int i=0; i<machineTypesCount; i++) {
-            MachineType machineType = MachineType.getMachineType(i);
-            Operation[] operation = machineType.getOperations();
-            for (int j=0; j<operation.length; j++) {
-                Material[] outputs = operation[j].getOutputs();
-                for (int k=0; k<outputs.length; k++) {
-                    if (outputs[k].equals(selectedMaterial)) {
-                        if (permissions.isAvailable(selectedMaterial)) {
-                            researchButton.visible = false;
-                        } else {
-                            researchButton.visible = true;
-                        }
-                        selectedOperation = machineType.getOperation(j);
-                        showMachineAndOperation(machineType, j);
-                        return true;
-                    }
-                }
-            }
-        }
+        selectedOperation = MachineType.findOperation(selectedMaterial);
+        boolean rawMaterial = selectedMaterial.getID() < 8;
+        if (selectedOperation != null && !rawMaterial) {
+            showMachineAndOperation(selectedOperation);
+            boolean materialNotAvailable = !permissions.isAvailable(selectedMaterial);
+            boolean operationNotAvailable = !permissions.isAvailable(selectedOperation);
+            researchButton.visible = materialNotAvailable || operationNotAvailable;
+            return true;
+        } else researchButton.visible = false;
         clearFields();
         return false;
     }
 
 
-    private StringBuffer machineDescription = new StringBuffer(256);
 
-    protected void showMachineAndOperation(MachineType machineType, int operationID) {
+    protected void showMachineAndOperation(Operation operation) {
 
-        Operation operation = machineType.getOperation(operationID);
+        int operationID = operation.getID();
+        MachineType machineType = operation.getMachineType();
         Sprite machineImage = machineType.getImage();
 
         machineDescription.delete(0, machineDescription.length());
@@ -236,7 +225,7 @@ public class RecipePanel extends Panel {
 
         for (int i=0; i<4; i++) {
             if (i<inputs.length) {
-                String materialTag = "" + inputs[i].getMaterialID();
+                String materialTag = "" + inputs[i].getID();
                 inpBtn[i].setBackground(inputs[i].getImage());
                 inpBtn[i].setText("x" + inputAmount[i]);
                 inpBtn[i].setTag(materialTag);
@@ -336,7 +325,7 @@ public class RecipePanel extends Panel {
             GamePermissions permissions = production.getPermissions();
             Material material = materialsTree.getSelectedMaterial();
             if (material!=null && selectedOperation!=null) {
-                if (!permissions.isAvailable(material)) {
+                if (!permissions.isAvailable(material) || !permissions.isAvailable(selectedOperation)) {
                     if (production.decreaseCashBalance(0, RECIPE_PRICE)) {
                         SoundRenderer.playSound(buySound);
                         permissions.addMaterialPermission(material);

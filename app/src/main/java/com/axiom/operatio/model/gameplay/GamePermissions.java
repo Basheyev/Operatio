@@ -148,7 +148,7 @@ public class GamePermissions implements JSONSerializable {
         JSONArray jsonMachines = new JSONArray();
         JSONArray jsonOperations = new JSONArray();
         for (int i=0; i<availableMaterials.size(); i++)
-            jsonMaterials.put(availableMaterials.get(i).getMaterialID());
+            jsonMaterials.put(availableMaterials.get(i).getID());
 
         for (int i=0; i<availableMachines.size(); i++)
             jsonMachines.put(availableMachines.get(i).getID());

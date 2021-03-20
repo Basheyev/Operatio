@@ -101,7 +101,7 @@ public class ImportBuffer extends Block implements JSONSerializable {
         JSONObject jsonObject = super.toJSON();
         try {
             jsonObject.put("class", "ImportBuffer");
-            jsonObject.put("material", importMaterial.getMaterialID());
+            jsonObject.put("material", importMaterial.getID());
         } catch (JSONException e) {
             e.printStackTrace();
             return null;

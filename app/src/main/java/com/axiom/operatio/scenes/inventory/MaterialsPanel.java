@@ -88,7 +88,7 @@ public class MaterialsPanel extends Panel {
             itemWidget[i].setTextColor(WHITE);
             itemWidget[i].setLocalBounds(x, y, 80, 80);
             itemWidget[i].setClickListener(clickListener);
-            itemWidget[i].setTag("" + material.getMaterialID());
+            itemWidget[i].setTag("" + material.getID());
             panel.addChild(itemWidget[i]);
             x += 96;
             if (x + 96 > panel.getWidth()) {

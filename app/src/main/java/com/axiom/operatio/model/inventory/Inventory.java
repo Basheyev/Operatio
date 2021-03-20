@@ -82,7 +82,7 @@ public class Inventory implements JSONSerializable {
      */
     public boolean push(Item item) {
         if (item==null) return false;
-        int ID = item.getMaterial().getMaterialID();
+        int ID = item.getMaterial().getID();
         boolean stored = stockKeepingUnit.get(ID).add(item);
         if (stored) {
            // Ledger ledger = production.getLedger();
@@ -98,7 +98,7 @@ public class Inventory implements JSONSerializable {
      */
     public Item peek(Material material) {
         if (material==null) return null;
-        int ID = material.getMaterialID();
+        int ID = material.getID();
         return stockKeepingUnit.get(ID).peek();
     }
 
@@ -109,7 +109,7 @@ public class Inventory implements JSONSerializable {
      */
     public Item poll(Material material) {
         if (material==null) return null;
-        int ID = material.getMaterialID();
+        int ID = material.getID();
         Item item = stockKeepingUnit.get(ID).poll();
         if (item!=null) {
          //   Ledger ledger = production.getLedger();
@@ -126,7 +126,7 @@ public class Inventory implements JSONSerializable {
      */
     public int getBalance(Material material) {
         if (material==null) return 0;
-        int ID = material.getMaterialID();
+        int ID = material.getID();
         return stockKeepingUnit.get(ID).size();
     }
 

@@ -6,6 +6,7 @@ import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.data.JSONFile;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
+import com.axiom.operatio.model.materials.Material;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,13 +53,13 @@ public class MachineType {
 
 
     /**
-     * Выдаёт экземпляр описания машины
-     * @param ID код машины
+     * Выдаёт экземпляр описания машины по ID
+     * @param index порядковый индекс машины
      * @return экземпляр описания машины
      */
-    public static MachineType getMachineType(int ID) {
+    public static MachineType getMachineType(int index) {
         if (!initialized) initialize();
-        return machineTypes.get(ID);
+        return machineTypes.get(index);
     }
 
 
@@ -102,6 +103,24 @@ public class MachineType {
             machineTypes.get(i).image = image;
         }
     }
+
+
+
+    public static Operation findOperation(Material material) {
+        int machineTypesCount = getMachineTypesCount();
+        for (int i=0; i<machineTypesCount; i++) {
+            MachineType machineType = getMachineType(i);
+            Operation[] operations = machineType.getOperations();
+            for (Operation operation : operations) {
+                Material[] outputs = operation.getOutputs();
+                for (Material output : outputs) {
+                    if (output.equals(material)) return operation;
+                }
+            }
+        }
+        return null;
+    }
+
 
 
     public int getID() {

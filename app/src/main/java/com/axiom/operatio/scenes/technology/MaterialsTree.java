@@ -10,6 +10,8 @@ import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.model.production.machine.MachineType;
+import com.axiom.operatio.model.production.machine.Operation;
 import com.axiom.operatio.scenes.common.ItemWidget;
 
 import static android.graphics.Color.BLACK;
@@ -50,11 +52,18 @@ public class MaterialsTree extends Panel {
     }
 
 
-    public void updatePermissions(int level) {
+    public void updatePermissions() {
         GamePermissions permissions = production.getPermissions();
         for (int i=0; i<itemWidget.length; i++) {
             int backgroundColor = UNAVAILABLE;
-            if (permissions.isAvailable(Material.getMaterial(i))) backgroundColor = AVAILABLE;
+            Material material = Material.getMaterial(i);
+            Operation operation = MachineType.findOperation(material);
+            boolean materialAvailable = permissions.isAvailable(material);
+            boolean operationAvailable = permissions.isAvailable(operation);
+            boolean rawMaterial = i < 8;
+            if (materialAvailable && (operationAvailable || rawMaterial)) {
+                backgroundColor = AVAILABLE;
+            }
             itemWidget[i].setColor(backgroundColor);
         }
     }
@@ -88,7 +97,7 @@ public class MaterialsTree extends Panel {
             itemWidget[i].setTextColor(WHITE);
             itemWidget[i].setLocalBounds(x, y, 80, 80);
             itemWidget[i].setClickListener(clickListener);
-            itemWidget[i].setTag("" + material.getMaterialID());
+            itemWidget[i].setTag("" + material.getID());
             panel.addChild(itemWidget[i]);
             x += 96;
             if (x + 96 > panel.getWidth()) {
@@ -108,7 +117,7 @@ public class MaterialsTree extends Panel {
     public void setSelectedMaterial(Material material) {
         if (material==null) return;
         unselectAllButtons();
-        itemWidget[material.getMaterialID()].setColor(SELECTED);
+        itemWidget[material.getID()].setColor(SELECTED);
         selectedMaterial = material;
         getTechnologyScene().getRecipePanel().updateData();
     }

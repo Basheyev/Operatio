@@ -165,11 +165,11 @@ public class Machine extends Block implements JSONSerializable {
             Item item = input.get(k);
             if (item==null) continue;
             // Берем код очередного материала из входящей очереди
-            int materialID = item.getMaterial().getMaterialID();
+            int materialID = item.getMaterial().getID();
             // Проверяем есть ли такой материал в списке входных материалов операции
             for (int i = 0; i<operation.getInputs().length; i++) {
                 // Если нашли такой же материал, то уменьшаем счетчик необходимых материалов
-                if (operation.getInputs()[i].getMaterialID()==materialID) {
+                if (operation.getInputs()[i].getID()==materialID) {
                     matCounter[i]--;
                     break;
                 }
@@ -192,7 +192,7 @@ public class Machine extends Block implements JSONSerializable {
             Material material = operation.getOutputs()[i];
 
             // Регистрируем факт производства материала
-            ledger.registerCommodityManufactured(material.getMaterialID(), operation.getOutputAmount()[i]);
+            ledger.registerCommodityManufactured(material.getID(), operation.getOutputAmount()[i]);
 
             for (int j=0; j<operation.getOutputAmount()[i]; j++) {
                 item = new Item(material);

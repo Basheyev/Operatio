@@ -182,7 +182,7 @@ public class AdjustmentPanel extends Panel {
 
     private void importBufferAdjustmentClick(Button button, ImportBuffer importBuffer) {
         String tag = button.getTag();
-        int currentMaterial = importBuffer.getImportMaterial().getMaterialID();
+        int currentMaterial = importBuffer.getImportMaterial().getID();
 
         if (tag.equals(LEFT)) {
             materialID--;
@@ -243,7 +243,7 @@ public class AdjustmentPanel extends Panel {
         }
         if (block instanceof ImportBuffer) {
             ImportBuffer importBuffer = (ImportBuffer) block;
-            if (blockChanged) materialID = importBuffer.getImportMaterial().getMaterialID();
+            if (blockChanged) materialID = importBuffer.getImportMaterial().getID();
             showImporterInfo(importBuffer, materialID);
         }
         if (block instanceof Conveyor) showConveyorInfo((Conveyor) block);

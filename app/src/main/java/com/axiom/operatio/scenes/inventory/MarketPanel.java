@@ -115,7 +115,7 @@ public class MarketPanel extends Panel {
         synchronized (values) {
             Material material = null;
             if (materialsPanel!=null) material = materialsPanel.getSelectedMaterial();
-            if (material!=null) currentCommodity = material.getMaterialID(); else currentCommodity = 0;
+            if (material!=null) currentCommodity = material.getID(); else currentCommodity = 0;
             if (currentCommodity!=previousCommodity) {
                 commodityName = Material.getMaterial(currentCommodity).getName();
                 autoBuyCB.setChecked(inventory.isAutoBuy(currentCommodity));

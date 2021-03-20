@@ -49,14 +49,14 @@ public class Material {
      * @param price цена материала
      */
     private Material(int ID, Sprite image, String name, double price) {
-        materialID = ID;
+        this.materialID = ID;
         this.image = image;
         this.name = name;
         this.price = price;
     }
 
 
-    public int getMaterialID() {
+    public int getID() {
         return materialID;
     }
 

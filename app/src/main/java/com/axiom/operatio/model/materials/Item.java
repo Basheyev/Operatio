@@ -48,7 +48,7 @@ public class Item implements JSONSerializable {
     public JSONObject toJSON() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("material", material.getMaterialID());
+            jsonObject.put("material", material.getID());
             jsonObject.put("cycleOwned", cycleOwned);
             jsonObject.put("timeOwned", timeOwned);
         } catch (JSONException e) {
