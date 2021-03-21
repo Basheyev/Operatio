@@ -206,9 +206,15 @@ public class Machine extends Block implements JSONSerializable {
     private boolean pushToOutput() {
         Block outputBlock = production.getBlockAt(this,outputDirection);
         if (outputBlock==null) return false;
-        if (!(outputBlock instanceof Buffer ||
-              outputBlock instanceof ExportBuffer ||
-              outputBlock instanceof Conveyor)) return false;
+        if (!(outputBlock instanceof Buffer
+           || outputBlock instanceof ExportBuffer
+           || outputBlock instanceof Conveyor)) return false;
+
+        if (outputBlock instanceof Conveyor) {
+            if (production.getBlockAt(outputBlock, outputBlock.getInputDirection()) != this) {
+                return false;
+            }
+        }
 
         Item item;
         while (output.size() > 0) {
