@@ -6,7 +6,7 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
-import com.axiom.operatio.model.gameplay.GameManager;
+import com.axiom.operatio.model.gameplay.MissionManager;
 import com.axiom.operatio.model.gameplay.GameMission;
 import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.common.FormatUtils;
@@ -21,6 +21,8 @@ import static android.graphics.Color.GREEN;
 import static android.graphics.Color.WHITE;
 
 public class ReportPanel extends Panel {
+
+    public static final int ITEM_BACKGROUND = 0x80000000;
 
     private Production production;
     private Caption panelCaption;
@@ -40,7 +42,7 @@ public class ReportPanel extends Panel {
         super();
         this.production = production;
 
-        setLocalBounds(24,60, 1872, 880);
+        setLocalBounds(24,50, 1872, 880);
         setColor(0xCC505050);
 
         summary = new StringBuffer(512);
@@ -61,7 +63,7 @@ public class ReportPanel extends Panel {
         for (int i=0; i<32; i++) {
             boughtMaterials[i] = new ItemWidget("");
             boughtMaterials[i].setLocalBounds(bx, by, 64, 64);
-            boughtMaterials[i].setColor(BLACK);
+            boughtMaterials[i].setColor(ITEM_BACKGROUND);
             boughtMaterials[i].setTextColor(WHITE);
             boughtMaterials[i].setTextScale(0.9f);
             addChild(boughtMaterials[i]);
@@ -82,7 +84,7 @@ public class ReportPanel extends Panel {
         for (int i=0; i<32; i++) {
             manufacturedMaterials[i] = new ItemWidget("");
             manufacturedMaterials[i].setLocalBounds(mx, my, 64, 64);
-            manufacturedMaterials[i].setColor(BLACK);
+            manufacturedMaterials[i].setColor(ITEM_BACKGROUND);
             manufacturedMaterials[i].setTextColor(WHITE);
             manufacturedMaterials[i].setTextScale(0.9f);
             addChild(manufacturedMaterials[i]);
@@ -103,7 +105,7 @@ public class ReportPanel extends Panel {
         for (int i=0; i<32; i++) {
             soldMaterials[i] = new ItemWidget("");
             soldMaterials[i].setLocalBounds(sx, sy, 64, 64);
-            soldMaterials[i].setColor(BLACK);
+            soldMaterials[i].setColor(ITEM_BACKGROUND);
             soldMaterials[i].setTextColor(WHITE);
             soldMaterials[i].setTextScale(0.9f);
             addChild(soldMaterials[i]);
@@ -206,7 +208,7 @@ public class ReportPanel extends Panel {
             expenseCaption.setText(expensesText);
             reportCaption.setText(summary);
 
-            GameMission mission =  GameManager.getMission(production.getLevel());
+            GameMission mission =  MissionManager.getMission(production.getLevel());
             String goal = mission.getName() + " #" + mission.getID() + " - " + mission.getDescription();
             panelCaption.setText(goal);
 

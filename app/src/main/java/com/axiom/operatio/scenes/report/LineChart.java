@@ -18,6 +18,8 @@ import com.axiom.operatio.model.common.FormatUtils;
  */
 public class LineChart extends Widget {
 
+    public static final int GRAPH_BACKGROUND = 0x80000000;
+
     // Ряд данных
     public class DataSeries {
         private final static int MAX_VALUES = 32;
@@ -114,13 +116,13 @@ public class LineChart extends Widget {
         float oldY;
 
         // Отрисуем черный фон
-        GraphicsRender.setColor(0,0,0,0.8f);
+        GraphicsRender.setColor(0,0,0,0.5f);
         GraphicsRender.setZOrder(zOrder + 1);
         GraphicsRender.drawRectangle(x - padding, y - padding, graphWidth + padding * 2,  graphHeight + padding * 2);
 
         // Отрисовываем ряды данных
         GraphicsRender.setZOrder(zOrder + 2);
-        GraphicsRender.setColor(Color.BLACK);
+        GraphicsRender.setColor(GRAPH_BACKGROUND);
 
         // Отрисовываем каждый ряд данных
         for (DataSeries data : dataSeries) {

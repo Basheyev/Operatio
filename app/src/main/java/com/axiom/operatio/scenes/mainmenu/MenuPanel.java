@@ -1,7 +1,5 @@
 package com.axiom.operatio.scenes.mainmenu;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 
 import com.axiom.atom.R;
@@ -12,17 +10,15 @@ import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.MainActivity;
-import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.model.gameplay.GameSaveLoad;
 import com.axiom.operatio.scenes.production.ProductionScene;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class MenuPanel extends Panel {
 
     public final int panelColor = 0xCC505050;
+    protected MainMenuScene mainMenuScene;
     protected ProductionScene productionScene = null;
+    protected GameSaveLoad gameSaveLoad;
     protected int tickSound;
 
     protected ClickListener listener = new ClickListener() {
@@ -31,87 +27,73 @@ public class MenuPanel extends Panel {
             int choice = Integer.parseInt(w.getTag());
             SoundRenderer.playSound(tickSound);
             switch (choice) {
-                case 1: startGame(); break;
-                case 2: resetGame(); break;
+                case 1: continueGame(); break;
+                case 2: newGame(); break;
+                case 3: loadGame(); break;
+                case 4: saveGame(); break;
                 default: exitGame();
             }
         }
     };
 
 
-    public MenuPanel() {
+    public MenuPanel(MainMenuScene menuScene) {
         super();
-        setLocalBounds(Camera.WIDTH/2 - 300,Camera.HEIGHT/2 - 300,600,600);
+        mainMenuScene = menuScene;
+        gameSaveLoad = menuScene.getGameSaveLoad();
+        setLocalBounds(50,Camera.HEIGHT/2 - 400,600,800);
         setColor(panelColor);
-        buildButtons();
+        buildUI();
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
     }
 
 
-    private void buildButtons() {
+    private void buildUI() {
         Button button;
         String caption;
 
-        for (int i =1; i<4; i++) {
-            if (i==1) caption = "Start Game"; else
-            if (i==2) caption = "Reset Game"; else caption = "Exit Game";
+        for (int i =1; i<6; i++) {
+            if (i==1) caption = "Continue"; else
+            if (i==2) caption = "New Game"; else
+            if (i==3) caption = "Load Game"; else
+            if (i==4) caption = "Save Game"; else caption = "Exit Game";
             button = new Button(caption);
             button.setTag(""+i);
-            button.setLocalBounds(50, 550 - ( i * 150), 500, 120);
+            button.setLocalBounds(50, 750 - ( i * 140), 500, 100);
             button.setColor(Color.GRAY);
             button.setTextColor(1,1,1,1);
+            button.setTextScale(1.8f);
             button.setClickListener(listener);
             this.addChild(button);
         }
 
     }
 
-    public void startGame() {
-        MainActivity mainActivity = MainActivity.getActivity();
-        SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
-        SceneManager sceneManager = SceneManager.getInstance();
+    public void continueGame() {
         if (productionScene == null) {
-            String savedGame = sharedPref.getString("Game", null);
-            if (savedGame==null) {
-                productionScene = new ProductionScene();
-            } else {
-                try {
-                    System.out.println("LOADING GAME:\n " + savedGame);
-                    productionScene = new ProductionScene(new JSONObject(savedGame));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    System.out.println("Failed to load game.");
-                    productionScene = new ProductionScene();
-                }
-            }
-            sceneManager.addGameScene(productionScene);
-        }
-        sceneManager.setActiveScene(productionScene.getSceneName());
-    }
-
-
-    public void resetGame() {
-        SceneManager sceneManager = SceneManager.getInstance();
-        if (productionScene!=null) {
-            sceneManager.removeGameScene(productionScene.getSceneName());
-            productionScene = new ProductionScene();
-            sceneManager.addGameScene(productionScene);
+            productionScene = gameSaveLoad.loadGame(0);
+            if (productionScene==null) productionScene = gameSaveLoad.newGame();
+        } else {
+            gameSaveLoad.continueGame();
         }
     }
 
+
+    public void newGame() {
+        productionScene = gameSaveLoad.newGame();
+    }
+
+    public void loadGame() {
+        mainMenuScene.getSlotsPanel().visible = !mainMenuScene.getSlotsPanel().visible;
+    }
+
+    public void saveGame() {
+        mainMenuScene.getSlotsPanel().visible = !mainMenuScene.getSlotsPanel().visible;
+    }
 
     public void exitGame() {
-        MainActivity mainActivity = MainActivity.getActivity();
-        SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
-        if (productionScene!=null) {
-            Production production = productionScene.getProduction();
-            if (!production.isPaused()) production.setPaused(true);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            String savedGame = production.toJSON().toString();
-            System.out.println("SAVING GAME:\n " + savedGame);
-            editor.remove("Game");
-            editor.putString("Game", savedGame);
-            editor.commit();
+        if (productionScene != null) {
+            gameSaveLoad.saveGame(0, productionScene);
         }
         SceneManager.exitGame();
     }

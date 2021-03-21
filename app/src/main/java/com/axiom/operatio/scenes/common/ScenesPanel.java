@@ -52,9 +52,9 @@ public class ScenesPanel extends Panel {
 
     private static final int PANEL_COLOR = 0xCC505050;
     private static final int UNSELECTED = Color.GRAY;
-    private static final int SELECTED = Color.RED;
-    private static final int PAUSED = Color.RED;
-    private static final int PLAYING = Color.GREEN;
+    private static final int SELECTED = 0xFF9d3e4d;
+    private static final int PAUSED = 0xFF9d3e4d;
+    private static final int PLAYING = 0xFF80B380;
     private static final int TEXT_COLOR = Color.WHITE;
 
     private static final String MENU = MainMenuScene.SCENE_NAME;
@@ -92,8 +92,8 @@ public class ScenesPanel extends Panel {
         coinButton.setColor(0,0,0, 0);
 
         menuButton = buildButton(0, MENU, 24, 0, 128, 128, true);
-        inventoryButton = buildButton(4, INVENTORY, 680, 0, 128, 128, true);
-        productionButton = buildButton(5, PRODUCTION, 824, 0, 128, 128, true);
+        productionButton = buildButton(5, PRODUCTION,  680, 0, 128, 128,true);
+        inventoryButton = buildButton(4, INVENTORY,  824, 0, 128, 128,true);
         technologyButton = buildButton(6, TECHNOLOGY, 968, 0, 128, 128, true);
         reportButton = buildButton(7, REPORT, 1112, 0, 128, 128, true);
         pauseButton = buildButton(2, PAUSE, 1768, 0, 128, 128, true);

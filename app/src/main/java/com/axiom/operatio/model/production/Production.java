@@ -4,7 +4,7 @@ import com.axiom.atom.R;
 import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
-import com.axiom.operatio.model.gameplay.GameManager;
+import com.axiom.operatio.model.gameplay.MissionManager;
 import com.axiom.operatio.model.gameplay.GameMission;
 import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.ledger.Ledger;
@@ -79,7 +79,7 @@ public class Production implements JSONSerializable {
         renderer = new ProductionRenderer(this);
 
         permissions = new GamePermissions();
-        GameMission stub = GameManager.getMission(0);
+        GameMission stub = MissionManager.getMission(0);
         if (stub!=null) {
             stub.earnReward(this);
             level = 1;
@@ -164,7 +164,7 @@ public class Production implements JSONSerializable {
         } catch (JSONException e) {
             e.printStackTrace();
             permissions = new GamePermissions();
-            GameMission stub = GameManager.getMission(0);
+            GameMission stub = MissionManager.getMission(0);
             if (stub!=null) {
                 stub.earnReward(this);
                 level = 1;
@@ -259,12 +259,12 @@ public class Production implements JSONSerializable {
 
     private void checkLevelConditions() {
         // Проверка условий уровня
-        GameMission mission = GameManager.getMission(level);
+        GameMission mission = MissionManager.getMission(level);
         if (mission.checkWinConditions(this) && lastCompletedLevel != level) {
             SoundRenderer.playSound(levelCompletedSound);
             mission.earnReward(this);
             lastCompletedLevel = level;
-            if (level + 1 <= GameManager.size() - 1) level++;
+            if (level + 1 <= MissionManager.size() - 1) level++;
         }
     }
 
@@ -443,7 +443,6 @@ public class Production implements JSONSerializable {
 
         try {
             JSONObject jsonObject = new JSONObject();
- //           jsonObject.put("cashBalance", cashBalance);
             jsonObject.put("columns", columns);
             jsonObject.put("rows", rows);
             jsonObject.put("level", level);

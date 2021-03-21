@@ -20,9 +20,9 @@ import static android.graphics.Color.WHITE;
 
 public class MaterialsTree extends Panel {
 
-    public static final int AVAILABLE = BLACK;
+    public static final int AVAILABLE = 0x80000000;
     public static final int UNAVAILABLE = 0xA0220026;
-    public static final int SELECTED = RED;
+    public static final int SELECTED = 0xFF9d3e4d;
 
     private TechnologyScene technologyScene;
     private Production production;
@@ -71,7 +71,7 @@ public class MaterialsTree extends Panel {
 
     protected void buildUI() {
         Panel panel = this;
-        panel.setLocalBounds(24,60, 820, 880);
+        panel.setLocalBounds(24,50, 820, 880);
         panel.setColor(0xCC505050);
 
         Caption caption = new Caption("Materials");

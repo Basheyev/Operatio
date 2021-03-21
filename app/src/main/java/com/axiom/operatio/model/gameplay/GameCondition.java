@@ -1,4 +1,4 @@
-package com.axiom.operatio.model.gameplay.mission;
+package com.axiom.operatio.model.gameplay;
 
 
 import com.axiom.operatio.model.ledger.Ledger;
@@ -6,7 +6,7 @@ import com.axiom.operatio.model.ledger.Ledger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Condition {
+public class GameCondition {
 
     public static final int MANUFACTURED_AMOUNT = 1;           // Произведенное количество
     public static final int MANUFACTURE_PRODUCTIVITY = 2;      // Продуктивность за день
@@ -21,7 +21,7 @@ public class Condition {
     protected double value;                                    // Значение
 
 
-    public Condition(JSONObject condition) throws JSONException {
+    public GameCondition(JSONObject condition) throws JSONException {
         this.indicatorType = condition.getInt("indicatorType");
         this.materialID = condition.getInt("materialID");
         this.value = condition.getDouble("value");

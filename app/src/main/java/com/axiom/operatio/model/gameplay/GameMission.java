@@ -1,6 +1,5 @@
-package com.axiom.operatio.model.gameplay.mission;
+package com.axiom.operatio.model.gameplay;
 
-import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.production.Production;
 
 import org.json.JSONArray;
@@ -8,19 +7,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class Mission {
+public class GameMission {
 
     private int ID;
     private String name;
     private String description;
     private int[] prerequisiteIDs;
-    private Condition[] winConditions;
+    private GameCondition[] winConditions;
     private GamePermissions permissionsReward;
     private double moneyReward;
     protected boolean completed;
 
 
-    protected Mission(JSONObject mission) {
+    protected GameMission(JSONObject mission) {
         try {
             ID = mission.getInt("ID");
             name = mission.getString("name");
@@ -44,10 +43,10 @@ public class Mission {
     }
 
 
-    private Condition[] parseConditionsArray(JSONArray jsonConditions) throws JSONException {
-        Condition[] array = new Condition[jsonConditions.length()];
+    private GameCondition[] parseConditionsArray(JSONArray jsonConditions) throws JSONException {
+        GameCondition[] array = new GameCondition[jsonConditions.length()];
         for (int i=0; i<jsonConditions.length(); i++) {
-            array[i] = new Condition(jsonConditions.getJSONObject(i));
+            array[i] = new GameCondition(jsonConditions.getJSONObject(i));
         }
         return array;
     }
@@ -57,7 +56,7 @@ public class Mission {
         // Если условий победы нет - выигрыша нет
         if (winConditions==null) return false;
         // Если не выполнилось хоть одно условия - выигрыша нет
-        for (Condition winCondition : winConditions) {
+        for (GameCondition winCondition : winConditions) {
             if (!winCondition.check(production.getLedger())) return false;
         }
         // Иначе выигрыш
@@ -87,7 +86,7 @@ public class Mission {
         return prerequisiteIDs;
     }
 
-    public Condition[] getWinConditions() {
+    public GameCondition[] getWinConditions() {
         return winConditions;
     }
 

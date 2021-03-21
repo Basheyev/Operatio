@@ -14,14 +14,15 @@ import com.axiom.operatio.scenes.common.ItemWidget;
 
 import java.util.ArrayList;
 
-import static android.graphics.Color.BLACK;
-import static android.graphics.Color.RED;
 import static android.graphics.Color.WHITE;
 
 /**
  * Панель отображения списка материалов с остатками на складе
  */
 public class MaterialsPanel extends Panel {
+
+    public static final int ITEM_BACKGROUND = 0x80000000;
+    public static final int ITEM_SELECTED = 0xFF9d3e4d;
 
     private InventoryScene inventoryScene;
     private Production production;
@@ -51,7 +52,7 @@ public class MaterialsPanel extends Panel {
     }
 
 
-    public void updatePermissions(int level) {
+    public void updatePermissions() {
         GamePermissions permissions = production.getPermissions();
         for (int i=0; i<itemWidget.length; i++) {
             ItemWidget item = itemWidget[i];
@@ -66,10 +67,10 @@ public class MaterialsPanel extends Panel {
 
     protected void buildUI() {
         Panel panel = this;
-        panel.setLocalBounds(24,60, 820, 880);
+        panel.setLocalBounds(24,50, 820, 880);
         panel.setColor(0xCC505050);
 
-        Caption caption = new Caption("Inventory");
+        Caption caption = new Caption("Warehouse");
         caption.setTextScale(1.5f);
         caption.setTextColor(WHITE);
         caption.setLocalBounds(30, panel.getHeight() - 100, 300, 100);
@@ -82,7 +83,7 @@ public class MaterialsPanel extends Panel {
             Material material = Material.getMaterial(i);
             int balance = inventory.getBalance(material);
             itemWidget[i] = new ItemWidget("" + balance);
-            itemWidget[i].setColor(BLACK);
+            itemWidget[i].setColor(ITEM_BACKGROUND);
             itemWidget[i].setBackground(material.getImage());
             itemWidget[i].setTextScale(1);
             itemWidget[i].setTextColor(WHITE);
@@ -120,9 +121,9 @@ public class MaterialsPanel extends Panel {
             ItemWidget item = (ItemWidget) w;
             if (!item.isActive()) return;
 
-            if (w.getColor()!=RED) {
+            if (w.getColor()!=ITEM_SELECTED) {
                 unselectAllButtons(w);
-                w.setColor(RED);
+                w.setColor(ITEM_SELECTED);
                 materialsPanel.selectedMaterial = material;
                 SoundRenderer.playSound(tickSound);
             } else {
@@ -135,7 +136,7 @@ public class MaterialsPanel extends Panel {
         public void unselectAllButtons(Widget w) {
             ArrayList<Widget> children = w.getParent().getChildren();
             for (int i=0; i<children.size(); i++) {
-                children.get(i).setColor(BLACK);
+                children.get(i).setColor(ITEM_BACKGROUND);
             }
             MaterialsPanel materialsPanel = (MaterialsPanel) w.getParent();
             materialsPanel.selectedMaterial = null;

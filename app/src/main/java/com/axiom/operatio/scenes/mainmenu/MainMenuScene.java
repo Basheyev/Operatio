@@ -12,13 +12,16 @@ import com.axiom.atom.engine.graphics.renderers.Line;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
+import com.axiom.operatio.model.gameplay.GameSaveLoad;
 
 public class MainMenuScene extends GameScene {
 
     public static final String SCENE_NAME = "Menu";
-
+    private GameSaveLoad gameSaveLoad;
     private Sprite background;
     private MenuPanel menuPanel;
+    private SlotsPanel slotsPanel;
+    private float scrollerX;
 
     @Override
     public String getSceneName() {
@@ -28,16 +31,16 @@ public class MainMenuScene extends GameScene {
     @Override
     public void startScene() {
         if (menuPanel==null) {
-            background = new Sprite(SceneManager.getResources(), R.drawable.background);
+            background = new Sprite(SceneManager.getResources(), R.drawable.bck_menu);
             Widget widget = getSceneWidget();
-            menuPanel = new MenuPanel();
+            gameSaveLoad = new GameSaveLoad();
+            menuPanel = new MenuPanel(this);
             widget.addChild(menuPanel);
+            slotsPanel = new SlotsPanel(this);
+            slotsPanel.visible = false;
+            widget.addChild(slotsPanel);
         }
-        //Camera.getInstance().lookAt(Camera.WIDTH/2, Camera.HEIGHT/2);
-    }
-
-    public MenuPanel getMenuPanel() {
-        return menuPanel;
+        scrollerX = Camera.WIDTH;
     }
 
     @Override
@@ -52,13 +55,17 @@ public class MainMenuScene extends GameScene {
 
     @Override
     public void updateScene(float deltaTime) {
-
+        scrollerX -= 20 * deltaTime;
+        if (scrollerX<=0) scrollerX=Camera.WIDTH;
     }
 
     @Override
     public void preRender(Camera camera) {
+        float cx = camera.getMinX();
+        float cy = camera.getMinY();
         background.setZOrder(0);
-        background.draw(camera,camera.getMinX(),camera.getMinY(), Camera.WIDTH,Camera.HEIGHT);
+        background.draw(camera,cx + scrollerX, cy, Camera.WIDTH,Camera.HEIGHT);
+        background.draw(camera, cx + scrollerX - Camera.WIDTH, cy, Camera.WIDTH,Camera.HEIGHT);
     }
 
 
@@ -76,11 +83,27 @@ public class MainMenuScene extends GameScene {
         float y = camera.getMinY();
         GraphicsRender.setZOrder(2000);
         GraphicsRender.setColor(1,1,1,1);
-        GraphicsRender.drawText(fps, x + 600,y + 20, 2f);
+        GraphicsRender.drawText(fps, x + 750,y + 20, 1.2f);
     }
 
     @Override
     public void onMotion(MotionEvent event, float worldX, float worldY) {
 
     }
+
+
+    public MenuPanel getMenuPanel() {
+        return menuPanel;
+    }
+
+
+    public SlotsPanel getSlotsPanel() {
+        return slotsPanel;
+    }
+
+
+    public GameSaveLoad getGameSaveLoad() {
+        return gameSaveLoad;
+    }
+
 }

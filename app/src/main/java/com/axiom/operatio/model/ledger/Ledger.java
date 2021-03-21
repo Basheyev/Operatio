@@ -39,13 +39,10 @@ public class Ledger implements JSONSerializable {
 
     public Ledger(Production production) {
         this.production = production;
-
         materialRecords = new MaterialRecord[Inventory.SKU_COUNT];
-
         for (int i=0; i<Inventory.SKU_COUNT; i++) {
             materialRecords[i] = new MaterialRecord();
         }
-
         cashBalance = 0;
         total = new LedgerPeriod();
         currentPeriod = new LedgerPeriod();
@@ -54,7 +51,6 @@ public class Ledger implements JSONSerializable {
         for (int i=0; i<HISTORY_LENGTH; i++) {
             history[i] = new LedgerPeriod();
         }
-
     }
 
 

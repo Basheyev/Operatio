@@ -112,7 +112,7 @@ public class TechnologyScene extends GameScene {
 
     protected void buildUI() {
 
-        background = new Sprite(SceneManager.getResources(), R.drawable.background);
+        background = new Sprite(SceneManager.getResources(), R.drawable.bck_technology);
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
 
         Widget widget = getSceneWidget();

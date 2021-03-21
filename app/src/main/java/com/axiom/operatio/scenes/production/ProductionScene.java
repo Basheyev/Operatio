@@ -43,6 +43,10 @@ public class ProductionScene extends GameScene {
     }
 
 
+    public ProductionScene(Production production) {
+        this.production = production;
+    }
+
     public ProductionScene(JSONObject jsonProduction) throws JSONException {
         production = new Production(jsonProduction);
     }

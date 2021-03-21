@@ -93,7 +93,7 @@ public class RecipePanel extends Panel {
 
     private void buildUI() {
         Panel panel = this;
-        panel.setLocalBounds(874,60, 1026, 880);
+        panel.setLocalBounds(874,50, 1026, 880);
         panel.setColor(0xCC505050);
 
         inpBtn = new ItemWidget[4];

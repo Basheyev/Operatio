@@ -21,13 +21,16 @@ import com.axiom.operatio.model.production.Production;
 
 public class MarketPanel extends Panel {
 
-    public static final int panelColor = 0xCC505050;
+    public static final int GRAPH_BACKGROUND = 0x80000000;
+    public static final int PANEL_COLOR = 0xCC505050;
+    public static final int BUY_COLOR = 0xFF9d3e4d;
+    public static final int SELL_COLOR = 0xFF80B380;
 
     private Production production;
     private Inventory inventory;
 
     private CheckBox autoBuyCB, autoSellCB;
-    private Caption caption;
+    private Caption caption, materialCaption;
     private Market market;
     private final double[] values;
     private double maxValue;
@@ -62,8 +65,9 @@ public class MarketPanel extends Panel {
 
 
     private void buildUI() {
-        setLocalBounds(874, 60, 1022, 880); // 330
-        setColor(panelColor);
+        setLocalBounds(874, 50, 1022, 880);
+        setColor(PANEL_COLOR);
+
 
         caption = new Caption("Market");
         caption.setTextScale(1.5f);
@@ -71,8 +75,14 @@ public class MarketPanel extends Panel {
         caption.setLocalBounds(30, 780, 300, 100);
         addChild(caption);
 
-        buyButton = buildButton("BUY", 25, 365, 150, 80, Color.RED, 1.5f,true);
-        sellButton = buildButton("SELL", 800, 365, 150, 80, Color.GREEN, 1.5f, true);
+        materialCaption = new Caption("Material price");
+        materialCaption.setTextScale(1.3f);
+        materialCaption.setTextColor(Color.WHITE);
+        materialCaption.setLocalBounds(50, 480, 300, 100);
+        addChild(materialCaption);
+
+        buyButton = buildButton("BUY", 25, 365, 150, 80, BUY_COLOR, 1.5f,true);
+        sellButton = buildButton("SELL", 800, 365, 180, 80, SELL_COLOR, 1.5f, true);
 
         leftButton = buildButton("<", 200, 365, 75, 80, Color.GRAY, 1.5f,true);
         quantityButton = buildButton("" + quantity, 275, 365, 150, 80, Color.BLACK, 1.5f, false);
@@ -126,7 +136,7 @@ public class MarketPanel extends Panel {
             counter = market.getHistoryLength(currentCommodity);
             market.getHistoryValues(currentCommodity, values);
             dealSum.setText(FormatUtils.formatMoney(quantity * market.getValue(currentCommodity)));
-            caption.setText(commodityName + " - " + FormatUtils.formatMoney(market.getValue(currentCommodity)));
+            materialCaption.setText(commodityName + " - " + FormatUtils.formatMoney(market.getValue(currentCommodity)));
         }
     }
 
@@ -136,19 +146,18 @@ public class MarketPanel extends Panel {
         super.draw(camera);
 
         AABB wBounds = getWorldBounds();
-        AABB scissor = getScissors();
 
         GraphicsRender.setZOrder(zOrder + 1);
 
         synchronized (values) {
             float graphWidth = 960;
             float graphHeight = 300;
-            float floor = 150 + 330;
+            float floor = 480;
             float x = wBounds.min.x + 25;
             float y = wBounds.min.y + floor;
             float oldX = x;
             float oldY;
-            GraphicsRender.setColor(Color.BLACK);
+            GraphicsRender.setColor(GRAPH_BACKGROUND);
             GraphicsRender.setZOrder(zOrder + 1);
             GraphicsRender.drawRectangle(x, y, graphWidth,  graphHeight);
             GraphicsRender.setZOrder(zOrder + 2);

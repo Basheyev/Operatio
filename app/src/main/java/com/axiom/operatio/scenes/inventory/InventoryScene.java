@@ -88,7 +88,7 @@ public class InventoryScene extends GameScene {
         if (currentLevel != production.getLevel() || permissionsChanged) {
             currentLevel = production.getLevel();
             // Включить доступные машины на этом уровне
-            materialsPanel.updatePermissions(production.getLevel());
+            materialsPanel.updatePermissions();
         }
     }
 
@@ -123,7 +123,7 @@ public class InventoryScene extends GameScene {
 
     protected void buildUI() {
 
-        background = new Sprite(SceneManager.getResources(), R.drawable.background);
+        background = new Sprite(SceneManager.getResources(), R.drawable.bck_inventory);
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
 
         Widget widget = getSceneWidget();
