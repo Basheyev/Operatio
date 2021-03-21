@@ -10,6 +10,7 @@ import com.axiom.atom.engine.ui.widgets.Button;
 public class ItemWidget extends Button {
 
     private boolean active = true;
+    private float alpha = 1;
 
     public ItemWidget(String text) {
         super(text);
@@ -35,7 +36,10 @@ public class ItemWidget extends Button {
         synchronized (this) {
             if (background != null) {
                 background.setZOrder(zOrder + 1);
+                float temp = background.getAlpha();
+                background.setAlpha(alpha);
                 background.draw(camera, bounds, parentScissor);
+                background.setAlpha(temp);
             }
             if (text != null) {
                 textRenderer.setZOrder(zOrder + 2);
@@ -65,5 +69,9 @@ public class ItemWidget extends Button {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public void setSpriteAlpha(float alpha) {
+        this.alpha = alpha;
     }
 }

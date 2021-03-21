@@ -52,7 +52,7 @@ public class ScenesPanel extends Panel {
 
     private static final int PANEL_COLOR = 0xCC505050;
     private static final int UNSELECTED = Color.GRAY;
-    private static final int SELECTED = 0xFF9d3e4d;
+    private static final int SELECTED = 0xFFd5c01f;
     private static final int PAUSED = 0xFF9d3e4d;
     private static final int PLAYING = 0xFF80B380;
     private static final int TEXT_COLOR = Color.WHITE;

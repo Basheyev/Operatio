@@ -266,7 +266,7 @@ public class RecipePanel extends Panel {
     private void drawRecipeBackground() {
         AABB bnds = getWorldBounds();
         GraphicsRender.setZOrder(zOrder + 1);
-        GraphicsRender.setColor(0.08f,0,0.16f,0.8f);
+        GraphicsRender.setColor(0.08f,0,0.16f,0.5f);
         GraphicsRender.drawRectangle(bnds.min.x, bnds.min.y + 250, bnds.width, 530);
     }
 

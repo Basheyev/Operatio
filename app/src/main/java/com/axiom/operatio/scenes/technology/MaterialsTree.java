@@ -21,8 +21,8 @@ import static android.graphics.Color.WHITE;
 public class MaterialsTree extends Panel {
 
     public static final int AVAILABLE = 0x80000000;
-    public static final int UNAVAILABLE = 0xA0220026;
-    public static final int SELECTED = 0xFF9d3e4d;
+    public static final int UNAVAILABLE = 0x50220026;
+    public static final int SELECTED = 0xFFd5c01f;
 
     private TechnologyScene technologyScene;
     private Production production;
@@ -61,10 +61,15 @@ public class MaterialsTree extends Panel {
             boolean materialAvailable = permissions.isAvailable(material);
             boolean operationAvailable = permissions.isAvailable(operation);
             boolean rawMaterial = i < 8;
+            float alpha;
             if (materialAvailable && (operationAvailable || rawMaterial)) {
                 backgroundColor = AVAILABLE;
+                alpha = 1;
+            } else {
+                alpha = 0.7f;
             }
             itemWidget[i].setColor(backgroundColor);
+            itemWidget[i].setSpriteAlpha(alpha);
         }
     }
 
@@ -74,7 +79,7 @@ public class MaterialsTree extends Panel {
         panel.setLocalBounds(24,50, 820, 880);
         panel.setColor(0xCC505050);
 
-        Caption caption = new Caption("Materials");
+        Caption caption = new Caption("Materials recipes");
         caption.setTextScale(1.5f);
         caption.setTextColor(WHITE);
         caption.setLocalBounds(30, panel.getHeight() - 100, 300, 100);

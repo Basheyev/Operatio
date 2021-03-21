@@ -22,7 +22,7 @@ import static android.graphics.Color.WHITE;
 public class MaterialsPanel extends Panel {
 
     public static final int ITEM_BACKGROUND = 0x80000000;
-    public static final int ITEM_SELECTED = 0xFF9d3e4d;
+    public static final int ITEM_SELECTED = 0xFFd5c01f;
 
     private InventoryScene inventoryScene;
     private Production production;
