@@ -70,13 +70,19 @@ public class Production implements JSONSerializable {
         grid = new Block[rows][columns];
         unlocked = new boolean[rows][columns];
         setAreaUnlocked(0,0, columns, rows, false);
-        setAreaUnlocked(0,0,UNLOCKED_WIDTH, UNLOCKED_HEIGHT, true);
+        int centerCol = (columns / 2) - (UNLOCKED_WIDTH / 2);
+        int centerRow = (rows / 2) - (UNLOCKED_HEIGHT / 2);
+        setAreaUnlocked(centerCol,centerRow,UNLOCKED_WIDTH, UNLOCKED_HEIGHT, true);
 
         blocks = new ArrayList<Block>(100);
         inventory = new Inventory(this);
         market = new Market(this);
         ledger = new Ledger(this);
         renderer = new ProductionRenderer(this);
+
+        float cameraX = (columns / 2) * renderer.getCellWidth();
+        float cameraY = (rows / 2) * renderer.getCellHeight();
+        Camera.getInstance().lookAt(cameraX, cameraY);
 
         permissions = new GamePermissions();
         GameMission stub = MissionManager.getMission(0);
@@ -91,7 +97,6 @@ public class Production implements JSONSerializable {
 
         levelCompletedSound = SoundRenderer.loadSound(R.raw.yes_snd);
 
-//        cashBalance = jsonObject.getLong("cashBalance");
         int columns = jsonObject.getInt("columns");
         int rows = jsonObject.getInt("rows");
 
@@ -100,7 +105,6 @@ public class Production implements JSONSerializable {
         grid = new Block[rows][columns];
         unlocked = new boolean[rows][columns];
         level = jsonObject.getInt("level");
-//        lastCompletedLevel = level;
         lastCycleTime = jsonObject.getLong("lastCycleTime");
         cycleMilliseconds = jsonObject.getLong("cycleMilliseconds");
         clock = jsonObject.getLong("clock");
