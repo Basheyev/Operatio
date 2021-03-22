@@ -11,16 +11,23 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class GameSaveLoad {
 
+    private static String KEY_PREFIX = "SLOT";
     public static final int MAX_SLOTS = 5;
+    private String[] savedGamesList;
 
-
+    public GameSaveLoad() {
+        loadSavedGamesList();
+    }
 
     public synchronized void continueGame() {
         SceneManager sceneManager = SceneManager.getInstance();
         sceneManager.setActiveScene(ProductionScene.SCENE_NAME);
     }
+
 
     public synchronized ProductionScene newGame() {
         ProductionScene scene = new ProductionScene();
@@ -29,9 +36,15 @@ public class GameSaveLoad {
     }
 
 
+    public String[] getSavedGames() {
+        return savedGamesList;
+    }
+
+
+
     public synchronized ProductionScene loadGame(int slot) {
         if (slot < 0 || slot >= MAX_SLOTS) return null;
-        String slotName = "SLOT" + slot;
+        String slotName = KEY_PREFIX + slot;
         SharedPreferences sharedPref = getPreferences();
         String loadedGame = sharedPref.getString(slotName, null);
         if (loadedGame==null) return null;
@@ -48,15 +61,20 @@ public class GameSaveLoad {
 
     public synchronized boolean saveGame(int slot, ProductionScene productionScene) {
         if (slot < 0 || slot >= MAX_SLOTS || productionScene==null) return false;
-        String slotName = "SLOT" + slot;
+        String slotName = KEY_PREFIX + slot;
         SharedPreferences sharedPref = getPreferences();
         SharedPreferences.Editor editor = sharedPref.edit();
         Production production = productionScene.getProduction();
         if (!production.isPaused()) production.setPaused(true);
         String savedGame = production.toJSON().toString();
-        editor.remove(slotName);
+        if (sharedPref.contains(slotName)) editor.remove(slotName);
         editor.putString(slotName, savedGame);
-        return editor.commit();
+        boolean success = editor.commit();
+        if (success) {
+            savedGamesList[slot] = slotName;
+            return true;
+        }
+        return false;
     }
 
 
@@ -74,4 +92,15 @@ public class GameSaveLoad {
     }
 
 
+    private void loadSavedGamesList() {
+        SharedPreferences preferences = getPreferences();
+        savedGamesList = new String[MAX_SLOTS];
+        for (int i=0; i<MAX_SLOTS; i++) {
+            String key = KEY_PREFIX + i;
+            if (preferences.contains(key)) {
+                savedGamesList[i] = key;
+            } else savedGamesList[i] = null;
+        }
+
+    }
 }

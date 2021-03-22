@@ -7,6 +7,7 @@ import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.graphics.gles2d.Texture;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.graphics.renderers.Line;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
@@ -18,7 +19,7 @@ public class MainMenuScene extends GameScene {
 
     public static final String SCENE_NAME = "Menu";
     private GameSaveLoad gameSaveLoad;
-    private Sprite background;
+    private Sprite logo, ceo, background;
     private MenuPanel menuPanel;
     private SlotsPanel slotsPanel;
     private float scrollerX;
@@ -32,6 +33,13 @@ public class MainMenuScene extends GameScene {
     public void startScene() {
         if (menuPanel==null) {
             background = new Sprite(SceneManager.getResources(), R.drawable.bck_menu);
+
+            Texture logoTexture = Texture.getInstance(SceneManager.getResources(), R.drawable.logo, true);
+            logo = new Sprite(logoTexture,1,1);
+
+            Texture ceoTexture = Texture.getInstance(SceneManager.getResources(), R.drawable.ceo, true);
+            ceo = new Sprite(ceoTexture, 1,1);
+
             Widget widget = getSceneWidget();
             gameSaveLoad = new GameSaveLoad();
             menuPanel = new MenuPanel(this);
@@ -66,6 +74,11 @@ public class MainMenuScene extends GameScene {
         background.setZOrder(0);
         background.draw(camera,cx + scrollerX, cy, Camera.WIDTH,Camera.HEIGHT);
         background.draw(camera, cx + scrollerX - Camera.WIDTH, cy, Camera.WIDTH,Camera.HEIGHT);
+        logo.setZOrder(1);
+        logo.draw(camera, cx + 50, cy + Camera.HEIGHT - logo.getHeight() - 25, logo.getWidth(), logo.getHeight());
+        ceo.setZOrder(1);
+        ceo.draw(camera, cx + Camera.WIDTH - ceo.getWidth() * 3 - 150, cy + 25, ceo.getWidth() * 3, ceo.getHeight() * 3);
+
     }
 
 

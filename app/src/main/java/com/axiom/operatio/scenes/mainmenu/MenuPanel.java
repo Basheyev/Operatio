@@ -13,6 +13,9 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.gameplay.GameSaveLoad;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
+import static com.axiom.operatio.scenes.mainmenu.SlotsPanel.MODE_LOAD_GAME;
+import static com.axiom.operatio.scenes.mainmenu.SlotsPanel.MODE_SAVE_GAME;
+
 public class MenuPanel extends Panel {
 
     public final int panelColor = 0xCC505050;
@@ -41,7 +44,7 @@ public class MenuPanel extends Panel {
         super();
         mainMenuScene = menuScene;
         gameSaveLoad = menuScene.getGameSaveLoad();
-        setLocalBounds(50,Camera.HEIGHT/2 - 400,600,800);
+        setLocalBounds(50,50,600,800);
         setColor(panelColor);
         buildUI();
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
@@ -83,12 +86,25 @@ public class MenuPanel extends Panel {
         productionScene = gameSaveLoad.newGame();
     }
 
+
     public void loadGame() {
-        mainMenuScene.getSlotsPanel().visible = !mainMenuScene.getSlotsPanel().visible;
+        SlotsPanel slotsPanel = mainMenuScene.getSlotsPanel();
+        if (slotsPanel.getMode()==MODE_LOAD_GAME) {
+            slotsPanel.visible = !slotsPanel.visible;
+        } else {
+            slotsPanel.setMode(MODE_LOAD_GAME);
+            slotsPanel.visible = true;
+        }
     }
 
     public void saveGame() {
-        mainMenuScene.getSlotsPanel().visible = !mainMenuScene.getSlotsPanel().visible;
+        SlotsPanel slotsPanel = mainMenuScene.getSlotsPanel();
+        if (slotsPanel.getMode()==MODE_SAVE_GAME) {
+            slotsPanel.visible = !slotsPanel.visible;
+        } else {
+            slotsPanel.setMode(MODE_SAVE_GAME);
+            slotsPanel.visible = true;
+        }
     }
 
     public void exitGame() {
@@ -96,6 +112,14 @@ public class MenuPanel extends Panel {
             gameSaveLoad.saveGame(0, productionScene);
         }
         SceneManager.exitGame();
+    }
+
+    public ProductionScene getProductionScene() {
+        return productionScene;
+    }
+
+    public void setProductionScene(ProductionScene scene) {
+        productionScene = scene;
     }
 
 }
