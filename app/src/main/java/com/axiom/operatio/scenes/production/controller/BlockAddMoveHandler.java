@@ -180,16 +180,16 @@ public class BlockAddMoveHandler {
             productionRenderer.stopBlockMoving();
             // Если lastCol==lastRow==-1 значит удалить блок
             production.setBlock(dragBlock, lastCol, lastRow);
+            // Отменить действие
+            actionInProgress = false;
+            // Отменить создание нового блока
+            ProductionSceneUI.getBlocksPanel().untoggleButtons();
+            // Убрать выделение блока если там ничего нет
+            production.unselectBlock();
+            // Спрятать панель настройки
+            AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
+            opsPanel.hideBlockInfo();
         }
-        // Отменить действие
-        actionInProgress = false;
-        // Отменить создание нового блока
-        ProductionSceneUI.getBlocksPanel().untoggleButtons();
-        // Убрать выделение блока если там ничего нет
-        production.unselectBlock();
-        // Спрятать панель настройки
-        AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
-        opsPanel.hideBlockInfo();
     }
 
 }
