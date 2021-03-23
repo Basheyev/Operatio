@@ -37,7 +37,7 @@ public class FormatUtils {
 
 
     public static String formatDateAndTime() {
-        SimpleDateFormat timeStampFormat = new SimpleDateFormat("HH:mm:ss dd-MMM-yyyy", Locale.getDefault());
+        SimpleDateFormat timeStampFormat = new SimpleDateFormat("HH:mm dd-MM-yyyy", Locale.getDefault());
         Date myDate = new Date();
         return timeStampFormat.format(myDate);
     }
