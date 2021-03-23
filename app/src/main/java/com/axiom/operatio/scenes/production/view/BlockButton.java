@@ -56,8 +56,7 @@ public class BlockButton extends Button {
         else if (id==8) initializeImageButton(65, ImportBuffer.PRICE);
         else if (id==9) initializeImageButton(66, ExportBuffer.PRICE);
 
-        setColor(0.5f, 0.7f, 0.5f, 0.9f);
-        setColor(Color.GRAY);
+        setColor(Color.DKGRAY);
         this.panel = panel;
         this.tag = "" + id;
         panel.addChild(this);
@@ -127,6 +126,8 @@ public class BlockButton extends Button {
     private void actionUp(BlockAddMoveHandler moveHandler) {
         panel.setToggledButton("");
         scene.getProduction().unselectBlock();
+        AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
+        opsPanel.hideBlockInfo();
         moveHandler.invalidateAction();
     }
 

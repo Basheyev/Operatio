@@ -30,7 +30,7 @@ public class BlocksPanel extends Panel {
 
     public void untoggleButtons() {
         for (Widget widget:children) {
-            widget.setColor(Color.GRAY);
+            widget.setColor(Color.DKGRAY);
         }
         toggledButton = null;
     }

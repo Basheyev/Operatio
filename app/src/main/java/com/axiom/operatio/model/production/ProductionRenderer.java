@@ -184,8 +184,8 @@ public class ProductionRenderer {
 
 
     public void setCellSize(float width, float height) {
-        if (width<128 || height<128) { width = 128; height = 128; }
-        if (width>512 || height>512) { width = 512; height = 512; }
+        if (width<MIN_CELL_SIZE || height<MIN_CELL_SIZE) { width = MIN_CELL_SIZE; height = MIN_CELL_SIZE; }
+        if (width>MAX_CELL_SIZE || height>MAX_CELL_SIZE ) { width = MAX_CELL_SIZE ; height = MAX_CELL_SIZE ; }
         cellWidth = width;
         cellHeight = height;
     }

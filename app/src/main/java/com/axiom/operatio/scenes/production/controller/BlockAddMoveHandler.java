@@ -95,7 +95,14 @@ public class BlockAddMoveHandler {
             // Если блок добавлен в пределах карты производства
             if (column >= 0 && row >= 0 && column < cols && row < rows) {
                 if (block == null && production.isUnlocked(column, row)) setBlockTo(column, row);
-                else returnBlockBack(column, row);
+                else {
+                    // если место занято
+                    returnBlockBack(column, row);
+                    // Спрятать панель настройки
+                    AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
+                    opsPanel.hideBlockInfo();
+                    production.unselectBlock();
+                }
             } else {
                 if (!justCreatedBlock) returnBlockBack(lastCol, lastRow);
                 invalidateAction();
@@ -180,6 +187,9 @@ public class BlockAddMoveHandler {
         ProductionSceneUI.getBlocksPanel().untoggleButtons();
         // Убрать выделение блока если там ничего нет
         production.unselectBlock();
+        // Спрятать панель настройки
+        AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
+        opsPanel.hideBlockInfo();
     }
 
 }
