@@ -50,7 +50,6 @@ public class SlotsPanel extends Panel {
 
     private void buildButtons() {
         Button button;
-        String caption;
 
         header = new Caption("");
         header.setLocalBounds(50, 730, 500, 50);
@@ -61,10 +60,10 @@ public class SlotsPanel extends Panel {
         slotButtons = new Button[GameSaveLoad.MAX_SLOTS];
 
         for (int i =0; i < GameSaveLoad.MAX_SLOTS; i++) {
-            button = new Button("");
+            button = new Button();
             button.setHorizontalAlignment(Text.ALIGN_LEFT);
             button.setTag("" + i);
-            button.setLocalBounds(50, 750 - ((i+1) * 140), 500, 100);
+            button.setLocalBounds(50, 750 - ((i + 1) * 140), 500, 100);
             button.setColor(Color.GRAY);
             button.setTextColor(1,1,1,1);
             button.setTextScale(1.8f);
@@ -125,6 +124,7 @@ public class SlotsPanel extends Panel {
                 ProductionScene gameScene = mainMenuScene.getMenuPanel().getProductionScene();
                 if (gameScene==null || choice==0) return;
                 gsl.saveGame(choice, gameScene);
+                mainMenuScene.getMenuPanel().updateUI();
                 SoundRenderer.playSound(tickSound);
                 mainMenuScene.getSlotsPanel().visible = false;
             }

@@ -19,10 +19,13 @@ import static com.axiom.operatio.scenes.mainmenu.SlotsPanel.MODE_SAVE_GAME;
 public class MenuPanel extends Panel {
 
     public final int panelColor = 0xCC505050;
+    public static final int AUTO_SAVE_SLOT = 0;
+
     protected MainMenuScene mainMenuScene;
     protected ProductionScene productionScene = null;
     protected GameSaveLoad gameSaveLoad;
     protected int tickSound;
+    protected Button[] buttons;
 
     protected ClickListener listener = new ClickListener() {
         @Override
@@ -30,10 +33,10 @@ public class MenuPanel extends Panel {
             int choice = Integer.parseInt(w.getTag());
             SoundRenderer.playSound(tickSound);
             switch (choice) {
-                case 1: continueGame(); break;
-                case 2: newGame(); break;
-                case 3: loadGame(); break;
-                case 4: saveGame(); break;
+                case 0: continueGame(); break;
+                case 1: newGame(); break;
+                case 2: loadGame(); break;
+                case 3: saveGame(); break;
                 default: exitGame();
             }
         }
@@ -55,26 +58,43 @@ public class MenuPanel extends Panel {
         Button button;
         String caption;
 
-        for (int i =1; i<6; i++) {
-            if (i==1) caption = "Continue"; else
-            if (i==2) caption = "New Game"; else
-            if (i==3) caption = "Load Game"; else
-            if (i==4) caption = "Save Game"; else caption = "Exit Game";
+        buttons = new Button[5];
+        for (int i = 0; i < 5; i++) {
+            if (i==0) caption = "Resume game"; else
+            if (i==1) caption = "New game"; else
+            if (i==2) caption = "Load game"; else
+            if (i==3) caption = "Save game"; else caption = "Exit Game";
             button = new Button(caption);
-            button.setTag(""+i);
-            button.setLocalBounds(50, 750 - ( i * 140), 500, 100);
+            button.setTag("" + i);
+            button.setLocalBounds(50, 610 - ( i * 140), 500, 100);
             button.setColor(Color.GRAY);
             button.setTextColor(1,1,1,1);
             button.setTextScale(1.8f);
             button.setClickListener(listener);
             this.addChild(button);
+            buttons[i] = button;
         }
 
     }
 
+
+    public void updateUI() {
+        int index = 0;
+        int row = 0;
+        if (gameSaveLoad.getGamesCaptions()[0]==null) {
+            buttons[0].visible = false;
+            index = 1;
+        } else buttons[0].visible = true;
+        for (int i = index; i < 5; i++) {
+            buttons[i].setLocalBounds(50, 610 - ( row * 140), 500, 100);
+            row++;
+        }
+    }
+
+
     public void continueGame() {
         if (productionScene == null) {
-            productionScene = gameSaveLoad.loadGame(0);
+            productionScene = gameSaveLoad.loadGame(AUTO_SAVE_SLOT);
             if (productionScene==null) productionScene = gameSaveLoad.newGame();
         } else {
             gameSaveLoad.continueGame();
@@ -85,6 +105,9 @@ public class MenuPanel extends Panel {
 
 
     public void newGame() {
+        if (productionScene != null) {
+            gameSaveLoad.saveGame(AUTO_SAVE_SLOT, productionScene);
+        }
         productionScene = gameSaveLoad.newGame();
         SlotsPanel slotsPanel = mainMenuScene.getSlotsPanel();
         slotsPanel.visible = false;

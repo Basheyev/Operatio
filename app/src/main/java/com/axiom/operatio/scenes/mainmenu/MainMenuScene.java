@@ -49,6 +49,7 @@ public class MainMenuScene extends GameScene {
             widget.addChild(slotsPanel);
         }
         scrollerX = Camera.WIDTH;
+        menuPanel.updateUI();
     }
 
     @Override
