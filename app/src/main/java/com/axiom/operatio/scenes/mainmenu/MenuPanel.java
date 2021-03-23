@@ -79,11 +79,15 @@ public class MenuPanel extends Panel {
         } else {
             gameSaveLoad.continueGame();
         }
+        SlotsPanel slotsPanel = mainMenuScene.getSlotsPanel();
+        slotsPanel.visible = false;
     }
 
 
     public void newGame() {
         productionScene = gameSaveLoad.newGame();
+        SlotsPanel slotsPanel = mainMenuScene.getSlotsPanel();
+        slotsPanel.visible = false;
     }
 
 
