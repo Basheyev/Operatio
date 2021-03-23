@@ -15,8 +15,6 @@ import com.axiom.operatio.model.gameplay.GameSaveLoad;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
 import static android.graphics.Color.DKGRAY;
-import static android.graphics.Color.GREEN;
-import static android.graphics.Color.RED;
 import static android.graphics.Color.WHITE;
 
 public class SlotsPanel extends Panel {
@@ -27,8 +25,8 @@ public class SlotsPanel extends Panel {
     private static final String SAVE_GAME = "SAVE GAME";
 
     public static final int PANEL_COLOR = 0xCC505050;
-    public static final int LOAD_GAME_BACKGROUND = PANEL_COLOR; // 0xBC2fe682;
-    public static final int SAVE_GAME_BACKGROUND = PANEL_COLOR; // 0xBCe6bb2f;
+    public static final int LOAD_GAME_BACKGROUND = 0xBC2fe682;
+    public static final int SAVE_GAME_BACKGROUND = 0xBCe6bb2f;
 
     protected Caption header;
     protected MainMenuScene mainMenuScene;
@@ -43,7 +41,7 @@ public class SlotsPanel extends Panel {
         this.mainMenuScene = menuScene;
         this.menuPanel = mainMenuScene.getMenuPanel();
         setLocalBounds(menuPanel.getX() + menuPanel.getWidth() + 50, 50,600,800);
-        setColor(LOAD_GAME_BACKGROUND);
+        setColor(PANEL_COLOR);
         buildButtons();
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
         setMode(MODE_LOAD_GAME);
@@ -63,10 +61,7 @@ public class SlotsPanel extends Panel {
         slotButtons = new Button[GameSaveLoad.MAX_SLOTS];
 
         for (int i =0; i < GameSaveLoad.MAX_SLOTS; i++) {
-            if (i==0) {
-                caption = "AUTO SAVE";
-            } else caption = "SLOT " + i;
-            button = new Button(caption);
+            button = new Button("");
             button.setHorizontalAlignment(Text.ALIGN_LEFT);
             button.setTag("" + i);
             button.setLocalBounds(50, 750 - ((i+1) * 140), 500, 100);
@@ -83,26 +78,29 @@ public class SlotsPanel extends Panel {
     public void setMode(int mode) {
         this.mode = mode;
         GameSaveLoad gsl = mainMenuScene.getGameSaveLoad();
-        String[] savedGames = gsl.getSavedGames();
+        String[] savedGamesCaptions = gsl.getGamesCaptions();
 
         if (mode==MODE_LOAD_GAME) {
             header.setText(LOAD_GAME);
-            setColor(LOAD_GAME_BACKGROUND);
-            for (int i=0; i<savedGames.length; i++) {
-                if (savedGames[i]!=null) {
+            setColor(PANEL_COLOR);
+            for (int i=0; i<savedGamesCaptions.length; i++) {
+                if (savedGamesCaptions[i]!=null) {
                     slotButtons[i].visible = true;
-                    slotButtons[i].setColor(Color.GRAY);
+                    slotButtons[i].setColor(LOAD_GAME_BACKGROUND);
+                    if (i==0) {
+                        slotButtons[i].setText("AUTO SAVED");
+                    } else slotButtons[i].setText(savedGamesCaptions[i]);
                 }
                 else slotButtons[i].visible = false;
             }
         } else if (mode==MODE_SAVE_GAME) {
             header.setText(SAVE_GAME);
-            setColor(SAVE_GAME_BACKGROUND);
-            for (int i=0; i<savedGames.length; i++) {
-                if (savedGames[i]==null) {
-                    slotButtons[i].setColor(DKGRAY);
-                } else {
+            setColor(PANEL_COLOR);
+            for (int i=0; i<savedGamesCaptions.length; i++) {
+                if (savedGamesCaptions[i]==null) {
                     slotButtons[i].setColor(Color.GRAY);
+                } else {
+                    slotButtons[i].setColor(SAVE_GAME_BACKGROUND);
                 }
                 slotButtons[i].visible = true;
             }

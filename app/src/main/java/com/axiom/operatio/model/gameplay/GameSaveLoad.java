@@ -5,22 +5,23 @@ import android.content.SharedPreferences;
 
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.operatio.MainActivity;
+import com.axiom.operatio.model.common.FormatUtils;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 public class GameSaveLoad {
 
-    private static String KEY_PREFIX = "SLOT";
+    private static final String KEY_PREFIX = "SLOT";
+    private static final String KEY_CAPTIONS = "SLOT CAPTIONS";
     public static final int MAX_SLOTS = 5;
-    private String[] savedGamesList;
+    private String[] gamesCaptions;
 
     public GameSaveLoad() {
-        loadSavedGamesList();
+        loadGameCaptions();
     }
 
     public synchronized void continueGame() {
@@ -36,11 +37,9 @@ public class GameSaveLoad {
     }
 
 
-    public String[] getSavedGames() {
-        return savedGamesList;
+    public String[] getGamesCaptions() {
+        return gamesCaptions;
     }
-
-
 
     public synchronized ProductionScene loadGame(int slot) {
         if (slot < 0 || slot >= MAX_SLOTS) return null;
@@ -71,7 +70,8 @@ public class GameSaveLoad {
         editor.putString(slotName, savedGame);
         boolean success = editor.commit();
         if (success) {
-            savedGamesList[slot] = slotName;
+            gamesCaptions[slot] = FormatUtils.formatDateAndTime();
+            saveGameCaptions();
             return true;
         }
         return false;
@@ -92,15 +92,49 @@ public class GameSaveLoad {
     }
 
 
-    private void loadSavedGamesList() {
-        SharedPreferences preferences = getPreferences();
-        savedGamesList = new String[MAX_SLOTS];
+    private boolean saveGameCaptions() {
+        JSONArray jsonCaptions = new JSONArray();
         for (int i=0; i<MAX_SLOTS; i++) {
-            String key = KEY_PREFIX + i;
-            if (preferences.contains(key)) {
-                savedGamesList[i] = key;
-            } else savedGamesList[i] = null;
+            jsonCaptions.put(gamesCaptions[i]);
+        }
+        String value = jsonCaptions.toString();
+        SharedPreferences preferences = getPreferences();
+        SharedPreferences.Editor editor = preferences.edit();
+        if (preferences.contains(KEY_CAPTIONS)) editor.remove(KEY_CAPTIONS);
+        editor.putString(KEY_CAPTIONS, value);
+        return editor.commit();
+    }
+
+
+    private void loadGameCaptions() {
+        gamesCaptions = new String[MAX_SLOTS];
+        SharedPreferences preferences = getPreferences();
+        if (preferences.contains(KEY_CAPTIONS)) {
+            try {
+                String value = preferences.getString(KEY_CAPTIONS, null);
+                if (value != null) {
+                    JSONArray jsonCaptions = new JSONArray(value);
+                    for (int i = 0; i < MAX_SLOTS; i++) {
+                        String slotName = jsonCaptions.getString(i);
+                        String key = KEY_PREFIX + i;
+                        if (preferences.contains(key)) {
+                            gamesCaptions[i] = slotName;
+                        } else gamesCaptions[i] = null;
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return;
         }
 
+        // Если названий слотов нет, просто создаем названия как номера слотов
+        for (int i = 0; i < MAX_SLOTS; i++) {
+            String key = KEY_PREFIX + i;
+            if (preferences.contains(key)) {
+                gamesCaptions[i] = key;
+            } else gamesCaptions[i] = null;
+        }
     }
+
 }

@@ -4,6 +4,8 @@ package com.axiom.operatio.model.common;
 import java.text.DecimalFormat;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 
@@ -31,6 +33,13 @@ public class FormatUtils {
     public static String formatMoney(double sum) {
         if (moneyFormat==null) initializeFormatting();
         return moneyFormat.format(sum);
+    }
+
+
+    public static String formatDateAndTime() {
+        SimpleDateFormat timeStampFormat = new SimpleDateFormat("HH:mm:ss dd-MMM-yyyy", Locale.getDefault());
+        Date myDate = new Date();
+        return timeStampFormat.format(myDate);
     }
 
 }
