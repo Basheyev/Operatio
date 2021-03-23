@@ -21,6 +21,9 @@ public class MachineRenderer extends BlockRenderer {
     protected int busyAnimation;                           // Код анимации занятости
     protected ConveyorRenderer conveyorRenderer;
 
+    public static final int NO_NEXT_ANIMATION = -1;
+    protected int nextAnimation = NO_NEXT_ANIMATION;
+
     public MachineRenderer(Machine machine) {
         this.machine = machine;
         int ID = machine.getType().ID;
@@ -43,21 +46,27 @@ public class MachineRenderer extends BlockRenderer {
 
     public void draw(Camera camera, float x, float y, float width, float height) {
         Production production = machine.getProduction();
-        if (production!=null) {
-            sprite.animationPaused = production.isPaused();
-        }
 
-        // Рисуем значок сбоя, если произошел сбой
-        if (machine.getState()==Machine.FAULT) {
+        // Ставим анимацию на паузу если производство на паузе
+        if (production != null) {
+            sprite.animationPaused = production.isPaused();
+        } else return;
+
+            // Рисуем значок сбоя, если произошел сбой
+        if (machine.getState() == Machine.FAULT) {
             sprite.animationPaused = true;
             fault.draw(camera, x, y, width, height);
-        } else sprite.animationPaused = false;
+        }
 
         // Рисуем конвейер
         conveyorRenderer.draw(camera, x, y, width, height);
 
         // Рисуем машину
         sprite.draw(camera, x, y, width, height);
+        if (sprite.isAnimationLastFrame() && nextAnimation != NO_NEXT_ANIMATION) {
+            if (sprite.getActiveAnimation() != nextAnimation) sprite.setActiveAnimation(nextAnimation);
+            nextAnimation = NO_NEXT_ANIMATION;
+        }
 
         // Рисуем вход-выход
         if (production.isPaused()) {
@@ -71,11 +80,11 @@ public class MachineRenderer extends BlockRenderer {
     }
 
     public void setIdleAnimation() {
-        if (sprite.getTimesPlayed() > 0) sprite.setActiveAnimation(idleAnimation);
+        nextAnimation = idleAnimation;
     }
 
     public void setBusyAnimation() {
-        sprite.setActiveAnimation(busyAnimation);
+        nextAnimation = busyAnimation;
     }
 
 }

@@ -419,6 +419,14 @@ public class Sprite extends Quad {
         return timesPlayed;
     }
 
+    /**
+     * Проверяет является ли кадр последним в анимации
+     * @return true - если является, false - если не является
+     */
+    public boolean isAnimationLastFrame() {
+        if (animations==null || activeAnimation==-1) return false;
+        return activeFrame == animations.get(activeAnimation).stopFrame;
+    }
 
     /**
      * Возвращает текстурный атлас для возможности его изменения
