@@ -47,7 +47,7 @@ public class Sprite extends Quad {
     public static class Animation {
         int startFrame;                     // Начальный кадр
         int stopFrame;                      // Конечный кадр
-        int framesPerSecond;                // Количество кадров в секунду
+        float framesPerSecond;              // Количество кадров в секунду
         boolean loop;                       // Зациклена ли анимация (должна повторятся)
     }
 
@@ -351,7 +351,7 @@ public class Sprite extends Quad {
      * @param stopFrame - завершающий кадр анимации
      * @return индекс анимации или -1 если произошла ошибка
      */
-    public int addAnimation(int startFrame, int stopFrame, int fps, boolean loop) {
+    public int addAnimation(int startFrame, int stopFrame, float fps, boolean loop) {
         if (animations==null) animations = new ArrayList<>();
         int maxIndex = getFramesAmount() - 1;
         if ((startFrame > maxIndex) || (stopFrame > maxIndex) ||
