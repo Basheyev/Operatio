@@ -37,6 +37,7 @@ public class TextureAtlas {
         generateTilemap(columns, rows);
     }
 
+    // fixme не совсем точный расчёт текстурных координат приводит к артефактам
     public TextureRegion addRegion(String name, int x, int y, int width, int height) {
         // Уходим если не валидные параметры
         if (name==null || (x < 0) || (y < 0) || (width<1) || (height<1)) return null;
@@ -48,12 +49,17 @@ public class TextureAtlas {
         region.width = width;
         region.height = height;
         region.texCoords = new float[12];
+        // Так как в OpenGL sampler2D берет координаты центра
+        // текселя - считаем смещение середины текселя
+        float texelHalfWidth = 0; //0.5f / textureWidth;
+        float texelHalfHeight = 0; //0.5f / textureHeight;
         // Нормируем координаты на текстурные координаты - единицу (0.0-1.0)
         // и переворачиваем (в Bitmap Y=0 сверху, а в текстуре Y=0 снизу)
-        float x1 = x / textureWidth;
-        float y1 = 1.0f - ((y + height) / textureHeight);
-        float x2 = (x + width) / textureWidth;
-        float y2 = 1.0f - (y / textureHeight);
+        // Затем добавляем смещение на центр текселя
+        float x1 = x / textureWidth - texelHalfWidth;
+        float y1 = 1.0f - ((y + height) / textureHeight) - texelHalfHeight;
+        float x2 = (x + width) / textureWidth + texelHalfWidth;
+        float y2 = 1.0f - (y / textureHeight) + texelHalfHeight;
         // ===== Треугольник 1
         region.texCoords[0] = x1;  // левый верхний угол
         region.texCoords[1] = y2;

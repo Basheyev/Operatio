@@ -81,9 +81,9 @@ public class MainMenuScene extends GameScene {
         background.draw(camera, cx + scrollerX - Camera.WIDTH, cy, Camera.WIDTH,Camera.HEIGHT);
         GraphicsRender.setZOrder(2);
         GraphicsRender.setColor(BLACK);
-        GraphicsRender.drawRectangle(menuPanel.getX() + menuPanel.getWidth() + 50, cy + 290, 980, 560);
+        GraphicsRender.drawRectangle(cx + menuPanel.getX() + menuPanel.getWidth() + 50, cy + 290, 980, 560);
         story.setZOrder(2);
-        story.draw(camera, menuPanel.getX() + menuPanel.getWidth() + 60, cy + 300, 960, 540);
+        story.draw(camera, cx + menuPanel.getX() + menuPanel.getWidth() + 60, cy + 300, 960, 540);
         logo.setZOrder(3);
         logo.draw(camera, cx + 50, cy + Camera.HEIGHT - logo.getHeight() - 25, logo.getWidth(), logo.getHeight());
         ceo.setZOrder(3);

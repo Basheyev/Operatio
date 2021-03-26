@@ -95,7 +95,7 @@ public class MachineType {
 
 
     private static void loadMachineSprites() {
-        Sprite allMachines = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 11);
+        Sprite allMachines = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 16);
         for (int i=0; i < machineTypes.size(); i++) {
             Sprite image = allMachines.getAsSprite(i * 8, i * 8 + 7);
             int animation = image.addAnimation(0, 7, 8, true);

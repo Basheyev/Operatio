@@ -472,7 +472,7 @@ public class Sprite extends Quad {
     // Код вершинного шейдера спрайта
     //-----------------------------------------------------------------------------------
     private final String vertexShaderCode =
-            "uniform mat4 u_MVPMatrix; " +
+                    "uniform mat4 u_MVPMatrix; " +
                     "attribute vec4 vPosition;" +
                     "attribute vec2 TexCoordIn;" +
                     "varying vec2 TexCoordOut;" +
@@ -485,7 +485,7 @@ public class Sprite extends Quad {
     // Код пиксельного шейдера спрайта отрисовывающего текстуру
     //-----------------------------------------------------------------------------------
     private final String fragmentShaderCode =
-            "precision mediump float; " +
+                    "precision mediump float; " +
                     "uniform vec4 vColor;" +
                     "uniform sampler2D TexCoordIn; " +
                     "varying vec2 TexCoordOut;" +
@@ -499,7 +499,7 @@ public class Sprite extends Quad {
     // Код пиксельного шейдера спрайта отрисовывающего текстуру закрашенную цветом
     //-----------------------------------------------------------------------------------
     private final String fragmentShaderColoredCode =
-            "precision mediump float; " +
+                    "precision mediump float; " +
                     "uniform vec4 vColor;" +
                     "uniform sampler2D TexCoordIn; " +
                     "varying vec2 TexCoordOut;" +

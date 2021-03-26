@@ -46,7 +46,7 @@ public class BlockButton extends Button {
 
         if (allMachines==null) {
             Resources resources = SceneManager.getResources();
-            allMachines = new Sprite(resources, R.drawable.blocks, 8, 11);
+            allMachines = new Sprite(resources, R.drawable.blocks, 8, 16);
         }
 
         if (id==0) initializeAnimationButton(40, 47, 15, Conveyor.PRICE);    // Если это конвейер

@@ -19,7 +19,7 @@ public class ExportBufferRenderer extends BlockRenderer {
         this.exportBuffer = exportBuffer;
         if (buffersFrames == null) {
             Resources resources = SceneManager.getResources();
-            buffersFrames = new Sprite(resources, R.drawable.blocks, 8, 11);
+            buffersFrames = new Sprite(resources, R.drawable.blocks, 8, 16);
         }
         sprite = buffersFrames.getAsSprite(66);
         sprite.setZOrder(7);

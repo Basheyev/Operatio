@@ -19,7 +19,7 @@ public class ImportBufferRenderer extends BlockRenderer {
         this.importBuffer = importBuffer;
         if (buffersFrames == null) {
             Resources resources = SceneManager.getResources();
-            buffersFrames = new Sprite(resources, R.drawable.blocks, 8, 11);
+            buffersFrames = new Sprite(resources, R.drawable.blocks, 8, 16);
         }
         sprite = buffersFrames.getAsSprite(65);
         sprite.setZOrder(7);

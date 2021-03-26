@@ -29,7 +29,7 @@ public class MachineRenderer extends BlockRenderer {
         int ID = machine.getType().ID;
         if (allMachines==null) {
             Resources resources = SceneManager.getResources();
-            allMachines = new Sprite(resources, R.drawable.blocks, 8, 11);
+            allMachines = new Sprite(resources, R.drawable.blocks, 8, 16);
         }
 
         sprite = allMachines.getAsSprite(ID * 8, ID * 8 + 7);

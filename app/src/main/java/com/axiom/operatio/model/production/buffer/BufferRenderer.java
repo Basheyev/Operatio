@@ -19,7 +19,7 @@ public class BufferRenderer extends BlockRenderer {
         this.buffer = buffer;
         if (buffersFrames == null) {
             Resources resources = SceneManager.getResources();
-            buffersFrames = new Sprite(resources, R.drawable.blocks, 8, 11);
+            buffersFrames = new Sprite(resources, R.drawable.blocks, 8, 16);
         }
         sprite = buffersFrames.getAsSprite(72, 79);
         sprite.setZOrder(5);

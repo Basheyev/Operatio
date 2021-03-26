@@ -6,6 +6,7 @@ import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.graphics.gles2d.Texture;
 import com.axiom.atom.engine.graphics.renderers.Particles;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.production.block.Block;
@@ -36,7 +37,8 @@ public class ProductionRenderer {
     protected ProductionRenderer(Production production) {
         if (tiles==null) {
             Resources resources = SceneManager.getResources();
-            tiles = new Sprite(resources, R.drawable.blocks, 8, 11);
+            Texture texture = Texture.getInstance(resources, R.drawable.blocks, false);
+            tiles = new Sprite(texture, 8, 16);
         }
         tile = tiles.getAsSprite(68);
         tile.setZOrder(0);

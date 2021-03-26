@@ -35,7 +35,7 @@ public class ConveyorRenderer extends BlockRenderer {
         this.block = block;
         if (allConveyors==null) {
             Resources resources = SceneManager.getResources();
-            allConveyors = new Sprite(resources, R.drawable.blocks, 8, 11);
+            allConveyors = new Sprite(resources, R.drawable.blocks, 8, 16);
         }
 
         sprite = allConveyors.getAsSprite(40, 63);
