@@ -37,8 +37,9 @@ public class ProductionRenderer {
     protected ProductionRenderer(Production production) {
         if (tiles==null) {
             Resources resources = SceneManager.getResources();
-            Texture texture = Texture.getInstance(resources, R.drawable.blocks, false);
-            tiles = new Sprite(texture, 8, 16);
+            // Создаём спрайт с tilemap 8x16 нарезанным через центр текселей текстуры
+            // чтобы избежать артефактов на границах при низком разрешении экрана
+            tiles = new Sprite(resources, R.drawable.blocks, 8, 16, true);
         }
         tile = tiles.getAsSprite(68);
         tile.setZOrder(0);
@@ -70,7 +71,7 @@ public class ProductionRenderer {
         int selectedRow = production.getSelectedRow();
         int selectedCol = production.getSelectedCol();
 
-        GraphicsRender.clear();
+       // GraphicsRender.clear();
 
         for (int row = minRow; row <= maxRow; row++) {
             for (int col = minCol; col <= maxCol; col++) {
