@@ -160,7 +160,7 @@ public class Quad {
 
 
     /**
-     * Инициализирует массив координат вершин
+     * Инициализирует массив координат вершин (-0.5, -0.5)-(0.5, 0.5)
      */
     protected void initializeVertices() {
         // Треугольник 1
@@ -177,6 +177,27 @@ public class Quad {
         vertices[13] = 0.5f;
         vertices[15] = 0.5f;
         vertices[16] = -0.5f;
+    }
+
+
+    /**
+     * Инициализирует массив координат вершин (x1, y1)-(x2, y2)
+     */
+    protected void initializeVertices(float x1, float y1, float x2, float y2) {
+        // Треугольник 1
+        vertices[0] = x1; //-0.5f;
+        vertices[1] = y2; //0.5f;
+        vertices[3] = x1; //-0.5f;
+        vertices[4] = y1; //-0.5f;
+        vertices[6] = x2; //0.5f;
+        vertices[7] = y2; //0.5f;
+        // Треугольник 2
+        vertices[9] = x1;  //-0.5f;
+        vertices[10] = y1; //-0.5f;
+        vertices[12] = x2; //0.5f;
+        vertices[13] = y2; //0.5f;
+        vertices[15] = x2; //0.5f;
+        vertices[16] = y1; //-0.5f;
     }
 
 
