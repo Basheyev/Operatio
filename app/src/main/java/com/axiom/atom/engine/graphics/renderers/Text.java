@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.util.Log;
 
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
@@ -35,7 +36,7 @@ public class Text {
     protected static int fontSize = 24;     // Размер генерируемого шрифта в пикселях
 
     public static class RasterizedFont {
-        protected int totalChars = 121;     // Количество генерируемых символов (11x11)
+        protected int totalChars = 1296;     // Количество генерируемых символов (11x11)
         protected Sprite fontSprite;        // Спрайт где каждый кадр это отдельный символ
         protected float[] xOffset;          // Горизонтальное смещение символа относительно курсора
         protected float[] yOffset;          // Вертикальное смещение символа относительно курсора
@@ -381,12 +382,14 @@ public class Text {
                 int height = y2 - y1;
 
                 // Если ширина или высота нулевая - задаем ширину и высоту
-                if (width==0) { x1 = x*size; width = size / 3;}
+                if (width==0 || x1 < 0) { x1 = x*size; width = size / 3;}
                 if (height==0) { y1 = y*size; height = 1;}
 
                 // Добавляем регион символа в атлас с именем символа
-                textureAtlas.addRegion(symbolStr, x1, y1, width, height);
-
+                TextureRegion region = textureAtlas.addRegion(symbolStr, x1, y1, width, height);
+                if (region==null) {
+                    Log.e("FONT GENERATOR", "skipped UTF-8 code=" + symbolIndex + " '" + symbol + "'");
+                }
                 // Переходим к следующему символу
                 symbol++;
             }
