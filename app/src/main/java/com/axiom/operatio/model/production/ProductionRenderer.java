@@ -63,7 +63,7 @@ public class ProductionRenderer {
 
 
     public void draw(Camera camera) {
-        Block block;
+
         int columns = production.getColumns();
         int rows = production.getRows();
         int minCol = (int) (camera.getMinX() / cellWidth) - 1;
@@ -73,39 +73,19 @@ public class ProductionRenderer {
         int selectedRow = production.getSelectedRow();
         int selectedCol = production.getSelectedCol();
 
-        int cellType;
-        float x1 = minCol * cellWidth;
-        float y1 = minRow * cellHeight;
-        float x2 = x1 + cellWidth;
-        float y2 = y1 + cellHeight;
-
-        GraphicsRender.clear();
         for (int row = minRow; row <= maxRow; row++) {
             for (int col = minCol; col <= maxCol; col++) {
-
-                if (col < 0 || col >= columns || row < 0 || row >= rows) cellType = 0;
-                else if (!production.isUnlocked(col, row)) cellType = 1; else cellType = 2;
-
-                // Отрисовываем плитку fixme костыль убрать артефакты путем добавления +-1px
-                drawTile(camera, x1-1, y1-1, x2+1, y2+1, cellType);
-
+                // Отрисовываем плитку
+                drawTile(camera, col, row, columns, rows);
                 // Отрисовываем блок
-                block = production.getBlockAt(col, row);
+                Block block = production.getBlockAt(col, row);
                 if (block != null) drawBlock(camera, block, col, row);
-
                 // Отрисовываем выделение и частицы
                 if (production.isBlockSelected() && row==selectedRow && col==selectedCol) {
                     drawSelection(camera, col, row);
                     drawParticles(camera, col, row);
                 }
-
-                x1 = x2;
-                x2 += cellWidth;
             }
-            y1 = y2;
-            y2 += cellHeight;
-            x1 = minCol * cellWidth;
-            x2 = x1 + cellWidth;
         }
 
         // Отрисовываем передвигаемый блок поверх остальных
@@ -113,12 +93,18 @@ public class ProductionRenderer {
     }
 
 
-    private void drawTile(Camera camera, float x1, float y1, float x2, float y2, int type) {
-        switch (type) {
-            case 0: outsideTile.drawExact(camera, x1, y1, x2, y2); break;
-            case 1: tileBlocked.drawExact(camera, x1, y1, x2, y2); break;
-            case 2: tile.drawExact(camera, x1, y1, x2, y2);
-        }
+    private void drawTile(Camera camera, int col, int row, int columns, int rows) {
+        //  Чтобы убрать артефакты на низких разрешениях
+        //  добавляем наложение на соседние плитки по 0.5px
+        float x1 = col * cellWidth - 0.5f;
+        float y1 = row * cellHeight - 0.5f;
+        float x2 = x1 + cellWidth + 0.5f;
+        float y2 = y1 + cellHeight + 0.5f;
+        if (col < 0 || col >= columns || row < 0 || row >= rows) {
+            outsideTile.drawExact(camera, x1, y1, x2, y2);
+        } else if (!production.isUnlocked(col, row))
+            tileBlocked.drawExact(camera, x1, y1, x2, y2);
+        else tile.drawExact(camera, x1, y1, x2, y2);
     }
 
 
