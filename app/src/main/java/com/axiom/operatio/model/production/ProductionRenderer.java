@@ -9,13 +9,14 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.Texture;
 import com.axiom.atom.engine.graphics.renderers.Particles;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
+import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
 
 
 public class ProductionRenderer {
 
-    public static final int MIN_CELL_SIZE = 64;
+    public static int MIN_CELL_SIZE = 64;
     public static final int MAX_CELL_SIZE = 384;
     public static final int INITIAL_CELL_WIDTH = (MAX_CELL_SIZE + MIN_CELL_SIZE) / 2;
     public static final int INITIAL_CELL_HEIGHT = (MAX_CELL_SIZE + MIN_CELL_SIZE) / 2;
@@ -37,9 +38,10 @@ public class ProductionRenderer {
     protected ProductionRenderer(Production production) {
         if (tiles==null) {
             Resources resources = SceneManager.getResources();
+            Texture texture = Texture.getInstance(resources, R.drawable.blocks, false);
             // Создаём спрайт с tilemap 8x16 нарезанным через центр текселей текстуры
             // чтобы избежать артефактов на границах при низком разрешении экрана
-            tiles = new Sprite(resources, R.drawable.blocks, 8, 16, true);
+            tiles = new Sprite(texture, 8, 16, true);
         }
         tile = tiles.getAsSprite(68);
         tile.setZOrder(0);
@@ -71,21 +73,39 @@ public class ProductionRenderer {
         int selectedRow = production.getSelectedRow();
         int selectedCol = production.getSelectedCol();
 
-       // GraphicsRender.clear();
+        int cellType;
+        float x1 = minCol * cellWidth;
+        float y1 = minRow * cellHeight;
+        float x2 = x1 + cellWidth;
+        float y2 = y1 + cellHeight;
 
+        GraphicsRender.clear();
         for (int row = minRow; row <= maxRow; row++) {
             for (int col = minCol; col <= maxCol; col++) {
-                // Отрисовываем плитку
-                drawTile(camera, col, row, columns, rows);
+
+                if (col < 0 || col >= columns || row < 0 || row >= rows) cellType = 0;
+                else if (!production.isUnlocked(col, row)) cellType = 1; else cellType = 2;
+
+                // Отрисовываем плитку fixme костыль убрать артефакты путем добавления +-1px
+                drawTile(camera, x1-1, y1-1, x2+1, y2+1, cellType);
+
                 // Отрисовываем блок
                 block = production.getBlockAt(col, row);
-                if (block!=null) drawBlock(camera, block, col, row);
+                if (block != null) drawBlock(camera, block, col, row);
+
                 // Отрисовываем выделение и частицы
                 if (production.isBlockSelected() && row==selectedRow && col==selectedCol) {
                     drawSelection(camera, col, row);
                     drawParticles(camera, col, row);
                 }
+
+                x1 = x2;
+                x2 += cellWidth;
             }
+            y1 = y2;
+            y2 += cellHeight;
+            x1 = minCol * cellWidth;
+            x2 = x1 + cellWidth;
         }
 
         // Отрисовываем передвигаемый блок поверх остальных
@@ -93,13 +113,11 @@ public class ProductionRenderer {
     }
 
 
-    private void drawTile(Camera camera, int col, int row, int columns, int rows) {
-        if (col < 0 || col >= columns || row < 0 || row >= rows) {
-            outsideTile.draw(camera, col * cellWidth, row * cellHeight, cellWidth , cellHeight );
-        } else if (!production.isUnlocked(col, row)) {
-            tileBlocked.draw(camera, col * cellWidth, row * cellHeight, cellWidth , cellHeight );
-        } else {
-            tile.draw(camera, col * cellWidth, row * cellHeight, cellWidth, cellHeight );
+    private void drawTile(Camera camera, float x1, float y1, float x2, float y2, int type) {
+        switch (type) {
+            case 0: outsideTile.drawExact(camera, x1, y1, x2, y2); break;
+            case 1: tileBlocked.drawExact(camera, x1, y1, x2, y2); break;
+            case 2: tile.drawExact(camera, x1, y1, x2, y2);
         }
     }
 
