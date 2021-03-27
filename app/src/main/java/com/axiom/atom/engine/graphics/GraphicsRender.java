@@ -33,6 +33,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
     // Список объектов которые должны быть инициализированы в потоке/контексте OpenGL
     //-------------------------------------------------------------------------------------
     public static final int LAZY_LOAD_QUEUE_LENGTH = 1024;   // Максимальная длина очереди
+    public static final int LOAD_TIME_PER_FRAME = 50;        // Время загрузки на один кадр
     protected static Channel<GLESObject> loadQueue;          // Очередь "ленивой" загрузки
     protected static Channel<GLESObject> loadedObjects;      // Список загруженных объектов
 
@@ -120,10 +121,10 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
                 // Загружаем объект в видео память
                 glObject.loadToGPU();
                 loadedObjects.add(glObject);
-                // Если загрузка объекта продилась больше 50мс
+                // Если загрузка объекта продилась больше LOAD_TIME_PER_FRAME
                 // остальное загрузим на следующем кадре
                 long elapsedTime = System.currentTimeMillis() - startTime;
-                if (elapsedTime > 50) break;
+                if (elapsedTime > LOAD_TIME_PER_FRAME) break;
             }
         }
     }
@@ -210,7 +211,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
             // Вызывается после отрисовки сцены
             scene.postRender(camera);
 
-            // Отрисовка пользователского интерфйса
+            // Отрисовка пользователского интерфейса
             // Вызывается после всего рендеринга сцены
             scene.getSceneWidget().draw(camera);
 
