@@ -89,6 +89,18 @@ public class Sprite extends Quad {
         this(Texture.getInstance(resources, resource), columns, rows);
     }
 
+
+    /**
+     * Конструктор спрайта с автоматическим созданиям текстурного атласа на базе листа спрайтов
+     * @param resources ресурсы приложения
+     * @param resource ресурс изображения
+     * @param columns количество столбцов в листе спрайтов
+     * @param rows количество строк в листе спрайтов
+     */
+    public Sprite(Resources resources, int resource, int columns, int rows, boolean texelCenter) {
+        this(Texture.getInstance(resources, resource), columns, rows, texelCenter);
+    }
+
     /**
      * Конструктор спрайта
      * @param resources ресурсы приложения
