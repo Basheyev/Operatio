@@ -117,9 +117,20 @@ public class Sprite extends Quad {
      * @param rows количество строк в листе спрайтов
      */
     public Sprite(Texture texture, int columns, int rows) {
+        this(texture, columns, rows, false);
+    }
+
+    /**
+     * Конструктор спрайта на базе текстуры с генерацией текстурного атласа
+     * @param texture уже созданная текстура
+     * @param columns количество столбцов в листе спрайтов
+     * @param rows количество строк в листе спрайтов
+     * @param texelCenter нарезать ли тайлы по центру текселя
+     */
+    public Sprite(Texture texture, int columns, int rows, boolean texelCenter) {
         this(texture);
         // Сгенерировать текстурный атлас по количеству столбцов и строк
-        atlas = new TextureAtlas(texture, columns, rows);
+        atlas = new TextureAtlas(texture, columns, rows, texelCenter);
         setActiveFrame(0);
     }
 

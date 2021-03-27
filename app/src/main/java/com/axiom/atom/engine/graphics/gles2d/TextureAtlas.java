@@ -33,12 +33,19 @@ public class TextureAtlas {
     }
 
     public TextureAtlas(Texture texture, int columns, int rows) {
-        this(texture);
-        generateTilemap(columns, rows);
+        this(texture, columns, rows, false);
     }
 
-    // fixme не совсем точный расчёт текстурных координат приводит к артефактам
+    public TextureAtlas(Texture texture, int columns, int rows, boolean texelCenter) {
+        this(texture);
+        generateTilemap(columns, rows, texelCenter);
+    }
+
     public TextureRegion addRegion(String name, int x, int y, int width, int height) {
+        return addRegion(name, x, y, width, height, false);
+    }
+
+    public TextureRegion addRegion(String name, int x, int y, int width, int height, boolean texelCenter) {
         // Уходим если не валидные параметры
         if (name==null || (x < 0) || (y < 0) || (width<1) || (height<1)) return null;
         // Сохраняем информацию о регионе
@@ -51,15 +58,15 @@ public class TextureAtlas {
         region.texCoords = new float[12];
         // Так как в OpenGL sampler2D берет координаты центра
         // текселя - считаем смещение середины текселя
-        float texelHalfWidth = 0; //0.5f / textureWidth;
-        float texelHalfHeight = 0; //0.5f / textureHeight;
+        float texelHalfWidth = texelCenter ? (0.5f / textureWidth) : 0;
+        float texelHalfHeight = texelCenter ? (0.5f / textureHeight) : 0;
         // Нормируем координаты на текстурные координаты - единицу (0.0-1.0)
         // и переворачиваем (в Bitmap Y=0 сверху, а в текстуре Y=0 снизу)
         // Затем добавляем смещение на центр текселя
-        float x1 = x / textureWidth - texelHalfWidth;
-        float y1 = 1.0f - ((y + height) / textureHeight) - texelHalfHeight;
-        float x2 = (x + width) / textureWidth + texelHalfWidth;
-        float y2 = 1.0f - (y / textureHeight) + texelHalfHeight;
+        float x1 = x / textureWidth + texelHalfWidth;
+        float y1 = 1.0f - ((y + height) / textureHeight) + texelHalfHeight;
+        float x2 = (x + width) / textureWidth - texelHalfWidth;
+        float y2 = 1.0f - (y / textureHeight) - texelHalfHeight;
         // ===== Треугольник 1
         region.texCoords[0] = x1;  // левый верхний угол
         region.texCoords[1] = y2;
@@ -112,8 +119,9 @@ public class TextureAtlas {
      * Делит текстуру на регионы одинакового размера (TileMap)
      * @param columns количество столбцов
      * @param rows количество строк
+     * @param texelCenter флаг указывающий делать ли нарезку тайлов через центр текселя
      */
-    protected void generateTilemap(int columns, int rows) {
+    protected void generateTilemap(int columns, int rows, boolean texelCenter) {
         int width = (int) textureWidth;
         int height = (int) textureHeight;
         int spriteWidth = width / columns;
@@ -121,10 +129,14 @@ public class TextureAtlas {
         int i = 0;
         for (int y=0; y<height; y+=spriteHeight) {
             for (int x=0; x<width; x+=spriteWidth) {
-                addRegion("Frame " + i, x, y, spriteWidth, spriteHeight);
+                addRegion("Frame " + i, x, y, spriteWidth, spriteHeight, texelCenter);
                 i++;
             }
         }
+    }
+
+    protected void generateTilemap(int columns, int rows) {
+        generateTilemap(columns, rows, false);
     }
 
 
