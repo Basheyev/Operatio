@@ -139,15 +139,15 @@ public abstract class Widget {
     public void setSize(float width, float height) {
         if (width < 1) width = 1;
         if (height < 1) height = 1;
-        setLocalBounds(localBounds.min.x, localBounds.min.y, width, height);
+        setLocalBounds(localBounds.minX, localBounds.minY, width, height);
     }
 
     public float getX() {
-        return localBounds.min.x;
+        return localBounds.minX;
     }
 
     public float getY() {
-        return localBounds.min.y;
+        return localBounds.minY;
     }
 
     public float getWidth() {
@@ -177,10 +177,10 @@ public abstract class Widget {
         if (parent != null) {
             AABB parentWorldBounds = parent.getWorldBounds();
             float x1, y1, x2, y2;
-            x1 = parentWorldBounds.min.x + localBounds.min.x;
-            y1 = parentWorldBounds.min.y + localBounds.min.y;
-            x2 = parentWorldBounds.min.x + localBounds.max.x;
-            y2 = parentWorldBounds.min.y + localBounds.max.y;
+            x1 = parentWorldBounds.minX + localBounds.minX;
+            y1 = parentWorldBounds.minY + localBounds.minY;
+            x2 = parentWorldBounds.minX + localBounds.maxX;
+            y2 = parentWorldBounds.minY + localBounds.maxY;
             worldBounds.setBounds(x1, y1, x2, y2);
         } else {
             worldBounds.copy(localBounds);

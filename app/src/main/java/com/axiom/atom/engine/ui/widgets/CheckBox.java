@@ -28,18 +28,18 @@ public class CheckBox extends Widget {
 
         GraphicsRender.setZOrder(zOrder);
         GraphicsRender.setColor(Color.BLACK);
-        GraphicsRender.drawRectangle(bounds.min.x + 5, bounds.min.y + 5, 30, 30, parentScissor);
+        GraphicsRender.drawRectangle(bounds.minX + 5, bounds.minY + 5, 30, 30, parentScissor);
 
         if (isChecked) {
             GraphicsRender.setZOrder(zOrder + 1);
             GraphicsRender.setColor(Color.WHITE);
-            GraphicsRender.drawRectangle(bounds.min.x + 10, bounds.min.y + 10, 20, 20, parentScissor);
+            GraphicsRender.drawRectangle(bounds.minX + 10, bounds.minY + 10, 20, 20, parentScissor);
         }
 
         if (text!=null) {
             GraphicsRender.setZOrder(zOrder);
             GraphicsRender.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
-            GraphicsRender.drawText(text, bounds.min.x + 50, bounds.min.y + 10, textScale, parentScissor);
+            GraphicsRender.drawText(text, bounds.minX + 50, bounds.minY + 10, textScale, parentScissor);
         }
 
         super.draw(camera);

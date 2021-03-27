@@ -48,11 +48,11 @@ public class Rectangle extends Quad {
     }
 
     public void draw(Camera camera, AABB aabb, AABB scissor) {
-        draw(camera, aabb.min.x, aabb.min.y, aabb.width, aabb.height, scissor);
+        draw(camera, aabb.minX, aabb.minY, aabb.width, aabb.height, scissor);
     }
 
     public void draw(Camera camera, AABB aabb) {
-        draw(camera, aabb.min.x, aabb.min.y, aabb.width, aabb.height, null);
+        draw(camera, aabb.minX, aabb.minY, aabb.width, aabb.height, null);
     }
 
 }

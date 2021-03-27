@@ -202,8 +202,8 @@ public class BatchRender {
     protected static void enableScissors(AABB clip) {
         GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
         GLES20.glScissor(
-                Math.round(clip.min.x),
-                Math.round(clip.min.y),
+                Math.round(clip.minX),
+                Math.round(clip.minY),
                 Math.round(clip.width),
                 Math.round(clip.height)
         );

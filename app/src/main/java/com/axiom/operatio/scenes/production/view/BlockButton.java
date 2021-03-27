@@ -196,10 +196,10 @@ public class BlockButton extends Button {
             GraphicsRender.setZOrder(zOrder + 2);
             float textWidth = GraphicsRender.getTextWidth(text, textScale);
             GraphicsRender.setColor(0.0f,0.0f,0.0f, 0.7f);
-            GraphicsRender.drawRectangle(bounds.min.x, bounds.min.y, bounds.width, 30);
+            GraphicsRender.drawRectangle(bounds.minX, bounds.minY, bounds.width, 30);
             GraphicsRender.setZOrder(zOrder + 3);
             GraphicsRender.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
-            GraphicsRender.drawText(text, bounds.max.x - textWidth - 5, bounds.min.y + 5, textScale, parentScissor);
+            GraphicsRender.drawText(text, bounds.maxX - textWidth - 5, bounds.minY + 5, textScale, parentScissor);
         }
 
     }

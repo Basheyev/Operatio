@@ -44,7 +44,7 @@ public class ItemWidget extends Button {
             if (text != null) {
                 textRenderer.setZOrder(zOrder + 2);
                 textRenderer.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
-                textRenderer.draw(camera, text, bounds.max.x - 2, bounds.min.y + 2, textScale, parentScissor);
+                textRenderer.draw(camera, text, bounds.maxX - 2, bounds.minY + 2, textScale, parentScissor);
             }
         }
     }

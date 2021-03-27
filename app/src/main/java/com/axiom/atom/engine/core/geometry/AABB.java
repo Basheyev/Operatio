@@ -9,39 +9,42 @@ package com.axiom.atom.engine.core.geometry;
  */
 public class AABB {
 
-    public Vector min;
-    public Vector max;
-    public Vector center;
+    public float minX, minY;
+    public float maxX, maxY;
+    public float centerX, centerY;
     public float width;
     public float height;
 
     public AABB(float minX, float minY, float maxX, float maxY) {
-        min = new Vector(minX, minY);
-        max = new Vector(maxX, maxY);
-        width = max.x - min.x;
-        height = max.y - min.y;
-        center = new Vector(min.x + width * 0.5f, min.y + height * 0.5f);
+        this.minX = minX;
+        this.minY = minY;
+        this.maxX = maxX;
+        this.maxY = maxY;
+        width = maxX - minX;
+        height = maxY - minY;
+        centerX = minX + width * 0.5f;
+        centerY = minY + height * 0.5f;
     }
 
     public void setBounds(float minX, float minY, float maxX, float maxY) {
-        min.x = minX;
-        min.y = minY;
-        max.x = maxX;
-        max.y = maxY;
-        width = max.x - min.x;
-        height = max.y - min.y;
-        center.x = min.x + width * 0.5f;
-        center.y = min.y + height * 0.5f;
+        this.minX = minX;
+        this.minY = minY;
+        this.maxX = maxX;
+        this.maxY = maxY;
+        width = maxX - minX;
+        height = maxY - minY;
+        centerX = minX + width * 0.5f;
+        centerY = minY + height * 0.5f;
     }
 
 
     public void copy(AABB source) {
-        this.min.x = source.min.x;
-        this.min.y = source.min.y;
-        this.max.x = source.max.x;
-        this.max.y = source.max.y;
-        this.center.x = source.center.x;
-        this.center.y = source.center.y;
+        this.minX = source.minX;
+        this.minY = source.minY;
+        this.maxX = source.maxX;
+        this.maxY = source.maxY;
+        this.centerX = source.centerX;
+        this.centerY = source.centerY;
         this.width = source.width;
         this.height = source.height;
     }
@@ -52,8 +55,8 @@ public class AABB {
      * @return true - если пересекаются или false - если нет
      */
     public boolean collides(AABB box) {
-        if (max.y < box.min.y || min.y > box.max.y) return false;
-        if (max.x < box.min.x || min.x > box.max.x) return false;
+        if (maxY < box.minY || minY > box.maxY) return false;
+        if (maxX < box.minX || minX > box.maxX) return false;
         return true;
     }
 
@@ -66,8 +69,8 @@ public class AABB {
      * @return true - если пересекаются, false - если нет
      */
     public boolean collides(float minX, float minY, float maxX, float maxY) {
-        if (max.y < minY || min.y > maxY) return false;
-        if (max.x < minX || min.x > maxX) return false;
+        if (this.maxY < minY || this.minY > maxY) return false;
+        if (this.maxX < minX || this.minX > maxX) return false;
         return true;
     }
 
@@ -79,8 +82,8 @@ public class AABB {
      * @return true - если пересекаются или false - если нет
      */
     public boolean collides(float x, float y) {
-        if (x < min.x || x > max.x) return false;
-        if (y < min.y || y > max.y) return false;
+        if (x < minX || x > maxX) return false;
+        if (y < minY || y > maxY) return false;
         return true;
     }
 
@@ -93,11 +96,11 @@ public class AABB {
      */
     public AABB findIntersection(AABB box, AABB result) {
         if (!collides(box)) return null;
-        float minX = Math.max(min.x, box.min.x);
-        float minY = Math.max(min.y, box.min.y);
-        float maxX = Math.min(max.x, box.max.x);
-        float maxY = Math.min(max.y, box.max.y);
-        result.setBounds(minX, minY, maxX, maxY);
+        float x1 = Math.max(minX, box.minX);
+        float y1 = Math.max(minY, box.minY);
+        float x2 = Math.min(maxX, box.maxX);
+        float y2 = Math.min(maxY, box.maxY);
+        result.setBounds(x1, y1, x2, y2);
         return result;
     }
 

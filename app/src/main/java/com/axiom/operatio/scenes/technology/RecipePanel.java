@@ -267,7 +267,7 @@ public class RecipePanel extends Panel {
         AABB bnds = getWorldBounds();
         GraphicsRender.setZOrder(zOrder + 1);
         GraphicsRender.setColor(0.08f,0,0.16f,0.5f);
-        GraphicsRender.drawRectangle(bnds.min.x, bnds.min.y + 250, bnds.width, 530);
+        GraphicsRender.drawRectangle(bnds.minX, bnds.minY + 250, bnds.width, 530);
     }
 
 
@@ -281,12 +281,12 @@ public class RecipePanel extends Panel {
 
         for (int i=0; i<4; i++) if (inpBtn[i].getBackground()!=null) {
             AABB mat = inpBtn[i].getWorldBounds();
-            GraphicsRender.drawLine(mat.center.x, mat.center.y, mch.center.x, mch.center.y);
+            GraphicsRender.drawLine(mat.centerX, mat.centerY, mch.centerX, mch.centerY);
         }
 
         for (int i=0; i<4; i++) if (outBtn[i].getBackground()!=null) {
             AABB mat = outBtn[i].getWorldBounds();
-            GraphicsRender.drawLine(mat.center.x, mat.center.y, mch.center.x, mch.center.y);
+            GraphicsRender.drawLine(mat.centerX, mat.centerY, mch.centerX, mch.centerY);
         }
 
     }

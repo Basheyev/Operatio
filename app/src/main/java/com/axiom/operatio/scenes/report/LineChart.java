@@ -110,8 +110,8 @@ public class LineChart extends Widget {
 
         float graphWidth = getWidth() - padding * 2;
         float graphHeight = getHeight() - padding * 2;
-        float x = wBounds.min.x + padding;
-        float y = wBounds.min.y + padding;
+        float x = wBounds.minX + padding;
+        float y = wBounds.minY + padding;
         float oldX = x;
         float oldY;
 
@@ -128,17 +128,17 @@ public class LineChart extends Widget {
         for (DataSeries data : dataSeries) {
             // Берём соответствующий ряд данных
             synchronized (data.values) {
-                x = wBounds.min.x + padding;
+                x = wBounds.minX + padding;
                 oldX = x;
-                y = wBounds.min.y + padding;
+                y = wBounds.minY + padding;
                 y += (int) (normalized(data.values[0]) * graphHeight);
                 oldY = y;
                 // Рисуем сам график
                 GraphicsRender.setColor(data.color);
                 GraphicsRender.setLineThickness(4);
                 for (int i = 0; i < data.count; i++) {
-                    x = wBounds.min.x + padding + i * (graphWidth / data.count + 1);
-                    y = wBounds.min.y + padding + (int) (normalized(data.values[i]) * graphHeight);
+                    x = wBounds.minX + padding + i * (graphWidth / data.count + 1);
+                    y = wBounds.minY + padding + (int) (normalized(data.values[i]) * graphHeight);
                     GraphicsRender.drawLine(oldX, oldY, x, y);
                     GraphicsRender.drawRectangle(x - 5, y - 5, 10, 10);
                     oldX = x;
@@ -150,8 +150,8 @@ public class LineChart extends Widget {
 
         GraphicsRender.setColor(Color.WHITE);
         if (totalMax != Double.MIN_VALUE && totalMin != Double.MAX_VALUE) {
-            GraphicsRender.drawText(totalMaxStr, wBounds.min.x + padding, wBounds.min.y + graphHeight, 1f);
-            GraphicsRender.drawText(totalMinStr, wBounds.min.x + padding, wBounds.min.y + padding, 1f);
+            GraphicsRender.drawText(totalMaxStr, wBounds.minX + padding, wBounds.minY + graphHeight, 1f);
+            GraphicsRender.drawText(totalMinStr, wBounds.minX + padding, wBounds.minY + padding, 1f);
         }
 
     }

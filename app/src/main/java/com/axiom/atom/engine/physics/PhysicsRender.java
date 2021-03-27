@@ -122,12 +122,12 @@ public class PhysicsRender {
         AABB a = A.getWorldBounds();
         AABB b = B.getWorldBounds();
 
-        Vector centerA = a.center;
-        Vector centerB = b.center;
+       // Vector centerA = a.center;
+       // Vector centerB = b.center;
 
         // Посчитать расстояние между центрами
-        distance.x = centerB.x - centerA.x;
-        distance.y = centerB.y - centerA.y;
+        distance.x = b.centerX - a.centerX;
+        distance.y = b.centerY - a.centerY;
 
         float lengthY = Math.abs(distance.y / (a.height + b.height));
         float lengthX = Math.abs(distance.x / (a.width + b.width));

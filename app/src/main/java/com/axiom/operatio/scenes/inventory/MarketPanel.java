@@ -153,8 +153,8 @@ public class MarketPanel extends Panel {
             float graphWidth = 960;
             float graphHeight = 300;
             float floor = 480;
-            float x = wBounds.min.x + 25;
-            float y = wBounds.min.y + floor;
+            float x = wBounds.minX + 25;
+            float y = wBounds.minY + floor;
             float oldX = x;
             float oldY;
             GraphicsRender.setColor(GRAPH_BACKGROUND);
@@ -168,8 +168,8 @@ public class MarketPanel extends Panel {
             y += (int) (values[0] / maxValue * graphHeight * 0.8f);
             oldY = y;
             for (int i = 0; i < counter; i++) {
-                x = wBounds.min.x + i * 10 + 25;
-                y = wBounds.min.y + floor + (int) (values[i] / maxValue * graphHeight * 0.8f);
+                x = wBounds.minX + i * 10 + 25;
+                y = wBounds.minY + floor + (int) (values[i] / maxValue * graphHeight * 0.8f);
                 if (oldY > y) GraphicsRender.setColor(Color.RED);
                 else GraphicsRender.setColor(Color.GREEN);
                 GraphicsRender.drawLine(oldX, oldY, x, y);

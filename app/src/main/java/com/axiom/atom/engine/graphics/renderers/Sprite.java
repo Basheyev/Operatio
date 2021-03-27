@@ -232,7 +232,7 @@ public class Sprite extends Quad {
      * @param scissor область обрезки в физических экранных координатах
      */
     public void draw(Camera camera, AABB bounds, AABB scissor) {
-        draw(camera, bounds.min.x, bounds.min.y, bounds.width, bounds.height,scissor);
+        draw(camera, bounds.minX, bounds.minY, bounds.width, bounds.height,scissor);
     }
 
 

@@ -62,10 +62,10 @@ public abstract class GameObject {
     public AABB getWorldBounds() {
         if (x!=lastX || y!=lastY || localBoundsChanged) {
             worldBounds.setBounds(
-                    x + localBounds.min.x,
-                    y + localBounds.min.y,
-                    x + localBounds.max.x,
-                    y + localBounds.max.y
+                    x + localBounds.minX,
+                    y + localBounds.minY,
+                    x + localBounds.maxX,
+                    y + localBounds.maxY
             );
             lastX = x;
             lastY = y;
@@ -99,7 +99,7 @@ public abstract class GameObject {
      * @param bounds границы в локальных координатах объекта
      */
     public void setLocalBounds(AABB bounds) {
-        localBounds.setBounds(bounds.min.x,bounds.min.y,bounds.max.x,bounds.max.y);
+        localBounds.setBounds(bounds.minX,bounds.minY,bounds.maxX,bounds.maxY);
     }
 
 }

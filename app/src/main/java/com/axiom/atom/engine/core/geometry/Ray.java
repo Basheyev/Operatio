@@ -42,10 +42,10 @@ public class Ray {
 
         // min is the corner of AABB with minimal coordinates - left bottom, max is maximal corner
         // origin is origin of ray
-        float t1 = (aabb.min.x - origin.x) * dirfrac.x;
-        float t2 = (aabb.max.x - origin.x) * dirfrac.x;
-        float t3 = (aabb.min.y - origin.y) * dirfrac.y;
-        float t4 = (aabb.max.y - origin.y) * dirfrac.y;
+        float t1 = (aabb.minX - origin.x) * dirfrac.x;
+        float t2 = (aabb.maxX - origin.x) * dirfrac.x;
+        float t3 = (aabb.minY - origin.y) * dirfrac.y;
+        float t4 = (aabb.maxY - origin.y) * dirfrac.y;
 
         float tmin = Math.max(Math.min(t1, t2), Math.min(t3, t4));
         float tmax = Math.min(Math.max(t1, t2), Math.max(t3, t4));

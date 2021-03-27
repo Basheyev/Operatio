@@ -96,7 +96,7 @@ public class Camera {
     }
 
     public boolean isVisible(AABB rect) {
-        return isVisible(rect.min.x, rect.min.y, rect.max.x, rect.max.y);
+        return isVisible(rect.minX, rect.minY, rect.maxX, rect.maxY);
     }
 
     /**
@@ -173,10 +173,10 @@ public class Camera {
         // Вычисляем видна ли область на экране
         boolean isVisibleOnScreen = box.collides(x1,y1,x2,y2);
         // В любом случае конвертируем
-        float minX = (box.min.x - camera.x1) / WIDTH * displayWidth;
-        float minY = (box.min.y - camera.y1) / HEIGHT * displayHeight;
-        float maxX = (box.max.x - camera.x1) / WIDTH * displayWidth;
-        float maxY = (box.max.y - camera.y1) / HEIGHT * displayHeight;
+        float minX = (box.minX - camera.x1) / WIDTH * displayWidth;
+        float minY = (box.minY - camera.y1) / HEIGHT * displayHeight;
+        float maxX = (box.maxX - camera.x1) / WIDTH * displayWidth;
+        float maxY = (box.maxY - camera.y1) / HEIGHT * displayHeight;
         box.setBounds(minX, minY, maxX, maxY);
         return isVisibleOnScreen;
     }

@@ -33,13 +33,13 @@ public class Caption extends Widget {
             AABB bounds = getWorldBounds();
             AABB scissors = parent.getScissors();
 
-            float xpos = bounds.min.x; // ALIGN_LEFT
-            if (getHorzinontalAlignment()==Text.ALIGN_RIGHT) xpos = bounds.max.x;
-            if (getHorzinontalAlignment()==Text.ALIGN_CENTER) xpos = bounds.center.x;
+            float xpos = bounds.minX; // ALIGN_LEFT
+            if (getHorzinontalAlignment()==Text.ALIGN_RIGHT) xpos = bounds.maxX;
+            if (getHorzinontalAlignment()==Text.ALIGN_CENTER) xpos = bounds.centerX;
 
-            float ypos = bounds.max.y; // ALIGN_TOP
-            if (getVerticalAlignment()==Text.ALIGN_BOTTOM) ypos = bounds.min.y;
-            if (getVerticalAlignment()==Text.ALIGN_CENTER) ypos = bounds.center.y;
+            float ypos = bounds.maxY; // ALIGN_TOP
+            if (getVerticalAlignment()==Text.ALIGN_BOTTOM) ypos = bounds.minY;
+            if (getVerticalAlignment()==Text.ALIGN_CENTER) ypos = bounds.centerY;
 
             textRenderer.setZOrder(zOrder + 2);
             textRenderer.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);

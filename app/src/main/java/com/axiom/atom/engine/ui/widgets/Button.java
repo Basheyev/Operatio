@@ -59,10 +59,10 @@ public class Button extends Widget {
         }
 
         if (text!=null) {
-            float x = bounds.min.x + spaceWidth;
-            float y = bounds.center.y;
-            if (getHorizontalAlignment()==Text.ALIGN_CENTER) x = bounds.center.x;
-            if (getHorizontalAlignment()==Text.ALIGN_RIGHT) x = bounds.max.x - spaceWidth;
+            float x = bounds.minX + spaceWidth;
+            float y = bounds.centerY;
+            if (getHorizontalAlignment()==Text.ALIGN_CENTER) x = bounds.centerX;
+            if (getHorizontalAlignment()==Text.ALIGN_RIGHT) x = bounds.maxY - spaceWidth;
 
             textRenderer.setZOrder(zOrder + 2);
             textRenderer.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);

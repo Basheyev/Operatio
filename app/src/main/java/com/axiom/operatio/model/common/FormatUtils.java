@@ -30,6 +30,9 @@ public class FormatUtils {
         }
     }
 
+
+
+    // fixme слишком много строк создаётся
     public static String formatMoney(double sum) {
         if (moneyFormat==null) initializeFormatting();
         return moneyFormat.format(sum);
