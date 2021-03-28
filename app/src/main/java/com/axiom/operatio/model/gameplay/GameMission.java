@@ -66,7 +66,7 @@ public class GameMission {
 
     public void earnReward(Production production) {
         production.getPermissions().addPermissions(permissionsReward);
-        production.getLedger().increaseCashBalance(0, moneyReward);
+        production.getLedger().debitCashBalance(0, moneyReward);
     }
 
 

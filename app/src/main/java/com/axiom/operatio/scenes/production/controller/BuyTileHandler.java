@@ -55,7 +55,7 @@ public class BuyTileHandler {
 
     private void buyTile(int column, int row) {
         if (actionInProgress && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
-            if (production.getLedger().decreaseCashBalance(Ledger.EXPENSE_BLOCK_BOUGHT, Production.TILE_PRICE)) {
+            if (production.getLedger().creditCashBalance(Ledger.EXPENSE_TILE_BOUGHT, Production.TILE_PRICE)) {
                 production.setAreaUnlocked(column, row, 1, 1, true);
                 SoundRenderer.playSound(boughtSound);
             }

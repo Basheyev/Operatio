@@ -192,7 +192,7 @@ public class Machine extends Block implements JSONSerializable {
             Material material = operation.getOutputs()[i];
 
             // Регистрируем факт производства материала
-            ledger.registerCommodityManufactured(material.getID(), operation.getOutputAmount()[i]);
+            ledger.materialManufactured(material.getID(), operation.getOutputAmount()[i]);
 
             for (int j=0; j<operation.getOutputAmount()[i]; j++) {
                 item = new Item(material);

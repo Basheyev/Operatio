@@ -16,9 +16,14 @@ public class Ledger implements JSONSerializable {
     //---------------------------------------------------------------------------------------------
     public static final int OPERATIONAL_DAY_CYCLES = 60;         // Длительность периода в циклах
     //---------------------------------------------------------------------------------------------
+    public static final int EXPENSE_UNKOWN          = 0x0000;    // Неизвестный расход
     public static final int EXPENSE_BLOCK_BOUGHT    = 0x0001;    // Расходы на покупку блока
     public static final int EXPENSE_BLOCK_OPERATION = 0x0002;    // Расходы на операцию блока
     public static final int EXPENSE_MATERIAL_BOUGHT = 0x0003;    // Расходы на покупку материала
+    public static final int EXPENSE_TILE_BOUGHT = 0x0004;    // Расходы на покупку земли
+    public static final int EXPENSE_RECIPE_BOUGHT   = 0x0005;    // Расходы на покупку технологии
+
+    public static final int REVENUE_UNKNOWN         = 0x0000;    // Неизвестный доход
     public static final int REVENUE_BLOCK_SOLD      = 0x1001;    // Выручка от продажи блока
     public static final int REVENUE_MATERIAL_SOLD   = 0x1002;    // Выручка от продажи материала
     //---------------------------------------------------------------------------------------------
@@ -157,13 +162,37 @@ public class Ledger implements JSONSerializable {
         return history;
     }
 
+    /**
+     * Капитализация компании fixme начать считать правильно
+     * @return
+     */
     public double getCapitalization() {
-        double assetsValuation = production.getAssetsValuation();                      // Активы
-        double inventoryValuation = production.getInventory().getValuation();          // Материалы на складе
-        double workInProgressValuation = production.getWorkInProgressValuation();      // Материалы в цеху
-        double cash = getCashBalance();                                                // Деньги
-        return cash + assetsValuation + inventoryValuation + workInProgressValuation;  // Капитализация
+        // Посчитать средний денежный поток за прошлый период
+        double T = 5;                                                          // Период
+        double WACC = 0.10;                                                    // Цена капитала 10%
+        double cashFlow = getHistoryCashFlow();                                // Денежный поток
+        double assetsValue = production.getAssetsValuation();                  // Активы
+        double inventoryValue = production.getInventory().getValuation();      // Материалы на складе
+        double workInProgressValue = production.getWorkInProgressValuation();  // Материалы в цеху
+        double cash = getCashBalance();                                        // Остатки денег
+        double NFP = total.getMargin();                                        // Инвестиционный баланс
+
+        double value = (cashFlow * T) / Math.pow(1 + WACC, T);
+        value += assetsValue + inventoryValue + workInProgressValue;
+        value = value + cash + NFP;
+
+        return value;  // Капитализация
     }
+
+
+    private double getHistoryCashFlow() {
+        double historyCashFlow = 0;
+        for (int i=0; i<historyCounter; i++) {
+            historyCashFlow += history[i].margin;
+        }
+        return historyCashFlow;
+    }
+
 
     public double getCurrentCashBalance() {
         return currentPeriod.cashBalance;
@@ -194,17 +223,18 @@ public class Ledger implements JSONSerializable {
      * @param type
      * @param sum
      */
-    public void registerExpense(int type, double sum) {
-        if (type==EXPENSE_BLOCK_BOUGHT) {
+    private void registerExpense(int type, double sum) {
+        if (type==EXPENSE_BLOCK_BOUGHT || type== EXPENSE_TILE_BOUGHT || type==EXPENSE_RECIPE_BOUGHT) {
+            currentPeriod.assetsBought += sum;
             total.assetsBought += sum;
-            currentPeriod.assetsSold += sum;
+            total.expenses += sum;
+            total.margin = total.revenue - total.expenses;
+            return;
         }
-
         if (type==EXPENSE_BLOCK_OPERATION) {
             currentPeriod.maintenanceCost += sum;
             total.maintenanceCost += sum;
         }
-
         currentPeriod.expenses += sum;
         currentPeriod.margin = currentPeriod.revenue - currentPeriod.expenses;
 
@@ -218,10 +248,15 @@ public class Ledger implements JSONSerializable {
      * @param type
      * @param sum
      */
-    public void registerRevenue(int type, double sum) {
+    private void registerRevenue(int type, double sum) {
+        if (type==REVENUE_UNKNOWN) return;
+
         if (type==REVENUE_BLOCK_SOLD) {
             total.assetsSold += sum;
             currentPeriod.assetsSold += sum;
+            total.revenue += sum;
+            total.margin = total.revenue - total.expenses;
+            return;
         }
 
         currentPeriod.revenue += sum;
@@ -237,7 +272,7 @@ public class Ledger implements JSONSerializable {
      * @param materialID
      * @param quantity
      */
-    public void registerCommodityManufactured(int materialID, int quantity) {
+    public void materialManufactured(int materialID, int quantity) {
         materialRecords[materialID].manufacturedTotal += quantity;
         materialRecords[materialID].manufacturedByPeriod += quantity;
     }
@@ -248,7 +283,7 @@ public class Ledger implements JSONSerializable {
      * @param quantity
      * @param price
      */
-    public void registerCommoditySold(int materialID, int quantity, double price) {
+    public void materialSold(int materialID, int quantity, double price) {
         materialRecords[materialID].soldSumTotal += quantity * price;
         materialRecords[materialID].soldAmountTotal += quantity;
         materialRecords[materialID].soldAmountCounter += quantity;
@@ -260,7 +295,7 @@ public class Ledger implements JSONSerializable {
      * @param quantity
      * @param price
      */
-    public void registerCommodityBought(int materialID, int quantity, double price) {
+    public void materialBought(int materialID, int quantity, double price) {
         materialRecords[materialID].boughtSumTotal += quantity * price;
         materialRecords[materialID].boughtAmountTotal += quantity;
         materialRecords[materialID].boughtAmountCounter += quantity;
@@ -272,7 +307,7 @@ public class Ledger implements JSONSerializable {
     }
 
 
-    public boolean decreaseCashBalance(int type, double value) {
+    public boolean creditCashBalance(int type, double value) {
         double result = cashBalance - value;
         if (result < 0) return false;
         registerExpense(type, value);
@@ -280,7 +315,7 @@ public class Ledger implements JSONSerializable {
         return true;
     }
 
-    public double increaseCashBalance(int type, double value) {
+    public double debitCashBalance(int type, double value) {
         cashBalance += value;
         registerRevenue(type, value);
         return cashBalance;

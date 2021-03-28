@@ -84,4 +84,6 @@ public class LedgerPeriod implements JSONSerializable {
         return margin;
     }
 
+    public double getMaintenanceCost() { return  maintenanceCost; }
+
 }

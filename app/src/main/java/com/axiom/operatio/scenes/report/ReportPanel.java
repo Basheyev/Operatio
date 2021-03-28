@@ -25,8 +25,9 @@ public class ReportPanel extends Panel {
 
     private Production production;
     private Caption panelCaption;
-    private Caption incomeCaption;
-    private Caption expenseCaption;
+    private Caption salesCaption;
+    private Caption manufacturedCaption;
+    private Caption purchaseCaption;
     private Caption reportCaption;
     private LineChart chart;
     private ItemWidget[] boughtMaterials;
@@ -37,8 +38,9 @@ public class ReportPanel extends Panel {
     private double[] revenueData = new double[Ledger.HISTORY_LENGTH];
     private double[] expensesData = new double[Ledger.HISTORY_LENGTH];
 
-    private StringBuffer revenueText;
-    private StringBuffer expensesText;
+    private StringBuffer salesText;
+    private StringBuffer purchaseText;
+    private StringBuffer manufacturedText;
 
 
     public ReportPanel(Production production) {
@@ -49,8 +51,9 @@ public class ReportPanel extends Panel {
         setColor(0xCC505050);
 
         summary = new StringBuffer(512);
-        revenueText = new StringBuffer(32);
-        expensesText = new StringBuffer(32);
+        salesText = new StringBuffer(32);
+        purchaseText = new StringBuffer(32);
+        manufacturedText = new StringBuffer(32);
 
         panelCaption = new Caption("Operations daily report");
         panelCaption.setTextScale(1.7f);
@@ -58,11 +61,11 @@ public class ReportPanel extends Panel {
         panelCaption.setLocalBounds(30, getHeight() - 100, 350, 100);
         addChild(panelCaption);
 
-        expenseCaption = new Caption("Purchase");
-        expenseCaption.setTextColor(1,0.5f,0.5f, 1);
-        expenseCaption.setTextScale(1.3f);
-        expenseCaption.setLocalBounds(30, 330,300, 100);
-        addChild(expenseCaption);
+        purchaseCaption = new Caption("Purchase");
+        purchaseCaption.setTextColor(1,0.5f,0.5f, 1);
+        purchaseCaption.setTextScale(1.3f);
+        purchaseCaption.setLocalBounds(30, 330,300, 100);
+        addChild(purchaseCaption);
         boughtMaterials = new ItemWidget[32];
         float bx = 30, by = 270;
         for (int i=0; i<32; i++) {
@@ -79,11 +82,11 @@ public class ReportPanel extends Panel {
             }
         }
 
-        Caption manufCaption = new Caption("Manufactured");
-        manufCaption.setTextColor(WHITE);
-        manufCaption.setTextScale(1.3f);
-        manufCaption.setLocalBounds(650, 330,300, 100);
-        addChild(manufCaption);
+        manufacturedCaption = new Caption("Manufactured");
+        manufacturedCaption.setTextColor(WHITE);
+        manufacturedCaption.setTextScale(1.3f);
+        manufacturedCaption.setLocalBounds(650, 330,300, 100);
+        addChild(manufacturedCaption);
         manufacturedMaterials = new ItemWidget[32];
         float mx = 650, my = 270;
         for (int i=0; i<32; i++) {
@@ -100,11 +103,11 @@ public class ReportPanel extends Panel {
             }
         }
 
-        incomeCaption = new Caption("Sales");
-        incomeCaption.setTextColor(GREEN);
-        incomeCaption.setTextScale(1.3f);
-        incomeCaption.setLocalBounds(1270, 330, 300, 100);
-        addChild(incomeCaption);
+        salesCaption = new Caption("Sales");
+        salesCaption.setTextColor(GREEN);
+        salesCaption.setTextScale(1.3f);
+        salesCaption.setLocalBounds(1270, 330, 300, 100);
+        addChild(salesCaption);
         soldMaterials = new ItemWidget[32];
         float sx = 1270, sy = 270;
         for (int i=0; i<32; i++) {
@@ -157,15 +160,20 @@ public class ReportPanel extends Panel {
     public void updateData() {
         Ledger ledger = production.getLedger();
 
-        revenueText.setLength(0);
-        revenueText.append("Sold: ");
-        FormatUtils.formatMoneyAppend(Math.round(ledger.getLastPeriod().getRevenue()), revenueText);
-        revenueText.append("\n");
+        salesText.setLength(0);
+        salesText.append("Sold: ");
+        double salesSum = Math.round(ledger.getLastPeriod().getRevenue());
+        FormatUtils.formatMoneyAppend(salesSum, salesText);
 
-        expensesText.setLength(0);
-        expensesText.append("Purchased: ");
-        FormatUtils.formatMoneyAppend(Math.round(ledger.getLastPeriod().getExpenses()), expensesText);
-        expensesText.append("\n");
+        manufacturedText.setLength(0);
+        manufacturedText.append("Manufacture costs: ");
+        double manufactureCost = Math.round(ledger.getLastPeriod().getMaintenanceCost());
+        FormatUtils.formatMoneyAppend(manufactureCost, manufacturedText);
+
+        purchaseText.setLength(0);
+        purchaseText.append("Purchased: ");
+        double purchaseSum = Math.round(ledger.getLastPeriod().getExpenses() - manufactureCost);
+        FormatUtils.formatMoneyAppend(purchaseSum, purchaseText);
 
         synchronized (this) {
 
@@ -217,8 +225,9 @@ public class ReportPanel extends Panel {
             }
 
             updateSummary(ledger);
-            incomeCaption.setText(revenueText);
-            expenseCaption.setText(expensesText);
+            salesCaption.setText(salesText);
+            manufacturedCaption.setText(manufacturedText);
+            purchaseCaption.setText(purchaseText);
             reportCaption.setText(summary);
 
             GameMission mission =  MissionManager.getMission(production.getLevel());
@@ -234,19 +243,18 @@ public class ReportPanel extends Panel {
         double margin = 0;
         if (totalRevenue > 0) margin = Math.round(ledger.getTotal().getMargin() / totalRevenue * 100);
         summary.delete(0, summary.length());
-        summary.append("Income: ");
+        summary.append("Operational:\n");
+        summary.append("- income: ");
         FormatUtils.formatMoneyAppend(Math.round(ledger.getLastPeriod().getRevenue()), summary);
-        summary.append("\nExpenses: ");
+        summary.append("\n- expenses: ");
         FormatUtils.formatMoneyAppend(Math.round(ledger.getLastPeriod().getExpenses()),summary);
-        summary.append("\nMargin: ");
+        summary.append("\n- margin: ");
         FormatUtils.formatMoneyAppend(Math.round(ledger.getLastPeriod().getMargin()),summary);
-        summary.append("\n\nTotal margin: ");
+        summary.append("\n\nTotal balance: ");
         FormatUtils.formatMoneyAppend(Math.round(ledger.getTotal().getMargin()), summary);
         summary.append(" (");
         summary.append(margin);
         summary.append("%)");
-        summary.append("\nCash: ");
-        FormatUtils.formatMoneyAppend(Math.round(production.getLedger().getCashBalance()), summary);
         summary.append("\nAssets: ");
         FormatUtils.formatMoneyAppend(Math.round(production.getAssetsValuation()), summary);
         summary.append("\nWork in progress: ");

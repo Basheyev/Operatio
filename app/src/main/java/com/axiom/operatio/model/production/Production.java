@@ -193,7 +193,7 @@ public class Production implements JSONSerializable {
                 int expenseType = Ledger.EXPENSE_BLOCK_OPERATION;
                 for (int i = 0; i < size; i++) {
                     block = blocks.get(i);
-                    energyPayed = ledger.decreaseCashBalance(expenseType, block.getCycleCost());
+                    energyPayed = ledger.creditCashBalance(expenseType, block.getCycleCost());
                     if (energyPayed) block.process();  // Если энергия оплачена отрабатываем
                     else {
                         block.setState(Block.FAULT);

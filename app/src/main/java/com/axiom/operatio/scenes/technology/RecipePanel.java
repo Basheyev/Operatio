@@ -14,6 +14,7 @@ import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.common.FormatUtils;
 import com.axiom.operatio.model.gameplay.GamePermissions;
+import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.machine.MachineType;
@@ -326,7 +327,7 @@ public class RecipePanel extends Panel {
             Material material = materialsTree.getSelectedMaterial();
             if (material!=null && selectedOperation!=null) {
                 if (!permissions.isAvailable(material) || !permissions.isAvailable(selectedOperation)) {
-                    if (production.getLedger().decreaseCashBalance(0, RECIPE_PRICE)) {
+                    if (production.getLedger().creditCashBalance(Ledger.EXPENSE_RECIPE_BOUGHT, RECIPE_PRICE)) {
                         SoundRenderer.playSound(buySound);
                         permissions.addMaterialPermission(material);
                         permissions.addOperationPermission(selectedOperation);
