@@ -42,6 +42,9 @@ public class ScenesPanel extends Panel {
     private Button coinButton;
     private Button dayButton;
 
+    private StringBuffer dayText;
+    private StringBuffer balanceText;
+
     private Button menuButton;
     private Button pauseButton;
 
@@ -69,6 +72,8 @@ public class ScenesPanel extends Panel {
     public ScenesPanel(Production production) {
         super();
         this.production = production;
+        this.dayText = new StringBuffer(32);
+        this.balanceText = new StringBuffer(32);
         buildUI();
     }
 
@@ -80,8 +85,9 @@ public class ScenesPanel extends Panel {
 
         double currentBalance = Math.round(production.getLedger().getCashBalance());
         long currentDay = production.getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES;
-        String balanceText = FormatUtils.formatMoney(currentBalance);
-        String dayText = "" + currentDay;
+        FormatUtils.formatMoney(currentBalance, balanceText);
+        FormatUtils.formatLong(currentDay, dayText);
+
         lastBalance = currentBalance;
 
         timeCaption = buildCaption(dayText, 420, 20, 256, 80);
@@ -100,7 +106,7 @@ public class ScenesPanel extends Panel {
 
     }
 
-    private Caption buildCaption(String txt, float x, float y, float w, float h) {
+    private Caption buildCaption(CharSequence txt, float x, float y, float w, float h) {
         Caption caption = new Caption(txt);
         caption.setLocalBounds(x, y, w, h);
         caption.setTextColor(TEXT_COLOR);
@@ -139,12 +145,15 @@ public class ScenesPanel extends Panel {
         long currentDay = production.getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES;
 
         if (currentDay != lastDay) {
-            timeCaption.setText("" + currentDay);
+            dayText.setLength(0);
+            dayText.append(currentDay);
+            timeCaption.setText(dayText);
             lastDay = currentDay;
         }
 
         if (currentBalance != lastBalance) {
-            balanceCaption.setText(FormatUtils.formatMoney(currentBalance));
+            balanceText.setLength(0);
+            balanceCaption.setText(FormatUtils.formatMoneyAppend(currentBalance, balanceText));
             lastBalance = currentBalance;
         }
 

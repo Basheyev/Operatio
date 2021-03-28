@@ -20,22 +20,31 @@ public class FormatUtils {
         moneyFormat.applyPattern("$###,###,###,###,###.##");
     }
 
-    public static void formatMoney(double sum, StringBuffer targetBuffer) {
-        if (targetBuffer==null) return;
+    public static StringBuffer formatMoneyAppend(double sum, StringBuffer targetBuffer) {
+        if (targetBuffer==null) return null;
         if (moneyFormat==null) initializeFormatting();
         synchronized (buffer) {
-            buffer.delete(0, buffer.length());
+            buffer.setLength(0);
             moneyFormat.format(sum, buffer, position);
             targetBuffer.append(buffer);
         }
+        return targetBuffer;
     }
 
 
-
-    // fixme слишком много строк создаётся
-    public static String formatMoney(double sum) {
+    public static StringBuffer formatMoney(double sum, StringBuffer targetBuffer) {
+        if (targetBuffer==null) return null;
         if (moneyFormat==null) initializeFormatting();
-        return moneyFormat.format(sum);
+        targetBuffer.setLength(0);
+        moneyFormat.format(sum, targetBuffer, position);
+        return targetBuffer;
+    }
+
+
+    public static StringBuffer formatLong(long value, StringBuffer targetBuffer) {
+        if (targetBuffer==null) return null;
+        targetBuffer.delete(0, targetBuffer.length());
+        return targetBuffer.append(value);
     }
 
 

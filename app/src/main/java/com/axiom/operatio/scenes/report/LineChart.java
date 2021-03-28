@@ -34,8 +34,8 @@ public class LineChart extends Widget {
     private DataSeries[] dataSeries;
     private double totalMax = 0;
     private double totalMin = 0;
-    private String totalMaxStr;
-    private String totalMinStr;
+    private StringBuffer totalMaxStr;
+    private StringBuffer totalMinStr;
     private static int padding = 16;
 
     /**
@@ -49,6 +49,8 @@ public class LineChart extends Widget {
         for (int i=0; i<dataSeries.length; i++) dataSeries[i] = new DataSeries();
         totalMax = Double.MIN_VALUE;
         totalMin = Double.MAX_VALUE;
+        totalMaxStr = new StringBuffer();
+        totalMinStr = new StringBuffer();
     }
 
     /**
@@ -189,8 +191,10 @@ public class LineChart extends Widget {
             }
         }
 
-        totalMaxStr = FormatUtils.formatMoney(Math.round(totalMax));
-        totalMinStr = FormatUtils.formatMoney(Math.round(totalMin));
+        totalMaxStr.setLength(0);
+        totalMinStr.setLength(0);
+        totalMaxStr = FormatUtils.formatMoneyAppend(Math.round(totalMax), totalMaxStr);
+        totalMinStr = FormatUtils.formatMoneyAppend(Math.round(totalMin), totalMinStr);
     }
 
 }

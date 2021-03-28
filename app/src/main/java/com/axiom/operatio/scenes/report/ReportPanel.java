@@ -16,7 +16,6 @@ import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.ItemWidget;
 
-import static android.graphics.Color.BLACK;
 import static android.graphics.Color.GREEN;
 import static android.graphics.Color.WHITE;
 
@@ -38,6 +37,10 @@ public class ReportPanel extends Panel {
     private double[] revenueData = new double[Ledger.HISTORY_LENGTH];
     private double[] expensesData = new double[Ledger.HISTORY_LENGTH];
 
+    private StringBuffer revenueText;
+    private StringBuffer expensesText;
+
+
     public ReportPanel(Production production) {
         super();
         this.production = production;
@@ -46,6 +49,8 @@ public class ReportPanel extends Panel {
         setColor(0xCC505050);
 
         summary = new StringBuffer(512);
+        revenueText = new StringBuffer(32);
+        expensesText = new StringBuffer(32);
 
         panelCaption = new Caption("Operations daily report");
         panelCaption.setTextScale(1.7f);
@@ -151,8 +156,16 @@ public class ReportPanel extends Panel {
      */
     public void updateData() {
         Ledger ledger = production.getLedger();
-        String revenueText = "Sold: " + FormatUtils.formatMoney(Math.round(ledger.getLastPeriod().getRevenue())) + "\n";
-        String expensesText = "Purchased: " + FormatUtils.formatMoney(Math.round(ledger.getLastPeriod().getExpenses())) + "\n";
+
+        revenueText.setLength(0);
+        revenueText.append("Sold: ");
+        FormatUtils.formatMoneyAppend(Math.round(ledger.getLastPeriod().getRevenue()), revenueText);
+        revenueText.append("\n");
+
+        expensesText.setLength(0);
+        expensesText.append("Purchased: ");
+        FormatUtils.formatMoneyAppend(Math.round(ledger.getLastPeriod().getExpenses()), expensesText);
+        expensesText.append("\n");
 
         synchronized (this) {
 
@@ -222,26 +235,26 @@ public class ReportPanel extends Panel {
         if (totalRevenue > 0) margin = Math.round(ledger.getTotal().getMargin() / totalRevenue * 100);
         summary.delete(0, summary.length());
         summary.append("Income: ");
-        FormatUtils.formatMoney(Math.round(ledger.getLastPeriod().getRevenue()), summary);
+        FormatUtils.formatMoneyAppend(Math.round(ledger.getLastPeriod().getRevenue()), summary);
         summary.append("\nExpenses: ");
-        FormatUtils.formatMoney(Math.round(ledger.getLastPeriod().getExpenses()),summary);
+        FormatUtils.formatMoneyAppend(Math.round(ledger.getLastPeriod().getExpenses()),summary);
         summary.append("\nMargin: ");
-        FormatUtils.formatMoney(Math.round(ledger.getLastPeriod().getMargin()),summary);
+        FormatUtils.formatMoneyAppend(Math.round(ledger.getLastPeriod().getMargin()),summary);
         summary.append("\n\nTotal margin: ");
-        FormatUtils.formatMoney(Math.round(ledger.getTotal().getMargin()), summary);
+        FormatUtils.formatMoneyAppend(Math.round(ledger.getTotal().getMargin()), summary);
         summary.append(" (");
         summary.append(margin);
         summary.append("%)");
         summary.append("\nCash: ");
-        FormatUtils.formatMoney(Math.round(production.getLedger().getCashBalance()), summary);
+        FormatUtils.formatMoneyAppend(Math.round(production.getLedger().getCashBalance()), summary);
         summary.append("\nAssets: ");
-        FormatUtils.formatMoney(Math.round(production.getAssetsValuation()), summary);
+        FormatUtils.formatMoneyAppend(Math.round(production.getAssetsValuation()), summary);
         summary.append("\nWork in progress: ");
-        FormatUtils.formatMoney(Math.round(production.getWorkInProgressValuation()),summary);
+        FormatUtils.formatMoneyAppend(Math.round(production.getWorkInProgressValuation()),summary);
         summary.append("\nInventory: ");
-        FormatUtils.formatMoney(Math.round(production.getInventory().getValuation()), summary);
+        FormatUtils.formatMoneyAppend(Math.round(production.getInventory().getValuation()), summary);
         summary.append("\n\nCapitalization: ");
-        FormatUtils.formatMoney(Math.round(ledger.getCapitalization()), summary);
+        FormatUtils.formatMoneyAppend(Math.round(ledger.getCapitalization()), summary);
     }
 
 

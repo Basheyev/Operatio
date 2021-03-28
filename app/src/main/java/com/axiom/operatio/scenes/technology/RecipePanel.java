@@ -214,7 +214,7 @@ public class RecipePanel extends Panel {
         machineDescription.append("\noperation #");
         machineDescription.append(operationID + 1);
         machineDescription.append("\n\n");
-        machineDescription.append(FormatUtils.formatMoney(operation.getCost()));
+        FormatUtils.formatMoneyAppend(operation.getCost(), machineDescription);
         machineCaption.setText(machineDescription);
         machineButton.setBackground(machineImage);
 

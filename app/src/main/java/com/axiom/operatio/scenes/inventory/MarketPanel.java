@@ -43,6 +43,8 @@ public class MarketPanel extends Panel {
     private Button sellButton, dealSum, buyButton;
     private Button leftButton, quantityButton, rightButton;
 
+    private StringBuffer sumText, materialText;
+
     private final int tickSound, denySound;
 
 
@@ -56,6 +58,10 @@ public class MarketPanel extends Panel {
         values = new double[Market.HISTORY_LENGTH];
         counter = 0;
         commodityName = Material.getMaterial(currentCommodity).getName();
+
+        sumText = new StringBuffer(32);
+        materialText = new StringBuffer(128);
+
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
         denySound = SoundRenderer.loadSound(R.raw.deny_snd);;
 
@@ -88,7 +94,7 @@ public class MarketPanel extends Panel {
         quantityButton = buildButton("" + quantity, 275, 365, 150, 80, Color.BLACK, 1.5f, false);
         rightButton = buildButton(">",425, 365, 75, 80,  Color.GRAY, 1.5f,true);
 
-        String sumText = FormatUtils.formatMoney(production.getLedger().getCashBalance());
+        sumText = FormatUtils.formatMoney(production.getLedger().getCashBalance(), sumText);
         dealSum = buildButton(sumText, 525, 365, 250, 80, Color.BLACK, 1.5f,false);
 
         autoBuyCB = buildCheckBox("Auto-buy", 550, 805, 200, 100);
@@ -96,9 +102,9 @@ public class MarketPanel extends Panel {
     }
 
 
-    private Button buildButton(String txt, float x, float y, float w, float h, int back, float textScale, boolean listener) {
+    private Button buildButton(CharSequence txt, float x, float y, float w, float h, int back, float textScale, boolean listener) {
         Button button = new Button(txt);
-        button.setTag(txt);
+        button.setTag(txt.toString());
         button.setLocalBounds(x, y, w, h);
         button.setColor(back);
         button.setTextScale(textScale);
@@ -109,9 +115,9 @@ public class MarketPanel extends Panel {
     }
 
 
-    private CheckBox buildCheckBox(String txt, float x, float y, float w, float h) {
+    private CheckBox buildCheckBox(CharSequence txt, float x, float y, float w, float h) {
         CheckBox cb = new CheckBox(txt, false);
-        cb.setTag(txt);
+        cb.setTag(txt.toString());
         cb.setLocalBounds(x,y,w,h);
         cb.setTextColor(Color.WHITE);
         cb.setTextScale(1.5f);
@@ -135,8 +141,13 @@ public class MarketPanel extends Panel {
             maxValue = market.getHistoryMaxValue(currentCommodity);
             counter = market.getHistoryLength(currentCommodity);
             market.getHistoryValues(currentCommodity, values);
-            dealSum.setText(FormatUtils.formatMoney(quantity * market.getValue(currentCommodity)));
-            materialCaption.setText(commodityName + " - " + FormatUtils.formatMoney(market.getValue(currentCommodity)));
+            dealSum.setText(FormatUtils.formatMoney(quantity * market.getValue(currentCommodity), sumText));
+
+            materialText.setLength(0);
+            materialText.append(commodityName).append(" - ");
+            FormatUtils.formatMoneyAppend(market.getValue(currentCommodity), materialText);
+            materialCaption.setText(materialText);
+
         }
     }
 

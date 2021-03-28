@@ -70,7 +70,9 @@ public class BlockButton extends Button {
         background = allMachines.getAsSprite(startFrame, startFrame + 7);
         int animation = background.addAnimation(0, 7, 8, true);
         background.setActiveAnimation(animation);
-        setText(FormatUtils.formatMoney(Math.round(MachineType.getMachineType(id-2).getPrice())));
+        double price = MachineType.getMachineType(id - 2).getPrice();
+        StringBuffer priceText = new StringBuffer();
+        setText(FormatUtils.formatMoneyAppend(price, priceText));
     }
 
 
