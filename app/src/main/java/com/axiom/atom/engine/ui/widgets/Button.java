@@ -12,7 +12,7 @@ public class Button extends Widget {
 
     protected Text textRenderer;
     protected Sprite background;
-    protected String text;
+    protected CharSequence text;
     protected float[] textColor = {0,0,0,1};
     protected float textScale = 2.0f;
 
@@ -26,13 +26,13 @@ public class Button extends Widget {
         setColor(0.5f, 0.7f, 0.5f, 0.9f);
     }
 
-    public Button(Sprite background, String text) {
+    public Button(Sprite background, CharSequence text) {
         this();
         this.background = background;
         this.text = text;
     }
 
-    public Button(String text) {
+    public Button(CharSequence text) {
         this(null, text);
     }
 
@@ -96,7 +96,7 @@ public class Button extends Widget {
         this.textScale = scale;
     }
 
-    public void setText(String caption) {
+    public void setText(CharSequence caption) {
         if (caption!=null) this.text = caption;
     }
 

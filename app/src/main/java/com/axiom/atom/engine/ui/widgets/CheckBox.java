@@ -9,12 +9,12 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 
 public class CheckBox extends Widget {
 
-    protected String text;
+    protected CharSequence text;
     protected float[] textColor = {0,0,0,1};
     protected float textScale = 2.0f;
     protected boolean isChecked;
 
-    public CheckBox(String caption, boolean isChecked) {
+    public CheckBox(CharSequence caption, boolean isChecked) {
         super();
         this.text = caption;
         this.isChecked = isChecked;

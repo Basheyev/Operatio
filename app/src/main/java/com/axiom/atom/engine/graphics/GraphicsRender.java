@@ -287,22 +287,12 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
                 | GLES20.GL_COLOR_BUFFER_BIT);
     }
 
-    public static void drawText(String text, float x, float y, float scale) {
+    public static void drawText(CharSequence text, float x, float y, float scale) {
         if (render==null) return;
         render.textRender.draw(camera, text, x, y, scale);
     }
 
-    public static void drawText(StringBuffer text, float x, float y, float scale, AABB scissor) {
-        if (render==null) return;
-        render.textRender.draw(camera, text, x, y, scale, scissor);
-    }
-
-    public static void drawText(StringBuffer text, float x, float y, float scale) {
-        if (render==null) return;
-        render.textRender.draw(camera, text, x, y, scale);
-    }
-
-    public static void drawText(String text, float x, float y, float scale, AABB scissor) {
+    public static void drawText(CharSequence text, float x, float y, float scale, AABB scissor) {
         if (render==null) return;
         render.textRender.draw(camera, text, x, y, scale, scissor);
     }
