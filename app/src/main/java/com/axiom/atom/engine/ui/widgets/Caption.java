@@ -14,7 +14,7 @@ public class Caption extends Widget {
     private float[] textColor = {0,0,0,1};
     private float scale = 1.0f;
 
-    public Caption(String text) {
+    public Caption(CharSequence text) {
         super();
         textRenderer = new Text("sans-serif");
         textRenderer.setHorizontalAlignment(Text.ALIGN_LEFT);
