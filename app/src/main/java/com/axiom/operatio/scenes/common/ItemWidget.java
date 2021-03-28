@@ -50,7 +50,7 @@ public class ItemWidget extends Button {
     }
 
     @Override
-    public void setText(String caption) {
+    public void setText(CharSequence caption) {
         synchronized (this) {
             super.setText(caption);
         }
