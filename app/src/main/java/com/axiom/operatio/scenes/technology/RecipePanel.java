@@ -27,8 +27,6 @@ import static android.graphics.Color.WHITE;
 
 public class RecipePanel extends Panel {
 
-    public static final int RECIPE_PRICE = 500;
-
     public static final String INPUTS = "Inputs";
     public static final String OUTPUTS = "Outputs";
     public static final String RECIPE = "Recipe";
@@ -327,7 +325,8 @@ public class RecipePanel extends Panel {
             Material material = materialsTree.getSelectedMaterial();
             if (material!=null && selectedOperation!=null) {
                 if (!permissions.isAvailable(material) || !permissions.isAvailable(selectedOperation)) {
-                    if (production.getLedger().creditCashBalance(Ledger.EXPENSE_RECIPE_BOUGHT, RECIPE_PRICE)) {
+                    double recipePrice = selectedOperation.getRecipeCost();
+                    if (production.getLedger().creditCashBalance(Ledger.EXPENSE_RECIPE_BOUGHT, recipePrice)) {
                         SoundRenderer.playSound(buySound);
                         permissions.addMaterialPermission(material);
                         permissions.addOperationPermission(selectedOperation);

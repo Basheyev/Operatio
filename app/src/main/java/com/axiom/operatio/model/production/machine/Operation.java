@@ -19,8 +19,8 @@ public class Operation {
     private Material[] inputs;                // Список кодов исходящих материалов
     private int[] outputAmount;               // Список количества входящих материалов
     private int[] inputAmount;                // Список количества исходящих материалов
-    private double cost;                      // Стоимость операции
-
+    private double operationCost;             // Стоимость операции
+    private double recipeCost;                // Стоимость рецепта (технологии)
 
     public Operation(MachineType type, JSONObject op) {
         if (allOperations ==null) allOperations = new ArrayList<>();
@@ -28,6 +28,7 @@ public class Operation {
             machineType = type;
             ID = op.getInt("operationID");
             cycles = op.getInt("cycles");
+            recipeCost = op.getInt("recipeCost");
             outputs = new Material[op.getInt("outputs")];
             inputs = new Material[op.getInt("inputs")];
             outputAmount = new int[outputs.length];
@@ -40,10 +41,11 @@ public class Operation {
             for (int j = 0; j < outputAmount.length; j++) outputAmount[j] = jsonOutputAmount.getInt(j);
             JSONArray jsonInputAmount = op.getJSONArray("inputQuantities");
             for (int j = 0; j < inputAmount.length; j++)  inputAmount[j] = jsonInputAmount.getInt(j);
-            cost = cycles * machineType.getCycleCost();
+            operationCost = cycles * machineType.getCycleCost();
             allOperations.add(this);
         } catch (JSONException e) {
             e.printStackTrace();
+            System.err.println(ID);
         }
     }
 
@@ -146,7 +148,13 @@ public class Operation {
      * Возвращает стоимость выполнения операции
      * @return стоимость операции
      */
-    public double getCost() {
-        return cost;
+    public double getOperationCost() {
+        return operationCost;
     }
+
+
+    public double getRecipeCost() {
+        return recipeCost;
+    }
+
 }

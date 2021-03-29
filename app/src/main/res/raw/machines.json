@@ -14,7 +14,8 @@
         "outputIDs": [8],
         "inputIDs": [0],
         "outputQuantities": [1],
-        "inputQuantities": [1]
+        "inputQuantities": [1],
+        "recipeCost": 500
       },
       {
         "operationID": 2,
@@ -24,7 +25,8 @@
         "outputIDs": [9],
         "inputIDs": [1],
         "outputQuantities": [1],
-        "inputQuantities": [1]
+        "inputQuantities": [1],
+        "recipeCost": 500
       },
       {
         "operationID": 3,
@@ -34,7 +36,8 @@
         "outputIDs": [10],
         "inputIDs": [2],
         "outputQuantities": [1],
-        "inputQuantities": [1]
+        "inputQuantities": [1],
+        "recipeCost": 500
       },
       {
         "operationID": 4,
@@ -44,7 +47,8 @@
         "outputIDs": [11],
         "inputIDs": [3],
         "outputQuantities": [1],
-        "inputQuantities": [1]
+        "inputQuantities": [1],
+        "recipeCost": 500
       },
       {
         "operationID": 5,
@@ -54,7 +58,8 @@
         "outputIDs": [12],
         "inputIDs": [4],
         "outputQuantities": [1],
-        "inputQuantities": [1]
+        "inputQuantities": [1],
+        "recipeCost": 500
       },
       {
         "operationID": 6,
@@ -64,7 +69,8 @@
         "outputIDs": [13],
         "inputIDs": [5],
         "outputQuantities": [1],
-        "inputQuantities": [1]
+        "inputQuantities": [1],
+        "recipeCost": 500
       },
       {
         "operationID": 7,
@@ -74,7 +80,8 @@
         "outputIDs": [14],
         "inputIDs": [4,5],
         "outputQuantities": [1],
-        "inputQuantities": [1,1]
+        "inputQuantities": [1,1],
+        "recipeCost" : 500
       }
     ]
   },
@@ -82,7 +89,7 @@
     "ID": 1,
     "name": "Roller",
     "operationsCount": 3,
-    "price": 3000,
+    "price": 2500,
     "cycleCost": 0.2,
     "operations": [
       {
@@ -93,7 +100,8 @@
         "outputIDs": [19],
         "inputIDs": [9],
         "outputQuantities": [3],
-        "inputQuantities": [1]
+        "inputQuantities": [1],
+        "recipeCost": 500
       },
       {
         "operationID": 9,
@@ -103,7 +111,8 @@
         "outputIDs": [20],
         "inputIDs": [10],
         "outputQuantities": [3],
-        "inputQuantities": [1]
+        "inputQuantities": [1],
+        "recipeCost": 500
       },
       {
         "operationID": 10,
@@ -113,7 +122,8 @@
         "outputIDs": [21],
         "inputIDs": [10],
         "outputQuantities": [3],
-        "inputQuantities": [1]
+        "inputQuantities": [1],
+        "recipeCost": 500
       }
     ]
   },
@@ -121,7 +131,7 @@
     "ID": 2,
     "name": "Cutter",
     "operationsCount": 3,
-    "price": 2500,
+    "price": 3000,
     "cycleCost": 0.2,
     "operations": [
       {
@@ -132,7 +142,8 @@
         "outputIDs": [15],
         "inputIDs": [6],
         "outputQuantities": [5],
-        "inputQuantities": [1]
+        "inputQuantities": [1],
+        "recipeCost" : 500
       },
       {
         "operationID": 12,
@@ -142,7 +153,8 @@
         "outputIDs": [16],
         "inputIDs": [8],
         "outputQuantities": [3],
-        "inputQuantities": [1]
+        "inputQuantities": [1],
+        "recipeCost" : 500
       },
       {
         "operationID": 13,
@@ -152,7 +164,8 @@
         "outputIDs": [17],
         "inputIDs": [16],
         "outputQuantities": [3],
-        "inputQuantities": [1]
+        "inputQuantities": [1],
+        "recipeCost" : 500
       }
     ]
   },
@@ -171,7 +184,8 @@
         "outputIDs": [18],
         "inputIDs": [9],
         "outputQuantities": [3],
-        "inputQuantities": [1]
+        "inputQuantities": [1],
+        "recipeCost": 500
       },
       {
         "operationID": 15,
@@ -181,7 +195,8 @@
         "outputIDs": [22],
         "inputIDs": [11],
         "outputQuantities": [3],
-        "inputQuantities": [1]
+        "inputQuantities": [1],
+        "recipeCost": 500
       },
       {
         "operationID": 16,
@@ -191,7 +206,8 @@
         "outputIDs": [28],
         "inputIDs": [13],
         "outputQuantities": [4],
-        "inputQuantities": [1]
+        "inputQuantities": [1],
+        "recipeCost": 500
       },
       {
         "operationID": 17,
@@ -201,7 +217,8 @@
         "outputIDs": [44],
         "inputIDs": [13],
         "outputQuantities": [1],
-        "inputQuantities": [1]
+        "inputQuantities": [1],
+        "recipeCost": 500
       },
       {
         "operationID": 18,
@@ -211,7 +228,8 @@
         "outputIDs": [47],
         "inputIDs": [13],
         "outputQuantities": [1],
-        "inputQuantities": [1]
+        "inputQuantities": [1],
+        "recipeCost": 500
       }
     ]
   },
@@ -230,7 +248,8 @@
         "outputIDs": [23],
         "inputIDs": [15, 20],
         "outputQuantities": [10],
-        "inputQuantities": [1,1]
+        "inputQuantities": [1,1],
+        "recipeCost": 500
       },
       {
         "operationID": 20,
@@ -240,7 +259,8 @@
         "outputIDs": [24],
         "inputIDs": [8, 20],
         "outputQuantities": [1],
-        "inputQuantities": [1,1]
+        "inputQuantities": [1,1],
+        "recipeCost": 500
       },
       {
         "operationID": 21,
@@ -250,7 +270,8 @@
         "outputIDs": [25],
         "inputIDs": [8, 16, 20],
         "outputQuantities": [1],
-        "inputQuantities": [1, 1, 1]
+        "inputQuantities": [1, 1, 1],
+        "recipeCost": 500
       },
       {
         "operationID": 22,
@@ -260,7 +281,8 @@
         "outputIDs": [26],
         "inputIDs": [8, 21],
         "outputQuantities": [1],
-        "inputQuantities": [1, 1]
+        "inputQuantities": [1, 1],
+        "recipeCost": 500
       },
       {
         "operationID": 23,
@@ -270,7 +292,8 @@
         "outputIDs": [27],
         "inputIDs": [11, 13],
         "outputQuantities": [2],
-        "inputQuantities": [1, 1]
+        "inputQuantities": [1, 1],
+        "recipeCost": 500
       },
       {
         "operationID": 24,
@@ -280,7 +303,8 @@
         "outputIDs": [29],
         "inputIDs": [10, 14],
         "outputQuantities": [4],
-        "inputQuantities": [1, 1]
+        "inputQuantities": [1, 1],
+        "recipeCost": 500
       },
       {
         "operationID": 25,
@@ -290,7 +314,8 @@
         "outputIDs": [30],
         "inputIDs": [15,20],
         "outputQuantities": [5],
-        "inputQuantities": [1,1]
+        "inputQuantities": [1,1],
+        "recipeCost": 500
       },
       {
         "operationID": 26,
@@ -300,7 +325,8 @@
         "outputIDs": [31],
         "inputIDs": [7,8,9,10],
         "outputQuantities": [4],
-        "inputQuantities": [1,1,1,1]
+        "inputQuantities": [1,1,1,1],
+        "recipeCost": 500
       },
       {
         "operationID": 27,
@@ -310,7 +336,8 @@
         "outputIDs": [32],
         "inputIDs": [24, 29],
         "outputQuantities": [1],
-        "inputQuantities": [1,1]
+        "inputQuantities": [1,1],
+        "recipeCost": 500
       },
       {
         "operationID": 28,
@@ -320,7 +347,8 @@
         "outputIDs": [33],
         "inputIDs": [25,26,29],
         "outputQuantities": [1],
-        "inputQuantities": [1,1,1]
+        "inputQuantities": [1,1,1],
+        "recipeCost": 500
       },
       {
         "operationID": 29,
@@ -330,7 +358,8 @@
         "outputIDs": [34],
         "inputIDs": [8, 22, 25, 29],
         "outputQuantities": [1],
-        "inputQuantities": [2, 1, 1, 1]
+        "inputQuantities": [2, 1, 1, 1],
+        "recipeCost": 500
       },
       {
         "operationID": 30,
@@ -340,7 +369,8 @@
         "outputIDs": [35],
         "inputIDs": [8, 20, 25],
         "outputQuantities": [1],
-        "inputQuantities": [1,1,1]
+        "inputQuantities": [1,1,1],
+        "recipeCost": 500
       },
       {
         "operationID": 31,
@@ -350,7 +380,8 @@
         "outputIDs": [36],
         "inputIDs": [16, 25, 27, 29],
         "outputQuantities": [1],
-        "inputQuantities": [1,3,2,1]
+        "inputQuantities": [1,3,2,1],
+        "recipeCost": 500
       },
       {
         "operationID": 32,
@@ -360,7 +391,8 @@
         "outputIDs": [37],
         "inputIDs": [29,30],
         "outputQuantities": [1],
-        "inputQuantities": [1,5]
+        "inputQuantities": [1,5],
+        "recipeCost": 500
       },
       {
         "operationID": 33,
@@ -370,7 +402,8 @@
         "outputIDs": [38],
         "inputIDs": [29, 23],
         "outputQuantities": [1],
-        "inputQuantities": [1,10]
+        "inputQuantities": [1,10],
+        "recipeCost": 500
       },
       {
         "operationID": 34,
@@ -380,7 +413,8 @@
         "outputIDs": [39],
         "inputIDs": [8,20,28],
         "outputQuantities": [1],
-        "inputQuantities": [1,1,1]
+        "inputQuantities": [1,1,1],
+        "recipeCost": 500
       },
       {
         "operationID": 35,
@@ -390,7 +424,8 @@
         "outputIDs": [40],
         "inputIDs": [8, 12],
         "outputQuantities": [1],
-        "inputQuantities": [1,1]
+        "inputQuantities": [1,1],
+        "recipeCost": 500
       },
       {
         "operationID": 36,
@@ -400,7 +435,8 @@
         "outputIDs": [41],
         "inputIDs": [8, 18, 13],
         "outputQuantities": [1],
-        "inputQuantities": [2, 4, 2]
+        "inputQuantities": [2, 4, 2],
+        "recipeCost": 500
       },
       {
         "operationID": 37,
@@ -410,7 +446,8 @@
         "outputIDs": [42],
         "inputIDs": [8, 18, 12, 13],
         "outputQuantities": [1],
-        "inputQuantities": [2,4,1,2]
+        "inputQuantities": [2,4,1,2],
+        "recipeCost": 500
       },
       {
         "operationID": 38,
@@ -420,7 +457,8 @@
         "outputIDs": [43],
         "inputIDs": [8, 18, 12, 13],
         "outputQuantities": [1],
-        "inputQuantities": [1, 2, 1, 1]
+        "inputQuantities": [1, 2, 1, 1],
+        "recipeCost": 500
       },
       {
         "operationID": 39,
@@ -430,7 +468,8 @@
         "outputIDs": [45],
         "inputIDs": [8, 18, 13],
         "outputQuantities": [1],
-        "inputQuantities": [1,2,1]
+        "inputQuantities": [1,2,1],
+        "recipeCost": 500
       },
       {
         "operationID": 40,
@@ -440,7 +479,8 @@
         "outputIDs": [46],
         "inputIDs": [8, 9, 13],
         "outputQuantities": [2],
-        "inputQuantities": [1, 1, 1]
+        "inputQuantities": [1, 1, 1],
+        "recipeCost": 500
       },
       {
         "operationID": 41,
@@ -450,7 +490,8 @@
         "outputIDs": [48],
         "inputIDs": [32, 40, 39],
         "outputQuantities": [1],
-        "inputQuantities": [1, 1, 1]
+        "inputQuantities": [1, 1, 1],
+        "recipeCost": 500
       },
       {
         "operationID": 42,
@@ -460,7 +501,8 @@
         "outputIDs": [49],
         "inputIDs": [33, 41, 39],
         "outputQuantities": [1],
-        "inputQuantities": [1,1,1]
+        "inputQuantities": [1,1,1],
+        "recipeCost": 500
       },
       {
         "operationID": 43,
@@ -470,7 +512,8 @@
         "outputIDs": [50],
         "inputIDs": [34, 42, 39],
         "outputQuantities": [1],
-        "inputQuantities": [1,1,1]
+        "inputQuantities": [1,1,1],
+        "recipeCost": 500
       },
       {
         "operationID": 44,
@@ -480,7 +523,8 @@
         "outputIDs": [51],
         "inputIDs": [35,43,39],
         "outputQuantities": [1],
-        "inputQuantities": [1,1,1]
+        "inputQuantities": [1,1,1],
+        "recipeCost": 500
       },
       {
         "operationID": 45,
@@ -490,7 +534,8 @@
         "outputIDs": [52],
         "inputIDs": [36, 44, 39],
         "outputQuantities": [1],
-        "inputQuantities": [1,1,1]
+        "inputQuantities": [1,1,1],
+        "recipeCost": 500
       },
       {
         "operationID": 46,
@@ -500,7 +545,8 @@
         "outputIDs": [53],
         "inputIDs": [37,45,39],
         "outputQuantities": [1],
-        "inputQuantities": [1,1,1]
+        "inputQuantities": [1,1,1],
+        "recipeCost": 500
       },
       {
         "operationID": 47,
@@ -510,7 +556,8 @@
         "outputIDs": [54],
         "inputIDs": [37, 46, 31],
         "outputQuantities": [1],
-        "inputQuantities": [1,1,1]
+        "inputQuantities": [1,1,1],
+        "recipeCost": 500
       },
       {
         "operationID": 48,
@@ -520,7 +567,8 @@
         "outputIDs": [55],
         "inputIDs": [37,47,31,25],
         "outputQuantities": [1],
-        "inputQuantities": [1,1,1,1]
+        "inputQuantities": [1,1,1,1],
+        "recipeCost": 500
       },
       {
         "operationID": 49,
@@ -530,7 +578,8 @@
         "outputIDs": [61],
         "inputIDs": [53, 38],
         "outputQuantities": [1],
-        "inputQuantities": [1,4]
+        "inputQuantities": [1,4],
+        "recipeCost": 500
       },
       {
         "operationID": 50,
@@ -540,7 +589,8 @@
         "outputIDs": [62],
         "inputIDs": [54, 38],
         "outputQuantities": [1],
-        "inputQuantities": [1,1]
+        "inputQuantities": [1,1],
+        "recipeCost": 500
       },
       {
         "operationID": 51,
@@ -550,7 +600,8 @@
         "outputIDs": [63],
         "inputIDs": [55, 28],
         "outputQuantities": [1],
-        "inputQuantities": [1,4]
+        "inputQuantities": [1,4],
+        "recipeCost": 1500
       }
     ]
   }
