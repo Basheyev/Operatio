@@ -166,7 +166,7 @@ public class ReportPanel extends Panel {
         FormatUtils.formatMoneyAppend(salesSum, salesText);
 
         manufacturedText.setLength(0);
-        manufacturedText.append("Manufacture costs: ");
+        manufacturedText.append("Manufacturing costs: ");
         double manufactureCost = Math.round(ledger.getLastPeriod().getMaintenanceCost());
         FormatUtils.formatMoneyAppend(manufactureCost, manufacturedText);
 
@@ -239,9 +239,9 @@ public class ReportPanel extends Panel {
 
 
     private void updateSummary(Ledger ledger) {
-        double totalRevenue = ledger.getTotal().getRevenue();
-        double margin = 0;
-        if (totalRevenue > 0) margin = Math.round(ledger.getTotal().getMargin() / totalRevenue * 100);
+        double operRevenue = ledger.getLastPeriod().getRevenue();
+        double operMargin = 0;
+        if (operRevenue > 0) operMargin = Math.round(ledger.getLastPeriod().getMargin() / operRevenue * 100);
         summary.delete(0, summary.length());
         summary.append("Operational:\n");
         summary.append("- income: ");
@@ -250,11 +250,14 @@ public class ReportPanel extends Panel {
         FormatUtils.formatMoneyAppend(Math.round(ledger.getLastPeriod().getExpenses()),summary);
         summary.append("\n- margin: ");
         FormatUtils.formatMoneyAppend(Math.round(ledger.getLastPeriod().getMargin()),summary);
-        summary.append("\n\nTotal balance: ");
+        summary.append(" (");
+        summary.append(operMargin);
+        summary.append("%)\n");
+    /*    summary.append("\n\nTotal balance: ");
         FormatUtils.formatMoneyAppend(Math.round(ledger.getTotal().getMargin()), summary);
         summary.append(" (");
         summary.append(margin);
-        summary.append("%)");
+        summary.append("%)");*/
         summary.append("\nAssets: ");
         FormatUtils.formatMoneyAppend(Math.round(production.getAssetsValuation()), summary);
         summary.append("\nWork in progress: ");
