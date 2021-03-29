@@ -162,9 +162,9 @@ public class Text {
             float yPos = cursorY + (font.yOffset[symbolIndex] * scale);
 
             // Отрисовываем символ
-            font.fontSprite.draw(camera, cursorX, yPos,
-                    font.fontSprite.getWidth() * scale,
-                    font.fontSprite.getHeight() * scale, scissor);
+            font.fontSprite.drawExact(camera, cursorX, yPos,
+                    cursorX + font.fontSprite.getWidth() * scale,
+                    yPos + font.fontSprite.getHeight() * scale, scissor);
 
             lastSymbol = symbol;
         }
