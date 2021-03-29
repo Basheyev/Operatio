@@ -175,7 +175,7 @@ public class RecipePanel extends Panel {
 
         researchButton = new Button("Research");
         researchButton.setLocalBounds(panel.getWidth() - 325,25,300,100);
-        researchButton.setTextScale(1.5f);
+        researchButton.setTextScale(1.4f);
         researchButton.setTextColor(WHITE);
         researchButton.setClickListener(researchClickListener);
         researchButton.visible = false;
@@ -190,10 +190,12 @@ public class RecipePanel extends Panel {
         selectedOperation = MachineType.findOperation(selectedMaterial);
         boolean rawMaterial = selectedMaterial.getID() < 8;
         if (selectedOperation != null && !rawMaterial) {
+            String recipePrice = "Research $" + Math.round(selectedOperation.getRecipeCost());
             showMachineAndOperation(selectedOperation);
             boolean materialNotAvailable = !permissions.isAvailable(selectedMaterial);
             boolean operationNotAvailable = !permissions.isAvailable(selectedOperation);
             researchButton.visible = materialNotAvailable || operationNotAvailable;
+            if (researchButton.visible) researchButton.setText(recipePrice);
             return true;
         } else researchButton.visible = false;
         clearFields();
