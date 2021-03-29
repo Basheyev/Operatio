@@ -22,7 +22,7 @@ public class LineChart extends Widget {
 
     // Ряд данных
     public class DataSeries {
-        private final static int MAX_VALUES = 32;
+        private final static int MAX_VALUES = 30;
         private final double[] values = new double[MAX_VALUES];
         private double maxValue = 0;
         private double minValue = 0;

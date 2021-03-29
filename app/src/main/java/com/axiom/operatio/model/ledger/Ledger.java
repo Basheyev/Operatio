@@ -8,7 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
+/** todo Добавить отдельный учёт долгов и процентов по ним
  * Главный журнал регистрации всех производственных и финансовых событий
  */
 public class Ledger implements JSONSerializable {
@@ -31,7 +31,7 @@ public class Ledger implements JSONSerializable {
     private double cashBalance;                                  // Текущий остаток денег
     private long startingCycle = 0;                              // Цикл производства - начала учёта
     //---------------------------------------------------------------------------------------------
-    public static final int HISTORY_LENGTH = 32;                 // Максимальная длина истории
+    public static final int HISTORY_LENGTH = 30;                 // Максимальная длина истории
     private LedgerPeriod total;                                  // Данные за весь период
     private LedgerPeriod currentPeriod;                          // Данные текущего периода
     private LedgerPeriod lastPeriod;                             // Данные прошлого периода
@@ -169,17 +169,17 @@ public class Ledger implements JSONSerializable {
     public double getCapitalization() {
         // Посчитать средний денежный поток за прошлый период
         double T = 5;                                                          // Период
-        double WACC = 0.10;                                                    // Цена капитала 10%
+        double WACC = 0.10;                                                    // Стоимость капитала 10%
         double cashFlow = getHistoryCashFlow();                                // Денежный поток
         double assetsValue = production.getAssetsValuation();                  // Активы
         double inventoryValue = production.getInventory().getValuation();      // Материалы на складе
         double workInProgressValue = production.getWorkInProgressValuation();  // Материалы в цеху
         double cash = getCashBalance();                                        // Остатки денег
         double NFP = total.getMargin();                                        // Инвестиционный баланс
-
+        // fixme nfp неправльное
         double value = (cashFlow * T) / Math.pow(1 + WACC, T);
         value += assetsValue + inventoryValue + workInProgressValue;
-        value = value + cash + NFP;
+        value = value + cash;
 
         return value;  // Капитализация
     }
