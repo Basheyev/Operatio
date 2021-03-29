@@ -37,8 +37,7 @@ public class Production implements JSONSerializable {
     private Market market;                        // Объект - рынок
     private Ledger ledger;                        // Объект - игровая статистика
     private GamePermissions permissions;          // Разрешения в игре
-    private int level = 0;                        // Текущий уровень
-    private int lastCompletedLevel = 0;           // Последний завершенный уровень
+    private int currentMissionID = 0;             // Текущий уровень
 
     private ArrayList<Block> blocks;              // Список блоков производства
     private Block[][] grid;                       // Блоки привязанные к координатной сетке
@@ -58,12 +57,10 @@ public class Production implements JSONSerializable {
     private int selectedCol, selectedRow;         // Столбец и строка выбранного блока
 
     private ProductionRenderer renderer = null;
-    private int levelCompletedSound;
+
 
 
     public Production() {
-
-        levelCompletedSound = SoundRenderer.loadSound(R.raw.yes_snd);
 
         this.columns = MAP_WIDTH;
         this.rows = MAP_HEIGHT;
@@ -88,14 +85,12 @@ public class Production implements JSONSerializable {
         GameMission stub = MissionManager.getMission(0);
         if (stub!=null) {
             stub.earnReward(this);
-            level = 1;
+            currentMissionID = 1;
         }
     }
 
 
     public Production(JSONObject jsonObject) throws JSONException {
-
-        levelCompletedSound = SoundRenderer.loadSound(R.raw.yes_snd);
 
         int columns = jsonObject.getInt("columns");
         int rows = jsonObject.getInt("rows");
@@ -104,7 +99,7 @@ public class Production implements JSONSerializable {
         this.rows = rows;
         grid = new Block[rows][columns];
         unlocked = new boolean[rows][columns];
-        level = jsonObject.getInt("level");
+        currentMissionID = jsonObject.getInt("level");
         lastCycleTime = jsonObject.getLong("lastCycleTime");
         cycleMilliseconds = jsonObject.getLong("cycleMilliseconds");
         clock = jsonObject.getLong("clock");
@@ -171,7 +166,7 @@ public class Production implements JSONSerializable {
             GameMission stub = MissionManager.getMission(0);
             if (stub!=null) {
                 stub.earnReward(this);
-                level = 1;
+                currentMissionID = 1;
             }
         }
     }
@@ -205,8 +200,8 @@ public class Production implements JSONSerializable {
                 market.process();
                 // Выполнить процесс учёта статистики
                 ledger.process();
-                // Проверить условия завершения уровня
-                checkLevelConditions();
+                // Проверить условия завершения миссии
+                MissionManager.process(this);
 
                 // Увеличиваем счётчик циклов
                 cycle++;
@@ -261,16 +256,7 @@ public class Production implements JSONSerializable {
         }
     }
 
-    private void checkLevelConditions() {
-        // Проверка условий уровня
-        GameMission mission = MissionManager.getMission(level);
-        if (mission.checkWinConditions(this) && lastCompletedLevel != level) {
-            SoundRenderer.playSound(levelCompletedSound);
-            mission.earnReward(this);
-            lastCompletedLevel = level;
-            if (level + 1 <= MissionManager.size() - 1) level++;
-        }
-    }
+
 
 
     public boolean setBlock(Block block, int col, int row) {
@@ -431,8 +417,12 @@ public class Production implements JSONSerializable {
         return permissions;
     }
 
-    public int getLevel() {
-        return level;
+    public int getCurrentMissionID() {
+        return currentMissionID;
+    }
+
+    public void setCurrentMissionID(int missionID) {
+        currentMissionID = missionID;
     }
 
     public boolean isPaused() {
@@ -449,7 +439,7 @@ public class Production implements JSONSerializable {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("columns", columns);
             jsonObject.put("rows", rows);
-            jsonObject.put("level", level);
+            jsonObject.put("level", currentMissionID);
             jsonObject.put("lastCycleTime", lastCycleTime);
             jsonObject.put("cycleMilliseconds", cycleMilliseconds);
             jsonObject.put("clock", clock);

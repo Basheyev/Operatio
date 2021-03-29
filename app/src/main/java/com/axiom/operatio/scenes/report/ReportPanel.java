@@ -230,7 +230,7 @@ public class ReportPanel extends Panel {
             purchaseCaption.setText(purchaseText);
             reportCaption.setText(summary);
 
-            GameMission mission =  MissionManager.getMission(production.getLevel());
+            GameMission mission =  MissionManager.getMission(production.getCurrentMissionID());
             String goal = mission.getName() + " #" + mission.getID() + " - " + mission.getDescription();
             panelCaption.setText(goal);
 

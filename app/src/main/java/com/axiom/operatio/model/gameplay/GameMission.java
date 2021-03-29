@@ -55,6 +55,7 @@ public class GameMission {
     public boolean checkWinConditions(Production production) {
         // Если условий победы нет - выигрыша нет
         if (winConditions==null) return false;
+        if (winConditions.length==0) return false;
         // Если не выполнилось хоть одно условия - выигрыша нет
         for (GameCondition winCondition : winConditions) {
             if (!winCondition.check(production.getLedger())) return false;

@@ -85,8 +85,8 @@ public class InventoryScene extends GameScene {
         }
 
         // Если сменился уровень
-        if (currentLevel != production.getLevel() || permissionsChanged) {
-            currentLevel = production.getLevel();
+        if (currentLevel != production.getCurrentMissionID() || permissionsChanged) {
+            currentLevel = production.getCurrentMissionID();
             // Включить доступные машины на этом уровне
             materialsPanel.updatePermissions();
         }

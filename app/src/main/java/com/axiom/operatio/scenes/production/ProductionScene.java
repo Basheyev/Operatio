@@ -109,8 +109,8 @@ public class ProductionScene extends GameScene {
         }
 
         // Проверить не сменился ли уровень (обновить доступ к кнопкам)
-        if (currentLevel != production.getLevel() || permissionsChanged) {
-            currentLevel = production.getLevel();
+        if (currentLevel != production.getCurrentMissionID() || permissionsChanged) {
+            currentLevel = production.getCurrentMissionID();
             // Включить доступные машины на этом уровне
             blocksPanel.updatePermissions();
         }
