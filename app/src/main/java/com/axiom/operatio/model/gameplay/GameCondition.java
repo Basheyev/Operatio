@@ -14,7 +14,7 @@ public class GameCondition {
     public static final int REVENUE_PER_DAY = 4;               // Выручка в день
     public static final int CASH_BALANCE = 5;                  // Остаток денег
     public static final int OPERATING_MARGIN = 6;              // Операционная маржинальность
-    public static final int CAPITALIZATION = 7;                // Капитализация
+    public static final int VALUATION = 7;                // Капитализация
 
     protected int indicatorType;                               // Тип показателя
     protected int materialID;                                  // ID материала
@@ -36,7 +36,7 @@ public class GameCondition {
             case REVENUE_PER_DAY: return checkRevenuePerDay(ledger);
             case CASH_BALANCE: return checkCashBalance(ledger);
             case OPERATING_MARGIN: return checkOperatingMargin(ledger);
-            case CAPITALIZATION: return checkCapitalization(ledger);
+            case VALUATION: return checkValuation(ledger);
         }
         return false;
     }
@@ -66,8 +66,8 @@ public class GameCondition {
         return ledger.getTotal().getMargin() >= value;
     }
 
-    public boolean checkCapitalization(Ledger ledger) {
-        return ledger.getCapitalization() >= value;
+    public boolean checkValuation(Ledger ledger) {
+        return ledger.getValuation() >= value;
     }
 
 }

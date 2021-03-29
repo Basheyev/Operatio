@@ -166,7 +166,7 @@ public class Ledger implements JSONSerializable {
      * Капитализация компании fixme начать считать правильно
      * @return
      */
-    public double getCapitalization() {
+    public double getValuation() {
         // Посчитать средний денежный поток за прошлый период
         double T = 5;                                                          // Период
         double WACC = 0.10;                                                    // Стоимость капитала 10%
