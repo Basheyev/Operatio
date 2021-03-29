@@ -243,8 +243,9 @@ public class Sprite extends Quad {
      * @param y1 нижняя координата
      * @param x2 правая координата
      * @param y2 верхняя координата
+     * @param scissors область обрезки (null - если не нужно)
      */
-    public void drawExact(Camera camera, float x1, float y1, float x2, float y2) {
+    public void drawExact(Camera camera, float x1, float y1, float x2, float y2, AABB scissors) {
         //-------------------------------------------------------------------------------
         // Проверка на экране ли спрайт, если нет то не отрисовывать
         //-------------------------------------------------------------------------------
@@ -252,12 +253,14 @@ public class Sprite extends Quad {
             //-------------------------------------------------------------------------------
             initializeVertices(x1, y1, x2, y2);
             Program program = useColor ? coloredProgram : texturedProgram;
-            BatchRender.addTexturedQuad(program, texture, vertices, texCoords, color, zOrder, null);
+            BatchRender.addTexturedQuad(program, texture, vertices, texCoords, color, zOrder, scissors);
         }
         animationNextFrame();
     }
 
-
+    public void drawExact(Camera camera, float x1, float y1, float x2, float y2) {
+        drawExact(camera, x1, y1, x2, y2, null);
+    }
     //------------------------------------------------------------------------------------------
 
 
