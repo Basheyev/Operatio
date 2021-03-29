@@ -5,7 +5,7 @@
     "description" : "Game initialization",
     "prerequisiteIDs" : [],
     "winConditions" : [
-      { "indicatorType" : 1, "materialID" : 8, "value" :  10}
+      { "indicatorType" : 0, "materialID" : 0, "value" :  0}
     ],
     "permissionsReward" : {
       "availableMaterials" : [0,1,2,3,4,5,6,7,8],
@@ -38,39 +38,39 @@
       { "indicatorType" : 2, "materialID" : 8, "value" :  20}
     ],
     "permissionsReward" : {
-      "availableMaterials" : [10],
+      "availableMaterials" : [9],
       "availableMachines" : [1],
-      "availableOperations" : [3]
+      "availableOperations" : [2]
     },
     "moneyReward" : 2000
   },
   {
     "ID" : 3,
     "name" : "Changeover basics",
-    "description" : "Manufacture 60 copper plates",
+    "description" : "Manufacture 20 aluminium plates",
     "prerequisiteIDs" : [2],
     "winConditions" : [
-      { "indicatorType" : 1, "materialID" : 10, "value" :  60}
+      { "indicatorType" : 1, "materialID" : 9, "value" :  20}
     ],
     "permissionsReward" : {
-      "availableMaterials" : [14,16,20],
+      "availableMaterials" : [],
       "availableMachines" : [1],
-      "availableOperations" : [1,2]
+      "availableOperations" : [8]
     },
     "moneyReward" : 6000
   },
   {
     "ID" : 4,
     "name" : "Income basics",
-    "description" : "Reach $400 revenue per day",
+    "description" : "Reach $300 revenue per day",
     "prerequisiteIDs" : [3],
     "winConditions" : [
-      { "indicatorType" : 4, "materialID" : 0, "value" :  400}
+      { "indicatorType" : 4, "materialID" : 0, "value" :  300}
     ],
     "permissionsReward" : {
       "availableMaterials" : [],
-      "availableMachines" : [2],
-      "availableOperations" : [8,9,12]
+      "availableMachines" : [],
+      "availableOperations" : [8]
     },
     "moneyReward" : 5000
   },
