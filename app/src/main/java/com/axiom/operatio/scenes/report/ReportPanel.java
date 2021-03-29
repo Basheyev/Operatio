@@ -264,8 +264,8 @@ public class ReportPanel extends Panel {
         FormatUtils.formatMoneyAppend(Math.round(production.getWorkInProgressValuation()),summary);
         summary.append("\nInventory: ");
         FormatUtils.formatMoneyAppend(Math.round(production.getInventory().getValuation()), summary);
-        summary.append("\n\nCapitalization: ");
-        FormatUtils.formatMoneyAppend(Math.round(ledger.getCapitalization()), summary);
+        summary.append("\n\nValuation: ");
+        FormatUtils.formatMoneyAppend(Math.round(ledger.getValuation()), summary);
     }
 
 
