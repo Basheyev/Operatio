@@ -109,6 +109,9 @@ public class GamePermissions implements JSONSerializable {
         return lastChangeTime;
     }
 
+    public int availableMaterialsAmount() {
+        return availableMaterials.size();
+    }
 
     public boolean isAvailable(Material material) {
         if (material==null) return false;
