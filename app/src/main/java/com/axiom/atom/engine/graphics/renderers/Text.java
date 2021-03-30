@@ -36,7 +36,7 @@ public class Text {
     protected static int fontSize = 24;     // Размер генерируемого шрифта в пикселях
 
     public static class RasterizedFont {
-        protected int totalChars = 1296;     // Количество генерируемых символов (11x11)
+        protected int totalChars = 1296;    // Количество генерируемых символов (36x36)
         protected Sprite fontSprite;        // Спрайт где каждый кадр это отдельный символ
         protected float[] xOffset;          // Горизонтальное смещение символа относительно курсора
         protected float[] yOffset;          // Вертикальное смещение символа относительно курсора
@@ -405,6 +405,10 @@ public class Text {
 
         // Возвращаем растеризованый шрифт
         return rasterizedFont;
+    }
+
+    public float getRasterizedFontSize() {
+        return font.maxLineHeight;
     }
 
 
