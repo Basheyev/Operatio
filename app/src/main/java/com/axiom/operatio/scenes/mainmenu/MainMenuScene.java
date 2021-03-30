@@ -88,7 +88,7 @@ public class MainMenuScene extends GameScene {
         logo.setZOrder(3);
         logo.draw(camera, cx + 50, cy + Camera.HEIGHT - logo.getHeight() - 25, logo.getWidth(), logo.getHeight());
         ceo.setZOrder(3);
-        ceo.draw(camera, cx + Camera.WIDTH - ceo.getWidth() * 3 - 50, cy + 20, ceo.getWidth() * 3, ceo.getHeight() * 3);
+        ceo.draw(camera, cx + Camera.WIDTH - 96 * 3 - 50, cy + 20, 96 * 3, 256 * 3);
     }
 
 
