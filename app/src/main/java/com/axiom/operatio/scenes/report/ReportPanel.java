@@ -6,6 +6,7 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
+import com.axiom.atom.engine.ui.widgets.ProgressBar;
 import com.axiom.operatio.model.gameplay.MissionManager;
 import com.axiom.operatio.model.gameplay.GameMission;
 import com.axiom.operatio.model.ledger.Ledger;
@@ -33,6 +34,8 @@ public class ReportPanel extends Panel {
     private ItemWidget[] boughtMaterials;
     private ItemWidget[] manufacturedMaterials;
     private ItemWidget[] soldMaterials;
+    private ProgressBar valuationBar;
+    private ProgressBar technologyBar;
     private StringBuffer summary;
 
     private double[] revenueData = new double[Ledger.HISTORY_LENGTH];
@@ -56,18 +59,18 @@ public class ReportPanel extends Panel {
         manufacturedText = new StringBuffer(32);
 
         panelCaption = new Caption("Operations daily report");
-        panelCaption.setTextScale(1.7f);
+        panelCaption.setTextScale(1.5f);
         panelCaption.setTextColor(WHITE);
-        panelCaption.setLocalBounds(30, getHeight() - 100, 350, 100);
+        panelCaption.setLocalBounds(30, getHeight() - 100, 600, 100);
         addChild(panelCaption);
 
         purchaseCaption = new Caption("Purchase");
         purchaseCaption.setTextColor(1,0.5f,0.5f, 1);
         purchaseCaption.setTextScale(1.3f);
-        purchaseCaption.setLocalBounds(30, 330,300, 100);
+        purchaseCaption.setLocalBounds(25, 330,300, 100);
         addChild(purchaseCaption);
         boughtMaterials = new ItemWidget[32];
-        float bx = 30, by = 270;
+        float bx = 25, by = 270;
         for (int i=0; i<32; i++) {
             boughtMaterials[i] = new ItemWidget("");
             boughtMaterials[i].setLocalBounds(bx, by, 64, 64);
@@ -77,7 +80,7 @@ public class ReportPanel extends Panel {
             addChild(boughtMaterials[i]);
             bx += 70;
             if (bx > 570) {
-                bx = 30;
+                bx = 25;
                 by -= 70;
             }
         }
@@ -124,20 +127,42 @@ public class ReportPanel extends Panel {
             }
         }
 
+        Caption valuationCap = new Caption("Valuation");
+        valuationCap.setTextColor(WHITE);
+        valuationCap.setTextScale(1.8f);
+        valuationCap.setLocalBounds(25, 710, 300, 60);
+        addChild(valuationCap);
 
-        reportCaption = new Caption("Cashflow");
+        valuationBar = new ProgressBar();
+        valuationBar.setLocalBounds(25, 630, 300, 60);
+        valuationBar.setProgress(0);
+        addChild(valuationBar);
+
+        Caption technologyCap = new Caption("Technology");
+        technologyCap.setTextColor(WHITE);
+        technologyCap.setTextScale(1.8f);
+        technologyCap.setLocalBounds(25, 515, 300, 60);
+        addChild(technologyCap);
+
+        technologyBar = new ProgressBar();
+        technologyBar.setLocalBounds(25, 435, 300, 60);
+        technologyBar.setProgress(0);
+        addChild(technologyBar);
+
+        chart = new LineChart(2);
+        chart.setLocalBounds(350,435, 1100, 330);
+        Ledger ledger = production.getLedger();
+        loadLedgerDataToChart(ledger);
+        addChild(chart);
+
+        reportCaption = new Caption("Summary");
         reportCaption.setTextColor(WHITE);
         reportCaption.setTextScale(1.3f);
-        reportCaption.setLocalBounds(1400, 435, 400, 350);
+        reportCaption.setLocalBounds(1480, 435, 400, 330);
         reportCaption.setVerticalAlignment(Text.ALIGN_TOP);
         addChild(reportCaption);
 
 
-        chart = new LineChart(2);
-        chart.setLocalBounds(25,435, 1350, 350);
-        Ledger ledger = production.getLedger();
-        loadLedgerDataToChart(ledger);
-        addChild(chart);
 
     }
 
@@ -241,9 +266,16 @@ public class ReportPanel extends Panel {
     private void updateSummary(Ledger ledger) {
         double operRevenue = ledger.getLastPeriod().getRevenue();
         double operMargin = 0;
+        double valuation = Math.round(ledger.getValuation());
+        int valuationProgress = (int) Math.round(valuation / 1_000_000f * 100.0f);
+        float availableMaterials = production.getPermissions().availableMaterialsAmount();
+        int technologyProgress = Math.round(availableMaterials / Material.getMaterialsAmount() * 100f);
+        valuationBar.setProgress(valuationProgress);
+        technologyBar.setProgress(technologyProgress);
+
         if (operRevenue > 0) operMargin = Math.round(ledger.getLastPeriod().getMargin() / operRevenue * 100);
         summary.delete(0, summary.length());
-        summary.append("Operational:\n");
+        summary.append("Daily operations:\n");
         summary.append("- income: ");
         FormatUtils.formatMoneyAppend(Math.round(ledger.getLastPeriod().getRevenue()), summary);
         summary.append("\n- expenses: ");
@@ -253,19 +285,13 @@ public class ReportPanel extends Panel {
         summary.append(" (");
         summary.append(operMargin);
         summary.append("%)\n");
-    /*    summary.append("\n\nTotal balance: ");
-        FormatUtils.formatMoneyAppend(Math.round(ledger.getTotal().getMargin()), summary);
-        summary.append(" (");
-        summary.append(margin);
-        summary.append("%)");*/
-        summary.append("\nAssets: ");
+        summary.append("\nTotal assets: ");
         FormatUtils.formatMoneyAppend(Math.round(production.getAssetsValuation()), summary);
-        summary.append("\nWork in progress: ");
-        FormatUtils.formatMoneyAppend(Math.round(production.getWorkInProgressValuation()),summary);
-        summary.append("\nInventory: ");
-        FormatUtils.formatMoneyAppend(Math.round(production.getInventory().getValuation()), summary);
-        summary.append("\n\nValuation: ");
-        FormatUtils.formatMoneyAppend(Math.round(ledger.getValuation()), summary);
+        double totalInventory = production.getWorkInProgressValuation() + production.getInventory().getValuation();
+        summary.append("\nTotal inventory: ");
+        FormatUtils.formatMoneyAppend(Math.round(totalInventory), summary);
+        summary.append("\n\n\nValuation: ");
+        FormatUtils.formatMoneyAppend(valuation, summary);
     }
 
 
