@@ -35,7 +35,8 @@ public class MainMenuScene extends GameScene {
     public void startScene() {
         if (menuPanel==null) {
             background = new Sprite(SceneManager.getResources(), R.drawable.bck_menu);
-            story = new Sprite(SceneManager.getResources(), R.drawable.story, 4,4);
+            Texture storyTexture = Texture.getInstance(SceneManager.getResources(), R.drawable.story, true);
+            story = new Sprite(storyTexture, 4,4);
             story.setActiveAnimation(story.addAnimation(0,11, 0.2f, true));
 
             Texture logoTexture = Texture.getInstance(SceneManager.getResources(), R.drawable.logo, true);
