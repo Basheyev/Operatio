@@ -5,6 +5,9 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
+/**
+ * Обработчик масштабирования сцены производства
+ */
 public class CameraScaleHandler {
 
     private InputHandler inputHandler;

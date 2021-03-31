@@ -27,6 +27,9 @@ import com.axiom.operatio.model.production.machine.Operation;
 import com.axiom.operatio.scenes.production.ProductionScene;
 import com.axiom.operatio.scenes.production.controller.BlockAddMoveHandler;
 
+/**
+ * Кнопка выбора блока для добавления на производство
+ */
 public class BlockButton extends Button {
 
     private ProductionScene scene;

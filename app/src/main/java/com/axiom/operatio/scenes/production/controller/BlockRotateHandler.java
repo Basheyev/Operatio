@@ -9,6 +9,9 @@ import com.axiom.operatio.model.production.block.BlockAdjuster;
 import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 
+/**
+ * Обработчик вращения направлений входов/выходов блока
+ */
 public class BlockRotateHandler {
 
     private InputHandler inputHandler;

@@ -8,6 +8,9 @@ import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.ProductionRenderer;
 
+/**
+ * Обработчик покупки площади производства
+ */
 public class BuyTileHandler {
 
     private InputHandler inputHandler;

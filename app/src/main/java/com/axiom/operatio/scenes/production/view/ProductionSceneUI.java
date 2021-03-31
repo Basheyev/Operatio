@@ -12,7 +12,9 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.ScenesPanel;
 import com.axiom.operatio.scenes.production.ProductionScene;
 
-
+/**
+ * Пользовательский интерфейс сцены производства
+ */
 public class ProductionSceneUI {
 
     private static Production production;

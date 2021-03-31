@@ -21,7 +21,9 @@ import com.axiom.operatio.scenes.technology.TechnologyScene;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+/**
+ * Сцена производства
+ */
 public class ProductionScene extends GameScene {
 
     public static final String SCENE_NAME = "Production";
