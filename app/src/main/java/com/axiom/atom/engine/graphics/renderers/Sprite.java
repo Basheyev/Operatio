@@ -519,6 +519,14 @@ public class Sprite extends Quad {
         return new Sprite(texture, newAtlas);
     }
 
+
+    public Sprite getAsSprite(int x, int y, int w, int h) {
+        TextureAtlas newAtlas = new TextureAtlas(texture);
+        String name = "ID" + System.currentTimeMillis();
+        if (newAtlas.addRegion(name, x, y, w, h)==null) return null;
+        return new Sprite(texture, newAtlas);
+    }
+
     //-----------------------------------------------------------------------------------
     // Код вершинного шейдера спрайта
     //-----------------------------------------------------------------------------------
