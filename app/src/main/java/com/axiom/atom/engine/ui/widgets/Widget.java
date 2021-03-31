@@ -70,14 +70,27 @@ public abstract class Widget {
         // Добавляем в дочерние
         children.add(widget);
         widget.parent = this;
-        adjustZOrder(this);
+        widget.adjustChildZOrder(this);
         return true;
     }
 
-    protected void adjustZOrder(Widget parent) {
-        zOrder = parent.zOrder + 1;
+
+    public int getZOrder() {
+        return zOrder;
+    }
+
+
+    public void setZOrder(int zOrder) {
+        this.zOrder = zOrder;
+        adjustChildZOrder(this);
+    }
+
+    protected void adjustChildZOrder(Widget parent) {
+        Widget child;
         for (int i=0; i<children.size(); i++) {
-            children.get(i).adjustZOrder(this);
+            child = children.get(i);
+            child.zOrder = zOrder + 100;
+            child.adjustChildZOrder(this);
         }
     }
 
@@ -228,7 +241,7 @@ public abstract class Widget {
             int size = children.size();
             for (int i = 0; i < size; i++) {
                 child = children.get(i);
-                child.draw(camera);
+                if (child!=null) child.draw(camera);
             }
         }
     }
