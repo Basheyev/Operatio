@@ -22,6 +22,7 @@ import static android.graphics.Color.WHITE;
 
 public class ReportPanel extends Panel {
 
+    public static final float TARGET_VALUATION = 10_000_000f;
     public static final int ITEM_BACKGROUND = 0x80000000;
 
     private Production production;
@@ -127,7 +128,7 @@ public class ReportPanel extends Panel {
             }
         }
 
-        Caption valuationCap = new Caption("Valuation");
+        Caption valuationCap = new Caption("Valuation ($10M)");
         valuationCap.setTextColor(WHITE);
         valuationCap.setTextScale(1.8f);
         valuationCap.setLocalBounds(25, 710, 300, 60);
@@ -267,7 +268,7 @@ public class ReportPanel extends Panel {
         double operRevenue = ledger.getLastPeriod().getRevenue();
         double operMargin = 0;
         double valuation = Math.round(ledger.getValuation());
-        int valuationProgress = (int) Math.round(valuation / 1_000_000f * 100.0f);
+        int valuationProgress = (int) Math.round(valuation / TARGET_VALUATION * 100.0f);
         float availableMaterials = production.getPermissions().availableMaterialsAmount();
         int technologyProgress = Math.round(availableMaterials / Material.getMaterialsAmount() * 100f);
         valuationBar.setProgress(valuationProgress);
