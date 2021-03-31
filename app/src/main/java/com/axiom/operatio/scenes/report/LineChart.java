@@ -9,6 +9,7 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.common.FormatUtils;
 
 /**
+ * Линейная диаграмма
  * по горизонтали - время (количество отсчётов)
  * по вертикали - значение
  * оси подписаны по значениям и нанесена сетка (по 5-10 значений каждой оси)
@@ -167,7 +168,8 @@ public class LineChart extends Widget {
      * @return 0.0-1.0
      */
     private double normalized(double value) {
-        return (value - totalMin) / (totalMax - totalMin);
+        //return (value - totalMin) / (totalMax - totalMin);
+        return value / totalMax;
     }
 
 
@@ -194,7 +196,8 @@ public class LineChart extends Widget {
         totalMaxStr.setLength(0);
         totalMinStr.setLength(0);
         totalMaxStr = FormatUtils.formatMoneyAppend(Math.round(totalMax), totalMaxStr);
-        totalMinStr = FormatUtils.formatMoneyAppend(Math.round(totalMin), totalMinStr);
+        totalMinStr.append("0");
+      //  totalMinStr = FormatUtils.formatMoneyAppend(Math.round(totalMin), totalMinStr);
     }
 
 }
