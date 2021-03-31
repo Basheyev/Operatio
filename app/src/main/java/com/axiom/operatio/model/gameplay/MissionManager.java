@@ -9,7 +9,9 @@ import com.axiom.operatio.model.production.Production;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-
+/**
+ * Менеджер миссий
+ */
 public class MissionManager {
 
     private static GameMission[] missions = null;

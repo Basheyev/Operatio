@@ -12,7 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Содержит данные и изображения материалов (materials.png, materials.csv)
+ * Содержит данные и изображения материалов (materials.png, materials.json)
  */
 public class Material {
 

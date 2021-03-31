@@ -10,6 +10,9 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.BlockRenderer;
 import com.axiom.operatio.model.production.conveyor.ConveyorRenderer;
 
+/**
+ * Рендер машины
+ */
 public class MachineRenderer extends BlockRenderer {
 
     protected static Sprite allMachines = null;

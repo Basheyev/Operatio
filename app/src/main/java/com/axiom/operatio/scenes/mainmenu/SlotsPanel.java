@@ -17,6 +17,9 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 import static android.graphics.Color.DKGRAY;
 import static android.graphics.Color.WHITE;
 
+/**
+ * Панель отображения слотов сохраения/загрузки
+ */
 public class SlotsPanel extends Panel {
 
     public static final int MODE_LOAD_GAME = 0;

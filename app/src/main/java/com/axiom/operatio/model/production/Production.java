@@ -25,8 +25,8 @@ import java.util.ArrayList;
  */
 public class Production implements JSONSerializable {
 
-    public static final int MAP_WIDTH = 32;
-    public static final int MAP_HEIGHT = 24;
+    public static final int MAP_WIDTH = 64;       // TODO вынести в настройки
+    public static final int MAP_HEIGHT = 48;
     public static final int UNLOCKED_WIDTH = 8;
     public static final int UNLOCKED_HEIGHT = 6;
     public static final int TILE_PRICE = 500;     // Цена одной плитки площади

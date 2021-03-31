@@ -15,6 +15,9 @@ import com.axiom.operatio.model.production.conveyor.Conveyor;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Модель экземпляра маштны (оборудования)
+ */
 public class Machine extends Block implements JSONSerializable {
 
     protected MachineType type;

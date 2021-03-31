@@ -13,6 +13,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Сохранение и загрузка игры
+ */
 public class GameSaveLoad {
 
     private static final String KEY_PREFIX = "SLOT";

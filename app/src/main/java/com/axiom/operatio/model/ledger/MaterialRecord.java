@@ -5,6 +5,9 @@ import com.axiom.operatio.model.common.JSONSerializable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Статистика по материалам
+ */
 public class MaterialRecord implements JSONSerializable {
 
     protected int productivity = 0;             // Производительность за период

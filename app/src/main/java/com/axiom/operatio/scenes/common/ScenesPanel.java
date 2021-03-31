@@ -81,7 +81,7 @@ public class ScenesPanel extends Panel {
     private void buildUI() {
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
         setColor(PANEL_COLOR);
-        setLocalBounds(0, 960, 1920, 120);
+        setLocalBounds(0, Camera.HEIGHT - 120, Camera.WIDTH, 120);
 
         double currentBalance = Math.round(production.getLedger().getCashBalance());
         long currentDay = production.getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES;

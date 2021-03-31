@@ -19,6 +19,9 @@ import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 
+/**
+ * Панель отображения рынка
+ */
 public class MarketPanel extends Panel {
 
     public static final int GRAPH_BACKGROUND = 0x80000000;

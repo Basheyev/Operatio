@@ -29,7 +29,7 @@ public abstract class Block implements JSONSerializable {
     public static final int FAULT = -1;
 
     //---------------------------------------------------------------------------------------
-    // Ориентация (по часовой стрелке)
+    // Ориентация блока (по часовой стрелке)
     //---------------------------------------------------------------------------------------
     public static final int NONE = 0;
     public static final int LEFT = 1;

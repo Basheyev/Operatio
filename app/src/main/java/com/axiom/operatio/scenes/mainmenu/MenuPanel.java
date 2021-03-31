@@ -16,6 +16,9 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 import static com.axiom.operatio.scenes.mainmenu.SlotsPanel.MODE_LOAD_GAME;
 import static com.axiom.operatio.scenes.mainmenu.SlotsPanel.MODE_SAVE_GAME;
 
+/**
+ * Кнопки главного меню
+ */
 public class MenuPanel extends Panel {
 
     public final int panelColor = 0xCC505050;

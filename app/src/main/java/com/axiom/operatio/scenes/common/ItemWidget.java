@@ -7,6 +7,9 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.atom.engine.ui.widgets.Button;
 
+/**
+ * Компонент отображающий материал и текст к нему
+ */
 public class ItemWidget extends Button {
 
     private boolean active = true;

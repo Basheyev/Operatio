@@ -16,7 +16,7 @@ public class Ledger implements JSONSerializable {
     //---------------------------------------------------------------------------------------------
     public static final int OPERATIONAL_DAY_CYCLES = 60;         // Длительность периода в циклах
     //---------------------------------------------------------------------------------------------
-    public static final int EXPENSE_UNKOWN          = 0x0000;    // Неизвестный расход
+    public static final int EXPENSE_UNKNOWN = 0x0000;    // Неизвестный расход
     public static final int EXPENSE_BLOCK_BOUGHT    = 0x0001;    // Расходы на покупку блока
     public static final int EXPENSE_BLOCK_OPERATION = 0x0002;    // Расходы на операцию блока
     public static final int EXPENSE_MATERIAL_BOUGHT = 0x0003;    // Расходы на покупку материала

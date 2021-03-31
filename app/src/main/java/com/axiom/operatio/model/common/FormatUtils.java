@@ -1,6 +1,5 @@
 package com.axiom.operatio.model.common;
 
-
 import java.text.DecimalFormat;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
@@ -8,7 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-
+/**
+ * Класс для форматирования текста с минимальным использованием памяти
+ */
 public class FormatUtils {
 
     private static DecimalFormat moneyFormat;

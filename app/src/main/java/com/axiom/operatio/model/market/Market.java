@@ -9,11 +9,14 @@ import com.axiom.operatio.model.production.Production;
 
 import org.json.JSONObject;
 
-
+/**
+ * Модель рынка - симуляция экономических циклов и колебаний
+ */
 public class Market implements JSONSerializable {
 
-    public static final int COMMODITY_COUNT = 64;
-    public static final int HISTORY_LENGTH = 96;
+    public static final int COMMODITY_COUNT = 64;    // todo брать количество из Material
+    public static final int HISTORY_LENGTH = 96;     // todo выровнять историю графика
+
     private double largeCycle;
     private final double[] faceValue;
     private final double[] marketValue;
@@ -78,6 +81,7 @@ public class Market implements JSONSerializable {
         lastCycleTime = now;
         cycle++;
     }
+
 
     private double evaluateNextValue(int commodity) {
         // Считаем среднюю цена между номиналом и текущей (более менее справедливая)
@@ -162,7 +166,7 @@ public class Market implements JSONSerializable {
 
     @Override
     public JSONObject toJSON() {
-        return null;
+        return null; // todo добавить сериализацю
     }
 
 }

@@ -12,26 +12,26 @@ public abstract class BlockRenderer {
     public void drawInOut(Camera camera, int inDir, int outDir,
                           float x, float y, float width, float height, int zOrder) {
 
-        float ux = x, uy = y + height / 2 - 5;
-        float dx = x, dy = y - height / 2 + 5;
-        float lx = x - width / 2 + 5, ly = y;
-        float rx = x + width / 2 - 5, ry = y;
+        float uy = y + height / 2 - 5;
+        float dy = y - height / 2 + 5;
+        float lx = x - width / 2 + 5;
+        float rx = x + width / 2 - 5;
         float inputX = x, inputY = y;
         float outputX = x, outputY = y;
 
 
         // отрисовать направления входа/выхода
         switch (inDir) {
-            case Block.UP:    inputX = ux; inputY = uy; break;
-            case Block.DOWN:  inputX = dx; inputY = dy; break;
-            case Block.LEFT:  inputX = lx; inputY = ly; break;
-            case Block.RIGHT: inputX = rx; inputY = ry; break;
+            case Block.UP:    inputX = x; inputY = uy; break;
+            case Block.DOWN:  inputX = x; inputY = dy; break;
+            case Block.LEFT:  inputX = lx; inputY = y; break;
+            case Block.RIGHT: inputX = rx; inputY = y; break;
         }
         switch (outDir) {
-            case Block.UP:    outputX = ux; outputY = uy; break;
-            case Block.DOWN:  outputX = dx; outputY = dy; break;
-            case Block.LEFT:  outputX = lx; outputY = ly; break;
-            case Block.RIGHT: outputX = rx; outputY = ry; break;
+            case Block.UP:    outputX = x; outputY = uy; break;
+            case Block.DOWN:  outputX = x; outputY = dy; break;
+            case Block.LEFT:  outputX = lx; outputY = y; break;
+            case Block.RIGHT: outputX = rx; outputY = y; break;
         }
 
         GraphicsRender.setZOrder(zOrder);

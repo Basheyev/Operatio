@@ -6,6 +6,9 @@ import com.axiom.operatio.model.ledger.Ledger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Игровое условие для миссий
+ */
 public class GameCondition {
 
     public static final int MANUFACTURED_AMOUNT = 1;           // Произведенное количество
@@ -14,7 +17,7 @@ public class GameCondition {
     public static final int REVENUE_PER_DAY = 4;               // Выручка в день
     public static final int CASH_BALANCE = 5;                  // Остаток денег
     public static final int OPERATING_MARGIN = 6;              // Операционная маржинальность
-    public static final int VALUATION = 7;                // Капитализация
+    public static final int VALUATION = 7;                     // Капитализация
 
     protected int indicatorType;                               // Тип показателя
     protected int materialID;                                  // ID материала

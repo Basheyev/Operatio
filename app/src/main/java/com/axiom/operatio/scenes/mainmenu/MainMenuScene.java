@@ -17,13 +17,17 @@ import com.axiom.operatio.model.gameplay.GameSaveLoad;
 
 import static android.graphics.Color.BLACK;
 
+/**
+ * Сцена главного меню
+ */
 public class MainMenuScene extends GameScene {
 
     public static final String SCENE_NAME = "Menu";
     private GameSaveLoad gameSaveLoad;
-    private Sprite logo, ceo, background, story;
+    private Sprite logo,  background;
     private MenuPanel menuPanel;
     private SlotsPanel slotsPanel;
+    private StoryPanel storyPanel;
     private float scrollerX;
 
     @Override
@@ -35,21 +39,21 @@ public class MainMenuScene extends GameScene {
     public void startScene() {
         if (menuPanel==null) {
             background = new Sprite(SceneManager.getResources(), R.drawable.bck_menu);
-            Texture storyTexture = Texture.getInstance(SceneManager.getResources(), R.drawable.story, true);
-            story = new Sprite(storyTexture, 4,4);
-            story.setActiveAnimation(story.addAnimation(0,11, 0.2f, true));
 
             Texture logoTexture = Texture.getInstance(SceneManager.getResources(), R.drawable.logo, true);
             logo = new Sprite(logoTexture,1,1);
-
-            Texture ceoTexture = Texture.getInstance(SceneManager.getResources(), R.drawable.ceo, true);
-            ceo = new Sprite(ceoTexture, 1,1);
 
             Widget widget = getSceneWidget();
             gameSaveLoad = new GameSaveLoad();
             menuPanel = new MenuPanel(this);
             widget.addChild(menuPanel);
+
+            storyPanel = new StoryPanel();
+            storyPanel.setLocalBounds(menuPanel.getX() + menuPanel.getWidth() + 50, 290, 980, 560);
+            widget.addChild(storyPanel);
+
             slotsPanel = new SlotsPanel(this);
+            slotsPanel.setZOrder(storyPanel.getZOrder() + 100);
             slotsPanel.visible = false;
             widget.addChild(slotsPanel);
         }
@@ -80,15 +84,8 @@ public class MainMenuScene extends GameScene {
         background.setZOrder(0);
         background.draw(camera,cx + scrollerX, cy, Camera.WIDTH,Camera.HEIGHT);
         background.draw(camera, cx + scrollerX - Camera.WIDTH, cy, Camera.WIDTH,Camera.HEIGHT);
-        GraphicsRender.setZOrder(2);
-        GraphicsRender.setColor(BLACK);
-        GraphicsRender.drawRectangle(cx + menuPanel.getX() + menuPanel.getWidth() + 50, cy + 290, 980, 560);
-        story.setZOrder(2);
-        story.draw(camera, cx + menuPanel.getX() + menuPanel.getWidth() + 60, cy + 300, 960, 540);
         logo.setZOrder(3);
         logo.draw(camera, cx + 50, cy + Camera.HEIGHT - logo.getHeight() - 25, logo.getWidth(), logo.getHeight());
-        ceo.setZOrder(3);
-        ceo.draw(camera, cx + Camera.WIDTH - 96 * 3 - 50, cy + 20, 96 * 3, 256 * 3);
     }
 
 

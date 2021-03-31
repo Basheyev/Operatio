@@ -8,6 +8,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+
+/**
+ * Операция машины (рецепт)
+ */
 public class Operation {
 
     protected static ArrayList<Operation> allOperations = null;  // Список всех типов машин

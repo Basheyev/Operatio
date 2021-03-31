@@ -13,7 +13,9 @@ import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
 
-
+/**
+ * Рендер производства
+ */
 public class ProductionRenderer {
 
     public static int MIN_CELL_SIZE = 64;

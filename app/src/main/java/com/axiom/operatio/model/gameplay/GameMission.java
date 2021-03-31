@@ -6,7 +6,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+/**
+ * Содержит информацию об игровой миссии, пререквизитах, условиях победы и вознаграждении
+ */
 public class GameMission {
 
     private int ID;

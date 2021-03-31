@@ -21,7 +21,9 @@ import static com.axiom.operatio.model.production.block.Block.LEFT;
 import static com.axiom.operatio.model.production.block.Block.RIGHT;
 import static com.axiom.operatio.model.production.block.Block.UP;
 
-
+/**
+ * Рендер конвейера
+ */
 public class ConveyorRenderer extends BlockRenderer {
 
     protected static Sprite allConveyors = null;

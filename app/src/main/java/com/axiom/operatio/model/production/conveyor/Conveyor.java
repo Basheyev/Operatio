@@ -12,6 +12,9 @@ import com.axiom.operatio.model.production.buffer.ExportBuffer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Модель конвейера
+ */
 public class Conveyor extends Block implements JSONSerializable {
 
     public static final double CYCLE_COST = 0.05f;

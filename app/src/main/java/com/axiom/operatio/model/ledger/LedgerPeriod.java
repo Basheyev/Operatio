@@ -5,6 +5,9 @@ import com.axiom.operatio.model.common.JSONSerializable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Статистика операционного дня (периода)
+ */
 public class LedgerPeriod implements JSONSerializable {
 
     protected double revenue;                             // Операционная выручка за период
