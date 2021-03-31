@@ -51,6 +51,8 @@ public abstract class Block implements JSONSerializable {
     protected BlockRenderer renderer;                 // Отрисовщик
     protected boolean directionFlip = false;          // Флаг отражения направления потока
 
+    protected long lastPollTime = 0;                  // Последнее время вытягивания предмета
+
     /**
      * Конструктор блока производства
      * @param production производство
@@ -113,6 +115,7 @@ public abstract class Block implements JSONSerializable {
     public Item poll() {
         Item item = output.peek();
         if (item==null) return null;
+        lastPollTime = production.getClock();
         return output.poll();
     }
     
@@ -225,6 +228,22 @@ public abstract class Block implements JSONSerializable {
         return outputDirection;
     }
 
+
+    public Channel<Item> getInputQueue() {
+        return input;
+    }
+
+    public Channel<Item> getOutputQueue() {
+        return output;
+    }
+
+    public int getTotalCapacity() {
+        return inputCapacity + outputCapacity;
+    }
+
+    public long getLastPollTime() {
+        return lastPollTime;
+    }
 
     /**
      * Возвращает блок по указнному направлению относительно текущего

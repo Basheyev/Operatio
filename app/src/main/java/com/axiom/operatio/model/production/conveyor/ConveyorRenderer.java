@@ -12,6 +12,7 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
 import com.axiom.operatio.model.materials.Item;
+import com.axiom.operatio.model.production.machine.Machine;
 
 import static com.axiom.operatio.model.production.block.Block.BUSY;
 import static com.axiom.operatio.model.production.block.Block.DOWN;
@@ -113,7 +114,7 @@ public class ConveyorRenderer extends BlockRenderer {
         // Отрисовать сам конвейер
         sprite.draw(camera,x,y, width, height);
 
-        if (block instanceof Conveyor) {
+    //    if (block instanceof Conveyor) {
             // Отрисовать предметы на нём
             drawItems(camera, x, y, width, height);
 
@@ -122,7 +123,7 @@ public class ConveyorRenderer extends BlockRenderer {
                 drawInOut(camera, block.getInputDirection(), block.getOutputDirection(),
                         x, y, width, height, sprite.getZOrder() + 2);
             }
-        }
+//        }
 
         // Рисуем значок сбоя, если произошел сбой
         if (block instanceof Conveyor && block.getState()== Conveyor.FAULT) {
@@ -134,27 +135,36 @@ public class ConveyorRenderer extends BlockRenderer {
 
     protected void drawItems(Camera camera, float x, float y, float width, float height) {
 
-        Conveyor conveyor = (Conveyor) this.block;                  // Конвейер
-        Channel<Item> inputQueue = conveyor.getInputQueue();        // Входящая очередь
-        Channel<Item> outputQueue = conveyor.getOutputQueue();      // Исходящая очередь
+        Channel<Item> inputQueue = block.getInputQueue();                // Входящая очередь
+        Channel<Item> outputQueue = block.getOutputQueue();              // Исходящая очередь
         float cycleTime = this.block.getProduction().getCycleTimeMs();   // Длительность цикла в мс.
-        float deliveryCycles = conveyor.getDeliveryCycles();        // Циклов для доставки предмета
-        float deliveryTime = deliveryCycles * cycleTime;            // Время доставки в мс.
-        float capacity = conveyor.getTotalCapacity();               // Вместимость конвейера в предметах
-        float stridePerItem = 1.0f / (capacity / 2.0f);             // Шаг для одного предмета
+
+        float deliveryCycles = 1;
+        if (block instanceof Conveyor) {
+            deliveryCycles = ((Conveyor) block).getDeliveryCycles();
+        } else if (block instanceof Machine) {
+            deliveryCycles = ((Machine) block).getOperation().getCycles() + 1;
+        }
+
+        float deliveryTime = deliveryCycles * cycleTime;                 // Время доставки в мс.
+        float capacity = block.getTotalCapacity();                       // Вместимость конвейера в предметах
+        float stridePerItem = 1.0f / (capacity / 2.0f);                  // Шаг для одного предмета
         float progress;
 
-        long now = conveyor.getProduction().getClock();
-        float cycleBias = (now - conveyor.lastPollTime) / cycleTime;
+        long now = block.getProduction().getClock();
+        float cycleBias = (now - block.getLastPollTime()) / cycleTime;
         if (cycleBias > 1.0f) cycleBias = 1.0f;
 
         float progressBias = cycleBias * stridePerItem;
-        int finishedCounter = conveyor.getOutputQueue().size();
+        int finishedCounter = block.getOutputQueue().size();
 
         for (int i=0; i<outputQueue.size(); i++) {
             Item item = outputQueue.get(i);
             if (item==null) continue;
             progress = 1.0f - (i * stridePerItem) + progressBias - stridePerItem;
+            if (block instanceof Machine) {
+                if (progress < 0.5f) progress = 0.5f;
+            }
             drawItem (camera, x, y, width, height, item, progress);
         }
 
@@ -164,11 +174,15 @@ public class ConveyorRenderer extends BlockRenderer {
             Item item = inputQueue.get(i);
             if (item == null) continue;
             // fixme BUG: если конвейер остановлен Bias время item продолжает идти (считать время остановки)
-            now = conveyor.getProduction().getClock();
+            now = block.getProduction().getClock();
             progress = (now - item.getTimeOwned()) /  deliveryTime;
             if (progress > maxProgress) {
                 progress = maxProgress;
                 maxProgress -= stridePerItem;
+            }
+            if (block instanceof Machine) {
+              if (progress > 0.5f) progress = 0.5f;
+              if (progress < 0.0f) progress = 0;
             }
             drawItem (camera, x, y, width, height, item, progress);
         }

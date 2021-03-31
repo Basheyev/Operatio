@@ -22,7 +22,7 @@ public class Conveyor extends Block implements JSONSerializable {
     private int deliveryCycles;
     private long lastInputCycle = 0;
     private float inputCycleTime;
-    protected long lastPollTime = 0;
+
 
     public Conveyor(Production production, int inDir, int outDir) {
         super(production, inDir, MAX_CAPACITY, outDir, MAX_CAPACITY);
@@ -82,12 +82,6 @@ public class Conveyor extends Block implements JSONSerializable {
         return super.push(item);
     }
 
-    @Override
-    public Item poll() {
-        Item item = super.poll();
-        if (item!=null) lastPollTime = production.getClock();
-        return item;
-    }
 
     @Override
     public void process() {
@@ -142,19 +136,6 @@ public class Conveyor extends Block implements JSONSerializable {
         return deliveryCycles;
     }
 
-
-    public int getTotalCapacity() {
-        return inputCapacity + outputCapacity;
-    }
-
-
-    public Channel<Item> getInputQueue() {
-        return input;
-    }
-
-    public Channel<Item> getOutputQueue() {
-        return output;
-    }
 
     @Override
     public double getCycleCost() {
