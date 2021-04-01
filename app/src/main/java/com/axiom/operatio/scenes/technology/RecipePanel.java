@@ -42,6 +42,7 @@ public class RecipePanel extends Panel {
     private Operation selectedOperation;
     private StringBuffer machineDescription = new StringBuffer(256);
 
+
     public RecipePanel(MaterialsTree panel, Production production) {
         super();
         this.materialsTree = panel;
@@ -49,6 +50,118 @@ public class RecipePanel extends Panel {
         this.selectedOperation = null;
         buildUI();
     }
+
+
+    private void buildUI() {
+        setLocalBounds(874,50, 1026, 880);
+        setColor(0xCC505050);
+        caption = buildCaption(RECIPE, 30, getHeight() - 100, 500, 100, 1.5f, 0, 0);
+
+        // Формируем компоненты списка входных материалов
+        inputsCaption = buildCaption("",144,650,250, 100, 1.2f, Text.ALIGN_RIGHT, 0);
+        inpBtn = new ItemWidget[4];
+        inpCap = new Caption[4];
+        for (int i=0; i<4; i++) {
+            inpBtn[i] = buildItemButton(330 , 580 - i*80, 64, 64);
+            inpCap[i] = buildItemCaption(30 , 580 - i*80, 280, 64, Text.ALIGN_RIGHT);
+            inpCap[i].setClickListener(clickListener);
+        }
+
+        // Формируем компоненты списка выходных материалов
+        outputsCaption = buildCaption("",630,650,300, 100, 1.2f, 0, 0);
+        outBtn = new ItemWidget[4];
+        outCap = new Caption[4];
+        for (int i=0; i<4; i++) {
+            outBtn[i] = buildItemButton(630, 580 - i*80, 64, 64);
+            outCap[i] = buildItemCaption(714 , 580 - i*80, 280, 64, Text.ALIGN_LEFT);
+        }
+
+        // Надпись рассказывающая о машине
+        machineCaption = buildCaption("", 450,600,128, 100, 1.2f, Text.ALIGN_CENTER, Text.ALIGN_BOTTOM);
+        machineButton = buildMachineButton(450, 450, 128, 128);
+
+        // Кнопка исследования
+        researchButton = buildResearchButton(getWidth() - 325,25,300,100);
+
+        clearFields();
+    }
+
+
+    private Caption buildCaption(String txt, float x, float y, float w, float h, float scale, int HA, int VA) {
+        Caption cap = new Caption(txt);
+        cap.setLocalBounds(x,y,w,h);
+        cap.setTextScale(scale);
+        cap.setTextColor(WHITE);
+        if (HA!=0) cap.setHorizontalAlignment(HA);
+        if (VA!=0) cap.setVerticalAlignment(VA);
+        addChild(cap);
+        return cap;
+    }
+
+    private ItemWidget buildItemButton(float x, float y, float w, float h) {
+        ItemWidget btn = new ItemWidget("");
+        btn.setLocalBounds(x, y, w,h);
+        btn.setColor(BLACK);
+        btn.setTextColor(WHITE);
+        btn.setTextScale(1);
+        addChild(btn);
+        return btn;
+    }
+
+
+    private Caption buildItemCaption(float x, float y, float w, float h, int HA) {
+        Caption cap = new Caption("");
+        cap.setLocalBounds(x , y, w, h);
+        cap.setTextColor(WHITE);
+        cap.setTextScale(1f);
+        if (HA!=0) cap.setHorizontalAlignment(HA);
+        addChild(cap);
+        return cap;
+    }
+
+
+    private ItemWidget buildMachineButton( float x, float y, float w, float h) {
+        ItemWidget mb = new ItemWidget("");
+        mb.setColor(BLACK);
+        mb.opaque = false;
+        mb.setTextColor(WHITE);
+        mb.setTextScale(1);
+        mb.setLocalBounds(x, y, w, h);
+        addChild(mb);
+        return mb;
+    }
+
+
+    private Button buildResearchButton(float x, float y, float w, float h) {
+        Button rb = new Button("Research");
+        rb.setLocalBounds(x,y,w,h);
+        rb.setTextScale(1.4f);
+        rb.setTextColor(WHITE);
+        rb.setClickListener(researchClickListener);
+        rb.visible = false;
+        addChild(rb);
+        return rb;
+    }
+
+
+
+    protected boolean findMachineAndOperations(Material selectedMaterial) {
+        GamePermissions permissions = production.getPermissions();
+        selectedOperation = MachineType.findOperation(selectedMaterial);
+        boolean rawMaterial = selectedMaterial.getID() < 8;
+        if (selectedOperation != null && !rawMaterial) {
+            String recipePrice = "Research $" + Math.round(selectedOperation.getRecipeCost());
+            showMachineAndOperation(selectedOperation);
+            boolean materialNotAvailable = !permissions.isAvailable(selectedMaterial);
+            boolean operationNotAvailable = !permissions.isAvailable(selectedOperation);
+            researchButton.visible = materialNotAvailable || operationNotAvailable;
+            if (researchButton.visible) researchButton.setText(recipePrice);
+            return true;
+        } else researchButton.visible = false;
+        clearFields();
+        return false;
+    }
+
 
     public void updateData() {
         Material selectedMaterial = materialsTree.getSelectedMaterial();
@@ -74,132 +187,27 @@ public class RecipePanel extends Panel {
         inputsCaption.setText("");
         outputsCaption.setText("");
         machineCaption.setText("No recipe");
+        machineButton.setBackground(null);
+        machineButton.setText("");
         for (int i=0; i<4; i++) {
-            inpBtn[i].setBackground(null);
-            inpBtn[i].setText("");
-            inpBtn[i].setTag(null);
-            inpCap[i].setText("");
-            inpCap[i].setTag(null);
-            machineButton.setBackground(null);
-            machineButton.setText("");
-            outBtn[i].setBackground(null);
-            outBtn[i].setText("");
-            outCap[i].setText("");
+            updateItemWidget(inpBtn[i], null, "", null);
+            updateItemCaption(inpCap[i], "", null);
+            updateItemWidget(outBtn[i], null, "", null);
+            updateItemCaption(outCap[i], "", null);
         }
         selectedOperation = null;
     }
 
 
-    private void buildUI() {
-        Panel panel = this;
-        panel.setLocalBounds(874,50, 1026, 880);
-        panel.setColor(0xCC505050);
-
-        inpBtn = new ItemWidget[4];
-        outBtn = new ItemWidget[4];
-        inpCap = new Caption[4];
-        outCap = new Caption[4];
-
-        caption = new Caption(RECIPE);
-        caption.setTextScale(1.5f);
-        caption.setTextColor(WHITE);
-        caption.setLocalBounds(30, panel.getHeight() - 100, 500, 100);
-        panel.addChild(caption);
-
-        // Список входных материалов
-        inputsCaption = new Caption("");
-        inputsCaption.setLocalBounds(144,650,250, 100);
-        inputsCaption.setTextScale(1.2f);
-        inputsCaption.setTextColor(WHITE);
-        inputsCaption.setHorizontalAlignment(Text.ALIGN_RIGHT);
-        addChild(inputsCaption);
-
-        for (int i=0; i<4; i++) {
-            inpBtn[i] = new ItemWidget("");
-            inpBtn[i].setLocalBounds(330 , 580 - i*80, 64, 64);
-            inpBtn[i].setColor(BLACK);
-            inpBtn[i].setTextColor(WHITE);
-            inpBtn[i].setTextScale(1);
-            inpBtn[i].setClickListener(clickListener);
-            addChild(inpBtn[i]);
-            inpCap[i] = new Caption("");
-            inpCap[i].setLocalBounds(30 , 580 - i*80, 280, 64);
-            inpCap[i].setTextColor(WHITE);
-            inpCap[i].setTextScale(1f);
-            inpCap[i].setHorizontalAlignment(Text.ALIGN_RIGHT);
-            inpCap[i].setClickListener(clickListener);
-            addChild(inpCap[i]);
-        }
-
-        // Кнопка отображающая машину
-        machineCaption = new Caption("");
-        machineCaption.setLocalBounds(450,600,128, 100);
-        machineCaption.setTextScale(1.2f);
-        machineCaption.setTextColor(WHITE);
-        machineCaption.setHorizontalAlignment(Text.ALIGN_CENTER);
-        machineCaption.setVerticalAlignment(Text.ALIGN_BOTTOM);
-
-        addChild(machineCaption);
-
-        // Кнопка отображающая машину
-        machineButton = new ItemWidget("");
-        machineButton.setColor(BLACK);
-        machineButton.opaque = false;
-        machineButton.setTextColor(WHITE);
-        machineButton.setTextScale(1);
-        machineButton.setLocalBounds(450, 450, 128, 128);
-        addChild(machineButton);
-
-        // Список выходных материалов
-        outputsCaption = new Caption("");
-        outputsCaption.setLocalBounds(630,650,300, 100);
-        outputsCaption.setTextScale(1f);
-        outputsCaption.setTextColor(WHITE);
-        addChild(outputsCaption);
-
-
-        for (int i=0; i<4; i++) {
-            outBtn[i] = new ItemWidget("");
-            outBtn[i].setLocalBounds(630, 580 - i*80, 64, 64);
-            outBtn[i].setColor(BLACK);
-            outBtn[i].setTextColor(WHITE);
-            outBtn[i].setTextScale(1);
-            addChild(outBtn[i]);
-            outCap[i] = new Caption("");
-            outCap[i].setLocalBounds(714 , 580 - i*80, 280, 64);
-            outCap[i].setTextColor(WHITE);
-            outCap[i].setTextScale(1f);
-            outCap[i].setHorizontalAlignment(Text.ALIGN_LEFT);
-            addChild(outCap[i]);
-        }
-
-        researchButton = new Button("Research");
-        researchButton.setLocalBounds(panel.getWidth() - 325,25,300,100);
-        researchButton.setTextScale(1.4f);
-        researchButton.setTextColor(WHITE);
-        researchButton.setClickListener(researchClickListener);
-        researchButton.visible = false;
-        addChild(researchButton);
-
-        clearFields();
-
+    private void updateItemWidget(ItemWidget btn, Sprite image, String txt, String tag) {
+        btn.setBackground(image);
+        btn.setText(txt);
+        btn.setTag(tag);
     }
 
-    protected boolean findMachineAndOperations(Material selectedMaterial) {
-        GamePermissions permissions = production.getPermissions();
-        selectedOperation = MachineType.findOperation(selectedMaterial);
-        boolean rawMaterial = selectedMaterial.getID() < 8;
-        if (selectedOperation != null && !rawMaterial) {
-            String recipePrice = "Research $" + Math.round(selectedOperation.getRecipeCost());
-            showMachineAndOperation(selectedOperation);
-            boolean materialNotAvailable = !permissions.isAvailable(selectedMaterial);
-            boolean operationNotAvailable = !permissions.isAvailable(selectedOperation);
-            researchButton.visible = materialNotAvailable || operationNotAvailable;
-            if (researchButton.visible) researchButton.setText(recipePrice);
-            return true;
-        } else researchButton.visible = false;
-        clearFields();
-        return false;
+    private  void updateItemCaption(Caption caption, String txt, String tag) {
+        caption.setText(txt);
+        caption.setTag(tag);
     }
 
 
@@ -210,12 +218,13 @@ public class RecipePanel extends Panel {
         MachineType machineType = operation.getMachineType();
         Sprite machineImage = machineType.getImage();
 
-        machineDescription.delete(0, machineDescription.length());
+        machineDescription.setLength(0);
         machineDescription.append(machineType.getName());
         machineDescription.append("\noperation #");
         machineDescription.append(operationID + 1);
         machineDescription.append("\n\n");
         FormatUtils.formatMoneyAppend(operation.getOperationCost(), machineDescription);
+
         machineCaption.setText(machineDescription);
         machineButton.setBackground(machineImage);
 
@@ -227,34 +236,27 @@ public class RecipePanel extends Panel {
         for (int i=0; i<4; i++) {
             if (i<inputs.length) {
                 String materialTag = "" + inputs[i].getID();
-                inpBtn[i].setBackground(inputs[i].getImage());
-                inpBtn[i].setText("x" + inputAmount[i]);
-                inpBtn[i].setTag(materialTag);
-                inpCap[i].setText(inputs[i].getName() + " - $" + Math.round(inputs[i].getPrice()));
-                inpCap[i].setTag(materialTag);
+                updateItemWidget(inpBtn[i], inputs[i].getImage(), "x" + inputAmount[i], materialTag);
+                updateItemCaption(inpCap[i], inputs[i].getName() + " - $" + Math.round(inputs[i].getPrice()), materialTag);
             } else {
-                inpBtn[i].setBackground(null);
-                inpBtn[i].setText("");
-                inpBtn[i].setTag(null);
-                inpCap[i].setText("");
-                inpCap[i].setTag(null);
+                updateItemWidget(inpBtn[i], null, "", null);
+                updateItemCaption(inpCap[i], "", null);
             }
         }
 
 
         for (int i=0; i<4; i++) {
             if (i<outputs.length) {
-                outBtn[i].setBackground(outputs[i].getImage());
-                outBtn[i].setText("x" + outputAmount[i]);
-                outCap[i].setText(outputs[i].getName() + " - $" + Math.round(outputs[i].getPrice()));
+                updateItemWidget(outBtn[i], outputs[i].getImage(), "x" + outputAmount[i], null);
+                updateItemCaption(outCap[i], outputs[i].getName() + " - $" + Math.round(outputs[i].getPrice()), null);
             } else {
-                outBtn[i].setBackground(null);
-                outBtn[i].setText("");
-                outCap[i].setText("");
+                updateItemWidget(outBtn[i], null, "", null);
+                updateItemCaption(outCap[i], "", null);
             }
         }
 
     }
+
 
     @Override
     public void draw(Camera camera) {
