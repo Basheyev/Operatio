@@ -3,6 +3,7 @@ package com.axiom.operatio.scenes.report;
 import android.graphics.Color;
 
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
@@ -20,6 +21,9 @@ import com.axiom.operatio.scenes.common.ItemWidget;
 import static android.graphics.Color.GREEN;
 import static android.graphics.Color.WHITE;
 
+/**
+ * Глваная панель сводной отчётности производства
+ */
 public class ReportPanel extends Panel {
 
     public static final float TARGET_VALUATION = 10_000_000f;
@@ -59,117 +63,180 @@ public class ReportPanel extends Panel {
         purchaseText = new StringBuffer(32);
         manufacturedText = new StringBuffer(32);
 
-        panelCaption = new Caption("Operations daily report");
-        panelCaption.setTextScale(1.5f);
-        panelCaption.setTextColor(WHITE);
-        panelCaption.setLocalBounds(30, getHeight() - 100, 600, 100);
-        addChild(panelCaption);
-
-        purchaseCaption = new Caption("Purchase");
-        purchaseCaption.setTextColor(1,0.5f,0.5f, 1);
-        purchaseCaption.setTextScale(1.3f);
-        purchaseCaption.setLocalBounds(25, 330,300, 100);
-        addChild(purchaseCaption);
-        boughtMaterials = new ItemWidget[32];
-        float bx = 25, by = 270;
-        for (int i=0; i<32; i++) {
-            boughtMaterials[i] = new ItemWidget("");
-            boughtMaterials[i].setLocalBounds(bx, by, 64, 64);
-            boughtMaterials[i].setColor(ITEM_BACKGROUND);
-            boughtMaterials[i].setTextColor(WHITE);
-            boughtMaterials[i].setTextScale(0.9f);
-            addChild(boughtMaterials[i]);
-            bx += 70;
-            if (bx > 570) {
-                bx = 25;
-                by -= 70;
-            }
-        }
-
-        manufacturedCaption = new Caption("Manufactured");
-        manufacturedCaption.setTextColor(WHITE);
-        manufacturedCaption.setTextScale(1.3f);
-        manufacturedCaption.setLocalBounds(650, 330,300, 100);
-        addChild(manufacturedCaption);
-        manufacturedMaterials = new ItemWidget[32];
-        float mx = 650, my = 270;
-        for (int i=0; i<32; i++) {
-            manufacturedMaterials[i] = new ItemWidget("");
-            manufacturedMaterials[i].setLocalBounds(mx, my, 64, 64);
-            manufacturedMaterials[i].setColor(ITEM_BACKGROUND);
-            manufacturedMaterials[i].setTextColor(WHITE);
-            manufacturedMaterials[i].setTextScale(0.9f);
-            addChild(manufacturedMaterials[i]);
-            mx += 70;
-            if (mx > 1150) {
-                mx = 650;
-                my -= 70;
-            }
-        }
-
-        salesCaption = new Caption("Sales");
-        salesCaption.setTextColor(GREEN);
-        salesCaption.setTextScale(1.3f);
-        salesCaption.setLocalBounds(1270, 330, 300, 100);
-        addChild(salesCaption);
-        soldMaterials = new ItemWidget[32];
-        float sx = 1270, sy = 270;
-        for (int i=0; i<32; i++) {
-            soldMaterials[i] = new ItemWidget("");
-            soldMaterials[i].setLocalBounds(sx, sy, 64, 64);
-            soldMaterials[i].setColor(ITEM_BACKGROUND);
-            soldMaterials[i].setTextColor(WHITE);
-            soldMaterials[i].setTextScale(0.9f);
-            addChild(soldMaterials[i]);
-            sx += 70;
-            if (sx > 1770) {
-                sx = 1270;
-                sy -= 70;
-            }
-        }
-
-        Caption valuationCap = new Caption("Valuation ($10M)");
-        valuationCap.setTextColor(WHITE);
-        valuationCap.setTextScale(1.8f);
-        valuationCap.setLocalBounds(25, 710, 300, 60);
-        addChild(valuationCap);
-
-        valuationBar = new ProgressBar();
-        valuationBar.setLocalBounds(25, 630, 300, 60);
-        valuationBar.setProgress(0);
-        addChild(valuationBar);
-
-        Caption technologyCap = new Caption("Technology");
-        technologyCap.setTextColor(WHITE);
-        technologyCap.setTextScale(1.8f);
-        technologyCap.setLocalBounds(25, 515, 300, 60);
-        addChild(technologyCap);
-
-        technologyBar = new ProgressBar();
-        technologyBar.setLocalBounds(25, 435, 300, 60);
-        technologyBar.setProgress(0);
-        addChild(technologyBar);
+        buildCaption("Valuation ($10M)", 25, 710, 300, 60, 1.4f, WHITE);
+        valuationBar = buildProgressBar(25, 630);
+        buildCaption("Technology", 25, 505, 300, 60, 1.4f, WHITE);
+        technologyBar = buildProgressBar(25, 435);
 
         chart = new LineChart(2);
         chart.setLocalBounds(350,435, 1100, 330);
         Ledger ledger = production.getLedger();
-        loadLedgerDataToChart(ledger);
+        updateChartData(ledger);
         addChild(chart);
 
-        reportCaption = new Caption("Summary");
-        reportCaption.setTextColor(WHITE);
-        reportCaption.setTextScale(1.3f);
-        reportCaption.setLocalBounds(1480, 435, 400, 330);
+        panelCaption = buildCaption("Daily report", 30, getHeight() - 100, 600, 100, 1.5f, WHITE);
+        purchaseCaption = buildCaption("Purchase", 25, 330,300, 100, 1.3f, 0xFFFF7F7F);
+        boughtMaterials = buildItemsGrid(25, 270, 545, 32);
+        manufacturedCaption = buildCaption("Manufactured",650, 330,300, 100, 1.3f, WHITE);
+        manufacturedMaterials = buildItemsGrid(650, 270, 500, 32);
+        salesCaption = buildCaption("Sales", 1270, 330, 300, 100, 1.3f, GREEN);
+        soldMaterials = buildItemsGrid(1270, 270, 500, 32);
+
+        reportCaption = buildCaption("Summary", 1480, 435, 400, 330, 1.3f, WHITE);
         reportCaption.setVerticalAlignment(Text.ALIGN_TOP);
-        addChild(reportCaption);
-
-
 
     }
 
 
+    private Caption buildCaption(String text, float x, float y, float w, float h, float scale, int color) {
+        Caption caption = new Caption(text);
+        caption.setTextScale(scale);
+        caption.setTextColor(color);
+        caption.setLocalBounds(x, y, w, h);
+        addChild(caption);
+        return caption;
+    }
 
-    private void loadLedgerDataToChart(Ledger ledger) {
+
+    private ItemWidget[] buildItemsGrid(float posX, float posY, float width, int count) {
+        int cellWidth = 70;
+        ItemWidget[] itemGrid = new ItemWidget[count];
+        float bx = posX, by = posY;
+        for (int i=0; i<count; i++) {
+            itemGrid[i] = buildItemWidget(bx, by);
+            addChild(itemGrid[i]);
+            bx += cellWidth;
+            if (bx > (posX + width)) {
+                bx = posX;
+                by -= cellWidth;
+            }
+        }
+        return itemGrid;
+    }
+
+
+    private ItemWidget buildItemWidget(float posX, float posY) {
+        ItemWidget im = new ItemWidget("");
+        im.setLocalBounds(posX, posY, 64, 64);
+        im.setColor(ITEM_BACKGROUND);
+        im.setTextColor(WHITE);
+        im.setTextScale(0.9f);
+        return im;
+    }
+
+
+    private ProgressBar buildProgressBar(float posX, float posY) {
+        ProgressBar pb = new ProgressBar();
+        pb.setLocalBounds(posX, posY, 300, 60);
+        pb.setProgress(0);
+        addChild(pb);
+        return pb;
+    }
+
+
+    /**
+     * Обновляет данные
+     */
+    public void updateData() {
+        Ledger ledger = production.getLedger();
+        double salesSum = ledger.getLastPeriod().getRevenue();
+        double manufactureCost = ledger.getLastPeriod().getMaintenanceCost();
+        double purchaseSum = ledger.getLastPeriod().getExpenses() - manufactureCost;
+        updateStringBuffer(salesText, "Sold: ", salesSum);
+        updateStringBuffer(manufacturedText, "Manufacturing costs: ", manufactureCost);
+        updateStringBuffer(purchaseText, "Purchased: ", purchaseSum);
+
+        synchronized (this) {
+            // Обновить график
+            updateChartData(ledger);
+            // Очистить все ячейки отображения материалов
+            updateItemGridsData(ledger);
+            // Обновить сводную информацию
+            updateSummary(ledger);
+            salesCaption.setText(salesText);
+            manufacturedCaption.setText(manufacturedText);
+            purchaseCaption.setText(purchaseText);
+            reportCaption.setText(summary);
+            // Обновить формулировку миссии
+            GameMission mission =  MissionManager.getMission(production.getCurrentMissionID());
+            if (mission!=null) {
+                String goal = mission.getName() + " #" + mission.getID() + " - " + mission.getDescription();
+                panelCaption.setText(goal);
+            }
+        }
+    }
+
+
+    /**
+     * Обновить статистику по материалам (закуплено, произведено, продано)
+     * @param ledger главная книга производства
+     */
+    private void updateItemGridsData(Ledger ledger) {
+        for (int i = 0; i < manufacturedMaterials.length; i++) {
+            boughtMaterials[i].setActive(false);
+            manufacturedMaterials[i].setActive(false);
+            soldMaterials[i].setActive(false);
+        }
+        int manufacturedCounter = 0;
+        int soldCounter = 0;
+        int boughtCounter = 0;
+        for (int i = 0; i < Inventory.SKU_COUNT; i++) {
+            // Вывести объем закупа
+            int boughtAmount = ledger.getMaterialRecord(i).getBoughtAmountByPeriod();
+            if (boughtAmount > 0 && boughtCounter < boughtMaterials.length) {
+                updateItemWidget(boughtMaterials[boughtCounter], i, boughtAmount);
+                boughtCounter++;
+            }
+            // Вывести продуктивность производства
+            int manufacturedAmount = ledger.getMaterialRecord(i).getProductivity();
+            if (manufacturedAmount > 0 && manufacturedCounter < manufacturedMaterials.length) {
+                updateItemWidget(manufacturedMaterials[manufacturedCounter], i, manufacturedAmount);
+                manufacturedCounter++;
+            }
+            // Вывести объем продаж
+            int soldAmount = ledger.getMaterialRecord(i).getSoldAmountByPeriod();
+            if (soldAmount > 0 && soldCounter < soldMaterials.length) {
+                updateItemWidget(soldMaterials[soldCounter], i, soldAmount);
+                soldCounter++;
+            }
+        }
+    }
+
+
+    /**
+     * Обновление данных ItemWidget
+     * @param item виджет
+     * @param materialID код материала
+     * @param amount количество материала
+     */
+    private void updateItemWidget(ItemWidget item, int materialID, int amount) {
+        Material material = Material.getMaterial(materialID);
+        if (material==null) return;
+        Sprite sprite = material.getImage();
+        item.setBackground(sprite);
+        item.setText("" + amount);
+        item.setActive(true);
+    }
+
+
+    /**
+     * Обновление строки текста
+     * @param sb буфер строки
+     * @param txt заголовок
+     * @param value значение
+     */
+    private void updateStringBuffer(StringBuffer sb, String txt, double value) {
+        sb.setLength(0);
+        sb.append(txt);
+        FormatUtils.formatMoneyAppend(Math.round(value), sb);
+    }
+
+
+    /**
+     * Загружает данные главной книги в линейный график
+     * @param ledger главная книга производства
+     */
+    private void updateChartData(Ledger ledger) {
         LedgerPeriod[] history = ledger.getHistory();
         for (int i=0; i<ledger.getHistoryCounter(); i++) {
             revenueData[i] = history[i].getRevenue();
@@ -181,89 +248,9 @@ public class ReportPanel extends Panel {
 
 
     /**
-     * Обновляет данные
+     * Обновить сводную информацию
+     * @param ledger главная книга производства
      */
-    public void updateData() {
-        Ledger ledger = production.getLedger();
-
-        salesText.setLength(0);
-        salesText.append("Sold: ");
-        double salesSum = Math.round(ledger.getLastPeriod().getRevenue());
-        FormatUtils.formatMoneyAppend(salesSum, salesText);
-
-        manufacturedText.setLength(0);
-        manufacturedText.append("Manufacturing costs: ");
-        double manufactureCost = Math.round(ledger.getLastPeriod().getMaintenanceCost());
-        FormatUtils.formatMoneyAppend(manufactureCost, manufacturedText);
-
-        purchaseText.setLength(0);
-        purchaseText.append("Purchased: ");
-        double purchaseSum = Math.round(ledger.getLastPeriod().getExpenses() - manufactureCost);
-        FormatUtils.formatMoneyAppend(purchaseSum, purchaseText);
-
-        synchronized (this) {
-
-            // Обновить график
-            loadLedgerDataToChart(ledger);
-
-            // Очистить все ячейки отображения материалов
-            for (int i = 0; i < manufacturedMaterials.length; i++) {
-                boughtMaterials[i].setActive(false);
-                manufacturedMaterials[i].setActive(false);
-                soldMaterials[i].setActive(false);
-            }
-
-            int manufacturedCounter = 0;
-            int soldCounter = 0;
-            int boughtCounter = 0;
-            for (int i = 0; i < Inventory.SKU_COUNT; i++) {
-
-                // Вывести объем закупа
-                int boughtAmount = ledger.getMaterialRecord(i).getBoughtAmountByPeriod();
-                if (boughtAmount > 0 && boughtCounter < boughtMaterials.length) {
-                    Material material = Material.getMaterial(i);
-                    boughtMaterials[boughtCounter].setBackground(material.getImage());
-                    boughtMaterials[boughtCounter].setText("" + boughtAmount);
-                    boughtMaterials[boughtCounter].setActive(true);
-                    boughtCounter++;
-                }
-
-                // Вывести продуктивность производства
-                int manufacturedAmount = ledger.getMaterialRecord(i).getProductivity();
-                if (manufacturedAmount > 0 && manufacturedCounter < manufacturedMaterials.length) {
-                    Material material = Material.getMaterial(i);
-                    manufacturedMaterials[manufacturedCounter].setBackground(material.getImage());
-                    manufacturedMaterials[manufacturedCounter].setText("" + manufacturedAmount);
-                    manufacturedMaterials[manufacturedCounter].setActive(true);
-                    manufacturedCounter++;
-                }
-
-                // Вывести объем продаж
-                int soldAmount = ledger.getMaterialRecord(i).getSoldAmountByPeriod();
-                if (soldAmount > 0 && soldCounter < soldMaterials.length) {
-                    Material material = Material.getMaterial(i);
-                    soldMaterials[soldCounter].setBackground(material.getImage());
-                    soldMaterials[soldCounter].setText("" + soldAmount);
-                    soldMaterials[soldCounter].setActive(true);
-                    soldCounter++;
-                }
-
-            }
-
-            updateSummary(ledger);
-            salesCaption.setText(salesText);
-            manufacturedCaption.setText(manufacturedText);
-            purchaseCaption.setText(purchaseText);
-            reportCaption.setText(summary);
-
-            GameMission mission =  MissionManager.getMission(production.getCurrentMissionID());
-            String goal = mission.getName() + " #" + mission.getID() + " - " + mission.getDescription();
-            panelCaption.setText(goal);
-
-        }
-    }
-
-
     private void updateSummary(Ledger ledger) {
         double operRevenue = ledger.getLastPeriod().getRevenue();
         double operMargin = 0;
