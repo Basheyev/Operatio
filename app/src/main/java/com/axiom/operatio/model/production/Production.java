@@ -25,7 +25,7 @@ import java.util.ArrayList;
  */
 public class Production implements JSONSerializable {
 
-    public static final int MAP_WIDTH = 64;       // TODO вынести в настройки
+    public static final int MAP_WIDTH = 64;
     public static final int MAP_HEIGHT = 48;
     public static final int UNLOCKED_WIDTH = 8;
     public static final int UNLOCKED_HEIGHT = 6;

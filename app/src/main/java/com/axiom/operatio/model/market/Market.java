@@ -14,8 +14,7 @@ import org.json.JSONObject;
  */
 public class Market implements JSONSerializable {
 
-    public static final int COMMODITY_COUNT = 64;    // todo брать количество из Material
-    public static final int HISTORY_LENGTH = 96;     // todo выровнять историю графика
+    public static final int HISTORY_LENGTH = Ledger.HISTORY_LENGTH * 3;
 
     private double largeCycle;
     private final double[] faceValue;
@@ -27,17 +26,17 @@ public class Market implements JSONSerializable {
     private final int[] historyLengthCounter;
 
     private Production production;
-    protected long lastCycleTime;                   // Время последнего цикла (миллисекунды)
-    protected long cycleMilliseconds = 900;         // Длительносить цикла (миллисекунды)
+    protected long lastCycleTime;                                  // Время последнего цикла (миллисекунды)
+    protected long cycleMilliseconds = Production.CYCLE_TIME * 3;  // Длительносить цикла (миллисекунды)
     private long cycle;
 
 
     public Market(Production production) {
         this.production = production;
-        faceValue = new double[COMMODITY_COUNT];
-        marketValue = new double[COMMODITY_COUNT];
-        marketCycle = new double[COMMODITY_COUNT];
-        marketBias = new double[COMMODITY_COUNT];
+        faceValue = new double[Material.COUNT];
+        marketValue = new double[Material.COUNT];
+        marketCycle = new double[Material.COUNT];
+        marketBias = new double[Material.COUNT];
         largeCycle = Math.random() * 2 * Math.PI;
         for (int i=0; i<faceValue.length; i++) {
             faceValue[i] = Material.getMaterial(i).getPrice();
@@ -45,9 +44,9 @@ public class Market implements JSONSerializable {
             marketBias[i] = Math.random() * 2 * Math.PI;
             marketCycle[i] = marketBias[i];
         }
-        historyValues = new double[COMMODITY_COUNT][HISTORY_LENGTH];
-        historyMaxValue = new double[COMMODITY_COUNT];
-        historyLengthCounter = new int[COMMODITY_COUNT];
+        historyValues = new double[Material.COUNT][HISTORY_LENGTH];
+        historyMaxValue = new double[Material.COUNT];
+        historyLengthCounter = new int[Material.COUNT];
         cycle = 0;
     }
 
@@ -166,7 +165,7 @@ public class Market implements JSONSerializable {
 
     @Override
     public JSONObject toJSON() {
-        return null; // todo добавить сериализацю
+        return null; // Не сериализуем, так как особого смысла прошлые данные не несут
     }
 
 }

@@ -19,8 +19,8 @@ import java.util.Arrays;
  */
 public class Inventory implements JSONSerializable {
 
-    public static final int MAX_SKU_CAPACITY = 999; // TODO сделать настраеваемая емкость ячеек
-    public static final int BATCH_SIZE = 20;        // TODO сделать настраиваемый объем автопокупки
+    public static final int MAX_SKU_CAPACITY = 999;
+    public static final int BATCH_SIZE = 20;
 
     public static final int AUTO_NONE = 0;          //     0000
     public static final int AUTO_BUY = 1;           //     0001

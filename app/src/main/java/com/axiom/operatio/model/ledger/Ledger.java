@@ -8,7 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/** todo Добавить отдельный учёт долгов и процентов по ним
+/**
  * Главный журнал регистрации всех производственных и финансовых событий
  */
 public class Ledger implements JSONSerializable {
@@ -163,7 +163,7 @@ public class Ledger implements JSONSerializable {
     }
 
     /**
-     * Капитализация компании fixme начать считать правильно
+     * Капитализация компании
      * @return
      */
     public double getValuation() {
@@ -175,8 +175,6 @@ public class Ledger implements JSONSerializable {
         double inventoryValue = production.getInventory().getValuation();      // Материалы на складе
         double workInProgressValue = production.getWorkInProgressValuation();  // Материалы в цеху
         double cash = getCashBalance();                                        // Остатки денег
-        double NFP = total.getMargin();                                        // Инвестиционный баланс
-        // fixme nfp неправльное
         double value = (cashFlow * T) / Math.pow(1 + WACC, T);
         value += assetsValue + inventoryValue + workInProgressValue;
         value = value + cash;
