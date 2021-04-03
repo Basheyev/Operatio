@@ -12,7 +12,6 @@ import com.axiom.operatio.model.gameplay.MissionManager;
 import com.axiom.operatio.model.gameplay.GameMission;
 import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.common.FormatUtils;
-import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.ledger.LedgerPeriod;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
@@ -180,7 +179,7 @@ public class ReportPanel extends Panel {
         int manufacturedCounter = 0;
         int soldCounter = 0;
         int boughtCounter = 0;
-        for (int i = 0; i < Inventory.SKU_COUNT; i++) {
+        for (int i = 0; i < Material.COUNT; i++) {
             // Вывести объем закупа
             int boughtAmount = ledger.getMaterialRecord(i).getBoughtAmountByPeriod();
             if (boughtAmount > 0 && boughtCounter < boughtMaterials.length) {

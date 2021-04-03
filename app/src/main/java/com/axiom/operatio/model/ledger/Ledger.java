@@ -1,7 +1,7 @@
 package com.axiom.operatio.model.ledger;
 
 import com.axiom.operatio.model.common.JSONSerializable;
-import com.axiom.operatio.model.inventory.Inventory;
+import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 
 import org.json.JSONArray;
@@ -44,8 +44,8 @@ public class Ledger implements JSONSerializable {
 
     public Ledger(Production production) {
         this.production = production;
-        materialRecords = new MaterialRecord[Inventory.SKU_COUNT];
-        for (int i=0; i<Inventory.SKU_COUNT; i++) {
+        materialRecords = new MaterialRecord[Material.COUNT];
+        for (int i = 0; i<Material.COUNT; i++) {
             materialRecords[i] = new MaterialRecord();
         }
         cashBalance = 0;
@@ -74,7 +74,7 @@ public class Ledger implements JSONSerializable {
                 history[i] = new LedgerPeriod(jsonHistory.getJSONObject(i));
             }
             JSONArray jsonMaterialRecords = jsonObject.getJSONArray("materialRecords");
-            for (int i=0; i< Inventory.SKU_COUNT; i++) {
+            for (int i = 0; i< Material.COUNT; i++) {
                 materialRecords[i] = new MaterialRecord(jsonMaterialRecords.getJSONObject(i));
             }
         } catch (JSONException e) {
@@ -99,7 +99,7 @@ public class Ledger implements JSONSerializable {
             }
             jsonObject.put("history", jsonHistory);
             JSONArray jsonMaterialRecords = new JSONArray();
-            for (int i=0; i< Inventory.SKU_COUNT; i++) {
+            for (int i = 0; i< Material.COUNT; i++) {
                 jsonMaterialRecords.put(materialRecords[i].toJSON());
             }
             jsonObject.put("materialRecords", jsonMaterialRecords);

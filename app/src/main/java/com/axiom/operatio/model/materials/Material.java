@@ -16,6 +16,8 @@ import org.json.JSONObject;
  */
 public class Material {
 
+    public static final int COUNT = 64;        // Максимальное количество материалов
+
     protected static boolean initialized;      // Флаг инициализации системы материалов
     protected static Material[] materials;     // Перечень всех материалов
 
@@ -96,8 +98,9 @@ public class Material {
 
         try {
             JSONArray jsonMaterials = JSONFile.loadArray(resources, R.raw.materials);
-            int ID, totalMaterials = jsonMaterials.length();
-            materials = new Material[totalMaterials];
+            int ID;
+            int totalMaterials = jsonMaterials.length();
+            materials = new Material[COUNT];
             for (int i=0; i < totalMaterials; i++) {
                 JSONObject jsonMaterial = jsonMaterials.getJSONObject(i);
                 ID = jsonMaterial.getInt("ID");

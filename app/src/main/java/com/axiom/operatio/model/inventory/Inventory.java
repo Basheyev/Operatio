@@ -19,7 +19,6 @@ import java.util.Arrays;
  */
 public class Inventory implements JSONSerializable {
 
-    public static final int SKU_COUNT = 64;         // TODO брать количество из Material
     public static final int MAX_SKU_CAPACITY = 999; // TODO сделать настраеваемая емкость ячеек
     public static final int BATCH_SIZE = 20;        // TODO сделать настраиваемый объем автопокупки
 
@@ -34,12 +33,12 @@ public class Inventory implements JSONSerializable {
     public Inventory(Production production) {
         this.production = production;
         int materialsAmount = Material.getMaterialsAmount();
-        stockKeepingUnit = new ArrayList<>(SKU_COUNT);
+        stockKeepingUnit = new ArrayList<>(Material.COUNT);
         for (int i=0; i<materialsAmount; i++) {
             Channel<Item> sku = new Channel<Item>(MAX_SKU_CAPACITY);
             stockKeepingUnit.add(sku);
         }
-        autoAction = new int[SKU_COUNT];
+        autoAction = new int[Material.COUNT];
         Arrays.fill(autoAction, AUTO_NONE);
     }
 
@@ -62,7 +61,7 @@ public class Inventory implements JSONSerializable {
                 }
             }
             JSONArray autoState = jsonObject.optJSONArray("autoAction");
-            autoAction = new int[SKU_COUNT];
+            autoAction = new int[Material.COUNT];
             Arrays.fill(autoAction, AUTO_NONE);
             if (autoState!=null) {
                 for (int i = autoState.length() - 1; i >= 0; i--) {
@@ -157,7 +156,7 @@ public class Inventory implements JSONSerializable {
     public void process() {
         Market market = production.getMarket();
 
-        for (int i=0; i<SKU_COUNT; i++) {
+        for (int i = 0; i<Material.COUNT; i++) {
             if (isAutoBuy(i)) {
                 if (stockKeepingUnit.get(i).size() <= BATCH_SIZE) {
                     market.buyOrder(this, i, BATCH_SIZE);
