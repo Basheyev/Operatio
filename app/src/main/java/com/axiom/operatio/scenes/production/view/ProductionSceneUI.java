@@ -22,6 +22,7 @@ public class ProductionSceneUI {
     private static BlocksPanel blocksPanel;
     private static ModePanel modePanel;
     private static AdjustmentPanel adjustmentPanel;
+    private static HelperPanel helperPanel;
 
     private static ScenesPanel scenesPanel;
 
@@ -47,6 +48,9 @@ public class ProductionSceneUI {
         scenesPanel = new ScenesPanel(production);
         widget.addChild(scenesPanel);
 
+        helperPanel = new HelperPanel(productionScene);
+        widget.addChild(helperPanel);
+
     }
 
     public static BlocksPanel getBlocksPanel() {
@@ -59,4 +63,7 @@ public class ProductionSceneUI {
 
     public static AdjustmentPanel getAdjustmentPanel() { return adjustmentPanel; }
 
+    public static HelperPanel getHelperPanel() {
+        return helperPanel;
+    }
 }

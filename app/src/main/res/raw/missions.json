@@ -17,7 +17,7 @@
   {
     "ID" : 1,
     "name" : "Manufacturing basics",
-    "description" : "Manufacture 10 steel plates (buy steel, sell steel plates)",
+    "description" : "Manufacture 10 steel plates\n(buy steel, sell steel plates)",
     "prerequisiteIDs" : [0],
     "winConditions" : [
       { "indicatorType" : 1, "materialID" : 8, "value" :  10}
@@ -32,7 +32,7 @@
   {
     "ID" : 2,
     "name" : "Productivity basics",
-    "description" : "Reach 20 steel plates a day productivity (place to Press)",
+    "description" : "Reach 20 steel plates a day\nproductivity (place to Press)",
     "prerequisiteIDs" : [1],
     "winConditions" : [
       { "indicatorType" : 2, "materialID" : 8, "value" :  20}
@@ -47,7 +47,7 @@
   {
     "ID" : 3,
     "name" : "Changeover basics",
-    "description" : "Manufacture 20 aluminium plates (changeover exporter & press)",
+    "description" : "Manufacture 20 aluminium plates\n(changeover exporter & press)",
     "prerequisiteIDs" : [2],
     "winConditions" : [
       { "indicatorType" : 1, "materialID" : 9, "value" :  20}
@@ -70,14 +70,14 @@
     "permissionsReward" : {
       "availableMaterials" : [],
       "availableMachines" : [],
-      "availableOperations" : [8]
+      "availableOperations" : []
     },
     "moneyReward" : 5000
   },
   {
     "ID" : 5,
     "name" : "Copper plates",
-    "description" : "Research copper plates & manufacture 20 items",
+    "description" : "Research copper plates\n& manufacture 20 items",
     "prerequisiteIDs" : [4],
     "winConditions" : [
       { "indicatorType" : 1, "materialID" : 10, "value" :  20}
@@ -92,7 +92,7 @@
   {
     "ID" : 6,
     "name" : "Rubber plates",
-    "description" : "Research rubber plates & manufacture 20 items",
+    "description" : "Research rubber plates\n& manufacture 20 items",
     "prerequisiteIDs" : [5],
     "winConditions" : [
       { "indicatorType" : 1, "materialID" : 11, "value" :  20}
@@ -107,7 +107,7 @@
   {
     "ID" : 7,
     "name" : "Glass plates",
-    "description" : "Research glass plates & manufacture 20 items",
+    "description" : "Research glass plates\n& manufacture 20 items",
     "prerequisiteIDs" : [6],
     "winConditions" : [
       { "indicatorType" : 1, "materialID" : 12, "value" :  20}
@@ -122,7 +122,7 @@
   {
     "ID" : 8,
     "name" : "Plastic board",
-    "description" : "Research plastic board & manufacture 20 items",
+    "description" : "Research plastic board\n& manufacture 20 items",
     "prerequisiteIDs" : [7],
     "winConditions" : [
       { "indicatorType" : 1, "materialID" : 13, "value" :  20}
@@ -137,7 +137,7 @@
   {
     "ID" : 9,
     "name" : "Fiberglass board",
-    "description" : "Research fiberglass board & manufacture 20 items (use Buffer)",
+    "description" : "Research fiberglass board\n& manufacture 20 items (use Buffer)",
     "prerequisiteIDs" : [8],
     "winConditions" : [
       { "indicatorType" : 1, "materialID" : 14, "value" :  20}
@@ -152,7 +152,7 @@
   {
     "ID" : 10,
     "name" : "Silicon wafer",
-    "description" : "Research silicon wafer & manufacture 200 items",
+    "description" : "Research silicon wafer\n& manufacture 200 items",
     "prerequisiteIDs" : [9],
     "winConditions" : [
       { "indicatorType" : 1, "materialID" : 15, "value" :  200}

@@ -156,12 +156,6 @@ public class ReportPanel extends Panel {
             manufacturedCaption.setText(manufacturedText);
             purchaseCaption.setText(purchaseText);
             reportCaption.setText(summary);
-            // Обновить формулировку миссии
-            GameMission mission =  MissionManager.getMission(production.getCurrentMissionID());
-            if (mission!=null) {
-                String goal = mission.getName() + " #" + mission.getID() + " - " + mission.getDescription();
-                panelCaption.setText(goal);
-            }
         }
     }
 
@@ -256,7 +250,7 @@ public class ReportPanel extends Panel {
         double valuation = Math.round(ledger.getValuation());
         int valuationProgress = (int) Math.round(valuation / TARGET_VALUATION * 100.0f);
         float availableMaterials = production.getPermissions().availableMaterialsAmount();
-        int technologyProgress = Math.round(availableMaterials / Material.getMaterialsAmount() * 100f);
+        int technologyProgress = Math.round((availableMaterials-8) / Material.getMaterialsAmount() * 100f);
         valuationBar.setProgress(valuationProgress);
         technologyBar.setProgress(technologyProgress);
 

@@ -7,8 +7,11 @@ import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.input.ScaleEvent;
+import com.axiom.operatio.model.gameplay.GameMission;
+import com.axiom.operatio.model.gameplay.MissionManager;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.scenes.production.view.HelperPanel;
 import com.axiom.operatio.scenes.report.ReportScene;
 import com.axiom.operatio.scenes.production.view.BlocksPanel;
 import com.axiom.operatio.scenes.production.controller.InputHandler;
@@ -33,6 +36,7 @@ public class ProductionScene extends GameScene {
     private ProductionRenderer productionRenderer;
     private BlocksPanel blocksPanel;
     private ModePanel modePanel;
+    private HelperPanel helperPanel;
     private AdjustmentPanel adjustmentPanel;
 
     private boolean initialized = false;
@@ -74,6 +78,7 @@ public class ProductionScene extends GameScene {
             blocksPanel = ProductionSceneUI.getBlocksPanel();
             modePanel = ProductionSceneUI.getModePanel();
             adjustmentPanel = ProductionSceneUI.getAdjustmentPanel();
+            helperPanel = ProductionSceneUI.getHelperPanel();
             if (production.isBlockSelected()) {
                 adjustmentPanel.showBlockInfo(production.getSelectedBlock());
             }
@@ -115,6 +120,13 @@ public class ProductionScene extends GameScene {
             currentLevel = production.getCurrentMissionID();
             // Включить доступные машины на этом уровне
             blocksPanel.updatePermissions();
+
+            // Обновить формулировку миссии
+            GameMission mission =  MissionManager.getMission(production.getCurrentMissionID());
+            if (mission!=null) {
+                String goal = "Mission #" + mission.getID() + " - " + mission.getName() + "\n\n" + mission.getDescription();
+                helperPanel.setText(goal);
+            }
         }
     }
 
