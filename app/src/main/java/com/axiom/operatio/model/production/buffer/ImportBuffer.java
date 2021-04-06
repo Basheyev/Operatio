@@ -17,7 +17,7 @@ import org.json.JSONObject;
 public class ImportBuffer extends Block implements JSONSerializable {
 
     public static final double CYCLE_COST = 0.01d;
-    public static final int PRICE = 800;
+    public static final int PRICE = 1000;
 
     protected Material importMaterial;
 

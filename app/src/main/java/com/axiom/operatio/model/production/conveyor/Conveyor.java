@@ -17,7 +17,7 @@ import org.json.JSONObject;
  */
 public class Conveyor extends Block implements JSONSerializable {
 
-    public static final double CYCLE_COST = 0.05f;
+    public static final double CYCLE_COST = 0.02f;
 
     public static final int DELIVERY_CYCLES = 5;
     public static final int PRICE = 100;
