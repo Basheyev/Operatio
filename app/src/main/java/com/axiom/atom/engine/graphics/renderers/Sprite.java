@@ -45,10 +45,10 @@ public class Sprite extends Quad {
     // Координаты вершины прямоугольника для отрисовки спрайта
     //-----------------------------------------------------------------------------------
     public static class Animation {
-        int startFrame;                     // Начальный кадр
-        int stopFrame;                      // Конечный кадр
-        float framesPerSecond;              // Количество кадров в секунду
-        boolean loop;                       // Зациклена ли анимация (должна повторятся)
+        public int startFrame;                     // Начальный кадр
+        public int stopFrame;                      // Конечный кадр
+        public float framesPerSecond;              // Количество кадров в секунду
+        public boolean loop;                       // Зациклена ли анимация (должна повторятся)
     }
 
 
@@ -460,6 +460,16 @@ public class Sprite extends Quad {
      */
     public int getActiveAnimation() {
         return activeAnimation;
+    }
+
+    /**
+     * Возвращает данные анимации
+     * @param index номер анимации
+     * @return объект с данными анимации
+     */
+    public Animation getAnimation(int index) {
+        if (index<0 || index >= animations.size()) return null;
+        return animations.get(index);
     }
 
     /**
