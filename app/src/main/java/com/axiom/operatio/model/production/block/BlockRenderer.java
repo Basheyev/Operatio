@@ -58,4 +58,5 @@ public abstract class BlockRenderer {
         directions = new Sprite(SceneManager.getResources(), R.drawable.blocks, 8, 16);
     }
 
+    public abstract void setAnimationSpeed(float speed);
 }

@@ -90,4 +90,11 @@ public class MachineRenderer extends BlockRenderer {
         nextAnimation = busyAnimation;
     }
 
+    @Override
+    public void setAnimationSpeed(float speed) {
+        int activeAnimation = sprite.getActiveAnimation();
+        Sprite.Animation animation = sprite.getAnimation(activeAnimation);
+        if (animation!=null) animation.speed = speed;
+    }
+
 }

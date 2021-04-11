@@ -53,9 +53,9 @@ public class ConveyorRenderer extends BlockRenderer {
 
 
     private void createAnimations() {
-        animStraight = sprite.addAnimation(0,7, 15, true);
-        animUpToRight = sprite.addAnimation(8,15, 15, true);
-        animRightToUp = sprite.addAnimation(16,23, 15, true);
+        animStraight = sprite.addAnimation(0,7, 25, true);
+        animUpToRight = sprite.addAnimation(8,15, 25, true);
+        animRightToUp = sprite.addAnimation(16,23, 25, true);
     }
 
 
@@ -268,5 +268,11 @@ public class ConveyorRenderer extends BlockRenderer {
 
     }
 
+    @Override
+    public void setAnimationSpeed(float speed) {
+        int activeAnimation = sprite.getActiveAnimation();
+        Sprite.Animation animation = sprite.getAnimation(activeAnimation);
+        if (animation!=null) animation.speed = speed;
+    }
 
 }

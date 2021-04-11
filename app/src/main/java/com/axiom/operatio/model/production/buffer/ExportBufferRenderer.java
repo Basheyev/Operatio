@@ -29,6 +29,12 @@ public class ExportBufferRenderer extends BlockRenderer {
         sprite.draw(camera,x,y, width, height);
     }
 
+    @Override
+    public void setAnimationSpeed(float speed) {
+        int activeAnimation = sprite.getActiveAnimation();
+        Sprite.Animation animation = sprite.getAnimation(activeAnimation);
+        if (animation!=null) animation.speed = speed;
+    }
 
 }
 

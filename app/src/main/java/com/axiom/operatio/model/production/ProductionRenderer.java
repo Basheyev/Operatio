@@ -113,6 +113,8 @@ public class ProductionRenderer {
     private void drawBlock(Camera camera, Block block, int col, int row) {
         BlockRenderer renderer = block.getRenderer();
         if (renderer != null) {
+            float speed = ((float) Production.CYCLE_TIME) / production.getCycleMilliseconds();
+            renderer.setAnimationSpeed(speed);
             renderer.draw(camera,col * cellWidth, row * cellHeight, cellWidth, cellHeight);
         }
     }

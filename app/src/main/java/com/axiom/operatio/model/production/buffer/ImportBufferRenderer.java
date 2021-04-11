@@ -28,4 +28,11 @@ public class ImportBufferRenderer extends BlockRenderer {
     public void draw(Camera camera, float x, float y, float width, float height) {
         sprite.draw(camera,x,y, width, height);
     }
+
+    @Override
+    public void setAnimationSpeed(float speed) {
+        int activeAnimation = sprite.getActiveAnimation();
+        Sprite.Animation animation = sprite.getAnimation(activeAnimation);
+        if (animation!=null) animation.speed = speed;
+    }
 }
