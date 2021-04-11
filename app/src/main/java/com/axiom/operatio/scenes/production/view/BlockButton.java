@@ -129,7 +129,7 @@ public class BlockButton extends Button {
 
 
     private void actionUp(BlockAddMoveHandler moveHandler) {
-        panel.setToggledButton("");
+        panel.untoggleButtons();
         scene.getProduction().unselectBlock();
         AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
         opsPanel.hideBlockInfo();
