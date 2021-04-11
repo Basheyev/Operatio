@@ -48,6 +48,7 @@ public class Sprite extends Quad {
         public int startFrame;                     // Начальный кадр
         public int stopFrame;                      // Конечный кадр
         public float framesPerSecond;              // Количество кадров в секунду
+        public float speed = 1;                    // Скорость проигрывания анимации
         public boolean loop;                       // Зациклена ли анимация (должна повторятся)
     }
 
@@ -426,7 +427,7 @@ public class Sprite extends Quad {
         // Сколько времени прошло с переключения текущего кадра (в наносекундах)
         long timeInterval = System.nanoTime() - lastFrameTime;
         // Если не пришло время переключения кадра, то уходим
-        if (timeInterval < (1_000_000_000 / anim.framesPerSecond)) return;
+        if (timeInterval < (1_000_000_000 / (anim.framesPerSecond * anim.speed))) return;
 
         // Если пришло время следующего кадра, то переключаем
         int nextFrame = getActiveFrame() + 1;
