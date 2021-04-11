@@ -100,6 +100,14 @@ public class ConveyorRenderer extends BlockRenderer {
     }
 
 
+    /**
+     * Отрисовывает конвейер
+     * @param camera камера
+     * @param x левая координата клетки
+     * @param y нижняя координата клетки
+     * @param width ширина клетки
+     * @param height высота клетки
+     */
     public void draw(Camera camera, float x, float y, float width, float height) {
 
         // Проверить поставлена ли на паузу игра
@@ -115,17 +123,14 @@ public class ConveyorRenderer extends BlockRenderer {
 
         // Отрисовать сам конвейер
         sprite.draw(camera,x,y, width, height);
+        // Отрисовать материалы
+        drawItems(camera, x, y, width, height);
 
-    //    if (block instanceof Conveyor) {
-            // Отрисовать предметы на нём
-            drawItems(camera, x, y, width, height);
-
-            // Отрисовать вход/выход если игра на паузе
-            if (gamePaused) {
-                drawInOut(camera, block.getInputDirection(), block.getOutputDirection(),
-                        x, y, width, height, sprite.getZOrder() + 2);
-            }
-//        }
+        // Отрисовать вход/выход если игра на паузе
+        if (gamePaused) {
+            drawInOut(camera, block.getInputDirection(), block.getOutputDirection(),
+                    x, y, width, height, sprite.getZOrder() + 2);
+        }
 
         // Рисуем значок сбоя, если произошел сбой
         if (block instanceof Conveyor && block.getState()== Conveyor.FAULT) {
@@ -135,11 +140,20 @@ public class ConveyorRenderer extends BlockRenderer {
     }
 
 
+
+    /**
+     * Рассчитывает прогресс движения предметов и отрисовывает предметы на конвейре
+     * @param camera камера
+     * @param x левая координата клетки
+     * @param y нижняя координата клетки
+     * @param width ширина клетки
+     * @param height высота клетки
+     */
     protected void drawItems(Camera camera, float x, float y, float width, float height) {
 
-        Channel<Item> inputQueue = block.getInputQueue();                // Входящая очередь
-        Channel<Item> outputQueue = block.getOutputQueue();              // Исходящая очередь
-        float cycleTime = this.block.getProduction().getCycleTimeMs();   // Длительность цикла в мс.
+        Channel<Item> inputQueue = block.getInputQueue();                      // Входящая очередь
+        Channel<Item> outputQueue = block.getOutputQueue();                    // Исходящая очередь
+        float cycleTime = this.block.getProduction().getCycleMilliseconds();   // Длительность цикла в мс.
 
         float deliveryCycles = 1;
         if (block instanceof Conveyor) {
@@ -192,6 +206,16 @@ public class ConveyorRenderer extends BlockRenderer {
     }
 
 
+    /**
+     * Отрисовывает предмет на основе координат клетки и прогресса движения
+     * @param camera камера
+     * @param x левая координата
+     * @param y нижняя координата
+     * @param width ширина клетки
+     * @param height высота клетки
+     * @param item предмет
+     * @param progress прогресс движения 0.0-1.0
+     */
     protected void drawItem(Camera camera, float x, float y, float width, float height, Item item, float progress) {
 
         int inputDirection = block.getInputDirection();
@@ -210,6 +234,13 @@ public class ConveyorRenderer extends BlockRenderer {
     }
 
 
+    /**
+     * Рассчитывает координаты с учетом направления движения и прогресса
+     * @param progress прогресс движения материала по конвейеру 0.0-1.0
+     * @param inpDir направление входа
+     * @param outDir направление выхода
+     * @param result расчитанные координаты
+     */
     private void calculateCoordinates(float progress, int inpDir, int outDir, Vector result) {
         float rads, xpos = 0, ypos = 0;
 

@@ -199,7 +199,6 @@ public class ScenesPanel extends Panel {
                         production.setPaused(true);
                         setPausedButtonState(true);
                         pauseButton.setText("");
-                        production.setCycleMilliseconds(Production.CYCLE_TIME);
                     }
                 }
 

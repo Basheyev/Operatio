@@ -363,10 +363,6 @@ public class Production implements JSONSerializable {
 
     public Ledger getLedger() { return ledger; }
 
-    public long getCycleTimeMs() {
-        return cycleMilliseconds;
-    }
-
     public long getCurrentCycle() {
         return cycle;
     }
