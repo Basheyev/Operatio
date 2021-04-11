@@ -209,5 +209,8 @@ public class Buffer extends Block implements JSONSerializable {
     }
 
 
-
+    @Override
+    public String getDescription() {
+        return "Buffer stores up to 25 items\nof 4 type materials";
+    }
 }

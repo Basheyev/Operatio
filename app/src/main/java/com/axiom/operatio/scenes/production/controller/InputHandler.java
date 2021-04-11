@@ -29,7 +29,7 @@ public class InputHandler {
     
     public InputHandler(ProductionScene scene, Production production, ProductionRenderer productionRenderer) {
         this.scene = scene;
-        cameraMoveHandler = new CameraMoveHandler(production, productionRenderer);
+        cameraMoveHandler = new CameraMoveHandler(production,scene, productionRenderer);
         cameraScaleHandler = new CameraScaleHandler(this, productionRenderer);
         blockAddMoveHandler = new BlockAddMoveHandler(this, scene, production, productionRenderer);
         blockDeleteHandler = new BlockDeleteHandler(this, production, productionRenderer);

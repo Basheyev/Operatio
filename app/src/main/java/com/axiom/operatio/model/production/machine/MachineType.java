@@ -27,6 +27,7 @@ public class MachineType {
     //---------------------------------------------------------------------------------
     protected int ID;                                      // Код машины
     protected String name;                                 // Название
+    protected String description;                          // Описание машины
     protected Operation[] operations;                      // Доступные операции
     protected Sprite image;                                // Изображение машины
     protected double price;                                // Стоимость машины
@@ -37,6 +38,7 @@ public class MachineType {
         try {
             ID = jsonMachineType.getInt("ID");
             name = jsonMachineType.getString("name");
+            description = jsonMachineType.getString("description");
             int operationsCount = jsonMachineType.getInt("operationsCount");
             operations = new Operation[operationsCount];
             price = jsonMachineType.getInt("price");
@@ -62,6 +64,10 @@ public class MachineType {
         return machineTypes.get(index);
     }
 
+
+    public String getDescription() {
+        return description;
+    }
 
     public static int getMachineTypesCount() {
         if (!initialized) initialize();

@@ -249,6 +249,9 @@ public class AdjustmentPanel extends Panel {
         if (block instanceof Conveyor) showConveyorInfo((Conveyor) block);
         if (block instanceof Buffer) showBufferInfo((Buffer) block);
         if (block instanceof ExportBuffer) showExporterInfo((ExportBuffer) block);
+
+        HelperPanel helperPanel = productionScene.getHelperPanel();
+        helperPanel.setText(block.getDescription());
     }
 
 

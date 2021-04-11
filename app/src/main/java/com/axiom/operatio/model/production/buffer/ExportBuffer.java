@@ -94,4 +94,9 @@ public class ExportBuffer extends Block implements JSONSerializable {
         }
         return jsonObject;
     }
+
+    @Override
+    public String getDescription() {
+        return "Sends items to the warehouse";
+    }
 }

@@ -241,6 +241,10 @@ public class Machine extends Block implements JSONSerializable {
         super.setState(newState);
     }
 
+    @Override
+    public String getDescription() {
+        return type.getDescription();
+    }
 
     public MachineType getType() {
         return type;

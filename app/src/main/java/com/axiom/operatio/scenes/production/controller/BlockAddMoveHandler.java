@@ -12,6 +12,7 @@ import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockAdjuster;
 import com.axiom.operatio.scenes.production.ProductionScene;
 import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
+import com.axiom.operatio.scenes.production.view.HelperPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 
 /**
@@ -30,6 +31,7 @@ public class BlockAddMoveHandler {
     private float cursorX, cursorY;
     private int lastCol, lastRow;
     private int blockPlaced;
+    private CharSequence savedText;
 
 
     public BlockAddMoveHandler(InputHandler inputHandler,
@@ -73,6 +75,13 @@ public class BlockAddMoveHandler {
         production.removeBlock(block, false);
         productionRenderer.startBlockMoving(dragBlock, cursorX, cursorY);
         actionInProgress = true;
+
+        // Сохраняем старый текст и показываем описание блока
+        HelperPanel helperPanel = scene.getHelperPanel();
+        if (block.getDescription()!=savedText) {
+            savedText = helperPanel.getText();
+            helperPanel.setText(block.getDescription());
+        }
     }
 
 
@@ -169,6 +178,11 @@ public class BlockAddMoveHandler {
         cursorY = worldY;
         dragBlock = block;
         actionInProgress = true;
+        HelperPanel helperPanel = scene.getHelperPanel();
+        if (block.getDescription() != savedText) {
+            savedText = helperPanel.getText();
+            helperPanel.setText(block.getDescription());
+        }
     }
 
     /**
@@ -189,6 +203,9 @@ public class BlockAddMoveHandler {
             // Спрятать панель настройки
             AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
             opsPanel.hideBlockInfo();
+            // Восстановить старый текст
+            HelperPanel helperPanel = scene.getHelperPanel();
+            helperPanel.setText(savedText);
         }
     }
 

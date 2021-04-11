@@ -55,4 +55,15 @@ public class FormatUtils {
         return timeStampFormat.format(myDate);
     }
 
+
+    public static boolean isEqual(CharSequence a, CharSequence b) {
+        if (a==null || b==null) return false;
+        if (a.length() != b.length()) return false;
+        for (int i=0; i<a.length(); i++) {
+            if (a.charAt(i) != b.charAt(i)) return false;
+        }
+        return true;
+    }
+
+
 }

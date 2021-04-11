@@ -2,6 +2,7 @@
   {
     "ID": 0,
     "name": "Press",
+    "description": "The press compresses the input material\nto obtain output material",
     "operationsCount": 7,
     "price": 2000,
     "cycleCost": 0.3,
@@ -88,6 +89,7 @@
   {
     "ID": 1,
     "name": "Roller",
+    "description": "The roller squeezes the input material\nto obtain output material",
     "operationsCount": 3,
     "price": 2500,
     "cycleCost": 0.2,
@@ -130,6 +132,7 @@
   {
     "ID": 2,
     "name": "Cutter",
+    "description": "The cutter cuts the input material\nto pieces (output)",
     "operationsCount": 3,
     "price": 3000,
     "cycleCost": 0.2,
@@ -172,6 +175,7 @@
   {
     "ID": 3,
     "name": "Extruder",
+    "description": "The extruder pushes the input material\nthrough to form to obtain new material",
     "operationsCount": 5,
     "price": 4000,
     "cycleCost": 0.3,
@@ -236,6 +240,7 @@
   {
     "ID": 4,
     "name": "Assembly",
+    "description": "The machine assembles output material\nfrom two or more input materials",
     "operationsCount": 33,
     "price": 7000,
     "cycleCost": 0.4,

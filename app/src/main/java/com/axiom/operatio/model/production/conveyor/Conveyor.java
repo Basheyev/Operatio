@@ -160,4 +160,9 @@ public class Conveyor extends Block implements JSONSerializable {
         return jsonObject;
     }
 
+    @Override
+    public String getDescription() {
+        return "Moves items from input direction\nto output direction";
+    }
+
 }

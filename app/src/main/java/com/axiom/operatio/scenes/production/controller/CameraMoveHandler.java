@@ -3,11 +3,14 @@ package com.axiom.operatio.scenes.production.controller;
 import android.view.MotionEvent;
 
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.operatio.model.gameplay.GameMission;
+import com.axiom.operatio.model.gameplay.MissionManager;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.scenes.production.ProductionScene;
 import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
+import com.axiom.operatio.scenes.production.view.HelperPanel;
 import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
 
 /**
@@ -17,6 +20,7 @@ public class CameraMoveHandler {
 
     private Production production;
     private ProductionRenderer productionRenderer;
+    private ProductionScene productionScene;
 
     private boolean actionInProgress = false;
     private float cursorX, cursorY;
@@ -25,8 +29,9 @@ public class CameraMoveHandler {
     private static final float HORIZONTAL_MARGIN = 370;
     private static final float VERTICAL_MARGIN = 250;
 
-    public CameraMoveHandler(Production prod, ProductionRenderer prodRender) {
+    public CameraMoveHandler(Production prod, ProductionScene scene, ProductionRenderer prodRender) {
         this.production = prod;
+        this.productionScene = scene;
         this.productionRenderer = prodRender;
     }
 
@@ -94,6 +99,15 @@ public class CameraMoveHandler {
                             && production.getSelectedRow() == row) {
                         production.unselectBlock();
                         opsPanel.hideBlockInfo();
+
+                        // Если ничто не выбрано написать суть миссии
+                        GameMission mission = MissionManager.getMission(production.getCurrentMissionID());
+                        if (mission!=null) {
+                            String missionDescription = mission.getDescription();
+                            HelperPanel helperPanel = productionScene.getHelperPanel();
+                            helperPanel.setText(missionDescription);
+                        }
+
                     } else {
                         opsPanel.showBlockInfo(block);
                         production.selectBlock(column, row);

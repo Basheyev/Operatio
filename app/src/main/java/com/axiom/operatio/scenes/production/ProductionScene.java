@@ -187,4 +187,8 @@ public class ProductionScene extends GameScene {
     public AdjustmentPanel getAdjustmentPanel() {
         return adjustmentPanel;
     }
+
+    public HelperPanel getHelperPanel() {
+        return helperPanel;
+    }
 }

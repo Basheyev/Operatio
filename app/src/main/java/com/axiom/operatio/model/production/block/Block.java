@@ -280,6 +280,12 @@ public abstract class Block implements JSONSerializable {
     }
 
     /**
+     * Возвращает описание блока
+     * @return описание блока
+     */
+    public abstract String getDescription();
+
+    /**
      * Возвращает стоимость блока
      * @return стоимость блока
      */

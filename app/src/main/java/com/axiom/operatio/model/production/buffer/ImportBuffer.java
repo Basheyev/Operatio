@@ -109,4 +109,8 @@ public class ImportBuffer extends Block implements JSONSerializable {
         return jsonObject;
     }
 
+    @Override
+    public String getDescription() {
+        return "Retrieves items from the warehouse";
+    }
 }

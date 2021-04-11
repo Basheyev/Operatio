@@ -36,8 +36,7 @@ public class Channel<T> implements Serializable {
     public synchronized T poll() {
         if (front==rear) return null;
         Object element = queue[front];
-        if (rear - 1 >= 0)
-            System.arraycopy(queue, 1, queue, 0, rear - 1);
+        if (rear - 1 >= 0) System.arraycopy(queue, 1, queue, 0, rear - 1);
         rear--;
         return (T) element;
     }
