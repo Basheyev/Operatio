@@ -31,7 +31,7 @@ public class Production implements JSONSerializable {
     public static final int UNLOCKED_HEIGHT = 6;
     public static final int TILE_PRICE = 500;     // Цена одной плитки площади
 
-    public static final int CYCLE_TIME = 300;     // Длительность цикла в миллесекундах
+    public static final int CYCLE_TIME = 300;           // Длительность цикла в миллесекундах
 
     private Inventory inventory;                  // Объект - склад
     private Market market;                        // Объект - рынок
@@ -427,6 +427,14 @@ public class Production implements JSONSerializable {
 
     public boolean isPaused() {
         return isPaused;
+    }
+
+    public long getCycleMilliseconds() {
+        return cycleMilliseconds;
+    }
+
+    public void setCycleMilliseconds(long cycleMilliseconds) {
+        this.cycleMilliseconds = cycleMilliseconds;
     }
 
     public ProductionRenderer getRenderer() {

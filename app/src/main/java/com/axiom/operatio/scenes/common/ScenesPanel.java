@@ -103,6 +103,8 @@ public class ScenesPanel extends Panel {
         technologyButton = buildButton(6, TECHNOLOGY, 968, 0, 128, 128, true);
         reportButton = buildButton(7, REPORT, 1112, 0, 128, 128, true);
         pauseButton = buildButton(2, PAUSE, 1768, 0, 128, 128, true);
+        pauseButton.setTextScale(1);
+        pauseButton.setTextColor(Color.BLACK);
 
     }
 
@@ -183,13 +185,24 @@ public class ScenesPanel extends Panel {
             else if (tag.equals(TECHNOLOGY)) changeScene(TECHNOLOGY);
             else if (tag.equals(REPORT)) changeScene(REPORT);
             else if (tag.equals(PAUSE)) {
+                // fixme Переключатель скорости
                 if (production.isPaused()) {
                     production.setPaused(false);
                     setPausedButtonState(false);
+                    pauseButton.setText("");
+                    production.setCycleMilliseconds(Production.CYCLE_TIME);
                 } else {
-                    production.setPaused(true);
-                    setPausedButtonState(true);
+                    if (production.getCycleMilliseconds() == Production.CYCLE_TIME) {
+                        production.setCycleMilliseconds(Production.CYCLE_TIME / 3);
+                        pauseButton.setText("x3");
+                    } else if (production.getCycleMilliseconds() == Production.CYCLE_TIME / 3) {
+                        production.setPaused(true);
+                        setPausedButtonState(true);
+                        pauseButton.setText("");
+                        production.setCycleMilliseconds(Production.CYCLE_TIME);
+                    }
                 }
+
             }
         }
     };

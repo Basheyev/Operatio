@@ -27,7 +27,7 @@ public class Market implements JSONSerializable {
 
     private Production production;
     protected long lastCycleTime;                                  // Время последнего цикла (миллисекунды)
-    protected long cycleMilliseconds = Production.CYCLE_TIME * 3;  // Длительносить цикла (миллисекунды)
+//    protected long cycleMilliseconds = Production.CYCLE_TIME * 3;  // Длительносить цикла (миллисекунды)
     private long cycle;
 
 
@@ -52,6 +52,8 @@ public class Market implements JSONSerializable {
 
 
     public synchronized void process() {
+        long cycleMilliseconds = production.getCycleMilliseconds() * 3;  // Длительносить цикла (миллисекунды)
+
         long now = production.getClock();
         if (now - lastCycleTime < cycleMilliseconds) return;
 
