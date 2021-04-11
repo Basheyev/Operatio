@@ -23,6 +23,8 @@ public class MaterialsPanel extends Panel {
 
     public static final int ITEM_BACKGROUND = 0x80000000;
     public static final int ITEM_SELECTED = 0xFFd5c01f;
+    public static final int ITEM_AUTO_BUY = MarketPanel.BUY_COLOR;
+    public static final int ITEM_AUTO_SELL = MarketPanel.SELL_COLOR;
 
     private InventoryScene inventoryScene;
     private Production production;
@@ -47,6 +49,14 @@ public class MaterialsPanel extends Panel {
                 itemWidget[i].setText("" + balance);
             } else {
                 itemWidget[i].setText("");
+            }
+            // Подстветка режима - автопокупка и автопродажа
+            if (selectedMaterial != material) {
+                if (inventory.isAutoBuy(i)) {
+                    itemWidget[i].setColor(ITEM_AUTO_BUY);
+                } else if (inventory.isAutoSell(i)) {
+                    itemWidget[i].setColor(ITEM_AUTO_SELL);
+                }
             }
         }
     }
@@ -122,6 +132,7 @@ public class MaterialsPanel extends Panel {
             if (!item.isActive()) return;
 
             if (w.getColor()!=ITEM_SELECTED) {
+                // fixme тут мерцает из-за того что закрашиваем все подряд
                 unselectAllButtons(w);
                 w.setColor(ITEM_SELECTED);
                 materialsPanel.selectedMaterial = material;
@@ -131,6 +142,7 @@ public class MaterialsPanel extends Panel {
                 materialsPanel.selectedMaterial = null;
             }
             materialsPanel.inventoryScene.getMarketPanel().updateValues();
+            updateData();
         }
 
         public void unselectAllButtons(Widget w) {
