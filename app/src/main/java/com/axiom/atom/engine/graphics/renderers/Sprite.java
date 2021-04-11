@@ -426,11 +426,13 @@ public class Sprite extends Quad {
         Animation anim = animations.get(activeAnimation);
         // Сколько времени прошло с переключения текущего кадра (в наносекундах)
         long timeInterval = System.nanoTime() - lastFrameTime;
+        float frameDuration = 1_000_000_000 / (anim.framesPerSecond * anim.speed);
         // Если не пришло время переключения кадра, то уходим
-        if (timeInterval < (1_000_000_000 / (anim.framesPerSecond * anim.speed))) return;
+        if (timeInterval < frameDuration) return;
 
         // Если пришло время следующего кадра, то переключаем
-        int nextFrame = getActiveFrame() + 1;
+        int framesPassed = Math.round(timeInterval / frameDuration) % (anim.stopFrame - anim.startFrame + 1);
+        int nextFrame = getActiveFrame() + framesPassed;
 
         // Циклическое проигрывание анимации по флагу loop анимации
         if (nextFrame > anim.stopFrame) {
