@@ -6,6 +6,7 @@ import com.axiom.atom.engine.input.ScaleEvent;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.scenes.production.ProductionScene;
+import com.axiom.operatio.scenes.production.view.ModePanel;
 
 /**
  * Обработчик ввода сцены изменяющий модель Производства
@@ -50,10 +51,10 @@ public class InputHandler {
         } else
         if (modeToggled) {
             String mode = scene.getModePanel().getToggledButton();
-            if (mode.equals("0")) state = BLOCK_ADD_MOVE;
-            if (mode.equals("1")) state = BLOCK_ROTATE;
-            if (mode.equals("2")) state = BLOCK_DELETE;
-            if (mode.equals("3")) state = BUY_TILE;
+            if (mode.equals(ModePanel.modeTags[0])) state = BLOCK_ADD_MOVE;
+            if (mode.equals(ModePanel.modeTags[1])) state = BLOCK_ROTATE;
+            if (mode.equals(ModePanel.modeTags[2])) state = BLOCK_DELETE;
+            if (mode.equals(ModePanel.modeTags[3])) state = BUY_TILE;
         }
 
         switch (state) {

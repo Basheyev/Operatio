@@ -23,6 +23,14 @@ import java.util.ArrayList;
  */
 public class ModePanel extends Panel {
 
+    public static String[] modeTags =
+            {
+                    "Move blocks to desired position",
+                    "Rotate blocks input/output direction",
+                    "Remove and sell block",
+                    "Buy production area"
+            };
+
     public final int panelColor = 0xCC505050;
     private ProductionScene productionScene;
     private int tickSound;
@@ -51,10 +59,16 @@ public class ModePanel extends Panel {
             if (w.getColor()==Color.GRAY) {
                 w.setColor(Color.RED);
                 toggledButton = w.getTag();
+                HelperPanel helperPanel = productionScene.getHelperPanel();
+                helperPanel.setText(toggledButton);
             } else {
                 w.setColor(Color.GRAY);
                 toggledButton = null;
+                productionScene.setHelperMissionText();
             }
+            // todo убрать выделение
+            productionScene.getProduction().unselectBlock();
+            productionScene.getAdjustmentPanel().hideBlockInfo();
         }
     };
 
@@ -87,7 +101,7 @@ public class ModePanel extends Panel {
         for (int i =0; i<4; i++) {
             sprite = uiIcons.getAsSprite(8 + i);
             button = new Button(sprite);
-            button.setTag(""+i);
+            button.setTag(modeTags[i]);
             button.setLocalBounds(25 + i * 100, 20, 90, 100);
             button.setColor(Color.GRAY);
             button.setClickListener(listener);

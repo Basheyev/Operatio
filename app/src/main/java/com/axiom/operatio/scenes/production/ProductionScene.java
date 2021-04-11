@@ -120,13 +120,7 @@ public class ProductionScene extends GameScene {
             currentLevel = production.getCurrentMissionID();
             // Включить доступные машины на этом уровне
             blocksPanel.updatePermissions();
-
-            // Обновить формулировку миссии
-            GameMission mission =  MissionManager.getMission(production.getCurrentMissionID());
-            if (mission!=null) {
-                String goal = "Mission #" + mission.getID() + " - " + mission.getName() + "\n\n" + mission.getDescription();
-                helperPanel.setText(goal);
-            }
+            setHelperMissionText();
         }
     }
 
@@ -162,6 +156,14 @@ public class ProductionScene extends GameScene {
         inputHandler.onScale(event, worldX, worldY);
     }
 
+    public void setHelperMissionText() {
+        // Если ничто не выбрано написать суть миссии
+        GameMission mission = MissionManager.getMission(production.getCurrentMissionID());
+        if (mission!=null) {
+            String goal = "Mission #" + mission.getID() + " - " + mission.getName() + "\n\n" + mission.getDescription();;
+            helperPanel.setText(goal);
+        }
+    }
 
     public Production getProduction() {
         return production;

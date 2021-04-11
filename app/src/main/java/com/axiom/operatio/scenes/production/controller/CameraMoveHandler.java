@@ -100,13 +100,7 @@ public class CameraMoveHandler {
                         production.unselectBlock();
                         opsPanel.hideBlockInfo();
 
-                        // Если ничто не выбрано написать суть миссии
-                        GameMission mission = MissionManager.getMission(production.getCurrentMissionID());
-                        if (mission!=null) {
-                            String missionDescription = mission.getDescription();
-                            HelperPanel helperPanel = productionScene.getHelperPanel();
-                            helperPanel.setText(missionDescription);
-                        }
+                        productionScene.setHelperMissionText();
 
                     } else {
                         opsPanel.showBlockInfo(block);
