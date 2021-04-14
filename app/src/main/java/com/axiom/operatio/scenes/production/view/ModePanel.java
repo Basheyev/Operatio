@@ -66,7 +66,7 @@ public class ModePanel extends Panel {
                 toggledButton = null;
                 productionScene.setHelperMissionText();
             }
-            // todo убрать выделение
+
             productionScene.getProduction().unselectBlock();
             productionScene.getAdjustmentPanel().hideBlockInfo();
         }

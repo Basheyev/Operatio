@@ -132,7 +132,7 @@
   {
     "ID": 2,
     "name": "Cutter",
-    "description": "The cutter cuts the input material\nto pieces (output)",
+    "description": "The cutter cuts the input material\nto pieces - output materials",
     "operationsCount": 3,
     "price": 3000,
     "cycleCost": 0.2,
@@ -175,7 +175,7 @@
   {
     "ID": 3,
     "name": "Extruder",
-    "description": "The extruder pushes the input material\nthrough to form to obtain new material",
+    "description": "The extruder pushes the input material\nthrough the form to obtain new material",
     "operationsCount": 5,
     "price": 4000,
     "cycleCost": 0.3,
