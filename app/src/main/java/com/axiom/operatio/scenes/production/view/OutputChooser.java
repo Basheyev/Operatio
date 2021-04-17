@@ -1,5 +1,7 @@
 package com.axiom.operatio.scenes.production.view;
 
+import android.view.MotionEvent;
+
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Panel;
@@ -89,6 +91,8 @@ public class OutputChooser extends Panel {
 
     public void showMachineOutputs(Machine machine) {
 
+        if (blockType==MACHINE && this.machine==machine) return;
+
         clearAll();
 
         GamePermissions permissions = scene.getProduction().getPermissions();
@@ -115,6 +119,7 @@ public class OutputChooser extends Panel {
 
 
     public void showImporterMaterials(ImportBuffer importBuffer) {
+
         clearAll();
 
         GamePermissions permissions = scene.getProduction().getPermissions();
@@ -134,6 +139,11 @@ public class OutputChooser extends Panel {
     }
 
 
+    @Override
+    public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
+        super.onMotionEvent(event, worldX, worldY);
+        return true;
+    }
 
     private ClickListener clickListener = new ClickListener() {
         @Override

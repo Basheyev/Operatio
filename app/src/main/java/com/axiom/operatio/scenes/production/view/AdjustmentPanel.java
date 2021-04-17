@@ -178,11 +178,13 @@ public class AdjustmentPanel extends Panel {
                 selectMachineOperation(machine, chosenOperationID - 1);
                 showMachineInfo(machine, chosenOperationID);
                 if (outputChooser.visible) outputChooser.showMachineOutputs(machine);
+                outputChooser.visible = false;
                 break;
             case RIGHT:
                 selectMachineOperation(machine, chosenOperationID + 1);
                 showMachineInfo(machine, chosenOperationID);
                 if (outputChooser.visible) outputChooser.showMachineOutputs(machine);
+                outputChooser.visible = false;
                 break;
             case CHANGEOVER:
                 machine.setOperation(chosenOperationID);
@@ -213,10 +215,12 @@ public class AdjustmentPanel extends Panel {
             case LEFT:
                 selectImporterMaterial(importBuffer, materialID - 1);
                 showImporterInfo(importBuffer, materialID);
+                outputChooser.visible = false;
                 break;
             case RIGHT:
                 selectImporterMaterial(importBuffer, materialID + 1);
                 showImporterInfo(importBuffer, materialID);
+                outputChooser.visible = false;
                 break;
             case CHANGEOVER:
                 importBuffer.setImportMaterial(Material.getMaterial(materialID));
