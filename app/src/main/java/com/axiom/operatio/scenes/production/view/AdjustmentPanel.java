@@ -36,6 +36,7 @@ public class AdjustmentPanel extends Panel {
 
     private static final int panelColor = 0xCC505050;
     private static final String BLOCK_INFO = "Block information";
+    private static final String CHOOSER = "Chooser";
     private static final String LEFT = "<";
     private static final String RIGHT = ">";
     private static final String INPUTS = "Input materials:";
@@ -49,6 +50,8 @@ public class AdjustmentPanel extends Panel {
     private Button leftButton, centerButton, rightButton;
     private Button changeoverButton;
     private Block chosenBlock = null;
+
+    private OutputChooser outputChooser;
 
     private int chosenOperationID = 0;
     private int materialID = 0;
@@ -69,6 +72,11 @@ public class AdjustmentPanel extends Panel {
         inpBtn = new ItemWidget[4];
         outBtn = new ItemWidget[4];
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
+
+        outputChooser = new OutputChooser(scene, this);
+        outputChooser.visible = false;
+        scene.getSceneWidget().addChild(outputChooser);
+
         buildButtons();
     }
 
@@ -79,7 +87,7 @@ public class AdjustmentPanel extends Panel {
 
         // Кнопки управления блоком
         leftButton = buildActiveButton(LEFT, 40, 500, 75, 100);
-        centerButton = buildActiveButton("", 140, 500, 100, 100);
+        centerButton = buildActiveButton(CHOOSER, 140, 500, 100, 100);
         centerButton.setTextScale(1.5f);
         rightButton = buildActiveButton(RIGHT, 265, 500, 75, 100);
 
@@ -161,48 +169,75 @@ public class AdjustmentPanel extends Panel {
 
     private void machineAdjustmentClick(Button button, Machine machine) {
         String tag = button.getTag();
-        int currentOperation = machine.getOperationID();
-        if (tag.equals(LEFT)) {
-            chosenOperationID--;
-            if (chosenOperationID < 0) chosenOperationID = 0;
-            showMachineInfo(machine, chosenOperationID);
-            if (chosenOperationID == currentOperation) setChangeoverState(false); else setChangeoverState(true);
-        } else if (tag.equals(RIGHT)) {
-            int operationsCount = machine.getType().getOperations().length;
-            chosenOperationID++;
-            if (chosenOperationID >= operationsCount) chosenOperationID = operationsCount - 1;
-            showMachineInfo(machine, chosenOperationID);
-            if (chosenOperationID == currentOperation) setChangeoverState(false); else setChangeoverState(true);
-        } else if (tag.equals(CHANGEOVER)) {
-            machine.setOperation(chosenOperationID);
-            changeoverButton.setColor(GRAY);
+        switch (tag) {
+            case CHOOSER:
+                outputChooser.showMachineOutputs(machine);
+                outputChooser.visible = !outputChooser.visible;
+                break;
+            case LEFT:
+                selectMachineOperation(machine, chosenOperationID - 1);
+                showMachineInfo(machine, chosenOperationID);
+                if (outputChooser.visible) outputChooser.showMachineOutputs(machine);
+                break;
+            case RIGHT:
+                selectMachineOperation(machine, chosenOperationID + 1);
+                showMachineInfo(machine, chosenOperationID);
+                if (outputChooser.visible) outputChooser.showMachineOutputs(machine);
+                break;
+            case CHANGEOVER:
+                machine.setOperation(chosenOperationID);
+                changeoverButton.setColor(GRAY);
+                outputChooser.visible = false;
+                break;
         }
+    }
+
+
+    protected void selectMachineOperation(Machine machine, int opID) {
+        int operationsCount = machine.getType().getOperations().length;
+        int currentOperation = machine.getOperationID();
+        if (opID < 0) opID = 0;
+        if (opID > operationsCount) opID = operationsCount - 1;
+        chosenOperationID = opID;
+        if (chosenOperationID == currentOperation) setChangeoverState(false); else setChangeoverState(true);
     }
 
 
     private void importBufferAdjustmentClick(Button button, ImportBuffer importBuffer) {
         String tag = button.getTag();
-        int currentMaterial = importBuffer.getImportMaterial().getID();
-
-        if (tag.equals(LEFT)) {
-            materialID--;
-            if (materialID < 0) materialID = 0;
-            showImporterInfo(importBuffer, materialID);
-            if (materialID == currentMaterial) setChangeoverState(false); else setChangeoverState(true);
-        } else if (tag.equals(RIGHT)) {
-            int materialsAmount = Material.getMaterialsAmount();
-            materialID++;
-            if (materialID >= materialsAmount) materialID = materialsAmount - 1;
-            showImporterInfo(importBuffer, materialID);
-            if (materialID == currentMaterial) setChangeoverState(false); else setChangeoverState(true);
-        } else if (tag.equals(CHANGEOVER)) {
-            importBuffer.setImportMaterial(Material.getMaterial(materialID));
-            setChangeoverState(false);
+        switch (tag) {
+            case CHOOSER:
+                outputChooser.showImporterMaterials(importBuffer);
+                outputChooser.visible = !outputChooser.visible;
+                break;
+            case LEFT:
+                selectImporterMaterial(importBuffer, materialID - 1);
+                showImporterInfo(importBuffer, materialID);
+                break;
+            case RIGHT:
+                selectImporterMaterial(importBuffer, materialID + 1);
+                showImporterInfo(importBuffer, materialID);
+                break;
+            case CHANGEOVER:
+                importBuffer.setImportMaterial(Material.getMaterial(materialID));
+                setChangeoverState(false);
+                outputChooser.visible = false;
+                break;
         }
     }
 
 
-    private void setChangeoverState(boolean active) {
+    protected void selectImporterMaterial(ImportBuffer importBuffer, int matID) {
+        int materialsAmount = Material.getMaterialsAmount();
+        int currentMaterial = importBuffer.getImportMaterial().getID();
+        if (matID < 0) matID = 0;
+        if (matID > materialsAmount) matID = materialsAmount - 1;
+        materialID = matID;
+        if (materialID == currentMaterial) setChangeoverState(false); else setChangeoverState(true);
+    }
+
+
+    protected void setChangeoverState(boolean active) {
         if (active) {
             changeoverButton.setColor(0f, 0.6f, 0f, 1);
         } else {
@@ -234,12 +269,14 @@ public class AdjustmentPanel extends Panel {
             blockChanged = true;
             chosenBlock = block;
             changeoverButton.setColor(GRAY);
+            outputChooser.visible = false;
         }
 
         if (block instanceof Machine) {
             Machine machine = (Machine) block;
             if (blockChanged) chosenOperationID = machine.getOperationID();
             showMachineInfo(machine, chosenOperationID);
+            if (outputChooser.visible) outputChooser.showMachineOutputs(machine);
         }
         if (block instanceof ImportBuffer) {
             ImportBuffer importBuffer = (ImportBuffer) block;
@@ -272,6 +309,7 @@ public class AdjustmentPanel extends Panel {
             outBtn[i].visible = false;
         }
         visible = false;
+        outputChooser.visible = false;
     }
 
 
@@ -279,7 +317,7 @@ public class AdjustmentPanel extends Panel {
      * Отображает информацию о машине
      * @param machine машина
      */
-    private void showMachineInfo(Machine machine, int opID) {
+    protected void showMachineInfo(Machine machine, int opID) {
         MachineType machineType = machine.getType();
         Operation[] allOperations = machineType.getOperations();
 
@@ -364,7 +402,7 @@ public class AdjustmentPanel extends Panel {
 
 
     /**
-     * Отображает информацию о конвейере
+     * Отображает информацию о конвейере todo доработать информацию о конвейере
      * @param conveyor конвейер
      */
     private void showConveyorInfo(Conveyor conveyor) {
@@ -396,14 +434,13 @@ public class AdjustmentPanel extends Panel {
      * @param importBuffer буфер импорта
      * @param materialID номер импортируемого материала
      */
-    private void showImporterInfo(ImportBuffer importBuffer, int materialID) {
+    protected void showImporterInfo(ImportBuffer importBuffer, int materialID) {
         Material material = Material.getMaterial(materialID);
 
         caption.setText("Importer");
         centerButton.visible = true;
         centerButton.setText("");
         centerButton.setBackground(material.getImage());
-
 
         leftButton.visible = true;
         centerButton.setLocalBounds( 140, 500, 100, 100);

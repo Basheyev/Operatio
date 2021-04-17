@@ -37,7 +37,7 @@ public class HelperPanel extends Panel {
         caption.setVerticalAlignment(Text.ALIGN_TOP);
         caption.setTextColor(Color.WHITE);
         addChild(caption);
-        text.append("Вот тут будет текст миссии");
+        text.append("Advise");
     }
 
 
