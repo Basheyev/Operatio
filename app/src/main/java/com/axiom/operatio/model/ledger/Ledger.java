@@ -162,6 +162,18 @@ public class Ledger implements JSONSerializable {
         return history;
     }
 
+    public double getHistoryAverageRevenue() {
+        double revenueSum = 0;
+        for (int i=0; i<historyCounter; i++) revenueSum += history[i].revenue;
+        return historyCounter > 0 ? revenueSum / historyCounter : 0;
+    }
+
+    public double getHistoryAverageMargin() {
+        double marginSum = 0;
+        for (int i=0; i<historyCounter; i++) marginSum += history[i].margin;
+        return historyCounter > 0 ? marginSum / historyCounter : 0;
+    }
+
     /**
      * Капитализация компании
      * @return

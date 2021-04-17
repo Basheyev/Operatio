@@ -251,6 +251,9 @@ public class ReportPanel extends Panel {
         int valuationProgress = (int) Math.round(valuation / TARGET_VALUATION * 100.0f);
         float availableMaterials = production.getPermissions().availableMaterialsAmount();
         int technologyProgress = Math.round((availableMaterials-8) / Material.getMaterialsAmount() * 100f);
+        double averageMargin = ledger.getHistoryAverageMargin();
+        double averageRevenue = ledger.getHistoryAverageRevenue();
+        double averageMarginPercent = Math.round(averageMargin / averageRevenue * 100d);
         valuationBar.setProgress(valuationProgress);
         technologyBar.setProgress(technologyProgress);
 
@@ -266,12 +269,17 @@ public class ReportPanel extends Panel {
         summary.append(" (");
         summary.append(operMargin);
         summary.append("%)\n");
+        summary.append("\nAvg. margin: ");
+        FormatUtils.formatMoneyAppend(Math.round(averageMargin), summary);
+        summary.append(" (");
+        summary.append(averageMarginPercent);
+        summary.append("%)");
         summary.append("\nTotal assets: ");
         FormatUtils.formatMoneyAppend(Math.round(production.getAssetsValuation()), summary);
         double totalInventory = production.getWorkInProgressValuation() + production.getInventory().getValuation();
         summary.append("\nTotal inventory: ");
         FormatUtils.formatMoneyAppend(Math.round(totalInventory), summary);
-        summary.append("\n\n\nValuation: ");
+        summary.append("\n\nValuation: ");
         FormatUtils.formatMoneyAppend(valuation, summary);
     }
 
