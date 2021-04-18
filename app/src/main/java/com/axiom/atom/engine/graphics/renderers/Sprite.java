@@ -166,7 +166,7 @@ public class Sprite extends Quad {
         //-------------------------------------------------------------------------------
         if (camera.isVisible(x-halfWidth,y-halfHeight, x+halfWidth,y+halfHeight)) {
             initializeVertices();
-            if (rotation!=0) evaluateRotation(rotation);
+            if (rotation!=0 || centerX != 0 || centerY != 0) evaluateRotation(rotation);
             evaluateScale(scaledWidth, scaledHeight);
             evaluateOffset(x, y);
             // Добавляем в список отрисовки
@@ -194,7 +194,7 @@ public class Sprite extends Quad {
             float sx = x + width * 0.5f;
             float sy = y + height * 0.5f;
             initializeVertices();
-            if (rotation!=0) evaluateRotation(rotation);
+            if (rotation!=0 || centerX != 0 || centerY != 0) evaluateRotation(rotation);
             evaluateScale(width, height);
             evaluateOffset(sx, sy);
             Program program = useColor ? coloredProgram : texturedProgram;
