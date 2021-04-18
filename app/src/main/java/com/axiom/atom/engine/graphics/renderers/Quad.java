@@ -41,6 +41,8 @@ public class Quad {
             { 0.3f, 0.5f, 0.9f, 1.0f };
 
     protected float rotation = 0;               // Угол поворота в радианах
+    protected float centerX = 0;                // Точка поворота по X = -0.5-0.5
+    protected float centerY = 0;                // Точка поворота по Y = -0.5-0.5
 
     //----------------------------------------------------------------------------------
     // Класс для сравнения элементов буфера при сортировке (по текстуре и z-order)
@@ -228,7 +230,7 @@ public class Quad {
 
 
     /**
-     * Поворот вершин на заданный угол в радианах
+     * Поворот вершин на заданный угол в радианах вокруг точки вращения
      * @param rotation угол поворота в радианах
      */
     protected void evaluateRotation(float rotation) {
@@ -236,8 +238,8 @@ public class Quad {
         float sinR = (float) Math.sin(rotation);
         float x, y;
         for (int i=0; i<18; i+=3) {
-            x = vertices[i];
-            y = vertices[i+1];
+            x = vertices[i] - centerX;
+            y = vertices[i+1] - centerY;
             vertices[i] = x * cosR - y * sinR;
             vertices[i+1] = x * sinR + y * cosR;
         }
@@ -253,6 +255,16 @@ public class Quad {
      */
     public void setRotation(float radians) {
         this.rotation = radians;
+    }
+
+    /**
+     * Установить точку вращения спрайта (по умолчанию 0, 0)
+     * @param x от -0.5 (левая координата) до 0.5 (правая координата)
+     * @param y от -0.5 (нижняя координата) до 0.5 (верхняя координата)
+     */
+    public void setRotationPoint(float x, float y) {
+        centerX = x;
+        centerY = y;
     }
 
     /**
