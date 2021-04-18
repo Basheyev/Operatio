@@ -21,6 +21,7 @@ import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.production.buffer.ExportBuffer;
 import com.axiom.operatio.model.production.buffer.ImportBuffer;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
+import com.axiom.operatio.model.production.inserter.Inserter;
 import com.axiom.operatio.model.production.machine.Machine;
 import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
@@ -55,7 +56,7 @@ public class BlockButton extends Button {
         if (id==0) initializeAnimationButton(40, 47, 15, Conveyor.PRICE);    // Если это конвейер
         else if (id==1) initializeAnimationButton(72, 79, 8, Buffer.PRICE); // Если это буфер
         else if (id>=2 && id<7) initializeMachineButton(id); // Если это машины 0-4
-        else if (id==7) initializeImageButton(64, 0);
+        else if (id==7) initializeImageButton(64, Inserter.PRICE);
         else if (id==8) initializeImageButton(65, ImportBuffer.PRICE);
         else if (id==9) initializeImageButton(66, ExportBuffer.PRICE);
 
@@ -148,7 +149,7 @@ public class BlockButton extends Button {
             case 4: block = createMachine(production, 2); break;
             case 5: block = createMachine(production, 3); break;
             case 6: block = createMachine(production, 4); break;
-            case 7: break;
+            case 7: block = new Inserter(production, Block.LEFT, Block.RIGHT); break;
             case 8: block = new ImportBuffer(production, Material.getMaterial(0)); break;
             case 9: block = new ExportBuffer(production); break;
         }

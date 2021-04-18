@@ -6,6 +6,7 @@ import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.production.buffer.ExportBuffer;
 import com.axiom.operatio.model.production.buffer.ImportBuffer;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
+import com.axiom.operatio.model.production.inserter.Inserter;
 import com.axiom.operatio.model.production.machine.Machine;
 
 import org.json.JSONArray;
@@ -34,6 +35,7 @@ public class BlockBuilder {
                 case "Machine": block = new Machine(production, jsonObject, inpDir, inpCap, outDir, outCap); break;
                 case "ImportBuffer": block = new ImportBuffer(production, jsonObject); break;
                 case "ExportBuffer": block = new ExportBuffer(production, jsonObject); break;
+                case "Inserter": block = new Inserter(production, jsonObject, inpDir, outDir); break;
                 default: throw new JSONException("Unknown block");
             }
         } catch (JSONException e) {
