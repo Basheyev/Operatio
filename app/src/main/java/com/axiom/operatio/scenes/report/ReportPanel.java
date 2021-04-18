@@ -253,7 +253,7 @@ public class ReportPanel extends Panel {
         int technologyProgress = Math.round((availableMaterials-8) / Material.getMaterialsAmount() * 100f);
         double averageMargin = ledger.getHistoryAverageMargin();
         double averageRevenue = ledger.getHistoryAverageRevenue();
-        double averageMarginPercent = Math.round(averageMargin / averageRevenue * 100d);
+        double averageMarginPercent = averageRevenue > 0 ? Math.round(averageMargin / averageRevenue * 100d) : 0;
         valuationBar.setProgress(valuationProgress);
         technologyBar.setProgress(technologyProgress);
 

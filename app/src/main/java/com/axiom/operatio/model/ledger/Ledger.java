@@ -180,7 +180,7 @@ public class Ledger implements JSONSerializable {
      */
     public double getValuation() {
         // Посчитать средний денежный поток за прошлый период
-        double T = 5;                                                          // Период
+        double T = 12;                                                         // Период 12 мес
         double WACC = 0.10;                                                    // Стоимость капитала 10%
         double cashFlow = getHistoryCashFlow();                                // Денежный поток
         double assetsValue = production.getAssetsValuation();                  // Активы
