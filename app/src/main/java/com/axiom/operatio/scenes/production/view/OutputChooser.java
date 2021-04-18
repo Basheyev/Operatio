@@ -31,11 +31,12 @@ public class OutputChooser extends Panel {
     private ProductionScene scene;
     private AdjustmentPanel adjustmentPanel;
     private ItemWidget[] itemWidget;
-    private ItemWidget selectedItem;
+    private long lastChangeTime = 0;
 
     private int blockType = 0;
     private Machine machine = null;
     private ImportBuffer importer = null;
+
 
     public OutputChooser(ProductionScene scene, AdjustmentPanel adjustmentPanel) {
         super();
@@ -70,7 +71,6 @@ public class OutputChooser extends Panel {
                 y += 80;
             }
         }
-        selectedItem = null;
     }
 
 
@@ -91,11 +91,18 @@ public class OutputChooser extends Panel {
 
     public void showMachineOutputs(Machine machine) {
 
-        if (blockType==MACHINE && this.machine==machine) return;
+        GamePermissions permissions = scene.getProduction().getPermissions();
+
+        if (blockType==MACHINE && this.machine==machine) {
+            long permissionChangeTime = permissions.getLastChangeTime();
+            if (permissionChangeTime > lastChangeTime) {
+                lastChangeTime = permissionChangeTime;
+            } else return;
+        }
 
         clearAll();
 
-        GamePermissions permissions = scene.getProduction().getPermissions();
+
         MachineType type = machine.getType();
         Operation[] operations = type.getOperations();
 
@@ -155,14 +162,12 @@ public class OutputChooser extends Panel {
                 adjustmentPanel.selectMachineOperation(machine, opIndex);
                 unselectAll();
                 itemWidget.setColor(ITEM_SELECTED);
-                selectedItem = itemWidget;
             } else if (blockType==IMPORTER) {
                 int matID = Integer.parseInt(itemWidget.getTag());
                 adjustmentPanel.showImporterInfo(importer, matID);
                 adjustmentPanel.selectImporterMaterial(importer, matID);
                 unselectAll();
                 itemWidget.setColor(ITEM_SELECTED);
-                selectedItem = itemWidget;
             }
         }
     };
