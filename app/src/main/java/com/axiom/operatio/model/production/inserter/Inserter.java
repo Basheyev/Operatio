@@ -3,6 +3,7 @@ package com.axiom.operatio.model.production.inserter;
 import com.axiom.atom.engine.data.Channel;
 import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.materials.Item;
+import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockBuilder;
@@ -17,6 +18,8 @@ public class Inserter extends Block implements JSONSerializable {
     public static final int CYCLES_PER_90_DEGREES = 2;
     public static final int MAX_CAPACITY = 1;
     public static final int PRICE = 200;
+
+    private Material targetMaterial = null;
 
     public Inserter(Production production, int inDir, int outDir) {
         super(production, inDir, MAX_CAPACITY, outDir, MAX_CAPACITY);
@@ -59,6 +62,16 @@ public class Inserter extends Block implements JSONSerializable {
     }
 
 
+    public void setTargetMaterial(Material material) {
+        targetMaterial = material;
+    }
+
+
+    public Material getTargetMaterial() {
+        return targetMaterial;
+    }
+
+
     protected long getDeliveryCycles() {
         if (inputDirection==RIGHT && outputDirection==LEFT) return CYCLES_PER_90_DEGREES * 2; else
         if (inputDirection==LEFT && outputDirection==RIGHT) return CYCLES_PER_90_DEGREES * 2; else
@@ -77,6 +90,8 @@ public class Inserter extends Block implements JSONSerializable {
             Channel<Item> inputQueue = inputBlock.getInputQueue();
             item = inputQueue.peek();
             if (item == null) return;
+            // Забираем только целевой материал, либой любой если = null
+            if (targetMaterial != null && item.getMaterial() != targetMaterial) return;
             if (!push(item)) return;        // Если не получилось добавить к себе уходим
             inputQueue.poll();
             return;

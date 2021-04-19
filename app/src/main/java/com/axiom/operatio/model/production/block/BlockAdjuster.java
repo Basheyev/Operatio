@@ -1,5 +1,7 @@
 package com.axiom.operatio.model.production.block;
 
+import com.axiom.operatio.model.production.inserter.Inserter;
+
 import static com.axiom.operatio.model.production.block.Block.NONE;
 import static com.axiom.operatio.model.production.block.Block.LEFT;
 import static com.axiom.operatio.model.production.block.Block.UP;
@@ -81,6 +83,11 @@ public class BlockAdjuster {
         boolean left  = block.hasInOutFrom(LEFT);
         boolean right = block.hasInOutFrom(RIGHT);
         int neighborsCount = (upper ? 1:0) + (down ? 1:0) + (left ? 1:0) + (right ? 1:0);
+
+        if (block instanceof Inserter) {
+            rotateClockwise(block);
+            return;
+        }
 
         switch (neighborsCount) {
             case 0:

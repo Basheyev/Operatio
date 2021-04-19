@@ -44,6 +44,12 @@ public class InserterRenderer extends BlockRenderer {
         Channel<Item> inputQueue = inserter.getInputQueue();     // Входящая очередь
         Production production = inserter.getProduction();
 
+        // Рисуем вход-выход
+        if (production.isPaused()) {
+            drawInOut(camera, inserter.getInputDirection(), inserter.getOutputDirection(),
+                    x, y, width, height, baseSprite.getZOrder());
+        }
+
         // Отрисовываем основу манипулятора
         baseSprite.draw(camera, x ,y, width, height);
 
@@ -61,11 +67,7 @@ public class InserterRenderer extends BlockRenderer {
 
         drawHand(camera, x,y,width, height, progress);
 
-        // Рисуем вход-выход
-        if (production.isPaused()) {
-            drawInOut(camera, inserter.getInputDirection(), inserter.getOutputDirection(),
-                    x, y, width, height, baseSprite.getZOrder() + 2);
-        }
+
     }
 
 
