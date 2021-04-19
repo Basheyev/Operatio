@@ -11,6 +11,8 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 
 import java.util.ArrayList;
 
+import static com.axiom.operatio.scenes.production.view.BlockButton.MACHINES_INDEX_START;
+
 /**
  * Панель добавления блоков
  */
@@ -49,9 +51,9 @@ public class BlocksPanel extends Panel {
         for (int i=0; i<children.size(); i++) {
             BlockButton button = (BlockButton) children.get(i);
             int blockID = Integer.parseInt(button.getTag());
-            // если это машина
-            if (blockID >= 2 && blockID <= 6) {
-                button.setActive(permissions.isAvailable(MachineType.getMachineType(blockID - 2)));
+            // если это машина fixme вот тут учесть порядок
+            if (blockID >= MACHINES_INDEX_START) {
+                button.setActive(permissions.isAvailable(MachineType.getMachineType(blockID - MACHINES_INDEX_START)));
             } else button.setActive(true);
         }
     }

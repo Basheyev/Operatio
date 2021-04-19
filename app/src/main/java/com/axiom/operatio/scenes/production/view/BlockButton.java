@@ -33,6 +33,8 @@ import com.axiom.operatio.scenes.production.controller.BlockAddMoveHandler;
  */
 public class BlockButton extends Button {
 
+    public static final int MACHINES_INDEX_START = 5;
+
     private ProductionScene scene;
     private BlocksPanel panel;
     private int tickSound;
@@ -53,12 +55,14 @@ public class BlockButton extends Button {
             allMachines = new Sprite(resources, R.drawable.blocks, 8, 16);
         }
 
-        if (id==0) initializeAnimationButton(40, 47, 15, Conveyor.PRICE);    // Если это конвейер
-        else if (id==1) initializeAnimationButton(72, 79, 8, Buffer.PRICE); // Если это буфер
-        else if (id>=2 && id<7) initializeMachineButton(id); // Если это машины 0-4
-        else if (id==7) initializeImageButton(64, Inserter.PRICE);
-        else if (id==8) initializeImageButton(65, ImportBuffer.PRICE);
-        else if (id==9) initializeImageButton(66, ExportBuffer.PRICE);
+        if (id==0) initializeImageButton(65, ImportBuffer.PRICE);
+        else if (id==1) initializeImageButton(66, ExportBuffer.PRICE);
+        else if (id==2) initializeAnimationButton(40, 47, 15, Conveyor.PRICE);  // Если это конвейер
+        else if (id==3) initializeImageButton(64, Inserter.PRICE);                          // Если то манипулятор
+        else if (id==4) initializeAnimationButton(72, 79, 8, Buffer.PRICE);     // Если это буфер
+        else if (id>=MACHINES_INDEX_START) initializeMachineButton(id); // Если это машины 0-4
+
+
 
         setColor(Color.DKGRAY);
         this.panel = panel;
@@ -70,11 +74,11 @@ public class BlockButton extends Button {
 
 
     private void initializeMachineButton(int id) {
-        int startFrame = (id - 2) * 8;
+        int startFrame = (id - MACHINES_INDEX_START) * 8;
         background = allMachines.getAsSprite(startFrame, startFrame + 7);
         int animation = background.addAnimation(0, 7, 8, true);
         background.setActiveAnimation(animation);
-        double price = MachineType.getMachineType(id - 2).getPrice();
+        double price = MachineType.getMachineType(id - MACHINES_INDEX_START).getPrice();
         StringBuffer priceText = new StringBuffer();
         setText(FormatUtils.formatMoneyAppend(price, priceText));
     }
@@ -142,16 +146,18 @@ public class BlockButton extends Button {
         Block block = null;
         int choice = Integer.parseInt(toggled);
         switch (choice) {
-            case 0: block = new Conveyor(production, Block.LEFT, Block.RIGHT); break;
-            case 1: block = new Buffer(production, 100); break;
-            case 2: block = createMachine(production, 0); break;
-            case 3: block = createMachine(production, 1); break;
-            case 4: block = createMachine(production, 2); break;
-            case 5: block = createMachine(production, 3); break;
-            case 6: block = createMachine(production, 4); break;
-            case 7: block = new Inserter(production, Block.LEFT, Block.RIGHT); break;
-            case 8: block = new ImportBuffer(production, Material.getMaterial(0)); break;
-            case 9: block = new ExportBuffer(production); break;
+            case 0: block = new ImportBuffer(production, Material.getMaterial(0)); break;
+            case 1: block = new ExportBuffer(production); break;
+            case 2: block = new Conveyor(production, Block.LEFT, Block.RIGHT); break;
+            case 3: block = new Inserter(production, Block.LEFT, Block.RIGHT); break;
+            case 4: block = new Buffer(production, 100); break;
+            case 5: block = createMachine(production, 0); break;
+            case 6: block = createMachine(production, 1); break;
+            case 7: block = createMachine(production, 2); break;
+            case 8: block = createMachine(production, 3); break;
+            case 9: block = createMachine(production, 4); break;
+
+
         }
         return block;
     }
