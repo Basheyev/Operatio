@@ -8,6 +8,7 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockBuilder;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
+import com.axiom.operatio.model.production.conveyor.ConveyorRenderer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +33,12 @@ public class Inserter extends Block implements JSONSerializable {
         BlockBuilder.parseCommonFields(this, jsonObject);
         this.renderer = new InserterRenderer(this);
         this.price = PRICE;
+        try {
+            int matID = jsonObject.getInt("targetMaterial");
+            targetMaterial = matID==-1 ? null : Material.getMaterial(matID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -84,20 +91,21 @@ public class Inserter extends Block implements JSONSerializable {
     protected void grabItemsFromInputDirection() {
         Block inputBlock = production.getBlockAt(this, inputDirection);
         if (inputBlock==null) return;        // Если на входящем направление ничего нет
-        Item item = inputBlock.peek();       // Пытаемся взять предмет из блока входа
-        if (item == null) {                  // Если ничего нет и это не конвейер уходим
-            if (!(inputBlock instanceof Conveyor)) return;
+
+        if (inputBlock instanceof Conveyor) {
             Channel<Item> inputQueue = inputBlock.getInputQueue();
-            item = inputQueue.peek();
+            Item item = inputQueue.peek();
             if (item == null) return;
-            // Забираем только целевой материал, либой любой если = null
             if (targetMaterial != null && item.getMaterial() != targetMaterial) return;
             if (!push(item)) return;        // Если не получилось добавить к себе уходим
             inputQueue.poll();
-            return;
+        } else {
+            Item item = inputBlock.peek();        // Пытаемся взять предмет из блока входа
+            if (targetMaterial != null && item.getMaterial() != targetMaterial) return;
+            if (!push(item)) return;             // Если не получилось добавить к себе уходим
+            inputBlock.poll();                   // Если получилось - удаляем из блока входа
         }
-        if (!push(item)) return;             // Если не получилось добавить к себе уходим
-        inputBlock.poll();                   // Если получилось - удаляем из блока входа
+
     }
 
 
@@ -117,7 +125,9 @@ public class Inserter extends Block implements JSONSerializable {
     public JSONObject toJSON() {
         JSONObject jsonObject = super.toJSON();
         try {
+            int matID = targetMaterial!=null ? targetMaterial.getID() : -1;
             jsonObject.put("class", "Inserter");
+            jsonObject.put("targetMaterial", matID);
         } catch (JSONException e) {
             e.printStackTrace();
             return null;

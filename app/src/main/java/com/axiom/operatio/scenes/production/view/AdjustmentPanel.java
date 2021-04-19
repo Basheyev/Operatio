@@ -18,6 +18,7 @@ import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.production.buffer.ImportBuffer;
 import com.axiom.operatio.model.production.buffer.ExportBuffer;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
+import com.axiom.operatio.model.production.inserter.Inserter;
 import com.axiom.operatio.model.production.machine.Machine;
 import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
@@ -160,6 +161,8 @@ public class AdjustmentPanel extends Panel {
                     machineAdjustmentClick(button, (Machine) chosenBlock);
                 } else if (chosenBlock instanceof ImportBuffer) {
                     importBufferAdjustmentClick(button, (ImportBuffer) chosenBlock);
+                } else if (chosenBlock instanceof Inserter) {
+                    inserterAdjustmentClick(button, (Inserter) chosenBlock);
                 }
             }
         }
@@ -241,6 +244,46 @@ public class AdjustmentPanel extends Panel {
     }
 
 
+    protected void selectInserterMaterial(Inserter inserter, int matID) {
+        int materialsAmount = Material.getMaterialsAmount();
+        Material material = inserter.getTargetMaterial();
+
+        int currentMaterial = (material != null) ? material.getID() : -1;
+
+        if (matID < -1) matID = -1;
+        if (matID > materialsAmount) matID = materialsAmount - 1;
+        materialID = matID;
+
+        if (materialID == currentMaterial) setChangeoverState(false); else setChangeoverState(true);
+    }
+
+
+    private void inserterAdjustmentClick(Button button, Inserter inserter) {
+        String tag = button.getTag();
+        switch (tag) {
+            case CHOOSER:
+                outputChooser.showInserterMaterials(inserter);
+                outputChooser.visible = !outputChooser.visible;
+                break;
+            case LEFT:
+                selectInserterMaterial(inserter, materialID - 1);
+                showInserterInfo(inserter, materialID);
+                outputChooser.visible = false;
+                break;
+            case RIGHT:
+                selectInserterMaterial(inserter, materialID + 1);
+                showInserterInfo(inserter, materialID);
+                outputChooser.visible = false;
+                break;
+            case CHANGEOVER:
+                inserter.setTargetMaterial(Material.getMaterial(materialID));
+                setChangeoverState(false);
+                outputChooser.visible = false;
+                break;
+        }
+    }
+
+
     protected void setChangeoverState(boolean active) {
         if (active) {
             changeoverButton.setColor(0f, 0.6f, 0f, 1);
@@ -286,6 +329,12 @@ public class AdjustmentPanel extends Panel {
             ImportBuffer importBuffer = (ImportBuffer) block;
             if (blockChanged) materialID = importBuffer.getImportMaterial().getID();
             showImporterInfo(importBuffer, materialID);
+        }
+        if (block instanceof Inserter) {
+            Inserter inserter = (Inserter) block;
+            Material mat = inserter.getTargetMaterial();
+            if (blockChanged) materialID = mat != null ? mat.getID() : -1;
+            showInserterInfo(inserter, materialID);
         }
         if (block instanceof Conveyor) showConveyorInfo((Conveyor) block);
         if (block instanceof Buffer) showBufferInfo((Buffer) block);
@@ -481,6 +530,34 @@ public class AdjustmentPanel extends Panel {
             inpBtn[i].visible = false;
             outBtn[i].visible = false;
         }
+    }
+
+
+
+    protected void showInserterInfo(Inserter inserter, int materialID) {
+        Material material = Material.getMaterial(materialID);
+
+        caption.setText("Inserter robot");
+        centerButton.visible = true;
+        centerButton.setText("");
+
+        if (material==null) centerButton.setBackground(null);
+        else centerButton.setBackground(material.getImage());
+
+        leftButton.visible = true;
+        centerButton.setLocalBounds( 140, 500, 100, 100);
+        rightButton.visible = true;
+
+        inputsCaption.visible = false;
+        outputsCaption.visible = true;
+        outputsCaption.setText("");
+
+        for (int i=0; i<4; i++) {
+            inpBtn[i].visible = false;
+            outBtn[i].visible = false;
+        }
+
+        changeoverButton.visible = true;
     }
 
 }

@@ -9,6 +9,7 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.buffer.ImportBuffer;
+import com.axiom.operatio.model.production.inserter.Inserter;
 import com.axiom.operatio.model.production.machine.Machine;
 import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
@@ -27,6 +28,7 @@ public class OutputChooser extends Panel {
 
     public static final int MACHINE = 1;
     public static final int IMPORTER = 2;
+    public static final int INSERTER = 3;
 
     private ProductionScene scene;
     private AdjustmentPanel adjustmentPanel;
@@ -36,7 +38,7 @@ public class OutputChooser extends Panel {
     private int blockType = 0;
     private Machine machine = null;
     private ImportBuffer importer = null;
-
+    private Inserter inserter = null;
 
     public OutputChooser(ProductionScene scene, AdjustmentPanel adjustmentPanel) {
         super();
@@ -78,6 +80,7 @@ public class OutputChooser extends Panel {
         for (ItemWidget widget : itemWidget) {
             widget.setBackground(null);
             widget.setColor(ITEM_BACKGROUND);
+            widget.setTag("-1");
         }
     }
 
@@ -101,8 +104,6 @@ public class OutputChooser extends Panel {
         }
 
         clearAll();
-
-
         MachineType type = machine.getType();
         Operation[] operations = type.getOperations();
 
@@ -115,6 +116,7 @@ public class OutputChooser extends Panel {
                 if (machine.getOperation()==operations[i]) {
                     itemWidget[index].setColor(ITEM_SELECTED);
                 }
+
                 index++;
             }
         }
@@ -137,12 +139,45 @@ public class OutputChooser extends Panel {
             if (permissions.isAvailable(material)) {
                 itemWidget[index].setBackground(material.getImage());
                 itemWidget[index].setTag("" + i);
+
+                if (importBuffer.getImportMaterial()==material) {
+                    itemWidget[index].setColor(ITEM_SELECTED);
+                }
+
                 index++;
             }
         }
 
         blockType = IMPORTER;
         importer = importBuffer;
+    }
+
+
+    public void showInserterMaterials(Inserter inserter) {
+
+        clearAll();
+
+        GamePermissions permissions = scene.getProduction().getPermissions();
+
+        int index = 0;
+        itemWidget[index].setTag("" + -1);
+        if (inserter.getTargetMaterial()==null) itemWidget[index].setColor(ITEM_SELECTED);
+        index++;
+
+        for (int i=0; i < Material.getMaterialsAmount(); i++) {
+            Material material = Material.getMaterial(i);
+            if (permissions.isAvailable(material) && material != null) {
+                itemWidget[index].setBackground(material.getImage());
+                itemWidget[index].setTag("" + i);
+                if (inserter.getTargetMaterial()==material) {
+                    itemWidget[index].setColor(ITEM_SELECTED);
+                }
+                index++;
+            }
+        }
+
+        blockType = INSERTER;
+        this.inserter = inserter;
     }
 
 
@@ -168,7 +203,14 @@ public class OutputChooser extends Panel {
                 adjustmentPanel.selectImporterMaterial(importer, matID);
                 unselectAll();
                 itemWidget.setColor(ITEM_SELECTED);
+            } else if (blockType==INSERTER) {
+                int matID = Integer.parseInt(itemWidget.getTag());
+                adjustmentPanel.showInserterInfo(inserter, matID);
+                adjustmentPanel.selectInserterMaterial(inserter, matID);
+                unselectAll();
+                itemWidget.setColor(ITEM_SELECTED);
             }
+
         }
     };
 
