@@ -8,7 +8,6 @@ import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.materials.Item;
-import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.BlockRenderer;
 
@@ -55,7 +54,7 @@ public class InserterRenderer extends BlockRenderer {
 
         if (item != null) {
             float cycleTime = production.getCycleMilliseconds();          // Длительность цикла в мс.
-            float deliveryTime = Inserter.DELIVERY_CYCLES * cycleTime;    // Время доставки в мс.
+            float deliveryTime = inserter.getDeliveryCycles() * cycleTime;    // Время доставки в мс.
             progress = (now - item.getTimeOwned()) / deliveryTime;          // Прогресс движения
             if (progress > 1) progress = 1;
         }
@@ -72,9 +71,16 @@ public class InserterRenderer extends BlockRenderer {
 
     private void drawHand(Camera camera, float x, float y, float width, float height, float progress) {
 
-        float startAngle = directionToRadians(inserter.getInputDirection());
-        float stopAngle = directionToRadians(inserter.getOutputDirection());
-        float rotation = (stopAngle - startAngle) * progress + startAngle;
+        int inpDir = inserter.getInputDirection();
+        int outDir = inserter.getOutputDirection();
+        float startAngle = directionToRadians(inpDir);
+        float stopAngle = directionToRadians(outDir);
+        float rotation;
+
+        if (inpDir==DOWN && outDir==RIGHT) stopAngle = (float) Math.PI * 2; else
+        if (inpDir==RIGHT && outDir==DOWN) stopAngle = (float) -(Math.PI / 2);
+
+        rotation = (stopAngle - startAngle) * progress + startAngle;
 
         handSprite.setRotation(rotation);
         handSprite.draw(camera, x, y , width, height);
@@ -97,12 +103,13 @@ public class InserterRenderer extends BlockRenderer {
         Channel<Item> inputQueue = inserter.getInputQueue();
         Item item = inputQueue.get(0);
         if (item==null) return;
-
-        float ax = (float) (Math.cos(handSprite.getRotation()) * width) + x + width / 2;
-        float ay = (float) (Math.sin(handSprite.getRotation()) * height) + y + height / 2;
+        float halfWidth = width * 0.5f;
+        float halfHeight = height * 0.5f;
+        float ax = (float) (Math.cos(handSprite.getRotation()) * width) + x + halfWidth;
+        float ay = (float) (Math.sin(handSprite.getRotation()) * height) + y + halfHeight;
         Sprite itemSprite = item.getMaterial().getImage();
         itemSprite.setZOrder(9);
-        itemSprite.draw(camera, ax - width / 4, ay - height / 4, width / 2, height / 2);
+        itemSprite.draw(camera, ax - halfWidth * 0.5f, ay - halfHeight * 0.5f, halfWidth, halfHeight);
     }
 
 

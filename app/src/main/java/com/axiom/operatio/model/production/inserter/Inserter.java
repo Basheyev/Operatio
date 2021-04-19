@@ -14,7 +14,7 @@ import org.json.JSONObject;
 public class Inserter extends Block implements JSONSerializable {
 
     public static final double CYCLE_COST = 0.02f;
-    public static final int DELIVERY_CYCLES = 2;
+    public static final int CYCLES_PER_90_DEGREES = 2;
     public static final int MAX_CAPACITY = 1;
     public static final int PRICE = 200;
 
@@ -44,8 +44,9 @@ public class Inserter extends Block implements JSONSerializable {
         if (item==null) return;
         long cyclesPassed = production.getCurrentCycle() - item.getCycleOwned();
 
+        long deliveryCycles = getDeliveryCycles();
         // если прошло время циклов
-        if (cyclesPassed >= DELIVERY_CYCLES) {
+        if (cyclesPassed >= deliveryCycles) {
             // Берём блок который находится по направлению вывода конвейера
             Block outputBlock = production.getBlockAt(this, outputDirection);
             // Если есть выходной блок
@@ -55,6 +56,15 @@ public class Inserter extends Block implements JSONSerializable {
             }
         }
 
+    }
+
+
+    protected long getDeliveryCycles() {
+        if (inputDirection==RIGHT && outputDirection==LEFT) return CYCLES_PER_90_DEGREES * 2; else
+        if (inputDirection==LEFT && outputDirection==RIGHT) return CYCLES_PER_90_DEGREES * 2; else
+        if (inputDirection==UP && outputDirection==DOWN) return CYCLES_PER_90_DEGREES * 2; else
+        if (inputDirection==DOWN && outputDirection==UP) return CYCLES_PER_90_DEGREES * 2;
+        else return CYCLES_PER_90_DEGREES;
     }
 
 
