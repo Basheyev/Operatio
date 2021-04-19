@@ -185,7 +185,6 @@ public class ScenesPanel extends Panel {
             else if (tag.equals(TECHNOLOGY)) changeScene(TECHNOLOGY);
             else if (tag.equals(REPORT)) changeScene(REPORT);
             else if (tag.equals(PAUSE)) {
-                // fixme Переключатель скорости
                 if (production.isPaused()) {
                     production.setPaused(false);
                     setPausedButtonState(false);
