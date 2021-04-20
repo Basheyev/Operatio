@@ -95,7 +95,13 @@ public class Inserter extends Block implements JSONSerializable {
         if (inputBlock instanceof Conveyor) {
             Channel<Item> inputQueue = inputBlock.getInputQueue();
             Item item = inputQueue.peek();
-            if (item == null) return;
+            if (item == null) {
+                item = inputBlock.peek();
+                if (item==null) return;
+                if (!push(item)) return;             // Если не получилось добавить к себе уходим
+                inputBlock.poll();                   // Если получилось - удаляем из блока входа
+                return;
+            }
             if (targetMaterial != null && item.getMaterial() != targetMaterial) return;
             if (!push(item)) return;        // Если не получилось добавить к себе уходим
             inputQueue.poll();
