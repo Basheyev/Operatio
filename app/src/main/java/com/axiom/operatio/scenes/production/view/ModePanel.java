@@ -2,12 +2,10 @@ package com.axiom.operatio.scenes.production.view;
 
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
@@ -15,6 +13,7 @@ import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.scenes.production.ProductionScene;
+import com.axiom.operatio.scenes.production.ProductionSceneUI;
 
 import java.util.ArrayList;
 

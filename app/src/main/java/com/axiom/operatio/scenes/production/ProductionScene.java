@@ -16,8 +16,7 @@ import com.axiom.operatio.scenes.report.ReportScene;
 import com.axiom.operatio.scenes.production.view.BlocksPanel;
 import com.axiom.operatio.scenes.production.controller.InputHandler;
 import com.axiom.operatio.scenes.production.view.ModePanel;
-import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
-import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
+import com.axiom.operatio.scenes.production.view.adjustment.AdjustmentPanel;
 import com.axiom.operatio.scenes.inventory.InventoryScene;
 import com.axiom.operatio.scenes.technology.TechnologyScene;
 

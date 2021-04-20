@@ -8,8 +8,8 @@ import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.block.Block;
-import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
-import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
+import com.axiom.operatio.scenes.production.view.adjustment.AdjustmentPanel;
+import com.axiom.operatio.scenes.production.ProductionSceneUI;
 
 /**
  * Обработчик удаления блока

@@ -3,15 +3,12 @@ package com.axiom.operatio.scenes.production.controller;
 import android.view.MotionEvent;
 
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.operatio.model.gameplay.GameMission;
-import com.axiom.operatio.model.gameplay.MissionManager;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.scenes.production.ProductionScene;
-import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
-import com.axiom.operatio.scenes.production.view.HelperPanel;
-import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
+import com.axiom.operatio.scenes.production.view.adjustment.AdjustmentPanel;
+import com.axiom.operatio.scenes.production.ProductionSceneUI;
 
 /**
  * Обработчик движения камеры

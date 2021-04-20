@@ -1,16 +1,12 @@
-package com.axiom.operatio.scenes.production.view;
+package com.axiom.operatio.scenes.production.view.adjustment;
 
 import android.graphics.Color;
 import android.view.MotionEvent;
 
-import com.axiom.atom.R;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.atom.engine.sound.SoundRenderer;
-import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
-import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
@@ -25,6 +21,7 @@ import com.axiom.operatio.model.production.machine.Operation;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.scenes.common.ItemWidget;
 import com.axiom.operatio.scenes.production.ProductionScene;
+import com.axiom.operatio.scenes.production.view.HelperPanel;
 
 import static android.graphics.Color.DKGRAY;
 import static android.graphics.Color.GRAY;
@@ -36,13 +33,13 @@ import static android.graphics.Color.WHITE;
 public class AdjustmentPanel extends Panel {
 
     private static final int panelColor = 0xCC505050;
-    private static final String BLOCK_INFO = "Block information";
-    private static final String CHOOSER = "Chooser";
-    private static final String LEFT = "<";
-    private static final String RIGHT = ">";
-    private static final String INPUTS = "Input materials:";
-    private static final String OUTPUTS = "Output materials:";
-    private static final String CHANGEOVER = "Changeover";
+    protected static final String BLOCK_INFO = "Block information";
+    protected static final String CHOOSER = "Chooser";
+    protected static final String LEFT = "<";
+    protected static final String RIGHT = ">";
+    protected static final String INPUTS = "Input materials:";
+    protected static final String OUTPUTS = "Output materials:";
+    protected static final String CHANGEOVER = "Changeover";
 
     private Production production;
     private ProductionScene productionScene;
@@ -55,13 +52,13 @@ public class AdjustmentPanel extends Panel {
     private OutputChooser outputChooser;
 
     private int chosenOperationID = 0;
-    private int materialID = 0;
+    private int chosenMaterialID = 0;
 
     private long lastProductionCycle;
 
     private ItemWidget[] inpBtn;
     private ItemWidget[] outBtn;
-    private int tickSound;
+
 
 
     public AdjustmentPanel(Production production, ProductionScene scene) {
@@ -72,12 +69,11 @@ public class AdjustmentPanel extends Panel {
         setColor(panelColor);
         inpBtn = new ItemWidget[4];
         outBtn = new ItemWidget[4];
-        tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
-
         outputChooser = new OutputChooser(scene, this);
         outputChooser.visible = false;
         scene.getSceneWidget().addChild(outputChooser);
 
+        clickListener = new AdjustmentHandler(this, outputChooser);
         buildButtons();
     }
 
@@ -140,8 +136,9 @@ public class AdjustmentPanel extends Panel {
 
     @Override
     public void draw(Camera camera) {
-        long currentCycle = production.getCurrentCycle();
+
         // Если прошел один цикл производства обновить информацию
+        long currentCycle = production.getCurrentCycle();
         if (currentCycle > lastProductionCycle) {
             if (chosenBlock != null) showBlockInfo(chosenBlock);
             lastProductionCycle = currentCycle;
@@ -151,51 +148,6 @@ public class AdjustmentPanel extends Panel {
     }
 
 
-    private ClickListener clickListener = new ClickListener() {
-        @Override
-        public void onClick(Widget w) {
-            SoundRenderer.playSound(tickSound);
-            Button button = (Button) w;
-            if (chosenBlock != null) {
-                if (chosenBlock instanceof Machine) {
-                    machineAdjustmentClick(button, (Machine) chosenBlock);
-                } else if (chosenBlock instanceof ImportBuffer) {
-                    importBufferAdjustmentClick(button, (ImportBuffer) chosenBlock);
-                } else if (chosenBlock instanceof Inserter) {
-                    inserterAdjustmentClick(button, (Inserter) chosenBlock);
-                }
-            }
-        }
-    };
-
-
-
-    private void machineAdjustmentClick(Button button, Machine machine) {
-        String tag = button.getTag();
-        switch (tag) {
-            case CHOOSER:
-                outputChooser.showMachineOutputs(machine);
-                outputChooser.visible = !outputChooser.visible;
-                break;
-            case LEFT:
-                selectMachineOperation(machine, chosenOperationID - 1);
-                showMachineInfo(machine, chosenOperationID);
-                if (outputChooser.visible) outputChooser.showMachineOutputs(machine);
-                outputChooser.visible = false;
-                break;
-            case RIGHT:
-                selectMachineOperation(machine, chosenOperationID + 1);
-                showMachineInfo(machine, chosenOperationID);
-                if (outputChooser.visible) outputChooser.showMachineOutputs(machine);
-                outputChooser.visible = false;
-                break;
-            case CHANGEOVER:
-                machine.setOperation(chosenOperationID);
-                changeoverButton.setColor(GRAY);
-                outputChooser.visible = false;
-                break;
-        }
-    }
 
 
     protected void selectMachineOperation(Machine machine, int opID) {
@@ -208,39 +160,14 @@ public class AdjustmentPanel extends Panel {
     }
 
 
-    private void importBufferAdjustmentClick(Button button, ImportBuffer importBuffer) {
-        String tag = button.getTag();
-        switch (tag) {
-            case CHOOSER:
-                outputChooser.showImporterMaterials(importBuffer);
-                outputChooser.visible = !outputChooser.visible;
-                break;
-            case LEFT:
-                selectImporterMaterial(importBuffer, materialID - 1);
-                showImporterInfo(importBuffer, materialID);
-                outputChooser.visible = false;
-                break;
-            case RIGHT:
-                selectImporterMaterial(importBuffer, materialID + 1);
-                showImporterInfo(importBuffer, materialID);
-                outputChooser.visible = false;
-                break;
-            case CHANGEOVER:
-                importBuffer.setImportMaterial(Material.getMaterial(materialID));
-                setChangeoverState(false);
-                outputChooser.visible = false;
-                break;
-        }
-    }
-
 
     protected void selectImporterMaterial(ImportBuffer importBuffer, int matID) {
         int materialsAmount = Material.getMaterialsAmount();
         int currentMaterial = importBuffer.getImportMaterial().getID();
         if (matID < 0) matID = 0;
         if (matID > materialsAmount) matID = materialsAmount - 1;
-        materialID = matID;
-        if (materialID == currentMaterial) setChangeoverState(false); else setChangeoverState(true);
+        chosenMaterialID = matID;
+        if (chosenMaterialID == currentMaterial) setChangeoverState(false); else setChangeoverState(true);
     }
 
 
@@ -252,35 +179,9 @@ public class AdjustmentPanel extends Panel {
 
         if (matID < -1) matID = -1;
         if (matID > materialsAmount) matID = materialsAmount - 1;
-        materialID = matID;
+        chosenMaterialID = matID;
 
-        if (materialID == currentMaterial) setChangeoverState(false); else setChangeoverState(true);
-    }
-
-
-    private void inserterAdjustmentClick(Button button, Inserter inserter) {
-        String tag = button.getTag();
-        switch (tag) {
-            case CHOOSER:
-                outputChooser.showInserterMaterials(inserter);
-                outputChooser.visible = !outputChooser.visible;
-                break;
-            case LEFT:
-                selectInserterMaterial(inserter, materialID - 1);
-                showInserterInfo(inserter, materialID);
-                outputChooser.visible = false;
-                break;
-            case RIGHT:
-                selectInserterMaterial(inserter, materialID + 1);
-                showInserterInfo(inserter, materialID);
-                outputChooser.visible = false;
-                break;
-            case CHANGEOVER:
-                inserter.setTargetMaterial(Material.getMaterial(materialID));
-                setChangeoverState(false);
-                outputChooser.visible = false;
-                break;
-        }
+        if (chosenMaterialID == currentMaterial) setChangeoverState(false); else setChangeoverState(true);
     }
 
 
@@ -327,14 +228,14 @@ public class AdjustmentPanel extends Panel {
         }
         if (block instanceof ImportBuffer) {
             ImportBuffer importBuffer = (ImportBuffer) block;
-            if (blockChanged) materialID = importBuffer.getImportMaterial().getID();
-            showImporterInfo(importBuffer, materialID);
+            if (blockChanged) chosenMaterialID = importBuffer.getImportMaterial().getID();
+            showImporterInfo(importBuffer, chosenMaterialID);
         }
         if (block instanceof Inserter) {
             Inserter inserter = (Inserter) block;
             Material mat = inserter.getTargetMaterial();
-            if (blockChanged) materialID = mat != null ? mat.getID() : -1;
-            showInserterInfo(inserter, materialID);
+            if (blockChanged) chosenMaterialID = mat != null ? mat.getID() : -1;
+            showInserterInfo(inserter, chosenMaterialID);
         }
         if (block instanceof Conveyor) showConveyorInfo((Conveyor) block);
         if (block instanceof Buffer) showBufferInfo((Buffer) block);
@@ -351,18 +252,20 @@ public class AdjustmentPanel extends Panel {
     public void hideBlockInfo() {
         chosenBlock = null;
         caption.setText("Block information");
+        hideButtons();
+        hideInputsOutputs();
+        outputChooser.visible = false;
+        visible = false;
+    }
+
+
+    private void hideButtons() {
         centerButton.visible = false;
         leftButton.visible = false;
         rightButton.visible = false;
         inputsCaption.visible = false;
         outputsCaption.visible = false;
         changeoverButton.visible = false;
-        for (int i=0; i<4; i++) {
-            inpBtn[i].visible = false;
-            outBtn[i].visible = false;
-        }
-        visible = false;
-        outputChooser.visible = false;
     }
 
 
@@ -380,15 +283,13 @@ public class AdjustmentPanel extends Panel {
         Material[] outputMaterials = currentOperation.getOutputs();
         int[] outputAmount = currentOperation.getOutputAmount();
 
-        leftButton.visible = true;
+        caption.setText(machineType.getName() + " operation");
         centerButton.visible = true;
+        centerButton.setText("" + opID + "/" + (allOperations.length-1));
         centerButton.setLocalBounds( 140, 500, 100, 100);
         centerButton.setBackground(null);
+        leftButton.visible = true;
         rightButton.visible = true;
-
-        caption.setText(machineType.getName() + " operation");
-
-        centerButton.setText("" + opID + "/" + (allOperations.length-1));
 
         inputsCaption.visible = true;
         inputsCaption.setText(INPUTS);
@@ -427,13 +328,14 @@ public class AdjustmentPanel extends Panel {
      */
     private void showBufferInfo(Buffer buffer) {
         caption.setText("Buffer contains");
+
+        hideButtons();
+
         centerButton.visible = true;
         centerButton.setText("" + (buffer.getItemsAmount()) + "/" + (buffer.getCapacity()-1));
         centerButton.setBackground(null);
         centerButton.setLocation(40, 500);
         centerButton.setSize(300,100);
-        leftButton.visible = false;
-        rightButton.visible = false;
 
         inputsCaption.setText("Stored materials");
         for (int i=0; i<4; i++) {
@@ -449,8 +351,6 @@ public class AdjustmentPanel extends Panel {
             outBtn[i].visible = false;
         }
 
-        outputsCaption.setText("");
-        changeoverButton.visible = false;
     }
 
 
@@ -459,26 +359,14 @@ public class AdjustmentPanel extends Panel {
      * @param conveyor конвейер
      */
     private void showConveyorInfo(Conveyor conveyor) {
-        caption.setText("Conveyor contains");
+        hideButtons();
+        caption.setText("Conveyor");
+        centerButton.visible = true;
         centerButton.setText("" + (conveyor.getItemsAmount()));
         centerButton.setBackground(null);
         centerButton.setLocation(40, 500);
         centerButton.setSize(300,100);
-        leftButton.visible = false;
-        rightButton.visible = false;
-
-        inputsCaption.setText("Processing:");
-        outputsCaption.setText("");
-
-        // Отобразить материалы внутри конвейера
-        for (int i=0; i<4; i++) {
-            inpBtn[i].visible = true;
-            inpBtn[i].setBackground(null);
-            inpBtn[i].setText("");
-            outBtn[i].visible = false;
-        }
-
-        changeoverButton.visible = false;
+        hideInputsOutputs();
     }
 
 
@@ -490,28 +378,25 @@ public class AdjustmentPanel extends Panel {
     protected void showImporterInfo(ImportBuffer importBuffer, int materialID) {
         Material material = Material.getMaterial(materialID);
 
+        hideButtons();
+        hideInputsOutputs();
+
         caption.setText("Importer");
         centerButton.visible = true;
         centerButton.setText("");
-        centerButton.setBackground(material.getImage());
-
-        leftButton.visible = true;
+        centerButton.setBackground(material != null ? material.getImage() : null);
         centerButton.setLocalBounds( 140, 500, 100, 100);
+        leftButton.visible = true;
         rightButton.visible = true;
-
-        inputsCaption.visible = true;
-        inputsCaption.setText(material.getName() + "\n"
-                + "Balance: " + production.getInventory().getBalance(material) + " items");
-        outputsCaption.visible = true;
-        outputsCaption.setText("");
-
-        for (int i=0; i<4; i++) {
-            inpBtn[i].visible = false;
-            outBtn[i].visible = false;
-        }
-
         changeoverButton.visible = true;
+
+        long balance = production.getInventory().getBalance(material);
+        String name = material != null ? material.getName() : "";
+        String balanceStr = name + "\n" + "Balance: " + balance + " items";
+        inputsCaption.setText(balanceStr);
+        inputsCaption.visible = true;
     }
+
 
     /**
      * Отображает информаци об экспортере на склад
@@ -519,45 +404,47 @@ public class AdjustmentPanel extends Panel {
      */
     private void showExporterInfo(ExportBuffer exportBuffer) {
         caption.setText("Exporter");
-        centerButton.visible = false;
-        leftButton.visible = false;
-        rightButton.visible = false;
-        inputsCaption.visible = false;
-        outputsCaption.visible = false;
-        changeoverButton.visible = false;
-
-        for (int i=0; i<4; i++) {
-            inpBtn[i].visible = false;
-            outBtn[i].visible = false;
-        }
+        hideButtons();
+        hideInputsOutputs();
     }
-
 
 
     protected void showInserterInfo(Inserter inserter, int materialID) {
         Material material = Material.getMaterial(materialID);
 
-        caption.setText("Inserter robot");
+        hideButtons();
+        hideInputsOutputs();
+
+        caption.setText("Inserter");
         centerButton.visible = true;
         centerButton.setText("");
-
+        centerButton.setLocalBounds( 140, 500, 100, 100);
         if (material==null) centerButton.setBackground(null);
         else centerButton.setBackground(material.getImage());
 
         leftButton.visible = true;
-        centerButton.setLocalBounds( 140, 500, 100, 100);
         rightButton.visible = true;
+        changeoverButton.visible = true;
+    }
 
-        inputsCaption.visible = false;
-        outputsCaption.visible = true;
-        outputsCaption.setText("");
 
+    private void hideInputsOutputs() {
         for (int i=0; i<4; i++) {
             inpBtn[i].visible = false;
             outBtn[i].visible = false;
         }
-
-        changeoverButton.visible = true;
     }
 
+
+    public Block getChosenBlock() {
+        return chosenBlock;
+    }
+
+    public int getChosenOperationID() {
+        return chosenOperationID;
+    }
+
+    public int getChosenMaterialID() {
+        return chosenMaterialID;
+    }
 }

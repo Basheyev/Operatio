@@ -26,6 +26,8 @@ import com.axiom.operatio.model.production.machine.Machine;
 import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
 import com.axiom.operatio.scenes.production.ProductionScene;
+import com.axiom.operatio.scenes.production.ProductionSceneUI;
+import com.axiom.operatio.scenes.production.view.adjustment.AdjustmentPanel;
 import com.axiom.operatio.scenes.production.controller.BlockAddMoveHandler;
 
 /**

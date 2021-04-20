@@ -11,9 +11,9 @@ import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockAdjuster;
 import com.axiom.operatio.scenes.production.ProductionScene;
-import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
+import com.axiom.operatio.scenes.production.view.adjustment.AdjustmentPanel;
 import com.axiom.operatio.scenes.production.view.HelperPanel;
-import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
+import com.axiom.operatio.scenes.production.ProductionSceneUI;
 
 /**
  * Обработчик добавления и перемещения блока

@@ -6,8 +6,8 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockAdjuster;
-import com.axiom.operatio.scenes.production.view.AdjustmentPanel;
-import com.axiom.operatio.scenes.production.view.ProductionSceneUI;
+import com.axiom.operatio.scenes.production.view.adjustment.AdjustmentPanel;
+import com.axiom.operatio.scenes.production.ProductionSceneUI;
 
 /**
  * Обработчик вращения направлений входов/выходов блока

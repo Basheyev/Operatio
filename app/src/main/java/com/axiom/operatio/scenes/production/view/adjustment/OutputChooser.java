@@ -1,4 +1,4 @@
-package com.axiom.operatio.scenes.production.view;
+package com.axiom.operatio.scenes.production.view.adjustment;
 
 import android.view.MotionEvent;
 

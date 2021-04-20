@@ -1,16 +1,16 @@
-package com.axiom.operatio.scenes.production.view;
+package com.axiom.operatio.scenes.production;
 
 import android.content.res.Resources;
 
 import com.axiom.atom.R;
-import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
-import com.axiom.atom.engine.ui.listeners.ClickListener;
-import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.ScenesPanel;
-import com.axiom.operatio.scenes.production.ProductionScene;
+import com.axiom.operatio.scenes.production.view.adjustment.AdjustmentPanel;
+import com.axiom.operatio.scenes.production.view.BlocksPanel;
+import com.axiom.operatio.scenes.production.view.HelperPanel;
+import com.axiom.operatio.scenes.production.view.ModePanel;
 
 /**
  * Пользовательский интерфейс сцены производства
