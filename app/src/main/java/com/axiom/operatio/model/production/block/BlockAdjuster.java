@@ -126,13 +126,13 @@ public class BlockAdjuster {
             block.flipDirection();
             int newOutDir = nextClockwiseDirection(block.outputDirection);
             if (newOutDir == block.inputDirection) newOutDir = nextClockwiseDirection(newOutDir);
-            block.setDirections(side, newOutDir);
+            block.setDirections(block.inputDirection, newOutDir);
             block.directionFlip = false;
         } else if (isDestination) {
             block.flipDirection();
             int newInpDir = nextClockwiseDirection(block.inputDirection);
             if (newInpDir == block.outputDirection) newInpDir = nextClockwiseDirection(newInpDir);
-            block.setDirections(newInpDir, side);
+            block.setDirections(newInpDir, block.outputDirection);
             block.directionFlip = false;
         } else {
             rotateClockwise(block);
