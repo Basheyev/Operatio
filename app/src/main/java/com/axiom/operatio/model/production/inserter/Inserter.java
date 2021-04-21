@@ -71,6 +71,7 @@ public class Inserter extends Block implements JSONSerializable {
 
     public void setTargetMaterial(Material material) {
         targetMaterial = material;
+        input.clear();
     }
 
 
