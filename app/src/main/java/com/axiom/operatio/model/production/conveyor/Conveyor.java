@@ -7,6 +7,7 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.production.buffer.ExportBuffer;
+import com.axiom.operatio.model.production.machine.Machine;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -144,18 +145,16 @@ public class Conveyor extends Block implements JSONSerializable {
             if (leftBlock==null && rightBlock==null) return false;
 
             if (isJoinedConveyor(leftBlock)) {
-                Conveyor leftConveyor = (Conveyor) leftBlock;
-                Item item = leftConveyor.peek();
+                Item item = leftBlock.peek();
                 if (item!=null && push(item)) {
-                    leftConveyor.poll();
+                    leftBlock.poll();
                 }
             }
 
             if (isJoinedConveyor(rightBlock)) {
-                Conveyor rightConveyor = (Conveyor) rightBlock;
-                Item item = rightConveyor.peek();
+                Item item = rightBlock.peek();
                 if (item!=null && push(item)) {
-                    rightConveyor.poll();
+                    rightBlock.poll();
                 }
             }
         }
@@ -165,9 +164,9 @@ public class Conveyor extends Block implements JSONSerializable {
 
     protected boolean isJoinedConveyor(Block block) {
         if (block==null) return false;
-        boolean isConveyor = (block instanceof Conveyor);
+        boolean isConveyorOrMachine = (block instanceof Conveyor) || (block instanceof Machine);
         boolean hasOutToThisBlock = production.getBlockAt(block, block.getOutputDirection()) == this;
-        return isConveyor && hasOutToThisBlock;
+        return isConveyorOrMachine && hasOutToThisBlock;
     }
 
 
