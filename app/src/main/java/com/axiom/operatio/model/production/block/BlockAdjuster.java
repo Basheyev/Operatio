@@ -91,6 +91,11 @@ public class BlockAdjuster {
 
         switch (neighborsCount) {
             case 0:
+                if (!block.isStraight()) {
+                    int inDir = block.inputDirection;
+                    int outDir = oppositeDirection(inDir);
+                    block.setDirections(inDir, outDir);
+                }
                 rotateClockwise90(block);
                 break;
             case 1:
@@ -126,13 +131,15 @@ public class BlockAdjuster {
             block.flipDirection();
             int newOutDir = nextClockwiseDirection(block.outputDirection);
             if (newOutDir == block.inputDirection) newOutDir = nextClockwiseDirection(newOutDir);
-            block.setDirections(block.inputDirection, newOutDir);
+            if (newOutDir == side) newOutDir = nextClockwiseDirection(newOutDir);
+            block.setDirections(side, newOutDir);
             block.directionFlip = false;
         } else if (isDestination) {
             block.flipDirection();
             int newInpDir = nextClockwiseDirection(block.inputDirection);
             if (newInpDir == block.outputDirection) newInpDir = nextClockwiseDirection(newInpDir);
-            block.setDirections(newInpDir, block.outputDirection);
+            if (newInpDir == side) newInpDir = nextClockwiseDirection(newInpDir);
+            block.setDirections(newInpDir, side);
             block.directionFlip = false;
         } else {
             rotateClockwise(block);
