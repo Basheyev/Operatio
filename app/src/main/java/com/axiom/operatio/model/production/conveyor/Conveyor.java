@@ -143,7 +143,7 @@ public class Conveyor extends Block implements JSONSerializable {
             Block rightBlock = production.getBlockAt(this, getRightDirection());
             if (leftBlock==null && rightBlock==null) return false;
 
-            if (isAccessibleConveyor(leftBlock)) {
+            if (isJoinedConveyor(leftBlock)) {
                 Conveyor leftConveyor = (Conveyor) leftBlock;
                 Item item = leftConveyor.peek();
                 if (item!=null && push(item)) {
@@ -151,7 +151,7 @@ public class Conveyor extends Block implements JSONSerializable {
                 }
             }
 
-            if (isAccessibleConveyor(rightBlock)) {
+            if (isJoinedConveyor(rightBlock)) {
                 Conveyor rightConveyor = (Conveyor) rightBlock;
                 Item item = rightConveyor.peek();
                 if (item!=null && push(item)) {
@@ -163,7 +163,7 @@ public class Conveyor extends Block implements JSONSerializable {
     }
 
 
-    protected boolean isAccessibleConveyor(Block block) {
+    protected boolean isJoinedConveyor(Block block) {
         if (block==null) return false;
         boolean isConveyor = (block instanceof Conveyor);
         boolean hasOutToThisBlock = production.getBlockAt(block, block.getOutputDirection()) == this;
