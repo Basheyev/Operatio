@@ -112,9 +112,9 @@ public class Machine extends Block implements JSONSerializable {
      * Забирает предметы из блока по направлению входа
      */
     @Override
-    protected void grabItemsFromInputDirection() {
+    protected boolean grabItemsFromInputDirection() {
         Block inputBlock = production.getBlockAt(this, inputDirection);
-        if (inputBlock==null) return;     // Если на входящем направление ничего нет
+        if (inputBlock==null) return false;     // Если на входящем направление ничего нет
 
         // Если выход входного блока смотрит на наш вход или он не имеет направления (буфер)
         int neighborOutputDirection = inputBlock.getOutputDirection();
@@ -123,7 +123,7 @@ public class Machine extends Block implements JSONSerializable {
 
             // Проверяем количество и тип входящих материалов
             // Считаем сколько не хватает еще материалов и какого вида, если хватает уходим
-            if (operationInputVerified(matCounter)) return;
+            if (operationInputVerified(matCounter)) return false;
 
             // Пытаемся взять материалы по списку входящих материалов
             for (int i = 0; i<operation.getInputs().length; i++) {
@@ -151,7 +151,7 @@ public class Machine extends Block implements JSONSerializable {
             }
 
         }
-
+        return true;
     }
 
 

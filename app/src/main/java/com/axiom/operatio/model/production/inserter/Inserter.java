@@ -88,30 +88,30 @@ public class Inserter extends Block implements JSONSerializable {
     }
 
 
-    protected void grabItemsFromInputDirection() {
+    protected boolean grabItemsFromInputDirection() {
         Block inputBlock = production.getBlockAt(this, inputDirection);
-        if (inputBlock==null) return;        // Если на входящем направление ничего нет
+        if (inputBlock==null) return false;     // Если на входящем направление ничего нет
 
         if (inputBlock instanceof Conveyor) {
             Channel<Item> inputQueue = inputBlock.getInputQueue();
             Item item = inputQueue.peek();
             if (item == null) {
                 item = inputBlock.peek();
-                if (item==null) return;
-                if (!push(item)) return;             // Если не получилось добавить к себе уходим
+                if (item==null) return false;
+                if (!push(item)) return false;       // Если не получилось добавить к себе уходим
                 inputBlock.poll();                   // Если получилось - удаляем из блока входа
-                return;
+                return true;
             }
-            if (targetMaterial != null && item.getMaterial() != targetMaterial) return;
-            if (!push(item)) return;        // Если не получилось добавить к себе уходим
+            if (targetMaterial != null && item.getMaterial() != targetMaterial) return false;
+            if (!push(item)) return false;        // Если не получилось добавить к себе уходим
             inputQueue.poll();
         } else {
             Item item = inputBlock.peek();        // Пытаемся взять предмет из блока входа
-            if (targetMaterial != null && item.getMaterial() != targetMaterial) return;
-            if (!push(item)) return;             // Если не получилось добавить к себе уходим
+            if (targetMaterial != null && item.getMaterial() != targetMaterial) return false;
+            if (!push(item)) return false;             // Если не получилось добавить к себе уходим
             inputBlock.poll();                   // Если получилось - удаляем из блока входа
         }
-
+        return true;
     }
 
 

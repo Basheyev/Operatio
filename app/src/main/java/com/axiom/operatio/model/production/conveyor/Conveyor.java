@@ -1,6 +1,5 @@
 package com.axiom.operatio.model.production.conveyor;
 
-import com.axiom.atom.engine.data.Channel;
 import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.production.block.BlockBuilder;
 import com.axiom.operatio.model.production.buffer.Buffer;
@@ -132,6 +131,43 @@ public class Conveyor extends Block implements JSONSerializable {
             }
         }
 
+    }
+
+
+    @Override
+    protected boolean grabItemsFromInputDirection() {
+        // если по основному направлению входа нет предметов, пробуем взять с боковых
+        if (!super.grabItemsFromInputDirection()) {
+            if (!isStraight()) return false;
+            Block leftBlock = production.getBlockAt(this, getLeftDirection());
+            Block rightBlock = production.getBlockAt(this, getRightDirection());
+            if (leftBlock==null && rightBlock==null) return false;
+
+            if (isAccessibleConveyor(leftBlock)) {
+                Conveyor leftConveyor = (Conveyor) leftBlock;
+                Item item = leftConveyor.peek();
+                if (item!=null && push(item)) {
+                    leftConveyor.poll();
+                }
+            }
+
+            if (isAccessibleConveyor(rightBlock)) {
+                Conveyor rightConveyor = (Conveyor) rightBlock;
+                Item item = rightConveyor.peek();
+                if (item!=null && push(item)) {
+                    rightConveyor.poll();
+                }
+            }
+        }
+        return true;
+    }
+
+
+    protected boolean isAccessibleConveyor(Block block) {
+        if (block==null) return false;
+        boolean isConveyor = (block instanceof Conveyor);
+        boolean hasOutToThisBlock = production.getBlockAt(block, block.getOutputDirection()) == this;
+        return isConveyor && hasOutToThisBlock;
     }
 
 

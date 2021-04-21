@@ -123,19 +123,21 @@ public abstract class Block implements JSONSerializable {
     /**
      * Забирает один предмет из блока по направлению входа
      */
-    protected void grabItemsFromInputDirection() {
+    protected boolean grabItemsFromInputDirection() {
         Block inputBlock = production.getBlockAt(this, inputDirection);
-        if (inputBlock==null) return;         // Если на входящем направление ничего нет
+        if (inputBlock==null) return false;      // Если на входящем направление ничего нет
 
         // Если выход входного блока смотрит на наш вход
         int neighborOutputDirection = inputBlock.outputDirection;
         Block neighborOutput = production.getBlockAt(inputBlock, neighborOutputDirection);
         if (neighborOutputDirection==NONE || neighborOutput==this) {
             Item item = inputBlock.peek();       // Пытаемся взять предмет из блока входа
-            if (item == null) return;            // Если ничего нет возвращаем false
-            if (!push(item)) return;             // Если не получилось добавить к себе - false
+            if (item == null) return false;      // Если ничего нет возвращаем false
+            if (!push(item)) return false;       // Если не получилось добавить к себе - false
             inputBlock.poll();                   // Если получилось - удаляем из блока входа
+            return true;
         }
+        return false;
     }
 
 
@@ -379,6 +381,31 @@ public abstract class Block implements JSONSerializable {
         setDirections(outputDirection, inputDirection);
     }
 
+    /**
+     * Является ли поток материалов прямым (вход напротив выхода)
+     * @return true если да, false если нет
+     */
+    public boolean isStraight() {
+        return BlockAdjuster.oppositeDirection(inputDirection) == outputDirection;
+    }
+
+    /**
+     * Возвращает левое направление по отношению к выходу
+     * @return левое направление по отношению к выходу
+     */
+    public int getLeftDirection() {
+        int leftDir = outputDirection - 1;
+        return leftDir < LEFT ? DOWN : leftDir;
+    }
+
+    /**
+     * Возвращает правое направление по отношению к выходу
+     * @return правое направление по отношению к выходу
+     */
+    public int getRightDirection() {
+        int rightDir = outputDirection + 1;
+        return  rightDir > DOWN ? LEFT : rightDir;
+    }
 
     /**
      * Сериализует блок в JSONObject
