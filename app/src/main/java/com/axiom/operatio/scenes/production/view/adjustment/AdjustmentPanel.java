@@ -70,7 +70,7 @@ public class AdjustmentPanel extends Panel {
         inpBtn = new ItemWidget[4];
         outBtn = new ItemWidget[4];
         outputChooser = new OutputChooser(scene, this);
-        outputChooser.visible = false;
+        hideOutputChooser();
         scene.getSceneWidget().addChild(outputChooser);
 
         clickListener = new AdjustmentHandler(scene, this, outputChooser);
@@ -217,7 +217,7 @@ public class AdjustmentPanel extends Panel {
             blockChanged = true;
             chosenBlock = block;
             changeoverButton.setColor(GRAY);
-            outputChooser.visible = false;
+            hideOutputChooser();
         }
 
         if (block instanceof Machine) {
@@ -254,7 +254,7 @@ public class AdjustmentPanel extends Panel {
         caption.setText("Block information");
         hideButtons();
         hideInputsOutputs();
-        outputChooser.visible = false;
+        hideOutputChooser();
         visible = false;
     }
 
@@ -435,6 +435,10 @@ public class AdjustmentPanel extends Panel {
         }
     }
 
+
+    public void hideOutputChooser() {
+        outputChooser.visible = false;
+    }
 
     public Block getChosenBlock() {
         return chosenBlock;

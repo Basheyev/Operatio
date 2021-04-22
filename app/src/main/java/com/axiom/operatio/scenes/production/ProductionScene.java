@@ -91,7 +91,9 @@ public class ProductionScene extends GameScene {
 
 
     @Override
-    public void changeScene() { }
+    public void changeScene() {
+        adjustmentPanel.hideOutputChooser();
+    }
 
     @Override
     public void disposeScene() {
