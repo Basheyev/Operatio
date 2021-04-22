@@ -8,8 +8,10 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockBuilder;
 import com.axiom.operatio.model.production.buffer.Buffer;
+import com.axiom.operatio.model.production.buffer.ImportBuffer;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
 import com.axiom.operatio.model.production.conveyor.ConveyorRenderer;
+import com.axiom.operatio.model.production.machine.Machine;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -102,37 +104,46 @@ public class Inserter extends Block implements JSONSerializable {
 
 
     private Item findTargetMaterialItem(Block block, Material material) {
-        Channel<Item> inputQueue = block.getInputQueue();
-        Channel<Item> outputQueue = block.getOutputQueue();
-
-        if (material==null) {
-            Item item = outputQueue.peek();
-            if (item==null) item = inputQueue.peek();
-            return item;
-        }
-
-        for (int i=0; i<outputQueue.size(); i++) {
-            Item item = outputQueue.get(i);
-            if (item.getMaterial()==material) return item;
-        }
-        for (int i=0; i<inputQueue.size(); i++) {
-            Item item = inputQueue.get(i);
-            if (item.getMaterial()==material) return item;
+        if (block instanceof ImportBuffer) {
+            ImportBuffer importBuffer = (ImportBuffer) block;
+            if (material==null || importBuffer.getImportMaterial()==material) return block.peek();
+            return null;
+        } else if (block instanceof Buffer) {
+            Buffer buffer = (Buffer) block;
+            return buffer.peek(material);
+        } else if (block instanceof Conveyor) {
+            Channel<Item> inputQueue = block.getInputQueue();
+            Channel<Item> outputQueue = block.getOutputQueue();
+            for (int i=0; i<outputQueue.size(); i++) {
+                Item item = outputQueue.get(i);
+                if (material==null || item.getMaterial()==material) return item;
+            }
+            for (int i=0; i<inputQueue.size(); i++) {
+                Item item = inputQueue.get(i);
+                if (material==null || item.getMaterial()==material) return item;
+            }
+        } else if (block instanceof Machine) {
+            Item item = block.peek();
+            if (material==null || item.getMaterial()==material) return item;
         }
         return null;
     }
 
 
     private void removeItemFromBlock(Block block, Item item) {
-        if (item==null) return;
-        Channel<Item> inputQueue = block.getInputQueue();
-        Channel<Item> outputQueue = block.getOutputQueue();
-        if (block instanceof Buffer) {
+        if (block instanceof ImportBuffer) {
+            ImportBuffer importBuffer = (ImportBuffer) block;
+            importBuffer.poll();
+        } else if (block instanceof Buffer) {
             Buffer buffer = (Buffer) block;
             buffer.poll(item.getMaterial());
-        } else {
+        } else if (block instanceof Conveyor) {
+            Channel<Item> inputQueue = block.getInputQueue();
+            Channel<Item> outputQueue = block.getOutputQueue();
             inputQueue.remove(item);
             outputQueue.remove(item);
+        } else if (block instanceof Machine) {
+            block.poll();
         }
     }
 
