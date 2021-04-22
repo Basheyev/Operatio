@@ -130,6 +130,16 @@ public class Buffer extends Block implements JSONSerializable {
     }
 
     @Override
+    public void clear() {
+        for (int i=0; i<bufferKeepingUnit.length; i++) {
+            bufferKeepingUnit[i].total = 0;
+            bufferKeepingUnit[i].material = null;
+        }
+        input.clear();
+        output.clear();
+    }
+
+    @Override
     public void setOutputDirection(int outDir) {
         super.setOutputDirection(NONE);
     }
@@ -146,7 +156,7 @@ public class Buffer extends Block implements JSONSerializable {
 
     //------------------------------------------------------------------------------------------
 
-    public boolean setBufferKeepingUnit(int index, Material material, int capacity, int total) {
+    private boolean setBufferKeepingUnit(int index, Material material, int capacity, int total) {
         if (index < 0 || index > 3 || material==null || capacity < 0 || total < 0) return false;
         bufferKeepingUnit[index].material = material;
         bufferKeepingUnit[index].capacity = capacity;

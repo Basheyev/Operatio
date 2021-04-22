@@ -7,7 +7,9 @@ import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.block.Block;
+import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.production.buffer.ImportBuffer;
+import com.axiom.operatio.model.production.conveyor.Conveyor;
 import com.axiom.operatio.model.production.inserter.Inserter;
 import com.axiom.operatio.model.production.machine.Machine;
 import com.axiom.operatio.scenes.production.ProductionScene;
@@ -47,6 +49,10 @@ public class AdjustmentHandler implements ClickListener {
                 importBufferAdjustmentClick(button, (ImportBuffer) chosenBlock);
             } else if (chosenBlock instanceof Inserter) {
                 inserterAdjustmentClick(button, (Inserter) chosenBlock);
+            } else if (chosenBlock instanceof Conveyor) {
+                conveyorAdjustmentClick(button, (Conveyor) chosenBlock);
+            } else if (chosenBlock instanceof Buffer) {
+                bufferAdjustmentClick(button, (Buffer) chosenBlock);
             }
         }
     }
@@ -137,4 +143,32 @@ public class AdjustmentHandler implements ClickListener {
         }
     }
 
+
+
+    private void conveyorAdjustmentClick(Button button, Conveyor conveyor) {
+        String tag = button.getTag();
+        switch (tag) {
+            case CHANGEOVER:
+                conveyor.clear();
+                adjustmentPanel.setChangeoverState(false);
+                outputChooser.visible = false;
+                break;
+            default:
+
+        }
+    }
+
+
+    private void bufferAdjustmentClick(Button button, Buffer buffer) {
+        String tag = button.getTag();
+        switch (tag) {
+            case CHANGEOVER:
+                buffer.clear();
+                adjustmentPanel.setChangeoverState(false);
+                outputChooser.visible = false;
+                break;
+            default:
+
+        }
+    }
 }

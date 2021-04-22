@@ -140,6 +140,10 @@ public abstract class Block implements JSONSerializable {
         return false;
     }
 
+    public void clear() {
+        input.clear();
+        output.clear();
+    }
 
     /**
      * Возвращает состояние блока

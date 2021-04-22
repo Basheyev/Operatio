@@ -241,6 +241,13 @@ public class Machine extends Block implements JSONSerializable {
     }
 
 
+    @Override
+    public void clear() {
+        input.clear();
+        output.clear();
+        cyclesLeft = 0;
+        setState(IDLE);
+    }
 
     public void setState(int newState) {
         if (getState()==newState) return;
@@ -284,9 +291,7 @@ public class Machine extends Block implements JSONSerializable {
         input = new Channel<Item>(inputCapacity);
         output = new Channel<Item>(outputCapacity);
         // обнулить машину
-        input.clear();
-        output.clear();
-        cyclesLeft = 0;
+        clear();
         setState(IDLE);
     }
 

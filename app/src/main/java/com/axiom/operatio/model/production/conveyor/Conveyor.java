@@ -170,6 +170,12 @@ public class Conveyor extends Block implements JSONSerializable {
     }
 
 
+    @Override
+    public void clear() {
+        input.clear();
+        output.clear();
+    }
+
     public int getDeliveryCycles() {
         return deliveryCycles;
     }

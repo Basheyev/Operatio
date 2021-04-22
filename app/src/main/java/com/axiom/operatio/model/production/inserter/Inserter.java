@@ -71,7 +71,7 @@ public class Inserter extends Block implements JSONSerializable {
 
     public void setTargetMaterial(Material material) {
         targetMaterial = material;
-        input.clear();
+        clear();
     }
 
 
@@ -99,6 +99,7 @@ public class Inserter extends Block implements JSONSerializable {
             if (item == null) {
                 item = inputBlock.peek();
                 if (item==null) return false;
+                if (targetMaterial != null && item.getMaterial() != targetMaterial) return false;
                 if (!push(item)) return false;       // Если не получилось добавить к себе уходим
                 inputBlock.poll();                   // Если получилось - удаляем из блока входа
                 return true;
@@ -116,6 +117,12 @@ public class Inserter extends Block implements JSONSerializable {
     }
 
 
+    @Override
+    public void clear() {
+        input.clear();
+        output.clear();
+        setState(IDLE);
+    }
 
     @Override
     public double getCycleCost() {

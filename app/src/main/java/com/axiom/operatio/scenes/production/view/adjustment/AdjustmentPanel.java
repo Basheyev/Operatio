@@ -351,6 +351,7 @@ public class AdjustmentPanel extends Panel {
             outBtn[i].visible = false;
         }
 
+        changeoverButton.visible = true;
     }
 
 
@@ -366,6 +367,7 @@ public class AdjustmentPanel extends Panel {
         centerButton.setBackground(null);
         centerButton.setLocation(40, 500);
         centerButton.setSize(300,100);
+        changeoverButton.visible = true;
         hideInputsOutputs();
     }
 
