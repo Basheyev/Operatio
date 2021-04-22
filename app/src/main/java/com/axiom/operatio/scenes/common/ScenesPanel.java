@@ -39,13 +39,10 @@ public class ScenesPanel extends Panel {
 
     private Caption timeCaption;
     private Caption balanceCaption;
-    private Button coinButton;
-    private Button dayButton;
 
     private StringBuffer dayText;
     private StringBuffer balanceText;
 
-    private Button menuButton;
     private Button playButton;
 
     private double lastBalance = 0;
@@ -91,18 +88,18 @@ public class ScenesPanel extends Panel {
         lastBalance = currentBalance;
 
         timeCaption = buildCaption(dayText, 420, 20, 256, 80);
-        dayButton = buildButton(14, "Day", 330, 11, 96, 96, false);
+        Button dayButton = buildButton(14, "Day", 330, 11, 96, 96, false);
         dayButton.setColor(0,0,0, 0);
         balanceCaption = buildCaption(balanceText, 1500, 20, 256, 80);
-        coinButton = buildButton(15, "Coin", 1410, 8, 96, 96, false);
+        Button coinButton = buildButton(15, "Coin", 1410, 8, 96, 96, false);
         coinButton.setColor(0,0,0, 0);
 
-        menuButton = buildButton(0, MENU, 24, 0, 128, 128, true);
+        Button menuButton = buildButton(0, MENU, 24, 0, 128, 128, true);
         productionButton = buildButton(5, PRODUCTION,  680, 0, 128, 128,true);
         inventoryButton = buildButton(4, INVENTORY,  824, 0, 128, 128,true);
         technologyButton = buildButton(6, TECHNOLOGY, 968, 0, 128, 128, true);
         reportButton = buildButton(7, REPORT, 1112, 0, 128, 128, true);
-        playButton = buildButton(2, PLAY, 1768, 0, 128, 128, true);
+        playButton = buildButton(1, PLAY, 1768, 0, 128, 128, true);
         playButton.setTextScale(1);
         playButton.setTextColor(Color.BLACK);
 
@@ -126,9 +123,9 @@ public class ScenesPanel extends Panel {
             uiIcons = new Sprite(resources, R.drawable.ui_icons, 4, 4);
         }
         Sprite icon;
-        // Если это кнопка паузы - берем спрайт с двумя иконками Play/Pause
+        // Если это кнопка паузы - берем спрайт с двумя иконками Fast/Play/Pause
         if (tag.equals(PLAY)) {
-            icon = uiIcons.getAsSprite(spriteIndex,spriteIndex+1);
+            icon = uiIcons.getAsSprite(spriteIndex,spriteIndex + 2);
         } else icon = uiIcons.getAsSprite(spriteIndex);
 
         Button button = new Button(icon);
@@ -163,20 +160,17 @@ public class ScenesPanel extends Panel {
 
     public void updatePlayButtonState() {
         Sprite buttonSprite = playButton.getBackground();
-        String playButtonText = "";
         long tripleSpeed = Production.CYCLE_TIME / 3;
 
         if (production.isPaused()) {
-            buttonSprite.setActiveFrame(1);
+            buttonSprite.setActiveFrame(2);
             playButton.setColor(PAUSED);
         } else {
-            if (production.getCycleMilliseconds() == tripleSpeed) playButtonText = "x3";
-            buttonSprite.setActiveFrame(0);
+            if (production.getCycleMilliseconds() == tripleSpeed) {
+                buttonSprite.setActiveFrame(0);
+            } else buttonSprite.setActiveFrame(1);
             playButton.setColor(PLAYING);
         }
-
-        playButton.setText(playButtonText);
-
     }
 
 
