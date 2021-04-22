@@ -18,7 +18,7 @@ import com.axiom.operatio.model.production.block.BlockRenderer;
  */
 public class ProductionRenderer {
 
-    public static int MIN_CELL_SIZE = 64;
+    public static int MIN_CELL_SIZE = 48;
     public static final int MAX_CELL_SIZE = 384;
     public static final int INITIAL_CELL_WIDTH = (MAX_CELL_SIZE + MIN_CELL_SIZE) / 2;
     public static final int INITIAL_CELL_HEIGHT = (MAX_CELL_SIZE + MIN_CELL_SIZE) / 2;
