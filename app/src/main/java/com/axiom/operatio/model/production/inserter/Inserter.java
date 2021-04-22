@@ -7,6 +7,7 @@ import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockBuilder;
+import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
 import com.axiom.operatio.model.production.conveyor.ConveyorRenderer;
 
@@ -92,28 +93,41 @@ public class Inserter extends Block implements JSONSerializable {
     protected boolean grabItemsFromInputDirection() {
         Block inputBlock = production.getBlockAt(this, inputDirection);
         if (inputBlock==null) return false;     // Если на входящем направление ничего нет
-
-        if (inputBlock instanceof Conveyor) {
-            Channel<Item> inputQueue = inputBlock.getInputQueue();
-            Item item = inputQueue.peek();
-            if (item == null) {
-                item = inputBlock.peek();
-                if (item==null) return false;
-                if (targetMaterial != null && item.getMaterial() != targetMaterial) return false;
-                if (!push(item)) return false;       // Если не получилось добавить к себе уходим
-                inputBlock.poll();                   // Если получилось - удаляем из блока входа
-                return true;
-            }
-            if (targetMaterial != null && item.getMaterial() != targetMaterial) return false;
-            if (!push(item)) return false;        // Если не получилось добавить к себе уходим
-            inputQueue.poll();
-        } else {
-            Item item = inputBlock.peek();        // Пытаемся взять предмет из блока входа
-            if (targetMaterial != null && item.getMaterial() != targetMaterial) return false;
-            if (!push(item)) return false;             // Если не получилось добавить к себе уходим
-            inputBlock.poll();                   // Если получилось - удаляем из блока входа
-        }
+        Item item = findTargetMaterialItem(inputBlock, targetMaterial);
+        if (item==null) return false;
+        if (!push(item)) return false;
+        removeItemFromBlock(inputBlock, item);
         return true;
+    }
+
+
+    private Item findTargetMaterialItem(Block block, Material material) {
+        Channel<Item> inputQueue = block.getInputQueue();
+        Channel<Item> outputQueue = block.getOutputQueue();
+        if (material==null) return block.peek();
+        for (int i=0; i<outputQueue.size(); i++) {
+            Item item = outputQueue.get(i);
+            if (item.getMaterial()==material) return item;
+        }
+        for (int i=0; i<inputQueue.size(); i++) {
+            Item item = inputQueue.get(i);
+            if (item.getMaterial()==material) return item;
+        }
+        return null;
+    }
+
+
+    private void removeItemFromBlock(Block block, Item item) {
+        if (item==null) return;
+        Channel<Item> inputQueue = block.getInputQueue();
+        Channel<Item> outputQueue = block.getOutputQueue();
+        if (block instanceof Buffer) {
+            Buffer buffer = (Buffer) block;
+            buffer.poll(item.getMaterial());
+        } else {
+            inputQueue.remove(item);
+            outputQueue.remove(item);
+        }
     }
 
 
