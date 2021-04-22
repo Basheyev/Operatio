@@ -96,8 +96,7 @@ public class Inserter extends Block implements JSONSerializable {
         Block inputBlock = production.getBlockAt(this, inputDirection);
         if (inputBlock==null) return false;     // Если на входящем направление ничего нет
         Item item = findTargetMaterialItem(inputBlock, targetMaterial);
-        if (item==null) return false;
-        if (!push(item)) return false;
+        if (item==null || !push(item)) return false;
         removeItemFromBlock(inputBlock, item);
         return true;
     }
