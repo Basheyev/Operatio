@@ -10,6 +10,7 @@ import com.axiom.operatio.model.production.machine.Machine;
 
 import static com.axiom.operatio.model.production.block.Block.DOWN;
 import static com.axiom.operatio.model.production.block.Block.LEFT;
+import static com.axiom.operatio.model.production.block.Block.NONE;
 import static com.axiom.operatio.model.production.block.Block.RIGHT;
 import static com.axiom.operatio.model.production.block.Block.UP;
 
@@ -104,10 +105,11 @@ public class ItemsRenderer {
      */
     protected void drawItem(Camera camera, float x, float y, float width, float height, Item item, float progress) {
 
-        int inputDirection = block.getInputDirection();
-        int outputDirection = block.getOutputDirection();
+        int sourceDirection = item.getSourceDirection();
+        if (sourceDirection == NONE) sourceDirection = block.getInputDirection();
 
-        calculateCoordinates(progress, inputDirection, outputDirection, coordBuffer);
+        calculateCoordinates(progress, sourceDirection, block.getOutputDirection(), coordBuffer);
+
         float xpos = coordBuffer.x;
         float ypos = coordBuffer.y;
         float minx = x + xpos * width + width / 4;
