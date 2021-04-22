@@ -50,6 +50,7 @@ public class Machine extends Block implements JSONSerializable {
         }
     }
 
+
     @Override
     public boolean push(Item item) {
         // Проверяем допустимый ли материал для добавления в очередь ввода
@@ -62,8 +63,19 @@ public class Machine extends Block implements JSONSerializable {
             setState(FAULT);
             return false;
         }
+        // Если все материалы собраны уходим
+        if (operationInputVerified(matCounter)) return  false;
+
+        // Если материала Item Уже собрано достаточно уходим
+        Material[] inputMaterials = operation.getInputs();
+        for (int i=0; i < inputMaterials.length; i++)
+        if (inputMaterials[i]==item.getMaterial()) {
+            if (matCounter[i] <= 0) return false;
+        }
+
         return super.push(item);
     }
+
 
     @Override
     public void process() {
