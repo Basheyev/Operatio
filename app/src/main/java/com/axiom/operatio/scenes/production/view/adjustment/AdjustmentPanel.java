@@ -73,7 +73,7 @@ public class AdjustmentPanel extends Panel {
         outputChooser.visible = false;
         scene.getSceneWidget().addChild(outputChooser);
 
-        clickListener = new AdjustmentHandler(this, outputChooser);
+        clickListener = new AdjustmentHandler(scene, this, outputChooser);
         buildButtons();
     }
 

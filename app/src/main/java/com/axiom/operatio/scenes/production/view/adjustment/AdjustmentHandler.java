@@ -10,6 +10,7 @@ import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.buffer.ImportBuffer;
 import com.axiom.operatio.model.production.inserter.Inserter;
 import com.axiom.operatio.model.production.machine.Machine;
+import com.axiom.operatio.scenes.production.ProductionScene;
 
 import static com.axiom.operatio.scenes.production.view.adjustment.AdjustmentPanel.CHANGEOVER;
 import static com.axiom.operatio.scenes.production.view.adjustment.AdjustmentPanel.CHOOSER;
@@ -18,12 +19,14 @@ import static com.axiom.operatio.scenes.production.view.adjustment.AdjustmentPan
 
 public class AdjustmentHandler implements ClickListener {
 
+    private ProductionScene productionScene;
     private AdjustmentPanel adjustmentPanel;
     private OutputChooser outputChooser;
     private int tickSound;
 
-    public AdjustmentHandler(AdjustmentPanel pnl, OutputChooser chooser) {
+    public AdjustmentHandler(ProductionScene scene, AdjustmentPanel pnl, OutputChooser chooser) {
         super();
+        productionScene = scene;
         adjustmentPanel = pnl;
         outputChooser = chooser;
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
@@ -34,6 +37,9 @@ public class AdjustmentHandler implements ClickListener {
         SoundRenderer.playSound(tickSound);
         Button button = (Button) w;
         Block chosenBlock = adjustmentPanel.getChosenBlock();
+
+        productionScene.getModePanel().untoggleButtons();
+
         if (chosenBlock != null) {
             if (chosenBlock instanceof Machine) {
                 machineAdjustmentClick(button, (Machine) chosenBlock);
