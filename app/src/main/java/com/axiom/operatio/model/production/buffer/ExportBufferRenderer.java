@@ -7,13 +7,22 @@ import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
+import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
+import com.axiom.operatio.model.production.inserter.Inserter;
+
+import static com.axiom.operatio.model.production.block.Block.DOWN;
+import static com.axiom.operatio.model.production.block.Block.LEFT;
+import static com.axiom.operatio.model.production.block.Block.RIGHT;
+import static com.axiom.operatio.model.production.block.Block.UP;
 
 public class ExportBufferRenderer extends BlockRenderer {
 
     protected static Sprite buffersFrames = null;
     protected ExportBuffer exportBuffer;
     protected Sprite sprite;
+    protected Sprite halfConveyor;
 
     public ExportBufferRenderer(ExportBuffer exportBuffer) {
         this.exportBuffer = exportBuffer;
@@ -23,11 +32,50 @@ public class ExportBufferRenderer extends BlockRenderer {
         }
         sprite = buffersFrames.getAsSprite(66);
         sprite.setZOrder(7);
+        halfConveyor = buffersFrames.getAsSprite(64);
+        halfConveyor.setZOrder(6);
     }
 
     public void draw(Camera camera, float x, float y, float width, float height) {
+        drawJoints(camera, x, y, width, height);
         sprite.draw(camera,x,y, width, height);
     }
+
+
+    private void drawJoints(Camera camera, float x, float y, float width, float height) {
+        boolean left = hasInputFrom(LEFT);
+        boolean right = hasInputFrom(RIGHT);
+        boolean up = hasInputFrom(UP);
+        boolean down = hasInputFrom(DOWN);
+        if (left) {
+            halfConveyor.setRotation(0);
+            halfConveyor.draw(camera,x,y, width, height);
+        }
+        if (right) {
+            halfConveyor.setRotation((float)Math.PI);
+            halfConveyor.draw(camera,x,y, width, height);
+        }
+        if (up) {
+            halfConveyor.setRotation((float) -Math.PI/2);
+            halfConveyor.draw(camera,x,y, width, height);
+        }
+        if (down) {
+            halfConveyor.setRotation((float) Math.PI/2);
+            halfConveyor.draw(camera,x,y, width, height);
+        }
+
+    }
+
+
+    private boolean hasInputFrom(int direction) {
+        Production prod = exportBuffer.getProduction();
+        Block neighbour = prod.getBlockAt(exportBuffer, direction);
+        if (neighbour==null) return false;
+        Block neighbourInput = prod.getBlockAt(neighbour, neighbour.getOutputDirection());
+        return neighbourInput == exportBuffer && !(neighbour instanceof Inserter);
+    }
+
+
 
     @Override
     public void setAnimationSpeed(float speed) {

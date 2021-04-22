@@ -60,7 +60,7 @@ public class BlockButton extends Button {
         if (id==0) initializeImageButton(65, ImportBuffer.PRICE);
         else if (id==1) initializeImageButton(66, ExportBuffer.PRICE);
         else if (id==2) initializeAnimationButton(40, 47, 15, Conveyor.PRICE);  // Если это конвейер
-        else if (id==3) initializeImageButton(64, Inserter.PRICE);                          // Если то манипулятор
+        else if (id==3) initializeImageButton(98, Inserter.PRICE);                           // Если то манипулятор
         else if (id==4) initializeAnimationButton(72, 79, 8, Buffer.PRICE);     // Если это буфер
         else if (id>=MACHINES_INDEX_START) initializeMachineButton(id); // Если это машины 0-4
 
