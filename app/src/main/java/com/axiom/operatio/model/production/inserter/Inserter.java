@@ -104,7 +104,13 @@ public class Inserter extends Block implements JSONSerializable {
     private Item findTargetMaterialItem(Block block, Material material) {
         Channel<Item> inputQueue = block.getInputQueue();
         Channel<Item> outputQueue = block.getOutputQueue();
-        if (material==null) return block.peek();
+
+        if (material==null) {
+            Item item = outputQueue.peek();
+            if (item==null) item = inputQueue.peek();
+            return item;
+        }
+
         for (int i=0; i<outputQueue.size(); i++) {
             Item item = outputQueue.get(i);
             if (item.getMaterial()==material) return item;
