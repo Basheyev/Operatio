@@ -103,7 +103,7 @@ public class ItemsRenderer {
 
         Sprite materialSprite = item.getMaterial().getImage();
         materialSprite.setZOrder(sprite.getZOrder() + 1);
-        materialSprite.draw(camera,minx,miny,width * 0.5f, height * 0.5f);
+        materialSprite.draw(camera, minx, miny,width * 0.5f, height * 0.5f);
 
     }
 
@@ -117,7 +117,7 @@ public class ItemsRenderer {
      */
     private void calculateCoordinates(float progress, int inpDir, int outDir, Vector result) {
         float rads, xpos = 0, ypos = 0;
-
+        // Прямые направления
         if (inpDir==LEFT && outDir==RIGHT) {
             xpos = progress - 0.5f;
             ypos = 0;
@@ -131,7 +131,7 @@ public class ItemsRenderer {
             xpos = 0;
             ypos = 1 - progress - 0.5f;
         }
-        //-----------------------------------------------------------------------
+        // Повороты на 90 градусов
         else if (inpDir== RIGHT && outDir==UP) {
             rads = (float) ((Math.PI*1.5) - (Math.PI/2 * progress));
             xpos = (float) (Math.cos(rads) + 1) / 2;
@@ -149,7 +149,7 @@ public class ItemsRenderer {
             xpos = (float) (Math.cos(rads) - 1) / 2;
             ypos = (float) (Math.sin(rads) + 1) / 2;
         }
-        //-------------------------------------------------------------------------
+        // Обратные повороты на 90 градусов
         else if (inpDir== UP && outDir==RIGHT) {
             rads = (float) (Math.PI + (Math.PI / 2 * progress));
             xpos = (float) (Math.cos(rads) + 1) / 2;
