@@ -118,14 +118,28 @@ public class Conveyor extends Block implements JSONSerializable {
         if (!super.grabItemsFromInput() || isStraight()) {
             Block leftBlock = production.getBlockAt(this, getLeftDirection());
             Block rightBlock = production.getBlockAt(this, getRightDirection());
-            if (isJoinedConveyor(leftBlock)) {
-                Item item = leftBlock.peek();
-                if (item!=null && push(item)) leftBlock.poll();
+            Item leftBlockItem = null;
+            Item rightBlockItem = null;
+            if (isJoinedConveyor(leftBlock)) leftBlockItem = leftBlock.peek();
+            if (isJoinedConveyor(rightBlock)) rightBlockItem = rightBlock.peek();
+            if (leftBlockItem==null && rightBlockItem==null) return false;
+
+            int priority;
+            if (leftBlockItem != null && rightBlockItem == null) priority = LEFT; else
+            if (leftBlockItem == null && rightBlockItem != null) priority = RIGHT; else {
+                if (leftBlockItem.getTimeOwned() > rightBlockItem.getTimeOwned())
+                    priority = LEFT;
+                else priority = RIGHT;
             }
-            if (isJoinedConveyor(rightBlock)) {
-                Item item = rightBlock.peek();
-                if (item!=null && push(item)) rightBlock.poll();
+
+            if (priority==LEFT) {
+                if (push(leftBlockItem)) leftBlock.poll();
+                if (push(rightBlockItem)) rightBlock.poll();
+            } else {
+                if (push(rightBlockItem)) rightBlock.poll();
+                if (push(leftBlockItem)) leftBlock.poll();
             }
+
         }
         return true;
     }
