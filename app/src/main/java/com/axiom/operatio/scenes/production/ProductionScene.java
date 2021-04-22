@@ -86,7 +86,7 @@ public class ProductionScene extends GameScene {
 
         // Включить доступные машины на этом уровне
         blocksPanel.updatePermissions();
-
+        ProductionSceneUI.getScenesPanel().updatePlayButtonState();
     }
 
 

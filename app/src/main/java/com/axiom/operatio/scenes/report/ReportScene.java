@@ -16,6 +16,7 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.ScenesPanel;
 import com.axiom.operatio.scenes.production.ProductionScene;
+import com.axiom.operatio.scenes.production.ProductionSceneUI;
 
 public class ReportScene extends GameScene {
 
@@ -41,6 +42,7 @@ public class ReportScene extends GameScene {
     @Override
     public void startScene() {
         if (!initialized) buildUI();
+        scenesPanel.updatePlayButtonState();
     }
 
     @Override

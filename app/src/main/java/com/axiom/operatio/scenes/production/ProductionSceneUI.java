@@ -66,4 +66,8 @@ public class ProductionSceneUI {
     public static HelperPanel getHelperPanel() {
         return helperPanel;
     }
+
+    public static ScenesPanel getScenesPanel() {
+        return scenesPanel;
+    }
 }

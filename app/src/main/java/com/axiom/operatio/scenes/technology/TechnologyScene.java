@@ -14,6 +14,7 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.ScenesPanel;
+import com.axiom.operatio.scenes.production.ProductionSceneUI;
 
 public class TechnologyScene extends GameScene {
 
@@ -44,6 +45,7 @@ public class TechnologyScene extends GameScene {
         Market market = production.getMarket();
         market.process();
         materialsTree.updateData();
+        scenesPanel.updatePlayButtonState();
     }
 
     @Override

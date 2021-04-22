@@ -49,6 +49,7 @@ public class InventoryScene extends GameScene {
         Market market = production.getMarket();
         market.process();
         materialsPanel.updateData();
+        scenesPanel.updatePlayButtonState();
     }
 
     @Override

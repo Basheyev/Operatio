@@ -46,7 +46,7 @@ public class ScenesPanel extends Panel {
     private StringBuffer balanceText;
 
     private Button menuButton;
-    private Button pauseButton;
+    private Button playButton;
 
     private double lastBalance = 0;
     private long lastDay = 0;
@@ -65,7 +65,7 @@ public class ScenesPanel extends Panel {
     private static final String PRODUCTION = ProductionScene.SCENE_NAME;
     private static final String TECHNOLOGY = TechnologyScene.SCENE_NAME;
     private static final String REPORT = ReportScene.SCENE_NAME;
-    private static final String PAUSE = "pause";
+    private static final String PLAY = "play";
 
     private static Sprite uiIcons = null;
 
@@ -102,9 +102,11 @@ public class ScenesPanel extends Panel {
         inventoryButton = buildButton(4, INVENTORY,  824, 0, 128, 128,true);
         technologyButton = buildButton(6, TECHNOLOGY, 968, 0, 128, 128, true);
         reportButton = buildButton(7, REPORT, 1112, 0, 128, 128, true);
-        pauseButton = buildButton(2, PAUSE, 1768, 0, 128, 128, true);
-        pauseButton.setTextScale(1);
-        pauseButton.setTextColor(Color.BLACK);
+        playButton = buildButton(2, PLAY, 1768, 0, 128, 128, true);
+        playButton.setTextScale(1);
+        playButton.setTextColor(Color.BLACK);
+
+        updatePlayButtonState();
 
     }
 
@@ -125,7 +127,7 @@ public class ScenesPanel extends Panel {
         }
         Sprite icon;
         // Если это кнопка паузы - берем спрайт с двумя иконками Play/Pause
-        if (tag.equals(PAUSE)) {
+        if (tag.equals(PLAY)) {
             icon = uiIcons.getAsSprite(spriteIndex,spriteIndex+1);
         } else icon = uiIcons.getAsSprite(spriteIndex);
 
@@ -139,6 +141,45 @@ public class ScenesPanel extends Panel {
         addChild(button);
         return button;
     }
+
+
+    public void changeProductionSpeed() {
+        long baseSpeed = Production.CYCLE_TIME;
+        long tripleSpeed = Production.CYCLE_TIME / 3;
+
+        if (production.isPaused()) {
+            production.setPaused(false);
+            production.setCycleMilliseconds(baseSpeed);
+        } else {
+            if (production.getCycleMilliseconds() == baseSpeed) {
+                production.setCycleMilliseconds(tripleSpeed);
+            } else if (production.getCycleMilliseconds() == tripleSpeed) {
+                production.setPaused(true);
+            }
+        }
+        updatePlayButtonState();
+    }
+
+
+    public void updatePlayButtonState() {
+        Sprite buttonSprite = playButton.getBackground();
+        String playButtonText = "";
+        long tripleSpeed = Production.CYCLE_TIME / 3;
+
+        if (production.isPaused()) {
+            buttonSprite.setActiveFrame(1);
+            playButton.setColor(PAUSED);
+        } else {
+            if (production.getCycleMilliseconds() == tripleSpeed) playButtonText = "x3";
+            buttonSprite.setActiveFrame(0);
+            playButton.setColor(PLAYING);
+        }
+
+        playButton.setText(playButtonText);
+
+    }
+
+
 
 
     @Override
@@ -184,24 +225,7 @@ public class ScenesPanel extends Panel {
             else if (tag.equals(PRODUCTION)) changeScene(PRODUCTION);
             else if (tag.equals(TECHNOLOGY)) changeScene(TECHNOLOGY);
             else if (tag.equals(REPORT)) changeScene(REPORT);
-            else if (tag.equals(PAUSE)) {
-                if (production.isPaused()) {
-                    production.setPaused(false);
-                    setPausedButtonState(false);
-                    pauseButton.setText("");
-                    production.setCycleMilliseconds(Production.CYCLE_TIME);
-                } else {
-                    if (production.getCycleMilliseconds() == Production.CYCLE_TIME) {
-                        production.setCycleMilliseconds(Production.CYCLE_TIME / 3);
-                        pauseButton.setText("x3");
-                    } else if (production.getCycleMilliseconds() == Production.CYCLE_TIME / 3) {
-                        production.setPaused(true);
-                        setPausedButtonState(true);
-                        pauseButton.setText("");
-                    }
-                }
-
-            }
+            else if (tag.equals(PLAY)) changeProductionSpeed();
         }
     };
 
@@ -223,25 +247,24 @@ public class ScenesPanel extends Panel {
         technologyButton.setColor(UNSELECTED);
         reportButton.setColor(UNSELECTED);
 
-        if (currentScene.equals(INVENTORY)) inventoryButton.setColor(SELECTED);
-        else if (currentScene.equals(PRODUCTION)) productionButton.setColor(SELECTED);
-        else if (currentScene.equals(TECHNOLOGY)) technologyButton.setColor(SELECTED);
-        else if (currentScene.equals(REPORT)) reportButton.setColor(SELECTED);
-
-        setPausedButtonState(production.isPaused());
-    }
-
-
-    public void setPausedButtonState(boolean paused) {
-        Sprite buttonSprite = pauseButton.getBackground();
-        if (paused) {
-            buttonSprite.setActiveFrame(1);
-            pauseButton.setColor(PAUSED);
-        } else {
-            buttonSprite.setActiveFrame(0);
-            pauseButton.setColor(PLAYING);
+        switch (currentScene) {
+            case INVENTORY:
+                inventoryButton.setColor(SELECTED);
+                break;
+            case PRODUCTION:
+                productionButton.setColor(SELECTED);
+                break;
+            case TECHNOLOGY:
+                technologyButton.setColor(SELECTED);
+                break;
+            case REPORT:
+                reportButton.setColor(SELECTED);
+                break;
         }
+
+        updatePlayButtonState();
     }
+
 
 
     @Override
