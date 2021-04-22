@@ -98,10 +98,10 @@ public class Conveyor extends Block implements JSONSerializable {
         // Перемещаем на вывод все предметы время доставки которых подошло
         for (int i=0; i<input.size(); i++) {
             Item item = input.peek();
-            if (item==null) break;
+            if (item == null) break;
 
             long cyclesPassed = production.getCurrentCycle() - item.getCycleOwned();
-            if (cyclesPassed >= deliveryCycles) {
+            if (cyclesPassed >= deliveryCycles && output.size()==0) {
                 item = input.poll();  // Удалаем из входящей очереди
                 output.add(item);     // Добавляем в выходящую очередь
                 setState(IDLE);       // Состояние - IDLE (можем брать еще)

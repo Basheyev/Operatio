@@ -8,6 +8,8 @@ import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.machine.Machine;
 
+import javax.crypto.Mac;
+
 import static com.axiom.operatio.model.production.block.Block.DOWN;
 import static com.axiom.operatio.model.production.block.Block.LEFT;
 import static com.axiom.operatio.model.production.block.Block.NONE;
@@ -38,59 +40,45 @@ public class ItemsRenderer {
      */
     protected void drawItems(Camera camera, float x, float y, float width, float height) {
 
-        Channel<Item> inputQueue = block.getInputQueue();                      // Входящая очередь
-        Channel<Item> outputQueue = block.getOutputQueue();                    // Исходящая очередь
-        float cycleTime = this.block.getProduction().getCycleMilliseconds();   // Длительность цикла в мс.
+        Channel<Item> inputQueue = block.getInputQueue();      // Входящая очередь блока
+        Channel<Item> outputQueue = block.getOutputQueue();    // Исходящая очередь блока
 
-        float deliveryCycles = 1;
-        if (block instanceof Conveyor) {
-            deliveryCycles = ((Conveyor) block).getDeliveryCycles();
-        } else if (block instanceof Machine) {
-            deliveryCycles = ((Machine) block).getOperation().getCycles() + 1;
+        float deliveryTime = getItemDeliveryTime(block);       // Время доставки в миллисекундах
+        float capacity = block.getTotalCapacity();             // Вместимость конвейера в предметах
+        float stridePerItem = 1.0f / (capacity / 2.0f);        // Нормализованный шаг для одного предмета
+        float strideTime = deliveryTime / capacity * 2.0f;     // Время одного шага движения предмета
+        long now = block.getProduction().getClock();           // Текущие время производства
+        long lastPollDelta = now - block.getLastPollTime();    // Время с последней отдачи предмета
+        float normalDelta = 1.0f - lastPollDelta / strideTime; // Нормализованное время
+        if (normalDelta < 0) normalDelta = 0;                  // с последней отдачи предмета
+        float strideBias = normalDelta * stridePerItem;        // Смещение прогресса движения
+
+        // Если есть предмет в выходящей очереди - отрисовываем
+        // предмет в конце конвейера с учетом смещения
+        int deliveredCounter = block.getOutputQueue().size();
+        if (deliveredCounter > 0) {
+            Item outputItem = outputQueue.peek();
+            drawItem(camera, x, y, width, height, outputItem, 1.0f - strideBias);
         }
 
-        float deliveryTime = deliveryCycles * cycleTime;                 // Время доставки в мс.
-        float capacity = block.getTotalCapacity();                       // Вместимость конвейера в предметах
-        float stridePerItem = 1.0f / (capacity / 2.0f);                  // Шаг для одного предмета
-        float progress;
+        // Отрисовываем предметы входящей очереди
+        float maxProgress = (1.0f - strideBias) - deliveredCounter * stridePerItem;
 
-        long now = block.getProduction().getClock();
-        float cycleBias = (now - block.getLastPollTime()) / cycleTime;
-        if (cycleBias > 1.0f) cycleBias = 1.0f;
+        if (block instanceof Machine) maxProgress = 0.5f;
 
-        float progressBias = cycleBias * stridePerItem;
-        int finishedCounter = block.getOutputQueue().size();
-
-        for (int i=0; i<outputQueue.size(); i++) {
-            Item item = outputQueue.get(i);
-            if (item==null) continue;
-            progress = 1.0f - (i * stridePerItem) + progressBias - stridePerItem;
-            if (block instanceof Machine) {
-                if (progress < 0.5f) progress = 0.5f;
-            }
-            drawItem (camera, x, y, width, height, item, progress);
-        }
-
-
-        float maxProgress = 1.0f - (finishedCounter * stridePerItem);
         for (int i=0; i<inputQueue.size(); i++) {
             Item item = inputQueue.get(i);
-            if (item == null) continue;
-            // fixme BUG: если конвейер остановлен Bias время item продолжает идти (считать время остановки)
-            now = block.getProduction().getClock();
-            progress = (now - item.getTimeOwned()) /  deliveryTime;
+            float progress = (now - item.getTimeOwned()) / deliveryTime;
             if (progress > maxProgress) {
                 progress = maxProgress;
                 maxProgress -= stridePerItem;
             }
-            if (block instanceof Machine) {
-                if (progress > 0.5f) progress = 0.5f;
-                if (progress < 0.0f) progress = 0;
-            }
+            if (progress < 0) progress = 0;
             drawItem (camera, x, y, width, height, item, progress);
         }
 
     }
+
 
 
     /**
@@ -104,20 +92,18 @@ public class ItemsRenderer {
      * @param progress прогресс движения 0.0-1.0
      */
     protected void drawItem(Camera camera, float x, float y, float width, float height, Item item, float progress) {
-
+        if (item==null) return;
         int sourceDirection = item.getSourceDirection();
         if (sourceDirection == NONE) sourceDirection = block.getInputDirection();
 
         calculateCoordinates(progress, sourceDirection, block.getOutputDirection(), coordBuffer);
 
-        float xpos = coordBuffer.x;
-        float ypos = coordBuffer.y;
-        float minx = x + xpos * width + width / 4;
-        float miny = y + ypos * height + height / 4;
+        float minx = x + coordBuffer.x * width + width * 0.25f;
+        float miny = y + coordBuffer.y * height + height * 0.25f;
 
         Sprite materialSprite = item.getMaterial().getImage();
         materialSprite.setZOrder(sprite.getZOrder() + 1);
-        materialSprite.draw(camera,minx,miny,width / 2, height / 2);
+        materialSprite.draw(camera,minx,miny,width * 0.5f, height * 0.5f);
 
     }
 
@@ -184,6 +170,20 @@ public class ItemsRenderer {
 
         result.x = xpos;
         result.y = ypos;
-
     }
+
+
+    /**
+     * Возвращает время обработки предмета
+     * @param block блок
+     * @return время обработки предмета в миллисекундах
+     */
+    private float getItemDeliveryTime(Block block) {
+        float cycles = 1;
+        float cycleTime = this.block.getProduction().getCycleMilliseconds();
+        if (block instanceof Conveyor)  cycles = ((Conveyor) block).getDeliveryCycles();
+        else if (block instanceof Machine) cycles = ((Machine) block).getOperation().getCycles() + 1;
+        return cycles * cycleTime;
+    }
+
 }
