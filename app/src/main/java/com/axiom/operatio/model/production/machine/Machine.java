@@ -107,7 +107,7 @@ public class Machine extends Block implements JSONSerializable {
         // пытаемся самостоятельно взять из направления входа (блок)
         int totalAmount = operation.totalInputAmount();
         if (input.size() < totalAmount) {
-            grabItemsFromInputDirection();
+            grabItemsFromInput();
             return;
         }
 
@@ -124,7 +124,7 @@ public class Machine extends Block implements JSONSerializable {
      * Забирает предметы из блока по направлению входа
      */
     @Override
-    protected boolean grabItemsFromInputDirection() {
+    protected boolean grabItemsFromInput() {
         Block inputBlock = production.getBlockAt(this, inputDirection);
         if (inputBlock==null) return false;     // Если на входящем направление ничего нет
 

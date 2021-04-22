@@ -10,7 +10,6 @@ import com.axiom.operatio.model.production.block.BlockBuilder;
 import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.production.buffer.ImportBuffer;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
-import com.axiom.operatio.model.production.conveyor.ConveyorRenderer;
 import com.axiom.operatio.model.production.machine.Machine;
 
 import org.json.JSONException;
@@ -49,7 +48,7 @@ public class Inserter extends Block implements JSONSerializable {
         // Если еще можем забрать предмет, забираем с входящего направления
         if (getItemsAmount() < MAX_CAPACITY) {
             setState(IDLE);
-            grabItemsFromInputDirection();
+            grabItemsFromInput();
         } else setState(BUSY);
 
 
@@ -92,7 +91,7 @@ public class Inserter extends Block implements JSONSerializable {
     }
 
 
-    protected boolean grabItemsFromInputDirection() {
+    protected boolean grabItemsFromInput() {
         Block inputBlock = production.getBlockAt(this, inputDirection);
         if (inputBlock==null) return false;     // Если на входящем направление ничего нет
         Item item = findTargetMaterialItem(inputBlock, targetMaterial);

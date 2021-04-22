@@ -18,10 +18,10 @@ import org.json.JSONObject;
 public class Conveyor extends Block implements JSONSerializable {
 
     public static final double CYCLE_COST = 0.02f;
-
     public static final int DELIVERY_CYCLES = 5;
     public static final int PRICE = 100;
     public static final int MAX_CAPACITY = 4;
+
     private int deliveryCycles;
     private long lastInputCycle = 0;
     private float inputCycleTime;
@@ -92,7 +92,7 @@ public class Conveyor extends Block implements JSONSerializable {
         // Если еще можем забрать предмет, забираем с входящего направления
         if (getItemsAmount() < MAX_CAPACITY) {
             setState(IDLE);
-            grabItemsFromInputDirection();
+            grabItemsFromInput();
         } else setState(BUSY);
 
         // Перемещаем на вывод все предметы время доставки которых подошло
@@ -108,57 +108,54 @@ public class Conveyor extends Block implements JSONSerializable {
             }
         }
 
-        // Если на выводе есть предметы и есть выходной блок отправляем один предмет в выходной блок
-        Item item = output.peek();
-        if (item!=null) {
-            // Берём блок который находится по направлению вывода конвейера
-            Block outputBlock = production.getBlockAt(this, outputDirection);
-            // Если такой блок есть
-            if (outputBlock != null) {
-                // Если выходной блок буфер/экспорт/конвейер - заталкиваем сами
-                if (outputBlock instanceof Buffer
-                        || outputBlock instanceof ExportBuffer
-                        || outputBlock instanceof Conveyor) {
-                    // Если вход выходного блока смотрит на наш выход
-                    int neightInputDirection = outputBlock.getInputDirection();
-                    Block neighborInput = production.getBlockAt(outputBlock, neightInputDirection);
-                    if (neightInputDirection==NONE || neighborInput==this) {
-                        if (outputBlock.push(item)) {
-                            output.remove(item);
-                            lastPollTime = production.getClock();
-                        }
-                    }
-                }
-            }
-        }
-
+        pushToOutput();
     }
 
 
     @Override
-    protected boolean grabItemsFromInputDirection() {
-        // если по основному направлению входа нет предметов, пробуем взять с боковых
-        if (!super.grabItemsFromInputDirection()) {
-            if (!isStraight()) return false;
+    protected boolean grabItemsFromInput() {
+        // если по основному направлению входа нет предметов и направление прямое пробуем боковые
+        if (!super.grabItemsFromInput() || isStraight()) {
             Block leftBlock = production.getBlockAt(this, getLeftDirection());
             Block rightBlock = production.getBlockAt(this, getRightDirection());
-            if (leftBlock==null && rightBlock==null) return false;
-
             if (isJoinedConveyor(leftBlock)) {
                 Item item = leftBlock.peek();
-                if (item!=null && push(item)) {
-                    leftBlock.poll();
-                }
+                if (item!=null && push(item)) leftBlock.poll();
             }
-
             if (isJoinedConveyor(rightBlock)) {
                 Item item = rightBlock.peek();
-                if (item!=null && push(item)) {
-                    rightBlock.poll();
-                }
+                if (item!=null && push(item)) rightBlock.poll();
             }
         }
         return true;
+    }
+
+
+
+    protected void pushToOutput() {
+
+        // Если на выводе есть предмет
+        Item item = output.peek();
+        if (item == null) return;
+
+        // Если есть блок по направлению выхода
+        Block block = production.getBlockAt(this, outputDirection);
+        if (block == null) return;
+
+        boolean isBuffer = block instanceof Buffer || block instanceof ExportBuffer;
+        boolean isConveyor = block instanceof Conveyor;
+
+        if (isBuffer || isConveyor) {
+            // Если вход выходного блока смотрит на наш выход
+            int neighbourInpDir = block.getInputDirection();
+            Block neighborInput = production.getBlockAt(block, neighbourInpDir);
+            if (neighbourInpDir==NONE || neighborInput==this) {
+                if (block.push(item)) {
+                    output.poll();
+                    lastPollTime = production.getClock();
+                }
+            }
+        }
     }
 
 

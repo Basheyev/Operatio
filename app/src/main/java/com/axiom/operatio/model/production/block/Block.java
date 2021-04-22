@@ -123,7 +123,7 @@ public abstract class Block implements JSONSerializable {
     /**
      * Забирает один предмет из блока по направлению входа
      */
-    protected boolean grabItemsFromInputDirection() {
+    protected boolean grabItemsFromInput() {
         Block inputBlock = production.getBlockAt(this, inputDirection);
         if (inputBlock==null) return false;      // Если на входящем направление ничего нет
 
