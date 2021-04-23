@@ -18,7 +18,9 @@ import org.json.JSONObject;
 public class Conveyor extends Block implements JSONSerializable {
 
     public static final double CYCLE_COST = 0.02f;
-    public static final int DELIVERY_CYCLES = 5;
+    public static final int SPEED_1 = 5;
+    public static final int SPEED_2 = 4;
+    public static final int SPEED_3 = 3;
     public static final int PRICE = 100;
     public static final int MAX_CAPACITY = 4;
 
@@ -30,7 +32,7 @@ public class Conveyor extends Block implements JSONSerializable {
     public Conveyor(Production production, int inDir, int outDir) {
         super(production, inDir, MAX_CAPACITY, outDir, MAX_CAPACITY);
         price = PRICE;
-        this.deliveryCycles = DELIVERY_CYCLES;
+        this.deliveryCycles = SPEED_1;
         this.inputCycleTime = deliveryCycles / (float) MAX_CAPACITY;
         this.renderer = new ConveyorRenderer(this);
     }
@@ -192,9 +194,29 @@ public class Conveyor extends Block implements JSONSerializable {
     }
 
 
+    public int getSpeed() {
+        switch (deliveryCycles) {
+            case SPEED_1: return 1;
+            case SPEED_2: return 2;
+            case SPEED_3: return 3;
+            default: return 1;
+        }
+    }
+
+    public void setSpeed(int speed) {
+        switch (speed) {
+            case 1: deliveryCycles = SPEED_1; break;
+            case 2: deliveryCycles = SPEED_2; break;
+            case 3: deliveryCycles = SPEED_3; break;
+            default: return;
+        }
+        renderer.setAnimationSpeed(speed);
+        inputCycleTime = deliveryCycles / (float) MAX_CAPACITY;
+    }
+
     @Override
     public double getCycleCost() {
-        return CYCLE_COST;
+        return CYCLE_COST * ((double) SPEED_1 / deliveryCycles);
     }
 
     public JSONObject toJSON() {

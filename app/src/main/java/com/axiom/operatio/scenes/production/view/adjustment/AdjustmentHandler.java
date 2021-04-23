@@ -147,9 +147,22 @@ public class AdjustmentHandler implements ClickListener {
 
     private void conveyorAdjustmentClick(Button button, Conveyor conveyor) {
         String tag = button.getTag();
+        int conveyorSpeed = adjustmentPanel.getConveyorSpeed();
         switch (tag) {
+            case LEFT:
+                adjustmentPanel.selectConveyorSpeed(conveyor, conveyorSpeed - 1);
+                adjustmentPanel.showConveyorInfo(conveyor, adjustmentPanel.getConveyorSpeed());
+                break;
+            case RIGHT:
+                adjustmentPanel.selectConveyorSpeed(conveyor, conveyorSpeed + 1);
+                adjustmentPanel.showConveyorInfo(conveyor, adjustmentPanel.getConveyorSpeed());
+                break;
             case CHANGEOVER:
-                conveyor.clear();
+                if (conveyor.getSpeed()==conveyorSpeed) {
+                    conveyor.clear();
+                    break;
+                }
+                conveyor.setSpeed(adjustmentPanel.getConveyorSpeed());
                 adjustmentPanel.setChangeoverState(false);
                 outputChooser.setVisible(false);
                 break;

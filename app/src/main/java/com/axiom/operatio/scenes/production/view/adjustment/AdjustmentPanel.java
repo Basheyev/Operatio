@@ -53,6 +53,7 @@ public class AdjustmentPanel extends Panel {
 
     private int chosenOperationID = 0;
     private int chosenMaterialID = 0;
+    private int conveyorSpeed = 0;
 
     private long lastProductionCycle;
 
@@ -148,6 +149,13 @@ public class AdjustmentPanel extends Panel {
     }
 
 
+    protected void selectConveyorSpeed(Conveyor conveyor, int speed) {
+        int currentSpeed = conveyor.getSpeed();
+        if (speed==1 || speed==2 || speed==3) {
+            conveyorSpeed = speed;
+        }
+        if (currentSpeed == conveyorSpeed) setChangeoverState(false); else setChangeoverState(true);
+    }
 
 
     protected void selectMachineOperation(Machine machine, int opID) {
@@ -237,7 +245,13 @@ public class AdjustmentPanel extends Panel {
             if (blockChanged) chosenMaterialID = mat != null ? mat.getID() : -1;
             showInserterInfo(inserter, chosenMaterialID);
         }
-        if (block instanceof Conveyor) showConveyorInfo((Conveyor) block);
+        if (block instanceof Conveyor) {
+            Conveyor conveyor = (Conveyor) block;
+            if (blockChanged) {
+                conveyorSpeed = conveyor.getSpeed();
+                showConveyorInfo(conveyor, conveyorSpeed);
+            }
+        }
         if (block instanceof Buffer) showBufferInfo((Buffer) block);
         if (block instanceof ExportBuffer) showExporterInfo((ExportBuffer) block);
 
@@ -359,14 +373,15 @@ public class AdjustmentPanel extends Panel {
      * Отображает информацию о конвейере
      * @param conveyor конвейер
      */
-    private void showConveyorInfo(Conveyor conveyor) {
+    protected void showConveyorInfo(Conveyor conveyor, int speed) {
         hideButtons();
         caption.setText("Conveyor");
         centerButton.setVisible(true);
-        centerButton.setText("" + (conveyor.getItemsAmount()));
+        centerButton.setText(speed + "x");
         centerButton.setBackground(null);
-        centerButton.setLocation(40, 500);
-        centerButton.setSize(300,100);
+        centerButton.setLocalBounds( 140, 500, 100, 100);
+        leftButton.setVisible(true);
+        rightButton.setVisible(true);
         changeoverButton.setVisible(true);
         hideInputsOutputs();
     }
@@ -452,5 +467,9 @@ public class AdjustmentPanel extends Panel {
 
     public int getChosenMaterialID() {
         return chosenMaterialID;
+    }
+
+    public int getConveyorSpeed() {
+        return conveyorSpeed;
     }
 }
