@@ -116,60 +116,64 @@ public class ItemsRenderer {
      * @param result расчитанные координаты
      */
     private void calculateCoordinates(float progress, int inpDir, int outDir, Vector result) {
-        float rads, xpos = 0, ypos = 0;
+        double rads, xpos = 0, ypos = 0;
         // Прямые направления
-        if (inpDir==LEFT && outDir==RIGHT) {
+        if (inpDir == LEFT && outDir == RIGHT) {
             xpos = progress - 0.5f;
             ypos = 0;
         } else if (inpDir==RIGHT && outDir==LEFT) {
             xpos = 1 - progress - 0.5f;
             ypos = 0;
-        } else if (inpDir==DOWN && outDir== UP) {
+        } else if (inpDir == DOWN && outDir == UP) {
             xpos = 0;
             ypos = progress - 0.5f;
-        } else if (inpDir== UP && outDir==DOWN) {
+        } else if (inpDir == UP && outDir == DOWN) {
             xpos = 0;
             ypos = 1 - progress - 0.5f;
         }
         // Повороты на 90 градусов
-        else if (inpDir== RIGHT && outDir==UP) {
-            rads = (float) ((Math.PI*1.5) - (Math.PI/2 * progress));
-            xpos = (float) (Math.cos(rads) + 1) / 2;
-            ypos = (float) (Math.sin(rads) + 1) / 2;
-        } else if (inpDir== DOWN && outDir==RIGHT) {
-            rads = (float) ((Math.PI) - (Math.PI/2 * progress));
-            xpos = (float) (Math.cos(rads) + 1) / 2;
-            ypos = (float) (Math.sin(rads) - 1) / 2;
-        } else if (inpDir== LEFT && outDir==DOWN) {
-            rads = (float) ((Math.PI/2) - (Math.PI/2 * progress));
-            xpos = (float) (Math.cos(rads) - 1) / 2;
-            ypos = (float) (Math.sin(rads) - 1) / 2;
-        } else if (inpDir== UP && outDir==LEFT) {
-            rads = (float) -(Math.PI/2 * progress);
-            xpos = (float) (Math.cos(rads) - 1) / 2;
-            ypos = (float) (Math.sin(rads) + 1) / 2;
-        }
-        // Обратные повороты на 90 градусов
-        else if (inpDir== UP && outDir==RIGHT) {
-            rads = (float) (Math.PI + (Math.PI / 2 * progress));
-            xpos = (float) (Math.cos(rads) + 1) / 2;
-            ypos = (float) (Math.sin(rads) + 1) / 2;
-        } else if (inpDir== LEFT && outDir==UP) {
-            rads = (float) ((Math.PI * 1.5) + (Math.PI / 2 * progress));
-            xpos = (float) (Math.cos(rads) - 1) / 2;
-            ypos = (float) (Math.sin(rads) + 1) / 2;
-        } else if (inpDir== DOWN && outDir==LEFT) {
-            rads = (float) (Math.PI / 2 * progress);
-            xpos = (float) (Math.cos(rads) - 1) / 2;
-            ypos = (float) (Math.sin(rads) - 1) / 2;
-        } else if (inpDir== RIGHT && outDir==DOWN) {
-            rads = (float) (Math.PI/2 + (Math.PI/2 * progress));
-            xpos = (float) (Math.cos(rads) + 1) / 2;
-            ypos = (float) (Math.sin(rads) - 1) / 2;
+        else {
+            if (inpDir== RIGHT && outDir==UP) {
+                rads = (Math.PI*1.5) - (Math.PI/2 * progress);
+                xpos = Math.cos(rads) + 1;
+                ypos = Math.sin(rads) + 1;
+            } else if (inpDir == DOWN && outDir == RIGHT) {
+                rads = (Math.PI) - (Math.PI/2 * progress);
+                xpos = Math.cos(rads) + 1;
+                ypos = Math.sin(rads) - 1;
+            } else if (inpDir == LEFT && outDir == DOWN) {
+                rads = (Math.PI/2) - (Math.PI/2 * progress);
+                xpos = Math.cos(rads) - 1;
+                ypos = Math.sin(rads) - 1;
+            } else if (inpDir == UP && outDir == LEFT) {
+                rads = -(Math.PI/2 * progress);
+                xpos = Math.cos(rads) - 1;
+                ypos = Math.sin(rads) + 1;
+            }
+            // Обратные повороты на 90 градусов
+            else if (inpDir == UP && outDir == RIGHT) {
+                rads = Math.PI + (Math.PI / 2 * progress);
+                xpos = Math.cos(rads) + 1;
+                ypos = Math.sin(rads) + 1;
+            } else if (inpDir == LEFT && outDir == UP) {
+                rads = (Math.PI * 1.5) + (Math.PI / 2 * progress);
+                xpos = Math.cos(rads) - 1;
+                ypos = Math.sin(rads) + 1;
+            } else if (inpDir == DOWN && outDir == LEFT) {
+                rads = (Math.PI / 2 * progress);
+                xpos = Math.cos(rads) - 1;
+                ypos = Math.sin(rads) - 1;
+            } else if (inpDir == RIGHT && outDir == DOWN) {
+                rads = Math.PI/2 + (Math.PI/2 * progress);
+                xpos = Math.cos(rads) + 1;
+                ypos = Math.sin(rads) - 1;
+            }
+            xpos /= 2;
+            ypos /= 2;
         }
 
-        result.x = xpos;
-        result.y = ypos;
+        result.x = (float) xpos;
+        result.y = (float) ypos;
     }
 
 
