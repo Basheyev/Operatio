@@ -12,8 +12,6 @@ import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.ItemWidget;
 
-import java.util.ArrayList;
-
 import static android.graphics.Color.WHITE;
 
 /**
@@ -30,6 +28,7 @@ public class MaterialsPanel extends Panel {
     private Production production;
     private ItemWidget[] itemWidget;
     private Material selectedMaterial;
+    private ItemWidget selectedItemWidget;
 
 
     public MaterialsPanel(Production production, InventoryScene scene) {
@@ -131,27 +130,33 @@ public class MaterialsPanel extends Panel {
             ItemWidget item = (ItemWidget) w;
             if (!item.isActive()) return;
 
-            if (w.getColor()!=ITEM_SELECTED) {
-                // fixme тут мерцает из-за того что закрашиваем все подряд
-                unselectAllButtons(w);
+            if (w.getColor() != ITEM_SELECTED) {
+                unselectPreviousButton(w);
                 w.setColor(ITEM_SELECTED);
+                selectedItemWidget = (ItemWidget) w;
                 materialsPanel.selectedMaterial = material;
                 SoundRenderer.playSound(tickSound);
             } else {
-                unselectAllButtons(w);
+                unselectPreviousButton(w);
                 materialsPanel.selectedMaterial = null;
+                selectedItemWidget = null;
             }
             materialsPanel.inventoryScene.getMarketPanel().updateValues();
             updateData();
         }
 
-        public void unselectAllButtons(Widget w) {
-            ArrayList<Widget> children = w.getParent().getChildren();
-            for (int i=0; i<children.size(); i++) {
-                children.get(i).setColor(ITEM_BACKGROUND);
+
+        public void unselectPreviousButton(Widget w) {
+            Inventory inventory = production.getInventory();
+            if (selectedItemWidget != null) {
+                boolean autoBuy = inventory.isAutoBuy(selectedMaterial.getID());
+                boolean autoSell = inventory.isAutoSell(selectedMaterial.getID());
+                if (autoBuy) selectedItemWidget.setColor(ITEM_AUTO_BUY); else
+                if (autoSell) selectedItemWidget.setColor(ITEM_AUTO_SELL); else {
+                    selectedItemWidget.setColor(ITEM_BACKGROUND);
+                }
+                selectedItemWidget = null;
             }
-            MaterialsPanel materialsPanel = (MaterialsPanel) w.getParent();
-            materialsPanel.selectedMaterial = null;
         }
 
     };
