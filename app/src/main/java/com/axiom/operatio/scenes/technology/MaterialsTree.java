@@ -14,8 +14,6 @@ import com.axiom.operatio.model.production.machine.MachineType;
 import com.axiom.operatio.model.production.machine.Operation;
 import com.axiom.operatio.scenes.common.ItemWidget;
 
-import static android.graphics.Color.BLACK;
-import static android.graphics.Color.RED;
 import static android.graphics.Color.WHITE;
 
 public class MaterialsTree extends Panel {
@@ -121,20 +119,20 @@ public class MaterialsTree extends Panel {
 
     public void setSelectedMaterial(Material material) {
         if (material==null) return;
-        unselectAllButtons();
+        unselectLastButton();
         itemWidget[material.getID()].setColor(SELECTED);
         selectedMaterial = material;
         getTechnologyScene().getRecipePanel().updateData();
     }
 
 
-    public void unselectAllButtons() {
+    public void unselectLastButton() {
+        if (selectedMaterial==null) return;
         GamePermissions permissions = production.getPermissions();
-        for (int i=0; i<itemWidget.length; i++) {
-            int backgroundColor = UNAVAILABLE;
-            if (permissions.isAvailable(Material.getMaterial(i))) backgroundColor = AVAILABLE;
-            itemWidget[i].setColor(backgroundColor);
-        }
+        ItemWidget lastSelected = itemWidget[selectedMaterial.getID()];
+        int backgroundColor = UNAVAILABLE;
+        if (permissions.isAvailable(selectedMaterial)) backgroundColor = AVAILABLE;
+        lastSelected.setColor(backgroundColor);
         selectedMaterial = null;
     }
 
@@ -144,32 +142,32 @@ public class MaterialsTree extends Panel {
         protected int tickSound =-1;
 
         @Override
-        public void onClick(Widget w) {
-            if (w.getTag()==null) return;
+        public void onClick(Widget clickedItem) {
+            if (clickedItem.getTag()==null) return;
             if (tickSound == -1) tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
-            int materialID = Integer.parseInt(w.getTag());
+            int materialID = Integer.parseInt(clickedItem.getTag());
             Material material = Material.getMaterial(materialID);
-            MaterialsTree materialsTree = (MaterialsTree) w.getParent();
+            MaterialsTree materialsTree = (MaterialsTree) clickedItem.getParent();
 
-            ItemWidget item = (ItemWidget) w;
+            ItemWidget item = (ItemWidget) clickedItem;
             if (!item.isActive()) return;
 
-            if (w.getColor()!=SELECTED) {
-                unselectAllButtons(w);
-                w.setColor(SELECTED);
+            if (clickedItem.getColor()!=SELECTED) {
+                unselectLastButton(clickedItem);
+                clickedItem.setColor(SELECTED);
                 materialsTree.selectedMaterial = material;
                 materialsTree.getTechnologyScene().getRecipePanel().updateData();
                 SoundRenderer.playSound(tickSound);
             } else {
-                unselectAllButtons(w);
+                unselectLastButton(clickedItem);
                 materialsTree.selectedMaterial = null;
                 materialsTree.getTechnologyScene().getRecipePanel().updateData();
             }
         }
 
-        public void unselectAllButtons(Widget w) {
+        public void unselectLastButton(Widget w) {
             MaterialsTree materialsTree = (MaterialsTree) w.getParent();
-            materialsTree.unselectAllButtons();
+            materialsTree.unselectLastButton();
         }
 
     };
