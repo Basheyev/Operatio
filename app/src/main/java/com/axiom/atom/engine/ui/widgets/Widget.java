@@ -15,9 +15,9 @@ import java.util.ArrayList;
  */
 public abstract class Widget {
 
-    public boolean visible = true;           // Виден ли виджет (отображается/обрабатывает события)
-    public boolean opaque = true;            // Является ли виджет непрозрачным
-    protected float[] color = new float[4];  // Цвет компонента (если непрозрачный)
+    protected boolean visible = true;        // Виден ли виджет (отображается/обрабатывает события)
+    protected boolean opaque = true;         // Является ли виджет непрозрачным
+    protected float[] color = new float[4];  // Цвет виджета (если непрозрачный)
     protected int zOrder = 1000;             // Слой виджета при отрисовке рендером
 
     protected Widget parent;                 // Родительский виджет (null для корневых)
@@ -293,7 +293,7 @@ public abstract class Widget {
             pressed = true;
         } else
         if (action == MotionEvent.ACTION_UP) {
-            // И в виджета есть обработчик клика
+            // И у виджета есть обработчик клика
             if (pressed && clickListener != null) {
                 // Вызвать обработчик
                 clickListener.onClick(this);
@@ -320,4 +320,20 @@ public abstract class Widget {
         return tag;
     }
 
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    public boolean isOpaque() {
+        return opaque;
+    }
+
+    public void setOpaque(boolean opaque) {
+        this.opaque = opaque;
+    }
 }

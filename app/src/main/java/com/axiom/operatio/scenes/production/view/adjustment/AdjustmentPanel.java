@@ -224,7 +224,7 @@ public class AdjustmentPanel extends Panel {
             Machine machine = (Machine) block;
             if (blockChanged) chosenOperationID = machine.getOperationID();
             showMachineInfo(machine, chosenOperationID);
-            if (outputChooser.visible) outputChooser.showMachineOutputs(machine);
+            if (outputChooser.isVisible()) outputChooser.showMachineOutputs(machine);
         }
         if (block instanceof ImportBuffer) {
             ImportBuffer importBuffer = (ImportBuffer) block;
@@ -260,12 +260,12 @@ public class AdjustmentPanel extends Panel {
 
 
     private void hideButtons() {
-        centerButton.visible = false;
-        leftButton.visible = false;
-        rightButton.visible = false;
-        inputsCaption.visible = false;
-        outputsCaption.visible = false;
-        changeoverButton.visible = false;
+        centerButton.setVisible(false);
+        leftButton.setVisible(false);
+        rightButton.setVisible(false);
+        inputsCaption.setVisible(false);
+        outputsCaption.setVisible(false);
+        changeoverButton.setVisible(false);
     }
 
 
@@ -284,14 +284,14 @@ public class AdjustmentPanel extends Panel {
         int[] outputAmount = currentOperation.getOutputAmount();
 
         caption.setText(machineType.getName() + " operation");
-        centerButton.visible = true;
+        centerButton.setVisible(true);
         centerButton.setText("" + opID + "/" + (allOperations.length-1));
         centerButton.setLocalBounds( 140, 500, 100, 100);
         centerButton.setBackground(null);
-        leftButton.visible = true;
-        rightButton.visible = true;
+        leftButton.setVisible(true);
+        rightButton.setVisible(true);
 
-        inputsCaption.visible = true;
+        inputsCaption.setVisible(true);
         inputsCaption.setText(INPUTS);
         for (int i=0; i<4; i++) {
             if (i < inputMaterials.length) {
@@ -301,10 +301,10 @@ public class AdjustmentPanel extends Panel {
                 inpBtn[i].setBackground(null);
                 inpBtn[i].setText("");
             }
-            inpBtn[i].visible = true;
+            inpBtn[i].setVisible(true);
         }
 
-        outputsCaption.visible = true;
+        outputsCaption.setVisible(true);
         outputsCaption.setText(OUTPUTS);
         for (int i=0; i<4; i++) {
             if (i < outputMaterials.length) {
@@ -314,11 +314,11 @@ public class AdjustmentPanel extends Panel {
                 outBtn[i].setBackground(null);
                 outBtn[i].setText("");
             }
-            outBtn[i].visible = true;
+            outBtn[i].setVisible(true);
         }
 
         GamePermissions permissions = production.getPermissions();
-        changeoverButton.visible = permissions.isAvailable(currentOperation);
+        changeoverButton.setVisible(permissions.isAvailable(currentOperation));
     }
 
 
@@ -331,7 +331,7 @@ public class AdjustmentPanel extends Panel {
 
         hideButtons();
 
-        centerButton.visible = true;
+        centerButton.setVisible(true);
         centerButton.setText("" + (buffer.getItemsAmount()) + "/" + (buffer.getCapacity()-1));
         centerButton.setBackground(null);
         centerButton.setLocation(40, 500);
@@ -347,11 +347,11 @@ public class AdjustmentPanel extends Panel {
                 inpBtn[i].setBackground(null);
                 inpBtn[i].setText("");
             }
-            inpBtn[i].visible = true;
-            outBtn[i].visible = false;
+            inpBtn[i].setVisible(true);
+            outBtn[i].setVisible(false);
         }
 
-        changeoverButton.visible = true;
+        changeoverButton.setVisible(true);
     }
 
 
@@ -362,12 +362,12 @@ public class AdjustmentPanel extends Panel {
     private void showConveyorInfo(Conveyor conveyor) {
         hideButtons();
         caption.setText("Conveyor");
-        centerButton.visible = true;
+        centerButton.setVisible(true);
         centerButton.setText("" + (conveyor.getItemsAmount()));
         centerButton.setBackground(null);
         centerButton.setLocation(40, 500);
         centerButton.setSize(300,100);
-        changeoverButton.visible = true;
+        changeoverButton.setVisible(true);
         hideInputsOutputs();
     }
 
@@ -384,19 +384,19 @@ public class AdjustmentPanel extends Panel {
         hideInputsOutputs();
 
         caption.setText("Importer");
-        centerButton.visible = true;
+        centerButton.setVisible(true);
         centerButton.setText("");
         centerButton.setBackground(material != null ? material.getImage() : null);
         centerButton.setLocalBounds( 140, 500, 100, 100);
-        leftButton.visible = true;
-        rightButton.visible = true;
-        changeoverButton.visible = true;
+        leftButton.setVisible(true);
+        rightButton.setVisible(true);
+        changeoverButton.setVisible(true);
 
         long balance = production.getInventory().getBalance(material);
         String name = material != null ? material.getName() : "";
         String balanceStr = name + "\n" + "Balance: " + balance + " items";
         inputsCaption.setText(balanceStr);
-        inputsCaption.visible = true;
+        inputsCaption.setVisible(true);
     }
 
 
@@ -418,28 +418,28 @@ public class AdjustmentPanel extends Panel {
         hideInputsOutputs();
 
         caption.setText("Inserter");
-        centerButton.visible = true;
+        centerButton.setVisible(true);
         centerButton.setText("");
         centerButton.setLocalBounds( 140, 500, 100, 100);
         if (material==null) centerButton.setBackground(null);
         else centerButton.setBackground(material.getImage());
 
-        leftButton.visible = true;
-        rightButton.visible = true;
-        changeoverButton.visible = true;
+        leftButton.setVisible(true);
+        rightButton.setVisible(true);
+        changeoverButton.setVisible(true);
     }
 
 
     private void hideInputsOutputs() {
         for (int i=0; i<4; i++) {
-            inpBtn[i].visible = false;
-            outBtn[i].visible = false;
+            inpBtn[i].setVisible(false);
+            outBtn[i].setVisible(false);
         }
     }
 
 
     public void hideOutputChooser() {
-        outputChooser.visible = false;
+        outputChooser.setVisible(false);
     }
 
     public Block getChosenBlock() {

@@ -87,13 +87,13 @@ public class SlotsPanel extends Panel {
             setColor(PANEL_COLOR);
             for (int i=0; i<savedGamesCaptions.length; i++) {
                 if (savedGamesCaptions[i]!=null) {
-                    slotButtons[i].visible = true;
+                    slotButtons[i].setVisible(true);
                     slotButtons[i].setColor(LOAD_GAME_BACKGROUND);
                     if (i==0) {
                         slotButtons[i].setText("AUTO SAVED");
                     } else slotButtons[i].setText(savedGamesCaptions[i]);
                 }
-                else slotButtons[i].visible = false;
+                else slotButtons[i].setVisible(false);
             }
         } else if (mode==MODE_SAVE_GAME) {
             header.setText(SAVE_GAME);
@@ -104,7 +104,7 @@ public class SlotsPanel extends Panel {
                 } else {
                     slotButtons[i].setColor(SAVE_GAME_BACKGROUND);
                 }
-                slotButtons[i].visible = true;
+                slotButtons[i].setVisible(true);
             }
         }
     }

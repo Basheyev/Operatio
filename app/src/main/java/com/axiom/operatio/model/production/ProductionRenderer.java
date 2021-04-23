@@ -4,12 +4,10 @@ import android.content.res.Resources;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.Texture;
-import com.axiom.atom.engine.graphics.renderers.Particles;
+import com.axiom.operatio.scenes.production.view.Particles;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
 

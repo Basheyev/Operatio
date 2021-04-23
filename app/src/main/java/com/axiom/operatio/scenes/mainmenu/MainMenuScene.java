@@ -54,7 +54,7 @@ public class MainMenuScene extends GameScene {
 
             slotsPanel = new SlotsPanel(this);
             slotsPanel.setZOrder(storyPanel.getZOrder() + 100);
-            slotsPanel.visible = false;
+            slotsPanel.setVisible(false);
             widget.addChild(slotsPanel);
         }
         scrollerX = Camera.WIDTH;

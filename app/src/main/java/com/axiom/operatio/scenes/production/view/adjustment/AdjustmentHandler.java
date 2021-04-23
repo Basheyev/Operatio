@@ -64,24 +64,24 @@ public class AdjustmentHandler implements ClickListener {
         switch (tag) {
             case CHOOSER:
                 outputChooser.showMachineOutputs(machine);
-                outputChooser.visible = !outputChooser.visible;
+                outputChooser.setVisible(!outputChooser.isVisible());
                 break;
             case LEFT:
                 adjustmentPanel.selectMachineOperation(machine, currentOperationID - 1);
                 adjustmentPanel.showMachineInfo(machine, adjustmentPanel.getChosenOperationID());
-                if (outputChooser.visible) outputChooser.showMachineOutputs(machine);
-                outputChooser.visible = false;
+                if (outputChooser.isVisible()) outputChooser.showMachineOutputs(machine);
+                outputChooser.setVisible(false);
                 break;
             case RIGHT:
                 adjustmentPanel.selectMachineOperation(machine, currentOperationID + 1);
                 adjustmentPanel.showMachineInfo(machine, adjustmentPanel.getChosenOperationID());
-                if (outputChooser.visible) outputChooser.showMachineOutputs(machine);
-                outputChooser.visible = false;
+                if (outputChooser.isVisible()) outputChooser.showMachineOutputs(machine);
+                outputChooser.setVisible(false);
                 break;
             case CHANGEOVER:
                 machine.setOperation(currentOperationID);
                 adjustmentPanel.setChangeoverState(false);
-                outputChooser.visible = false;
+                outputChooser.setVisible(false);
                 break;
         }
     }
@@ -94,22 +94,22 @@ public class AdjustmentHandler implements ClickListener {
         switch (tag) {
             case CHOOSER:
                 outputChooser.showImporterMaterials(importBuffer);
-                outputChooser.visible = !outputChooser.visible;
+                outputChooser.setVisible(!outputChooser.isVisible());
                 break;
             case LEFT:
                 adjustmentPanel.selectImporterMaterial(importBuffer, currentMaterialID - 1);
                 adjustmentPanel.showImporterInfo(importBuffer, adjustmentPanel.getChosenMaterialID());
-                outputChooser.visible = false;
+                outputChooser.setVisible(false);
                 break;
             case RIGHT:
                 adjustmentPanel.selectImporterMaterial(importBuffer, currentMaterialID + 1);
                 adjustmentPanel.showImporterInfo(importBuffer, adjustmentPanel.getChosenMaterialID());
-                outputChooser.visible = false;
+                outputChooser.setVisible(false);
                 break;
             case CHANGEOVER:
                 importBuffer.setImportMaterial(Material.getMaterial(currentMaterialID));
                 adjustmentPanel.setChangeoverState(false);
-                outputChooser.visible = false;
+                outputChooser.setVisible(false);
                 break;
         }
     }
@@ -123,22 +123,22 @@ public class AdjustmentHandler implements ClickListener {
         switch (tag) {
             case CHOOSER:
                 outputChooser.showInserterMaterials(inserter);
-                outputChooser.visible = !outputChooser.visible;
+                outputChooser.setVisible (!outputChooser.isVisible());
                 break;
             case LEFT:
                 adjustmentPanel.selectInserterMaterial(inserter, currentMaterialID - 1);
                 adjustmentPanel.showInserterInfo(inserter, adjustmentPanel.getChosenMaterialID());
-                outputChooser.visible = false;
+                outputChooser.setVisible(false);
                 break;
             case RIGHT:
                 adjustmentPanel.selectInserterMaterial(inserter, currentMaterialID + 1);
                 adjustmentPanel.showInserterInfo(inserter, adjustmentPanel.getChosenMaterialID());
-                outputChooser.visible = false;
+                outputChooser.setVisible(false);
                 break;
             case CHANGEOVER:
                 inserter.setTargetMaterial(Material.getMaterial(currentMaterialID));
                 adjustmentPanel.setChangeoverState(false);
-                outputChooser.visible = false;
+                outputChooser.setVisible(false);
                 break;
         }
     }
@@ -151,7 +151,7 @@ public class AdjustmentHandler implements ClickListener {
             case CHANGEOVER:
                 conveyor.clear();
                 adjustmentPanel.setChangeoverState(false);
-                outputChooser.visible = false;
+                outputChooser.setVisible(false);
                 break;
             default:
 
@@ -165,7 +165,7 @@ public class AdjustmentHandler implements ClickListener {
             case CHANGEOVER:
                 buffer.clear();
                 adjustmentPanel.setChangeoverState(false);
-                outputChooser.visible = false;
+                outputChooser.setVisible(false);
                 break;
             default:
 

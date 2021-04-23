@@ -123,7 +123,7 @@ public class RecipePanel extends Panel {
     private ItemWidget buildMachineButton( float x, float y, float w, float h) {
         ItemWidget mb = new ItemWidget("");
         mb.setColor(BLACK);
-        mb.opaque = false;
+        mb.setOpaque(false);
         mb.setTextColor(WHITE);
         mb.setTextScale(1);
         mb.setLocalBounds(x, y, w, h);
@@ -138,7 +138,7 @@ public class RecipePanel extends Panel {
         rb.setTextScale(1.4f);
         rb.setTextColor(WHITE);
         rb.setClickListener(researchClickListener);
-        rb.visible = false;
+        rb.setVisible(false);
         addChild(rb);
         return rb;
     }
@@ -154,10 +154,10 @@ public class RecipePanel extends Panel {
             showMachineAndOperation(selectedOperation);
             boolean materialNotAvailable = !permissions.isAvailable(selectedMaterial);
             boolean operationNotAvailable = !permissions.isAvailable(selectedOperation);
-            researchButton.visible = materialNotAvailable || operationNotAvailable;
-            if (researchButton.visible) researchButton.setText(recipePrice);
+            researchButton.setVisible(materialNotAvailable || operationNotAvailable);
+            if (researchButton.isVisible()) researchButton.setText(recipePrice);
             return true;
-        } else researchButton.visible = false;
+        } else researchButton.setVisible(false);
         clearFields();
         return false;
     }
@@ -335,7 +335,7 @@ public class RecipePanel extends Panel {
                         permissions.addMaterialPermission(material);
                         permissions.addOperationPermission(selectedOperation);
                         permissions.addMachinePermission(selectedOperation.getMachineType());
-                        w.visible = false;
+                        w.setVisible(false);
                     }
                 }
             }

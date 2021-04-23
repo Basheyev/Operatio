@@ -1,4 +1,4 @@
-package com.axiom.atom.engine.graphics.renderers;
+package com.axiom.operatio.scenes.production.view;
 
 import android.graphics.Rect;
 import android.provider.Telephony;
@@ -6,6 +6,8 @@ import android.provider.Telephony;
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.graphics.renderers.Rectangle;
+import com.axiom.atom.engine.graphics.renderers.Sprite;
 
 public class Particles {
 
@@ -51,7 +53,7 @@ public class Particles {
                 particle = particles[i];
                 if (particle.visible) {
                     particleSize = scaleFactor * particle.scale;
-                    rectangle.zOrder = zOrder;
+                    rectangle.setZOrder(zOrder);
                     rectangle.setRotation(particle.rotation);
                     rectangle.setAlpha(particle.alpha);
                     rectangle.draw(camera, x + particle.x - particleSize * 0.5f,
@@ -64,7 +66,7 @@ public class Particles {
                 particle = particles[i];
                 if (particle.visible) {
                     particleSize = scaleFactor * particle.scale;
-                    sprite.zOrder = zOrder;
+                    sprite.setZOrder(zOrder);
                     sprite.setRotation(particle.rotation);
                     sprite.setAlpha(particle.alpha);
                     sprite.draw(camera, x + particle.x - particleSize * 0.5f,

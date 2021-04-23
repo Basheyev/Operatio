@@ -85,9 +85,9 @@ public class MenuPanel extends Panel {
         int index = 0;
         int row = 0;
         if (gameSaveLoad.getGamesCaptions()[0]==null) {
-            buttons[0].visible = false;
+            buttons[0].setVisible(false);
             index = 1;
-        } else buttons[0].visible = true;
+        } else buttons[0].setVisible(true);
         for (int i = index; i < 5; i++) {
             buttons[i].setLocalBounds(50, 610 - ( row * 140), 500, 100);
             row++;
@@ -103,7 +103,7 @@ public class MenuPanel extends Panel {
             gameSaveLoad.continueGame();
         }
         SlotsPanel slotsPanel = mainMenuScene.getSlotsPanel();
-        slotsPanel.visible = false;
+        slotsPanel.setVisible(false);
     }
 
 
@@ -113,27 +113,27 @@ public class MenuPanel extends Panel {
         }
         productionScene = gameSaveLoad.newGame();
         SlotsPanel slotsPanel = mainMenuScene.getSlotsPanel();
-        slotsPanel.visible = false;
+        slotsPanel.setVisible(false);
     }
 
 
     public void loadGame() {
         SlotsPanel slotsPanel = mainMenuScene.getSlotsPanel();
         if (slotsPanel.getMode()==MODE_LOAD_GAME) {
-            slotsPanel.visible = !slotsPanel.visible;
+            slotsPanel.setVisible(!slotsPanel.isVisible());
         } else {
             slotsPanel.setMode(MODE_LOAD_GAME);
-            slotsPanel.visible = true;
+            slotsPanel.setVisible(true);
         }
     }
 
     public void saveGame() {
         SlotsPanel slotsPanel = mainMenuScene.getSlotsPanel();
         if (slotsPanel.getMode()==MODE_SAVE_GAME) {
-            slotsPanel.visible = !slotsPanel.visible;
+            slotsPanel.setVisible(!slotsPanel.isVisible());
         } else {
             slotsPanel.setMode(MODE_SAVE_GAME);
-            slotsPanel.visible = true;
+            slotsPanel.setVisible(true);;
         }
     }
 
