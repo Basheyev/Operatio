@@ -1,7 +1,5 @@
 package com.axiom.atom.engine.ui.widgets;
 
-import android.view.MotionEvent;
-
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
