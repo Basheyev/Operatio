@@ -356,7 +356,7 @@ public class AdjustmentPanel extends Panel {
 
 
     /**
-     * Отображает информацию о конвейере todo доработать информацию о конвейере
+     * Отображает информацию о конвейере
      * @param conveyor конвейер
      */
     private void showConveyorInfo(Conveyor conveyor) {

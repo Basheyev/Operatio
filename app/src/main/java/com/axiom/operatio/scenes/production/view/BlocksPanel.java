@@ -51,7 +51,7 @@ public class BlocksPanel extends Panel {
         for (int i=0; i<children.size(); i++) {
             BlockButton button = (BlockButton) children.get(i);
             int blockID = Integer.parseInt(button.getTag());
-            // если это машина fixme вот тут учесть порядок
+            // если это машина
             if (blockID >= MACHINES_INDEX_START) {
                 button.setActive(permissions.isAvailable(MachineType.getMachineType(blockID - MACHINES_INDEX_START)));
             } else button.setActive(true);
