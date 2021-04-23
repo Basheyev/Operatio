@@ -119,17 +119,17 @@ public class ItemsRenderer {
         double rads, xpos = 0, ypos = 0;
         // Прямые направления
         if (inpDir == LEFT && outDir == RIGHT) {
-            xpos = progress - 0.5f;
+            xpos = progress - 0.5;
             ypos = 0;
         } else if (inpDir==RIGHT && outDir==LEFT) {
-            xpos = 1 - progress - 0.5f;
+            xpos = 1 - progress - 0.5;
             ypos = 0;
         } else if (inpDir == DOWN && outDir == UP) {
             xpos = 0;
-            ypos = progress - 0.5f;
+            ypos = progress - 0.5;
         } else if (inpDir == UP && outDir == DOWN) {
             xpos = 0;
-            ypos = 1 - progress - 0.5f;
+            ypos = 1 - progress - 0.5;
         }
         // Повороты на 90 градусов
         else {
