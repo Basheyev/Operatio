@@ -59,7 +59,7 @@ public class AdjustmentHandler implements ClickListener {
 
 
     private void machineAdjustmentClick(Button button, Machine machine) {
-        int chosenOperationID = adjustmentPanel.getChosenOperationID();
+        int currentOperationID = adjustmentPanel.getChosenOperationID();
         String tag = button.getTag();
         switch (tag) {
             case CHOOSER:
@@ -67,19 +67,19 @@ public class AdjustmentHandler implements ClickListener {
                 outputChooser.visible = !outputChooser.visible;
                 break;
             case LEFT:
-                adjustmentPanel.selectMachineOperation(machine, chosenOperationID - 1);
-                adjustmentPanel.showMachineInfo(machine, chosenOperationID);
+                adjustmentPanel.selectMachineOperation(machine, currentOperationID - 1);
+                adjustmentPanel.showMachineInfo(machine, adjustmentPanel.getChosenOperationID());
                 if (outputChooser.visible) outputChooser.showMachineOutputs(machine);
                 outputChooser.visible = false;
                 break;
             case RIGHT:
-                adjustmentPanel.selectMachineOperation(machine, chosenOperationID + 1);
-                adjustmentPanel.showMachineInfo(machine, chosenOperationID);
+                adjustmentPanel.selectMachineOperation(machine, currentOperationID + 1);
+                adjustmentPanel.showMachineInfo(machine, adjustmentPanel.getChosenOperationID());
                 if (outputChooser.visible) outputChooser.showMachineOutputs(machine);
                 outputChooser.visible = false;
                 break;
             case CHANGEOVER:
-                machine.setOperation(chosenOperationID);
+                machine.setOperation(currentOperationID);
                 adjustmentPanel.setChangeoverState(false);
                 outputChooser.visible = false;
                 break;
@@ -89,7 +89,7 @@ public class AdjustmentHandler implements ClickListener {
 
 
     private void importBufferAdjustmentClick(Button button, ImportBuffer importBuffer) {
-        int materialID = adjustmentPanel.getChosenMaterialID();
+        int currentMaterialID = adjustmentPanel.getChosenMaterialID();
         String tag = button.getTag();
         switch (tag) {
             case CHOOSER:
@@ -97,17 +97,17 @@ public class AdjustmentHandler implements ClickListener {
                 outputChooser.visible = !outputChooser.visible;
                 break;
             case LEFT:
-                adjustmentPanel.selectImporterMaterial(importBuffer, materialID - 1);
+                adjustmentPanel.selectImporterMaterial(importBuffer, currentMaterialID - 1);
                 adjustmentPanel.showImporterInfo(importBuffer, adjustmentPanel.getChosenMaterialID());
                 outputChooser.visible = false;
                 break;
             case RIGHT:
-                adjustmentPanel.selectImporterMaterial(importBuffer, materialID + 1);
+                adjustmentPanel.selectImporterMaterial(importBuffer, currentMaterialID + 1);
                 adjustmentPanel.showImporterInfo(importBuffer, adjustmentPanel.getChosenMaterialID());
                 outputChooser.visible = false;
                 break;
             case CHANGEOVER:
-                importBuffer.setImportMaterial(Material.getMaterial(materialID));
+                importBuffer.setImportMaterial(Material.getMaterial(currentMaterialID));
                 adjustmentPanel.setChangeoverState(false);
                 outputChooser.visible = false;
                 break;
@@ -118,7 +118,7 @@ public class AdjustmentHandler implements ClickListener {
 
 
     private void inserterAdjustmentClick(Button button, Inserter inserter) {
-        int materialID = adjustmentPanel.getChosenMaterialID();
+        int currentMaterialID = adjustmentPanel.getChosenMaterialID();
         String tag = button.getTag();
         switch (tag) {
             case CHOOSER:
@@ -126,17 +126,17 @@ public class AdjustmentHandler implements ClickListener {
                 outputChooser.visible = !outputChooser.visible;
                 break;
             case LEFT:
-                adjustmentPanel.selectInserterMaterial(inserter, materialID - 1);
+                adjustmentPanel.selectInserterMaterial(inserter, currentMaterialID - 1);
                 adjustmentPanel.showInserterInfo(inserter, adjustmentPanel.getChosenMaterialID());
                 outputChooser.visible = false;
                 break;
             case RIGHT:
-                adjustmentPanel.selectInserterMaterial(inserter, materialID + 1);
+                adjustmentPanel.selectInserterMaterial(inserter, currentMaterialID + 1);
                 adjustmentPanel.showInserterInfo(inserter, adjustmentPanel.getChosenMaterialID());
                 outputChooser.visible = false;
                 break;
             case CHANGEOVER:
-                inserter.setTargetMaterial(Material.getMaterial(materialID));
+                inserter.setTargetMaterial(Material.getMaterial(currentMaterialID));
                 adjustmentPanel.setChangeoverState(false);
                 outputChooser.visible = false;
                 break;

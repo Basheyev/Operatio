@@ -154,7 +154,7 @@ public class AdjustmentPanel extends Panel {
         int operationsCount = machine.getType().getOperations().length;
         int currentOperation = machine.getOperationID();
         if (opID < 0) opID = 0;
-        if (opID > operationsCount) opID = operationsCount - 1;
+        if (opID >= operationsCount) opID = operationsCount - 1;
         chosenOperationID = opID;
         if (chosenOperationID == currentOperation) setChangeoverState(false); else setChangeoverState(true);
     }
@@ -165,7 +165,7 @@ public class AdjustmentPanel extends Panel {
         int materialsAmount = Material.getMaterialsAmount();
         int currentMaterial = importBuffer.getImportMaterial().getID();
         if (matID < 0) matID = 0;
-        if (matID > materialsAmount) matID = materialsAmount - 1;
+        if (matID >= materialsAmount) matID = materialsAmount - 1;
         chosenMaterialID = matID;
         if (chosenMaterialID == currentMaterial) setChangeoverState(false); else setChangeoverState(true);
     }
@@ -178,7 +178,7 @@ public class AdjustmentPanel extends Panel {
         int currentMaterial = (material != null) ? material.getID() : -1;
 
         if (matID < -1) matID = -1;
-        if (matID > materialsAmount) matID = materialsAmount - 1;
+        if (matID >= materialsAmount) matID = materialsAmount - 1;
         chosenMaterialID = matID;
 
         if (chosenMaterialID == currentMaterial) setChangeoverState(false); else setChangeoverState(true);
