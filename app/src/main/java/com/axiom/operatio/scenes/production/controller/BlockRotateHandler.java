@@ -2,6 +2,9 @@ package com.axiom.operatio.scenes.production.controller;
 
 import android.view.MotionEvent;
 
+import com.axiom.atom.engine.core.GameLoop;
+import com.axiom.atom.engine.data.events.GameEvent;
+import com.axiom.operatio.model.gameplay.OperatioEvents;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.block.Block;
@@ -57,6 +60,7 @@ public class BlockRotateHandler {
         if (actionInProgress && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
             if (block!=null) {
                 BlockAdjuster.rotateFlow(block);
+                GameLoop.getInstance().fireGameEvent(new GameEvent(OperatioEvents.BLOCK_ROTATED, block));
                 AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
                 opsPanel.showBlockInfo(block);
                 production.selectBlock(column, row);

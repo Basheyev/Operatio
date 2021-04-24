@@ -3,7 +3,10 @@ package com.axiom.operatio.scenes.production.controller;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
+import com.axiom.atom.engine.core.GameLoop;
+import com.axiom.atom.engine.data.events.GameEvent;
 import com.axiom.atom.engine.sound.SoundRenderer;
+import com.axiom.operatio.model.gameplay.OperatioEvents;
 import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.ProductionRenderer;
@@ -66,6 +69,7 @@ public class BlockDeleteHandler {
                 production.unselectBlock();
                 AdjustmentPanel opsPanel = ProductionSceneUI.getAdjustmentPanel();
                 opsPanel.hideBlockInfo();
+                GameLoop.getInstance().fireGameEvent(new GameEvent(OperatioEvents.BLOCK_DELETED, block));
                 SoundRenderer.playSound(blockRemoveSound);
             }
             actionInProgress = false;

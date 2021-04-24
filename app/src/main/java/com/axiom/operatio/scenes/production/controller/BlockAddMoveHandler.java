@@ -6,8 +6,8 @@ import android.view.MotionEvent;
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameLoop;
 import com.axiom.atom.engine.data.events.GameEvent;
-import com.axiom.atom.engine.data.events.GameEventQueue;
 import com.axiom.atom.engine.sound.SoundRenderer;
+import com.axiom.operatio.model.gameplay.OperatioEvents;
 import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.ProductionRenderer;
@@ -147,8 +147,7 @@ public class BlockAddMoveHandler {
         opsPanel.showBlockInfo(dragBlock);
         production.selectBlock(column, row);
 
-        // fixme тестовая отправка события
-        GameLoop.getInstance().fireGameEvent(new GameEvent(100, dragBlock));
+        GameLoop.getInstance().fireGameEvent(new GameEvent(OperatioEvents.BLOCK_ADDED, dragBlock));
 
         // Запускаем эффект частиц
         scene.getProductionRenderer().getParticles().generateParticles();

@@ -60,6 +60,7 @@ public class BuyTileHandler {
         if (actionInProgress && column >= 0 && row >= 0 && lastCol==column && lastRow==row) {
             if (production.getLedger().creditCashBalance(Ledger.EXPENSE_TILE_BOUGHT, Production.TILE_PRICE)) {
                 production.setAreaUnlocked(column, row, 1, 1, true);
+                // todo fire event
                 SoundRenderer.playSound(boughtSound);
             }
             actionInProgress = false;

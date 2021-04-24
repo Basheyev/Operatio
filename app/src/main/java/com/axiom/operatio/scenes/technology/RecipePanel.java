@@ -1,7 +1,9 @@
 package com.axiom.operatio.scenes.technology;
 
 import com.axiom.atom.R;
+import com.axiom.atom.engine.core.GameLoop;
 import com.axiom.atom.engine.core.geometry.AABB;
+import com.axiom.atom.engine.data.events.GameEvent;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
@@ -13,6 +15,7 @@ import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.common.FormatUtils;
+import com.axiom.operatio.model.gameplay.OperatioEvents;
 import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.materials.Material;
@@ -335,6 +338,12 @@ public class RecipePanel extends Panel {
                         permissions.addMaterialPermission(material);
                         permissions.addOperationPermission(selectedOperation);
                         permissions.addMachinePermission(selectedOperation.getMachineType());
+
+                        // fixme Уведомить всех о том, что открыта новая машина или технология
+                        GameLoop.getInstance().fireGameEvent(new GameEvent(OperatioEvents.MATERIAL_RESEARCHED, material));
+                        GameLoop.getInstance().fireGameEvent(new GameEvent(OperatioEvents.OPERATION_RESEARCHED, material));
+                        GameLoop.getInstance().fireGameEvent(new GameEvent(OperatioEvents.MACHINE_RESEARCHED, material));
+
                         w.setVisible(false);
                     }
                 }

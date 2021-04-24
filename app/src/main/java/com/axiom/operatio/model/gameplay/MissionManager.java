@@ -79,7 +79,7 @@ public class MissionManager implements GameEventSubscriber {
 
 
     @Override // fixme проверка
-    public boolean onEvent(GameEvent event) {
+    public boolean onGameEvent(GameEvent event) {
         Block block = (Block) event.getPayload();
         Log.i("GAME EVENT", block.getDescription());
         return false;
