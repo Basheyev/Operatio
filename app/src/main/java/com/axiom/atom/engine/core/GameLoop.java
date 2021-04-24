@@ -3,6 +3,7 @@ package com.axiom.atom.engine.core;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.axiom.atom.engine.data.events.GameEventQueue;
 import com.axiom.atom.engine.data.structures.Channel;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
@@ -29,7 +30,8 @@ public class GameLoop extends Thread {
     //--------------------------------------------------------------------------------
     // Очередь событий ввода от пользователя (дополняется из UIThread)
     //--------------------------------------------------------------------------------
-    private static Channel<Object> inputEventQueue;
+    private final Channel<Object> inputEventQueue;
+    private final GameEventQueue gameEvents;
 
     /**
      * Возвращает единственный экземпляр потока игрового цикла (Singleton)
@@ -39,6 +41,10 @@ public class GameLoop extends Thread {
      */
     public static GameLoop getInstance(GameView view, SceneManager sceneManager) {
         if (gameLoop==null) gameLoop = new GameLoop(view, sceneManager);
+        return gameLoop;
+    }
+
+    public static GameLoop getInstance() {
         return gameLoop;
     }
 
@@ -52,6 +58,7 @@ public class GameLoop extends Thread {
         this.gameView = view;
         this.sceneManager = sceneManager;
         inputEventQueue = new Channel<>(INPUT_EVENTS_BUFFER_SIZE);
+        gameEvents = new GameEventQueue();
     }
 
 
@@ -119,6 +126,11 @@ public class GameLoop extends Thread {
         // Вызываем обработчик событий ввода
         //------------------------------------------------------------------------------------------
         processInputEvent(scene);
+
+        //------------------------------------------------------------------------------------------
+        // Вызываем обработчик игровых событий
+        //------------------------------------------------------------------------------------------
+        gameEvents.processEvents();
 
         //------------------------------------------------------------------------------------------
         // Вызываем обработчик каждого активного объекта сцены
@@ -205,7 +217,12 @@ public class GameLoop extends Thread {
 
     }
 
-    public static Channel<Object> getInputEventQueue() {
+    public Channel<Object> getInputEventQueue() {
         return inputEventQueue;
     }
+
+    public GameEventQueue getGameEvents() {
+        return gameEvents;
+    }
+
 }

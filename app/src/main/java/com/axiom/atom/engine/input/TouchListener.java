@@ -33,7 +33,10 @@ public class TouchListener implements View.OnTouchListener {
         if (Input.enabled) Input.handleVirtualJoystick(event);
         // Добавляем копию события в очередь событий игрового цикла
         // Так как event используется как единственный экземпляр
-        if (!scaling) GameLoop.getInputEventQueue().add(MotionEvent.obtain(event));
+        if (!scaling) {
+            GameLoop gameLoop = GameLoop.getInstance();
+            if (gameLoop != null) gameLoop.getInputEventQueue().add(MotionEvent.obtain(event));
+        }
         return true;
     }
 
@@ -42,20 +45,26 @@ public class TouchListener implements View.OnTouchListener {
 
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-            GameLoop.getInputEventQueue().add(new ScaleEvent(detector, true));
+            GameLoop gameLoop = GameLoop.getInstance();
+            if (gameLoop==null) return false;
+            gameLoop.getInputEventQueue().add(new ScaleEvent(detector, true));
             return true;
         }
 
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
-            GameLoop.getInputEventQueue().add(new ScaleEvent(detector, true));
+            GameLoop gameLoop = GameLoop.getInstance();
+            if (gameLoop==null) return false;
+            gameLoop.getInputEventQueue().add(new ScaleEvent(detector, true));
             scaling = true;
             return true;
         }
 
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
-            GameLoop.getInputEventQueue().add(new ScaleEvent(detector, false));
+            GameLoop gameLoop = GameLoop.getInstance();
+            if (gameLoop==null) return;
+            gameLoop.getInputEventQueue().add(new ScaleEvent(detector, false));
             scaling = false;
         }
     }
