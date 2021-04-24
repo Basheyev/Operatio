@@ -1,5 +1,6 @@
 package com.axiom.operatio.scenes.report;
 
+import android.graphics.Color;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
@@ -14,12 +15,14 @@ import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.scenes.common.DebugInfo;
 import com.axiom.operatio.scenes.common.ScenesPanel;
 import com.axiom.operatio.scenes.production.ProductionScene;
 import com.axiom.operatio.scenes.production.ProductionSceneUI;
 
 public class ReportScene extends GameScene {
 
+    public static final int UPDATE_PERIOD = 3; // Cycles
     public static final String SCENE_NAME = "Report";
 
     private boolean initialized = false;
@@ -60,7 +63,7 @@ public class ReportScene extends GameScene {
         production.getMarket().process();
         production.process();
         long currentCycle = production.getCurrentCycle();
-        if (currentCycle - lastCycle > 3) {
+        if (currentCycle - lastCycle > UPDATE_PERIOD) {
             reportPanel.updateData();
             lastCycle = currentCycle;
         }
@@ -72,21 +75,11 @@ public class ReportScene extends GameScene {
         background.draw(camera,camera.getMinX(),camera.getMinY(), Camera.WIDTH,Camera.HEIGHT);
     }
 
-    protected StringBuffer fps = new StringBuffer(100);
+
 
     @Override
     public void postRender(Camera camera) {
-        fps.delete(0, fps.length());
-        fps.append("FPS:").append(GraphicsRender.getFPS())
-                .append(" Quads:").append(BatchRender.getEntriesCount())
-                .append(" Calls:").append(BatchRender.getDrawCallsCount())
-                .append(" Time:").append(GraphicsRender.getRenderTime())
-                .append("ms");
-        float x = camera.getMinX();
-        float y = camera.getMinY();
-        GraphicsRender.setZOrder(2000);
-        GraphicsRender.setColor(1,1,1,1);
-        GraphicsRender.drawText(fps, x + 750,y + 20, 1.2f);
+        DebugInfo.drawDebugInfo(camera, Color.WHITE);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.axiom.operatio.scenes.mainmenu;
 
+import android.graphics.Color;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
@@ -14,6 +15,7 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.gameplay.GameSaveLoad;
+import com.axiom.operatio.scenes.common.DebugInfo;
 
 import static android.graphics.Color.BLACK;
 
@@ -89,21 +91,9 @@ public class MainMenuScene extends GameScene {
     }
 
 
-    protected StringBuffer fps = new StringBuffer(100);
-
     @Override
     public void postRender(Camera camera) {
-        fps.delete(0, fps.length());
-        fps.append("FPS:").append(GraphicsRender.getFPS())
-                .append(" Quads:").append(BatchRender.getEntriesCount())
-                .append(" Calls:").append(BatchRender.getDrawCallsCount())
-                .append(" Time:").append(GraphicsRender.getRenderTime())
-                .append("ms");
-        float x = camera.getMinX();
-        float y = camera.getMinY();
-        GraphicsRender.setZOrder(2000);
-        GraphicsRender.setColor(1,1,1,1);
-        GraphicsRender.drawText(fps, x + 750,y + 20, 1.2f);
+        DebugInfo.drawDebugInfo(camera, Color.WHITE);
     }
 
     @Override

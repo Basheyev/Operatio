@@ -1,5 +1,6 @@
 package com.axiom.operatio.scenes.production;
 
+import android.graphics.Color;
 import android.view.MotionEvent;
 
 import com.axiom.atom.engine.core.GameLoop;
@@ -15,6 +16,7 @@ import com.axiom.operatio.model.gameplay.MissionManager;
 import com.axiom.operatio.model.gameplay.OperatioEvents;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.Production;
+import com.axiom.operatio.scenes.common.DebugInfo;
 import com.axiom.operatio.scenes.production.view.HelperPanel;
 import com.axiom.operatio.scenes.report.ReportScene;
 import com.axiom.operatio.scenes.production.view.BlocksPanel;
@@ -138,21 +140,10 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
         productionRenderer.draw(camera);
     }
 
-    protected StringBuffer fps = new StringBuffer(100);
 
     @Override
     public void postRender(Camera camera) {
-        fps.delete(0, fps.length());
-        fps.append("FPS:").append(GraphicsRender.getFPS())
-            .append(" Quads:").append(BatchRender.getEntriesCount())
-            .append(" Calls:").append(BatchRender.getDrawCallsCount())
-            .append(" Time:").append(GraphicsRender.getRenderTime())
-            .append("ms");
-        float x = camera.getMinX();
-        float y = camera.getMinY();
-        GraphicsRender.setZOrder(2000);
-        GraphicsRender.setColor(0,0,0,1);
-        GraphicsRender.drawText(fps, x + 750,y + 20, 1.2f);
+        DebugInfo.drawDebugInfo(camera, Color.WHITE);
     }
 
     @Override
