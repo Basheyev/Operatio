@@ -21,6 +21,7 @@ public class GameLoop extends Thread {
     public static final int INPUT_EVENTS_BUFFER_SIZE = 128;
 
     private static GameLoop gameLoop;
+
     protected GameView gameView;
     protected SceneManager sceneManager;
     protected boolean running;
