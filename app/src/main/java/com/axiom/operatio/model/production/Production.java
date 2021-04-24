@@ -82,7 +82,7 @@ public class Production implements JSONSerializable {
         Camera.getInstance().lookAt(cameraX, cameraY);
 
         permissions = new GamePermissions();
-        GameMission stub = MissionManager.getMission(0);
+        GameMission stub = MissionManager.getInstance().getMission(0);
         if (stub!=null) {
             stub.earnReward(this);
             currentMissionID = 1;
@@ -163,7 +163,7 @@ public class Production implements JSONSerializable {
         } catch (JSONException e) {
             e.printStackTrace();
             permissions = new GamePermissions();
-            GameMission stub = MissionManager.getMission(0);
+            GameMission stub = MissionManager.getInstance().getMission(0);
             if (stub!=null) {
                 stub.earnReward(this);
                 currentMissionID = 1;
@@ -201,7 +201,7 @@ public class Production implements JSONSerializable {
                 // Выполнить процесс учёта статистики
                 ledger.process();
                 // Проверить условия завершения миссии
-                MissionManager.process(this);
+                MissionManager.getInstance().process(this);
 
                 // Увеличиваем счётчик циклов
                 cycle++;

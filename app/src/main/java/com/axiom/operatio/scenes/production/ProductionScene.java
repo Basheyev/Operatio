@@ -159,7 +159,7 @@ public class ProductionScene extends GameScene {
 
     public void setHelperMissionText() {
         // Если ничто не выбрано написать суть миссии
-        GameMission mission = MissionManager.getMission(production.getCurrentMissionID());
+        GameMission mission = MissionManager.getInstance().getMission(production.getCurrentMissionID());
         if (mission!=null) {
             String goal = "Mission #" + mission.getID() + " - " + mission.getName() + "\n\n" + mission.getDescription();;
             helperPanel.setText(goal);
