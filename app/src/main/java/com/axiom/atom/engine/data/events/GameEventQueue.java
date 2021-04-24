@@ -55,7 +55,8 @@ public class GameEventQueue {
         if (event == null) return;
         for (int i=0; i<subscribers.size(); i++) {
             TopicSubscriber topicSubscriber = subscribers.get(i);
-            if (topicSubscriber.topic==event.getTopic()) {
+            int subscriberTopic = topicSubscriber.topic;
+            if (subscriberTopic==GameEvent.ALL_TOPICS || subscriberTopic==event.getTopic()) {
                 topicSubscriber.eventSubscriber.onEvent(event);
             }
         }

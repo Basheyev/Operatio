@@ -6,6 +6,8 @@ package com.axiom.atom.engine.data.events;
  */
 public class GameEvent {
 
+    public static final int ALL_TOPICS = 0;
+
     private int topic;
     private Object payload;
 
