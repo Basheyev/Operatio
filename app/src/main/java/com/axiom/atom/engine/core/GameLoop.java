@@ -3,7 +3,9 @@ package com.axiom.atom.engine.core;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.axiom.atom.engine.data.events.GameEvent;
 import com.axiom.atom.engine.data.events.GameEventQueue;
+import com.axiom.atom.engine.data.events.GameEventSubscriber;
 import com.axiom.atom.engine.data.structures.Channel;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
@@ -224,6 +226,23 @@ public class GameLoop extends Thread {
 
     public GameEventQueue getGameEvents() {
         return gameEvents;
+    }
+
+
+    public void fireGameEvent(GameEvent event) {
+        gameEvents.push(event);
+    }
+
+    public void addGameEventSubscriber(GameEventSubscriber subscriber) {
+        gameEvents.addSubscriber(subscriber, 0);
+    }
+
+    public void addGameEventSubscriber(GameEventSubscriber subscriber, int topic) {
+        gameEvents.addSubscriber(subscriber, topic);
+    }
+
+    public void removeGameEventSubscriber(GameEventSubscriber subscriber) {
+        gameEvents.removeSubscriber(subscriber);
     }
 
 }

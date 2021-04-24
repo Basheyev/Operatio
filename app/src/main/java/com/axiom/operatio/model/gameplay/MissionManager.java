@@ -35,7 +35,7 @@ public class MissionManager implements GameEventSubscriber {
     private MissionManager() {
         loadMissions();
         // Подписаться на все игровые события
-        GameLoop.getInstance().getGameEvents().addSubscriber(this);
+        GameLoop.getInstance().addGameEventSubscriber(this);
     }
 
 

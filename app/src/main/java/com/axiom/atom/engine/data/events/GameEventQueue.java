@@ -12,7 +12,7 @@ public class GameEventQueue {
     private Channel<GameEvent> events;
     private ArrayList<TopicSubscriber> subscribers;
 
-    private class TopicSubscriber {
+    private static class TopicSubscriber {
         int topic;
         GameEventSubscriber eventSubscriber;
     }

@@ -4,6 +4,9 @@ package com.axiom.operatio.scenes.production.controller;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
+import com.axiom.atom.engine.core.GameLoop;
+import com.axiom.atom.engine.data.events.GameEvent;
+import com.axiom.atom.engine.data.events.GameEventQueue;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.production.Production;
@@ -103,8 +106,9 @@ public class BlockAddMoveHandler {
             productionRenderer.stopBlockMoving();
             // Если блок добавлен в пределах карты производства
             if (column >= 0 && row >= 0 && column < cols && row < rows) {
-                if (block == null && production.isUnlocked(column, row)) setBlockTo(column, row);
-                else {
+                if (block == null && production.isUnlocked(column, row)) {
+                    setBlockTo(column, row);
+                } else {
                     // если место занято
                     returnBlockBack(column, row);
                     // Спрятать панель настройки
@@ -142,6 +146,9 @@ public class BlockAddMoveHandler {
         BlockAdjuster.adjustFlow(dragBlock);
         opsPanel.showBlockInfo(dragBlock);
         production.selectBlock(column, row);
+
+        // fixme тестовая отправка события
+        GameLoop.getInstance().fireGameEvent(new GameEvent(100, dragBlock));
 
         // Запускаем эффект частиц
         scene.getProductionRenderer().getParticles().generateParticles();
