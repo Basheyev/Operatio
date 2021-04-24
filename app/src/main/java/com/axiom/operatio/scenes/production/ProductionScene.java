@@ -45,8 +45,6 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
     private AdjustmentPanel adjustmentPanel;
 
     private boolean initialized = false;
-    private int currentLevel = -1;
-  //  private long permissionLastChangeTime = 0;
 
 
     public ProductionScene() {
@@ -126,7 +124,7 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
                 blocksPanel.updatePermissions();
                 break;
             case OperatioEvents.MISSION_COMPLETED:
-                currentLevel = production.getCurrentMissionID();
+                production.getCurrentMissionID();
                 blocksPanel.updatePermissions();
                 setHelperMissionText();
             default:
