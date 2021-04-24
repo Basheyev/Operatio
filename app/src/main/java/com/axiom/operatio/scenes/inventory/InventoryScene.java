@@ -3,14 +3,18 @@ package com.axiom.operatio.scenes.inventory;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
+import com.axiom.atom.engine.core.GameLoop;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.SceneManager;
+import com.axiom.atom.engine.data.events.GameEvent;
+import com.axiom.atom.engine.data.events.GameEventSubscriber;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.widgets.Widget;
+import com.axiom.operatio.model.gameplay.OperatioEvents;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.ScenesPanel;
@@ -18,21 +22,19 @@ import com.axiom.operatio.scenes.common.ScenesPanel;
 /**
  * Сцена склада
  */
-public class InventoryScene extends GameScene {
+public class InventoryScene extends GameScene implements GameEventSubscriber {
 
     public static final String SCENE_NAME = "Inventory";
-    public static final long UPDATE_TIME = 1000;           // 1000 ms (1 секунда)
+    public static final long UPDATE_TIME = Production.CYCLE_TIME * 3;
 
     private boolean initialized = false;
     private Production production;
     private ScenesPanel scenesPanel;
     private MaterialsPanel materialsPanel;
     private MarketPanel marketPanel;
-    private int currentLevel = -1;
     private static Sprite background;
     private static int tickSound;
     private long lastTime;
-    private long permissionLastChangeTime = 0;
 
     public InventoryScene(Production production) {
         this.production = production;
@@ -48,6 +50,7 @@ public class InventoryScene extends GameScene {
         if (!initialized) buildUI();
         Market market = production.getMarket();
         market.process();
+        materialsPanel.updatePermissions();
         materialsPanel.updateData();
         scenesPanel.updatePlayButtonState();
     }
@@ -78,19 +81,19 @@ public class InventoryScene extends GameScene {
             lastTime = now;
         }
 
-        long changeTime = production.getPermissions().getLastChangeTime();
-        boolean permissionsChanged = false;
-        if (changeTime > permissionLastChangeTime) {
-            permissionsChanged = true;
-            permissionLastChangeTime = changeTime;
-        }
+    }
 
-        // Если сменился уровень
-        if (currentLevel != production.getCurrentMissionID() || permissionsChanged) {
-            currentLevel = production.getCurrentMissionID();
-            // Включить доступные машины на этом уровне
-            materialsPanel.updatePermissions();
+
+    @Override
+    public boolean onGameEvent(GameEvent event) {
+        switch (event.getTopic()) {
+            case OperatioEvents.MATERIAL_RESEARCHED:
+            case OperatioEvents.MISSION_COMPLETED:
+                materialsPanel.updatePermissions();
+                break;
+            default:
         }
+        return false;
     }
 
     @Override
@@ -143,6 +146,7 @@ public class InventoryScene extends GameScene {
 
         initialized = true;
 
+        GameLoop.getInstance().addGameEventSubscriber(this);
     }
 
     public MaterialsPanel getMaterialsPanel() {

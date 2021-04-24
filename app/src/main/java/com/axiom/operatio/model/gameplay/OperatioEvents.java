@@ -2,6 +2,8 @@ package com.axiom.operatio.model.gameplay;
 
 public class OperatioEvents {
 
+    public static final int MISSION_COMPLETED = 10;
+
     public static final int BLOCK_ADDED = 100;
     public static final int BLOCK_DELETED = 101;
     public static final int BLOCK_ROTATED = 102;

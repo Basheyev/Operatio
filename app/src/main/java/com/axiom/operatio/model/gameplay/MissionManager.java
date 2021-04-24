@@ -72,16 +72,15 @@ public class MissionManager implements GameEventSubscriber {
             if (currentMissionID + 1 <= getMissionCount() - 1) {
                 currentMissionID++;
                 production.setCurrentMissionID(currentMissionID);
+                GameLoop.getInstance().fireGameEvent(new GameEvent(OperatioEvents.MISSION_COMPLETED, mission));
             }
         }
     }
 
 
 
-    @Override // fixme проверка
+    @Override
     public boolean onGameEvent(GameEvent event) {
-        Block block = (Block) event.getPayload();
-        Log.i("GAME EVENT", block.getDescription());
         return false;
     }
 

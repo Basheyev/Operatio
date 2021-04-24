@@ -2,13 +2,17 @@ package com.axiom.operatio.scenes.production;
 
 import android.view.MotionEvent;
 
+import com.axiom.atom.engine.core.GameLoop;
 import com.axiom.atom.engine.core.GameScene;
+import com.axiom.atom.engine.data.events.GameEvent;
+import com.axiom.atom.engine.data.events.GameEventSubscriber;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.input.ScaleEvent;
 import com.axiom.operatio.model.gameplay.GameMission;
 import com.axiom.operatio.model.gameplay.MissionManager;
+import com.axiom.operatio.model.gameplay.OperatioEvents;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.production.view.HelperPanel;
@@ -26,7 +30,7 @@ import org.json.JSONObject;
 /**
  * Сцена производства
  */
-public class ProductionScene extends GameScene {
+public class ProductionScene extends GameScene implements GameEventSubscriber {
 
     public static final String SCENE_NAME = "Production";
 
@@ -40,7 +44,7 @@ public class ProductionScene extends GameScene {
 
     private boolean initialized = false;
     private int currentLevel = -1;
-    private long permissionLastChangeTime = 0;
+  //  private long permissionLastChangeTime = 0;
 
 
     public ProductionScene() {
@@ -73,6 +77,7 @@ public class ProductionScene extends GameScene {
 
             productionRenderer = production.getRenderer();
             inputHandler = new InputHandler(this, production, productionRenderer);
+            GameLoop.getInstance().addGameEventSubscriber(this);
             ProductionSceneUI.buildUI(this, getResources(), getSceneWidget(), production);
             blocksPanel = ProductionSceneUI.getBlocksPanel();
             modePanel = ProductionSceneUI.getModePanel();
@@ -86,13 +91,15 @@ public class ProductionScene extends GameScene {
 
         // Включить доступные машины на этом уровне
         blocksPanel.updatePermissions();
+        production.unselectBlock();
+        setHelperMissionText();
         ProductionSceneUI.getScenesPanel().updatePlayButtonState();
     }
 
 
     @Override
     public void changeScene() {
-        adjustmentPanel.hideOutputChooser();
+
     }
 
     @Override
@@ -106,24 +113,25 @@ public class ProductionScene extends GameScene {
 
     @Override
     public void updateScene(float deltaTimeNs) {
-
         production.process();
-
-        long changeTime = production.getPermissions().getLastChangeTime();
-        boolean permissionsChanged = false;
-        if (changeTime > permissionLastChangeTime) {
-            permissionsChanged = true;
-            permissionLastChangeTime = changeTime;
-        }
-
-        // Проверить не сменился ли уровень (обновить доступ к кнопкам)
-        if (currentLevel != production.getCurrentMissionID() || permissionsChanged) {
-            currentLevel = production.getCurrentMissionID();
-            // Включить доступные машины на этом уровне
-            blocksPanel.updatePermissions();
-            setHelperMissionText();
-        }
     }
+
+
+    @Override
+    public boolean onGameEvent(GameEvent event) {
+        switch (event.getTopic()) {
+            case OperatioEvents.MACHINE_RESEARCHED:
+                blocksPanel.updatePermissions();
+                break;
+            case OperatioEvents.MISSION_COMPLETED:
+                currentLevel = production.getCurrentMissionID();
+                blocksPanel.updatePermissions();
+                setHelperMissionText();
+            default:
+        }
+        return false;
+    }
+
 
     @Override
     public void preRender(Camera camera) {

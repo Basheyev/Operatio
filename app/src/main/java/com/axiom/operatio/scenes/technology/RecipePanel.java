@@ -331,7 +331,11 @@ public class RecipePanel extends Panel {
             GamePermissions permissions = production.getPermissions();
             Material material = materialsTree.getSelectedMaterial();
             if (material!=null && selectedOperation!=null) {
-                if (!permissions.isAvailable(material) || !permissions.isAvailable(selectedOperation)) {
+                boolean isMaterialAvailable = permissions.isAvailable(material);
+                boolean isOperationAvailable = permissions.isAvailable(selectedOperation);
+                boolean isMachineAvailable = permissions.isAvailable(selectedOperation.getMachineType());
+
+                if (!isMaterialAvailable || !isOperationAvailable || !isMachineAvailable) {
                     double recipePrice = selectedOperation.getRecipeCost();
                     if (production.getLedger().creditCashBalance(Ledger.EXPENSE_RECIPE_BOUGHT, recipePrice)) {
                         SoundRenderer.playSound(buySound);
@@ -339,10 +343,9 @@ public class RecipePanel extends Panel {
                         permissions.addOperationPermission(selectedOperation);
                         permissions.addMachinePermission(selectedOperation.getMachineType());
 
-                        // fixme Уведомить всех о том, что открыта новая машина или технология
-                        GameLoop.getInstance().fireGameEvent(new GameEvent(OperatioEvents.MATERIAL_RESEARCHED, material));
-                        GameLoop.getInstance().fireGameEvent(new GameEvent(OperatioEvents.OPERATION_RESEARCHED, material));
-                        GameLoop.getInstance().fireGameEvent(new GameEvent(OperatioEvents.MACHINE_RESEARCHED, material));
+                        if (!isMaterialAvailable) fireEvent(OperatioEvents.MATERIAL_RESEARCHED, material);
+                        if (!isOperationAvailable) fireEvent(OperatioEvents.OPERATION_RESEARCHED, selectedOperation);
+                        if (!isMachineAvailable) fireEvent(OperatioEvents.MACHINE_RESEARCHED, selectedOperation.getMachineType());
 
                         w.setVisible(false);
                     }
@@ -352,6 +355,12 @@ public class RecipePanel extends Panel {
 
     };
 
+
+    private void fireEvent(int topic, Object object) {
+        GameLoop gameLoop = GameLoop.getInstance();
+        GameEvent event = new GameEvent(topic, object);
+        gameLoop.fireGameEvent(event);
+    }
 
 
 }

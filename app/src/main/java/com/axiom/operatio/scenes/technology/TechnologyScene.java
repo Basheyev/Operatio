@@ -3,20 +3,24 @@ package com.axiom.operatio.scenes.technology;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
+import com.axiom.atom.engine.core.GameLoop;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.SceneManager;
+import com.axiom.atom.engine.data.events.GameEvent;
+import com.axiom.atom.engine.data.events.GameEventSubscriber;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.widgets.Widget;
+import com.axiom.operatio.model.gameplay.OperatioEvents;
 import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.ScenesPanel;
 import com.axiom.operatio.scenes.production.ProductionSceneUI;
 
-public class TechnologyScene extends GameScene {
+public class TechnologyScene extends GameScene implements GameEventSubscriber {
 
     public static final String SCENE_NAME = "Technology";
 
@@ -83,6 +87,18 @@ public class TechnologyScene extends GameScene {
 
     }
 
+
+    @Override
+    public boolean onGameEvent(GameEvent event) {
+        switch (event.getTopic()) {
+            case OperatioEvents.MISSION_COMPLETED:
+                materialsTree.updatePermissions();
+                break;
+            default:
+        }
+        return false;
+    }
+
     @Override
     public void preRender(Camera camera) {
         background.setZOrder(0);
@@ -129,6 +145,8 @@ public class TechnologyScene extends GameScene {
         widget.addChild(recipePanel);
 
         initialized = true;
+
+        GameLoop.getInstance().addGameEventSubscriber(this);
 
     }
 

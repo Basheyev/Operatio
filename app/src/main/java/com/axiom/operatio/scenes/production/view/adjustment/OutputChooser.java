@@ -2,11 +2,15 @@ package com.axiom.operatio.scenes.production.view.adjustment;
 
 import android.view.MotionEvent;
 
+import com.axiom.atom.engine.core.GameLoop;
+import com.axiom.atom.engine.data.events.GameEvent;
+import com.axiom.atom.engine.data.events.GameEventSubscriber;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.gameplay.GamePermissions;
+import com.axiom.operatio.model.gameplay.OperatioEvents;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.buffer.ImportBuffer;
 import com.axiom.operatio.model.production.inserter.Inserter;
@@ -21,7 +25,7 @@ import static android.graphics.Color.WHITE;
 /**
  * Выбирает выходной материал для AdjustmentPanel
  */
-public class OutputChooser extends Panel {
+public class OutputChooser extends Panel implements GameEventSubscriber {
 
     public static final int ITEM_BACKGROUND = 0x80000000;
     public static final int ITEM_SELECTED = 0xFFd5c01f;
@@ -44,6 +48,7 @@ public class OutputChooser extends Panel {
         super();
         this.scene = scene;
         this.adjustmentPanel = adjustmentPanel;
+        GameLoop.getInstance().addGameEventSubscriber(this);
         buildUI();
     }
 
@@ -214,4 +219,15 @@ public class OutputChooser extends Panel {
         }
     };
 
+
+    @Override
+    public boolean onGameEvent(GameEvent event) {
+        if (event.getTopic() == OperatioEvents.MATERIAL_RESEARCHED ||
+            event.getTopic() == OperatioEvents.OPERATION_RESEARCHED) {
+            if (blockType==INSERTER && inserter != null) showInserterMaterials(inserter);
+            if (blockType==IMPORTER && importer != null) showImporterMaterials(importer);
+            if (blockType==MACHINE && machine != null) showMachineOutputs(machine);
+        }
+        return false;
+    }
 }
