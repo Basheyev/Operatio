@@ -1,6 +1,6 @@
 package com.axiom.operatio.model.production.inserter;
 
-import com.axiom.atom.engine.data.Channel;
+import com.axiom.atom.engine.data.structures.Channel;
 import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;

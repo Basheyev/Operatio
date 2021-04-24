@@ -1,4 +1,4 @@
-package com.axiom.atom.engine.data;
+package com.axiom.atom.engine.data.structures;
 
 import java.io.Serializable;
 

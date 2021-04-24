@@ -1,7 +1,7 @@
 package com.axiom.operatio.model.production.block;
 
 
-import com.axiom.atom.engine.data.Channel;
+import com.axiom.atom.engine.data.structures.Channel;
 import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.production.Production;
@@ -9,8 +9,6 @@ import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.production.buffer.Buffer;
 import com.axiom.operatio.model.production.buffer.ExportBuffer;
 import com.axiom.operatio.model.production.buffer.ImportBuffer;
-import com.axiom.operatio.model.production.conveyor.Conveyor;
-import com.axiom.operatio.model.production.machine.Machine;
 
 import org.json.JSONArray;
 import org.json.JSONException;

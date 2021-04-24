@@ -1,10 +1,6 @@
 package com.axiom.operatio.scenes.production.view;
 
-import android.graphics.Rect;
-import android.provider.Telephony;
-
 import com.axiom.atom.engine.core.geometry.AABB;
-import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Rectangle;
 import com.axiom.atom.engine.graphics.renderers.Sprite;

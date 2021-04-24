@@ -4,15 +4,11 @@ import android.content.res.Resources;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.core.geometry.Vector;
-import com.axiom.atom.engine.data.Channel;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
-import com.axiom.operatio.model.materials.Item;
-import com.axiom.operatio.model.production.machine.Machine;
 
 import static com.axiom.operatio.model.production.block.Block.BUSY;
 import static com.axiom.operatio.model.production.block.Block.DOWN;

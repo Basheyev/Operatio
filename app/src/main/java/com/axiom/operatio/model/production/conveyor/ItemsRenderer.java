@@ -1,14 +1,12 @@
 package com.axiom.operatio.model.production.conveyor;
 
 import com.axiom.atom.engine.core.geometry.Vector;
-import com.axiom.atom.engine.data.Channel;
+import com.axiom.atom.engine.data.structures.Channel;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.machine.Machine;
-
-import javax.crypto.Mac;
 
 import static com.axiom.operatio.model.production.block.Block.DOWN;
 import static com.axiom.operatio.model.production.block.Block.LEFT;

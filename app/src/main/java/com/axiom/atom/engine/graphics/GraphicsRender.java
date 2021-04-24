@@ -7,7 +7,7 @@ import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.data.Channel;
+import com.axiom.atom.engine.data.structures.Channel;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.GLESObject;
 import com.axiom.atom.engine.graphics.renderers.Line;

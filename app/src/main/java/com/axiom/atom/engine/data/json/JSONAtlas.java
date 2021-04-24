@@ -1,4 +1,4 @@
-package com.axiom.atom.engine.data;
+package com.axiom.atom.engine.data.json;
 
 import android.content.res.Resources;
 
@@ -8,10 +8,6 @@ import com.axiom.atom.engine.graphics.gles2d.TextureAtlas;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 /**
  * Загружает TextureAtlas из JSon (поддерживает JSONArray, no trimming, no rotating)

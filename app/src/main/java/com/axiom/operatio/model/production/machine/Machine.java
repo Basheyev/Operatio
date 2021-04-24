@@ -1,6 +1,6 @@
 package com.axiom.operatio.model.production.machine;
 
-import com.axiom.atom.engine.data.Channel;
+import com.axiom.atom.engine.data.structures.Channel;
 import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.production.block.Block;

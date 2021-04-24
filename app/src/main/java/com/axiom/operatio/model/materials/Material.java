@@ -4,7 +4,7 @@ import android.content.res.Resources;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.data.JSONFile;
+import com.axiom.atom.engine.data.json.JSONFile;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 
 import org.json.JSONArray;
