@@ -1,10 +1,9 @@
 package com.axiom.atom.engine.core;
 
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.axiom.atom.engine.data.Channel;
+import com.axiom.atom.engine.data.structures.Channel;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.input.ScaleEvent;
@@ -30,7 +29,8 @@ public class GameLoop extends Thread {
     //--------------------------------------------------------------------------------
     // Очередь событий ввода от пользователя (дополняется из UIThread)
     //--------------------------------------------------------------------------------
-    public static Channel<Object> inputEventQueue;
+    private static Channel<Object> inputEventQueue;
+
     /**
      * Возвращает единственный экземпляр потока игрового цикла (Singleton)
      * @param view экземпляр GameView
@@ -66,7 +66,7 @@ public class GameLoop extends Thread {
 
         lastCycleTime = System.nanoTime();
 
-        while(running)  {
+        while (running) {
 
             // Вызываем обработку сцены
             try {
@@ -205,4 +205,7 @@ public class GameLoop extends Thread {
 
     }
 
+    public static Channel<Object> getInputEventQueue() {
+        return inputEventQueue;
+    }
 }
