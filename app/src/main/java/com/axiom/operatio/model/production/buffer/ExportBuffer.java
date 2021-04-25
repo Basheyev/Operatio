@@ -3,6 +3,7 @@ package com.axiom.operatio.model.production.buffer;
 import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.materials.Item;
+import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockBuilder;
@@ -17,25 +18,78 @@ public class ExportBuffer extends Block implements JSONSerializable {
 
     public static final double CYCLE_COST = 0.01d;
     public static final int PRICE = 1000;
+    public static final int NO_KEEPING_UNIT = -1;
+
+    private BufferKeepingUnit[] currentStats;
+    private BufferKeepingUnit[] exportStats;
 
     public ExportBuffer(Production production) {
         super(production, Block.NONE, 1, Block.NONE, 1);
+        initializeStatsBuffers();
         price = PRICE;
         renderer = new ExportBufferRenderer(this);
     }
 
     public ExportBuffer(Production production, JSONObject jsonObject) {
         super(production, Block.NONE, 1, Block.NONE, 1);
+        initializeStatsBuffers();
         price = PRICE;
         BlockBuilder.parseCommonFields(this, jsonObject);
         renderer = new ExportBufferRenderer(this);
+    }
+
+    private void initializeStatsBuffers() {
+        currentStats = new BufferKeepingUnit[4];
+        exportStats = new BufferKeepingUnit[4];
+        for (int i=0; i<4; i++) {
+            currentStats[i] = new BufferKeepingUnit();
+            exportStats[i] = new BufferKeepingUnit();
+        }
     }
 
 
     @Override
     public boolean push(Item item) {
         Inventory inventory = production.getInventory();
-        return inventory.push(item);
+        boolean pushed = inventory.push(item);
+        if (pushed) {
+            int bkuIndex = getMaterialKeepingUnit(item.getMaterial());
+            if (bkuIndex==NO_KEEPING_UNIT) return true;
+            currentStats[bkuIndex].total++;
+        }
+        return pushed;
+    }
+
+    /**
+     * Возвращает номер BKU (ячейки) учёта
+     * @param material материал
+     * @return возвращает номер ячейки или -1 если такой ячейки нет
+     */
+    private int getMaterialKeepingUnit(Material material) {
+        for (int i=0; i<4; i++) {
+            // Если такого материала нет и есть свободные ячейки - создаём такую ячейку
+            if (currentStats[i].material==null) {
+                currentStats[i].material = material;
+                currentStats[i].total = 0;
+                return i;
+                // Если ячейка с таким материалом есть, то возвращаем её номер
+            } else if (currentStats[i].material.equals(material)) {
+                return i;
+            }
+        }
+        // Говорим что такой ячейки нет
+        return -1;
+    }
+
+
+    public Material getKeepingUnitMaterial(int id) {
+        if (id < 0 || id > 3) return null;
+        return exportStats[id].material;
+    }
+
+    public int getKeepingUnitTotal(int id) {
+        if (id < 0 || id > 3) return NO_KEEPING_UNIT;
+        return exportStats[id].total;
     }
 
     @Override
@@ -50,7 +104,12 @@ public class ExportBuffer extends Block implements JSONSerializable {
 
     @Override
     public void process() {
-
+        for (int i=0; i<4; i++) {
+            exportStats[i].total = currentStats[i].total;
+            currentStats[i].total = 0;
+            exportStats[i].material = currentStats[i].material;
+            currentStats[i].material = null;
+        }
     }
 
     @Override

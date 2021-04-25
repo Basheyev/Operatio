@@ -8,6 +8,7 @@ import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.buffer.Buffer;
+import com.axiom.operatio.model.production.buffer.ExportBuffer;
 import com.axiom.operatio.model.production.buffer.ImportBuffer;
 import com.axiom.operatio.model.production.conveyor.Conveyor;
 import com.axiom.operatio.model.production.inserter.Inserter;
@@ -47,6 +48,8 @@ public class AdjustmentHandler implements ClickListener {
                 machineAdjustmentClick(button, (Machine) chosenBlock);
             } else if (chosenBlock instanceof ImportBuffer) {
                 importBufferAdjustmentClick(button, (ImportBuffer) chosenBlock);
+            } else if (chosenBlock instanceof ExportBuffer) {
+                // todo
             } else if (chosenBlock instanceof Inserter) {
                 inserterAdjustmentClick(button, (Inserter) chosenBlock);
             } else if (chosenBlock instanceof Conveyor) {

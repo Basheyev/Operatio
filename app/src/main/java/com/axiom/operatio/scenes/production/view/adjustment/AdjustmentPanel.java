@@ -439,6 +439,21 @@ public class AdjustmentPanel extends Panel {
         upperCaption.setText("Exporter");
         hideButtons();
         hideInputsOutputs();
+
+        middleCaption.setVisible(true);
+        middleCaption.setText("Exported materials");
+        for (int i=0; i<4; i++) {
+            Material material = exportBuffer.getKeepingUnitMaterial(i);
+            if (material!=null) {
+                inpBtn[i].setBackground(material.getImage());
+                inpBtn[i].setText("" + exportBuffer.getKeepingUnitTotal(i));
+            } else {
+                inpBtn[i].setBackground(null);
+                inpBtn[i].setText("");
+            }
+            inpBtn[i].setVisible(true);
+            outBtn[i].setVisible(false);
+        }
     }
 
 
