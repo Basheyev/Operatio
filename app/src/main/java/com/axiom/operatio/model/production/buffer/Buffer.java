@@ -17,6 +17,10 @@ import org.json.JSONObject;
  */
 public class Buffer extends Block implements JSONSerializable {
 
+    public static final String MSG_IDLE = "Ready";
+    public static final String MSG_BUSY = "No free space";
+    public static final String MSG_BUSY_BKU = "No space in keeping unit";
+
     public static final double CYCLE_COST = 0.01d;
     public static final int PRICE = 400;
     public static final int NO_KEEPING_UNIT = -1;      // Константа отсутствия такой ячейки хранения
@@ -60,17 +64,25 @@ public class Buffer extends Block implements JSONSerializable {
      */
     public boolean push(Item item) {
         if (item==null) return false;
-        if (getState()==BUSY) return false;
-        if (input.size()>=inputCapacity) return false;
+        if (input.size()>=inputCapacity) {
+            setState(BUSY, MSG_BUSY);
+            return false;
+        }
 
         // Узнаем есть ли ячейка под такой материал
         int materialBKU = getMaterialKeepingUnit(item.getMaterial());
         // Если её нет и создать её нельзя - уходим
-        if (materialBKU == NO_KEEPING_UNIT) return false;
+        if (materialBKU == NO_KEEPING_UNIT) {
+            setState(BUSY, MSG_BUSY);
+            return false;
+        }
 
         BufferKeepingUnit bku = bufferKeepingUnit[materialBKU];
         // Если для добавления предмета в ячейке нет места уходим
-        if (bku.total >= bku.capacity) return false;
+        if (bku.total >= bku.capacity) {
+            setState(BUSY, MSG_BUSY_BKU);
+            return false;
+        }
 
         bku.total++;
         item.setOwner(production, this);
@@ -104,6 +116,7 @@ public class Buffer extends Block implements JSONSerializable {
         if (item!=null) {
             int keepingUnitID = getMaterialKeepingUnit(item.getMaterial());
             bufferKeepingUnit[keepingUnitID].total--;
+            setState(IDLE, MSG_IDLE);
             return item;
         }
         return null;
@@ -126,6 +139,8 @@ public class Buffer extends Block implements JSONSerializable {
 
     @Override
     public void process() {
+        if (input.size() < inputCapacity) setState(IDLE, MSG_IDLE);
+        // todo что значит буфер занят?
        // do nothing
     }
 
@@ -155,14 +170,6 @@ public class Buffer extends Block implements JSONSerializable {
     }
 
     //------------------------------------------------------------------------------------------
-
-    private boolean setBufferKeepingUnit(int index, Material material, int capacity, int total) {
-        if (index < 0 || index > 3 || material==null || capacity < 0 || total < 0) return false;
-        bufferKeepingUnit[index].material = material;
-        bufferKeepingUnit[index].capacity = capacity;
-        bufferKeepingUnit[index].total = total;
-        return true;
-    }
 
     public Material getKeepingUnitMaterial(int id) {
         if (id < 0 || id > 3) return null;
