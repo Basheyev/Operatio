@@ -13,12 +13,16 @@ import java.util.Locale;
 public class FormatUtils {
 
     private static DecimalFormat moneyFormat;
+    private static DecimalFormat floatFormat;
     private static final StringBuffer buffer = new StringBuffer(32);
-    private static final FieldPosition position = new FieldPosition(0);
+    private static final FieldPosition mfPosition = new FieldPosition(0);
+    private static final FieldPosition ffPosition = new FieldPosition(0);
 
     private static void initializeFormatting() {
         moneyFormat = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
         moneyFormat.applyPattern("$###,###,###,###,###.##");
+        floatFormat = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
+        floatFormat.applyPattern("####.##");
     }
 
     public static StringBuffer formatMoneyAppend(double sum, StringBuffer targetBuffer) {
@@ -26,7 +30,7 @@ public class FormatUtils {
         if (moneyFormat==null) initializeFormatting();
         synchronized (buffer) {
             buffer.setLength(0);
-            moneyFormat.format(sum, buffer, position);
+            moneyFormat.format(sum, buffer, mfPosition);
             targetBuffer.append(buffer);
         }
         return targetBuffer;
@@ -37,7 +41,7 @@ public class FormatUtils {
         if (targetBuffer==null) return null;
         if (moneyFormat==null) initializeFormatting();
         targetBuffer.setLength(0);
-        moneyFormat.format(sum, targetBuffer, position);
+        moneyFormat.format(sum, targetBuffer, mfPosition);
         return targetBuffer;
     }
 
@@ -46,6 +50,14 @@ public class FormatUtils {
         if (targetBuffer==null) return null;
         targetBuffer.delete(0, targetBuffer.length());
         return targetBuffer.append(value);
+    }
+
+    public static StringBuffer formatFloat(float value, StringBuffer targetBuffer) {
+        if (targetBuffer==null) return null;
+        if (floatFormat==null) initializeFormatting();
+        targetBuffer.setLength(0);
+        floatFormat.format(value, targetBuffer, ffPosition);
+        return targetBuffer;
     }
 
 

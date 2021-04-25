@@ -91,6 +91,7 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
 
         // Включить доступные машины на этом уровне
         blocksPanel.updatePermissions();
+        adjustmentPanel.hideBlockInfo();
         production.unselectBlock();
         setHelperMissionText();
         ProductionSceneUI.getScenesPanel().updatePlayButtonState();

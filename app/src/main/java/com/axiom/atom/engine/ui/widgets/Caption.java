@@ -5,6 +5,8 @@ import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Text;
 
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.DKGRAY;
 import static android.graphics.Color.RED;
 
 public class Caption extends Widget {
@@ -20,18 +22,26 @@ public class Caption extends Widget {
         textRenderer.setHorizontalAlignment(Text.ALIGN_LEFT);
         textRenderer.setVerticalAlignment(Text.ALIGN_CENTER);
         caption = text;
+        setColor(BLACK);
+        opaque = false;
     }
 
     @Override
     public void draw(Camera camera) {
         if (parent==null || !visible) return;
 
+        AABB bounds = getWorldBounds();
+        AABB scissors = parent.getScissors();
+
+        if (opaque) {
+            GraphicsRender.setZOrder(zOrder);
+            GraphicsRender.setColor(color[0], color[1], color[2], color[3]);
+            GraphicsRender.drawRectangle(bounds, scissors);
+        }
+
         if (caption != null) {
 
             if (caption.length()==0) return;
-
-            AABB bounds = getWorldBounds();
-            AABB scissors = parent.getScissors();
 
             float xpos = bounds.minX; // ALIGN_LEFT
             if (getHorzinontalAlignment()==Text.ALIGN_RIGHT) xpos = bounds.maxX;
