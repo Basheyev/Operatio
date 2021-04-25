@@ -20,6 +20,12 @@ import org.json.JSONObject;
  */
 public class Machine extends Block implements JSONSerializable {
 
+    public static final String MSG_READY = "Ready";
+    public static final String MSG_WRONG_INPUT = "Wrong input";
+    public static final String MSG_OUTPUT_BUSY = "Output is busy";
+    public static final String MSG_BUSY = "Work in progress...";
+
+
     protected MachineType type;
     protected Operation operation;
 
@@ -55,12 +61,12 @@ public class Machine extends Block implements JSONSerializable {
     public boolean push(Item item) {
         // Проверяем допустимый ли материал для добавления в очередь ввода
         if (!operation.isCorrectInput(item.getMaterial())) {
-            setState(FAULT);
+            setState(FAULT, MSG_WRONG_INPUT);
             return false;
         }
         // Если на выходе машины что-то еще осталось не брать новый материал
         if (output.remainingCapacity() < outputCapacity) {
-            setState(FAULT);
+            setState(FAULT, MSG_OUTPUT_BUSY);
             return false;
         }
         // Если все материалы собраны уходим
@@ -83,9 +89,9 @@ public class Machine extends Block implements JSONSerializable {
         // Если был FAULT и на выход есть предметы - пробуем вытолкнуть на выход
         if (getState()==FAULT && output.size() > 0) {
             if (pushToOutput()) {
-                setState(IDLE);
+                setState(IDLE, MSG_READY);
             } else {
-                setState(FAULT);
+                setState(FAULT, MSG_BUSY);
             }
         }
 
@@ -93,10 +99,10 @@ public class Machine extends Block implements JSONSerializable {
         if (getState()==BUSY) {
             // Если время операции прошло и выход свободен
             if (getState()==BUSY && cyclesLeft==0 && output.size()==0) {
-                input.clear();       // Удаляем входящие предметы
-                generateOutput();    // Генерируем выходные предметы
-                pushToOutput();      // Выталкиваем предметы на вывод
-                setState(IDLE);      // Устанавливаем состояние IDLE
+                input.clear();              // Удаляем входящие предметы
+                generateOutput();           // Генерируем выходные предметы
+                pushToOutput();             // Выталкиваем предметы на вывод
+                setState(IDLE, MSG_READY);  // Устанавливаем состояние IDLE
             }
             // уменьшаем счетчик оставшихся циклов работы
             if (cyclesLeft > 0) cyclesLeft--;
@@ -112,9 +118,9 @@ public class Machine extends Block implements JSONSerializable {
         }
 
         // Подтверждаем, что есть необходимое количество каждого предмета по Операции
-        if (operationInputVerified(matCounter)) {    // Начинаем работу машины
-            setState(BUSY);                          // Устанавливаем состояние - BUSY
-            cyclesLeft = operation.getCycles();      // Указываем количество циклов работы
+        if (operationInputVerified(matCounter)) {       // Начинаем работу машины
+            setState(BUSY, MSG_BUSY);                   // Устанавливаем состояние - BUSY
+            cyclesLeft = operation.getCycles();         // Указываем количество циклов работы
         }
 
     }
@@ -143,9 +149,9 @@ public class Machine extends Block implements JSONSerializable {
                 for (int j=0; j<matCounter[i]; j++) {       // По количеству недостающих
                     if (inputBlock instanceof Buffer) {
                         Buffer inputBuffer = (Buffer) inputBlock;
-                        Item item = inputBuffer.peek(material);      // Пытаемся взять предмет из блока входа
-                        if (item == null) {                  // Если ничего нет пробуем взять
-                            setState(IDLE);                  // Устанавливаем состояние IDLE
+                        Item item = inputBuffer.peek(material);  // Пытаемся взять предмет из блока входа
+                        if (item == null) {                      // Если ничего нет пробуем взять
+                            setState(IDLE, MSG_READY);   // Устанавливаем состояние IDLE
                             continue;
                         }
                         if (!push(item)) continue;           // Если не получилось добавить к себе
@@ -153,7 +159,7 @@ public class Machine extends Block implements JSONSerializable {
                     } else {
                         Item item = inputBlock.peek();       // Пытаемся взять предмет из блока входа
                         if (item == null) {                  // Если ничего нет возвращаем
-                            setState(IDLE);                  // Устанавливаем состояние IDLE
+                            setState(IDLE, MSG_READY);                  // Устанавливаем состояние IDLE
                             continue;
                         }
                         if (!push(item)) continue;           // Если не получилось добавить к себе
@@ -246,10 +252,11 @@ public class Machine extends Block implements JSONSerializable {
         input.clear();
         output.clear();
         cyclesLeft = 0;
-        setState(IDLE);
+        setState(IDLE, MSG_READY);
     }
 
-    public void setState(int newState) {
+    @Override
+    public void setState(int newState, String description) {
         if (getState()==newState) return;
         MachineRenderer machineRenderer = (MachineRenderer) renderer;
         switch (newState) {
@@ -257,8 +264,9 @@ public class Machine extends Block implements JSONSerializable {
             case Block.BUSY: machineRenderer.setBusyAnimation(); break;
             case Block.FAULT: machineRenderer.setIdleAnimation(); break;
         }
-        super.setState(newState);
+        super.setState(newState, description);
     }
+
 
     @Override
     public String getDescription() {
@@ -292,7 +300,7 @@ public class Machine extends Block implements JSONSerializable {
         output = new Channel<Item>(outputCapacity);
         // обнулить машину
         clear();
-        setState(IDLE);
+        setState(IDLE, MSG_READY);
     }
 
 

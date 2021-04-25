@@ -40,6 +40,7 @@ public abstract class Block implements JSONSerializable {
     protected long ID;                                // ID блока
     protected double price;                           // Цена блока
     protected int state = IDLE;                       // Текущее состояние блока
+    protected String stateDescription = "";           // Описание состояния блока
     protected long stateChangeTime;                   // Время последнего изменения состояния
     protected int inputDirection, outputDirection;    // Направление ввода и вывода
     protected int inputCapacity, outputCapacity;      // Максимальая вместимость блока в предметах
@@ -151,14 +152,22 @@ public abstract class Block implements JSONSerializable {
         return state;
     }
 
+    /**
+     * Возвращает описание состояние блока
+     * @return описание состояния блока
+     */
+    public String getStateDescription() {
+        return stateDescription;
+    }
 
     /**
      * Выставляет код состояния блока
      * @param newState код нового состояния
      */
-    public void setState(int newState) {
+    public void setState(int newState, String description) {
         state = newState;
         stateChangeTime = production.getClock();
+        stateDescription = description;
     }
 
     /**

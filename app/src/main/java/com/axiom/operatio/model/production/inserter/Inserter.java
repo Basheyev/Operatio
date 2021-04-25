@@ -17,6 +17,9 @@ import org.json.JSONObject;
 
 public class Inserter extends Block implements JSONSerializable {
 
+    public static final String MSG_READY = "Ready";
+    public static final String MSG_BUSY = "Work in progress...";
+
     public static final double CYCLE_COST = 0.02f;
     public static final int CYCLES_PER_90_DEGREES = 2;
     public static final int MAX_CAPACITY = 1;
@@ -47,9 +50,9 @@ public class Inserter extends Block implements JSONSerializable {
     public void process() {
         // Если еще можем забрать предмет, забираем с входящего направления
         if (getItemsAmount() < MAX_CAPACITY) {
-            setState(IDLE);
+            setState(IDLE, MSG_READY);
             grabItemsFromInput();
-        } else setState(BUSY);
+        } else setState(BUSY, MSG_BUSY);
 
 
         Item item = input.peek();
@@ -82,7 +85,7 @@ public class Inserter extends Block implements JSONSerializable {
     }
 
 
-    protected long getDeliveryCycles() {
+    public long getDeliveryCycles() {
         if (inputDirection==RIGHT && outputDirection==LEFT) return CYCLES_PER_90_DEGREES * 2; else
         if (inputDirection==LEFT && outputDirection==RIGHT) return CYCLES_PER_90_DEGREES * 2; else
         if (inputDirection==UP && outputDirection==DOWN) return CYCLES_PER_90_DEGREES * 2; else
@@ -150,7 +153,7 @@ public class Inserter extends Block implements JSONSerializable {
     public void clear() {
         input.clear();
         output.clear();
-        setState(IDLE);
+        setState(IDLE, MSG_READY);
     }
 
     @Override

@@ -4,9 +4,11 @@ import android.graphics.Color;
 import android.view.MotionEvent;
 
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
+import com.axiom.operatio.model.common.FormatUtils;
 import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
@@ -44,10 +46,12 @@ public class AdjustmentPanel extends Panel {
     private Production production;
     private ProductionScene productionScene;
 
-    private Caption caption, inputsCaption, outputsCaption;
+    private Caption upperCaption, middleCaption, lowerCaption;
     private Button leftButton, centerButton, rightButton;
+    private ItemWidget centerItemWidget;
     private Button changeoverButton;
     private Block chosenBlock = null;
+    private StringBuffer timeBuffer = new StringBuffer(256);
 
     private OutputChooser outputChooser;
 
@@ -81,20 +85,21 @@ public class AdjustmentPanel extends Panel {
 
     private void buildButtons() {
         // Название блока
-        caption = buildCaption(BLOCK_INFO, 40,599);
+        upperCaption = buildCaption(BLOCK_INFO, 40,600);
 
         // Кнопки управления блоком
         leftButton = buildActiveButton(LEFT, 40, 500, 75, 100);
         centerButton = buildActiveButton(CHOOSER, 140, 500, 100, 100);
         centerButton.setTextScale(1.5f);
+        centerItemWidget = buildActiveItemWidget(140, 500, 100, 100);
         rightButton = buildActiveButton(RIGHT, 265, 500, 75, 100);
 
         // Список входных материалов
-        inputsCaption = buildCaption(INPUTS, 40,400);
+        middleCaption = buildCaption(INPUTS, 40,420);
         for (int i=0; i<4; i++) inpBtn[i] = buildItemWidget(40 + i*80, 350);
 
         // Список выходных материалов
-        outputsCaption = buildCaption(OUTPUTS, 40,250);
+        lowerCaption = buildCaption(OUTPUTS, 40,260);
         for (int i=0; i<4; i++) outBtn[i] = buildItemWidget(40 + i*80, 200);
 
         changeoverButton = buildActiveButton(CHANGEOVER, 40, 50, 300, 100);
@@ -104,9 +109,10 @@ public class AdjustmentPanel extends Panel {
 
     private Caption buildCaption(String text, float x, float y) {
         Caption caption = new Caption(text);
-        caption.setLocalBounds(x,y,300, 100);
-        caption.setTextScale(1.5f);
+        caption.setLocalBounds(x,y,300, 50);
+        caption.setTextScale(1.3f);
         caption.setTextColor(WHITE);
+        caption.setVerticalAlignment(Text.ALIGN_TOP);
         addChild(caption);
         return caption;
     }
@@ -132,6 +138,19 @@ public class AdjustmentPanel extends Panel {
         button.setClickListener(clickListener);
         addChild(button);
         return button;
+    }
+
+
+    private ItemWidget buildActiveItemWidget(float x, float y, float width, float height) {
+        ItemWidget iw = new ItemWidget("");
+        iw.setTag(CHOOSER);
+        iw.setLocalBounds(x, y, width, height);
+        iw.setColor(Color.DKGRAY);
+        iw.setTextColor(WHITE);
+        iw.setTextScale(1.2f);
+        iw.setClickListener(clickListener);
+        addChild(iw);
+        return iw;
     }
 
 
@@ -247,10 +266,8 @@ public class AdjustmentPanel extends Panel {
         }
         if (block instanceof Conveyor) {
             Conveyor conveyor = (Conveyor) block;
-            if (blockChanged) {
-                conveyorSpeed = conveyor.getSpeed();
-                showConveyorInfo(conveyor, conveyorSpeed);
-            }
+            if (blockChanged) conveyorSpeed = conveyor.getSpeed();
+            showConveyorInfo(conveyor, conveyorSpeed);
         }
         if (block instanceof Buffer) showBufferInfo((Buffer) block);
         if (block instanceof ExportBuffer) showExporterInfo((ExportBuffer) block);
@@ -265,7 +282,7 @@ public class AdjustmentPanel extends Panel {
      */
     public void hideBlockInfo() {
         chosenBlock = null;
-        caption.setText("Block information");
+        upperCaption.setText("Block information");
         hideButtons();
         hideInputsOutputs();
         hideOutputChooser();
@@ -275,10 +292,11 @@ public class AdjustmentPanel extends Panel {
 
     private void hideButtons() {
         centerButton.setVisible(false);
+        centerItemWidget.setVisible(false);
         leftButton.setVisible(false);
         rightButton.setVisible(false);
-        inputsCaption.setVisible(false);
-        outputsCaption.setVisible(false);
+        middleCaption.setVisible(false);
+        lowerCaption.setVisible(false);
         changeoverButton.setVisible(false);
     }
 
@@ -288,25 +306,26 @@ public class AdjustmentPanel extends Panel {
      * @param machine машина
      */
     protected void showMachineInfo(Machine machine, int opID) {
-        MachineType machineType = machine.getType();
-        Operation[] allOperations = machineType.getOperations();
 
+        hideButtons();
+
+        MachineType machineType = machine.getType();
         Operation currentOperation = machineType.getOperation(opID);
         Material[] inputMaterials = currentOperation.getInputs();
         int[] inputAmount = currentOperation.getInputAmount();
         Material[] outputMaterials = currentOperation.getOutputs();
         int[] outputAmount = currentOperation.getOutputAmount();
 
-        caption.setText(machineType.getName() + " operation");
-        centerButton.setVisible(true);
-        centerButton.setText("" + opID + "/" + (allOperations.length-1));
-        centerButton.setLocalBounds( 140, 500, 100, 100);
-        centerButton.setBackground(null);
+        upperCaption.setText(machineType.getName());
+        centerItemWidget.setVisible(true);
+        centerItemWidget.setLocalBounds( 140, 500, 100, 100);
+        centerItemWidget.setBackground(outputMaterials[0].getImage());
+        centerItemWidget.setText(outputAmount[0] + "");
         leftButton.setVisible(true);
         rightButton.setVisible(true);
 
-        inputsCaption.setVisible(true);
-        inputsCaption.setText(INPUTS);
+        middleCaption.setVisible(true);
+        middleCaption.setText(outputMaterials[0].getName());
         for (int i=0; i<4; i++) {
             if (i < inputMaterials.length) {
                 inpBtn[i].setBackground(inputMaterials[i].getImage());
@@ -318,18 +337,11 @@ public class AdjustmentPanel extends Panel {
             inpBtn[i].setVisible(true);
         }
 
-        outputsCaption.setVisible(true);
-        outputsCaption.setText(OUTPUTS);
-        for (int i=0; i<4; i++) {
-            if (i < outputMaterials.length) {
-                outBtn[i].setBackground(outputMaterials[i].getImage());
-                outBtn[i].setText(outputAmount[i] + "");
-            } else {
-                outBtn[i].setBackground(null);
-                outBtn[i].setText("");
-            }
-            outBtn[i].setVisible(true);
-        }
+
+        lowerCaption.setVisible(true);
+        float processingTime = ((machine.getOperation().getCycles() * production.getCycleMilliseconds()) / 1000.0f);
+        FormatUtils.formatFloat(processingTime, timeBuffer);
+        lowerCaption.setText("Processing time: " + timeBuffer + "s" + "\n\n" + machine.getStateDescription());
 
         GamePermissions permissions = production.getPermissions();
         changeoverButton.setVisible(permissions.isAvailable(currentOperation));
@@ -341,7 +353,7 @@ public class AdjustmentPanel extends Panel {
      * @param buffer буфер
      */
     private void showBufferInfo(Buffer buffer) {
-        caption.setText("Buffer contains");
+        upperCaption.setText("Buffer contains");
 
         hideButtons();
 
@@ -351,7 +363,7 @@ public class AdjustmentPanel extends Panel {
         centerButton.setLocation(40, 500);
         centerButton.setSize(300,100);
 
-        inputsCaption.setText("Stored materials");
+        middleCaption.setText("Stored materials");
         for (int i=0; i<4; i++) {
             Material material = buffer.getKeepingUnitMaterial(i);
             if (material!=null) {
@@ -375,7 +387,7 @@ public class AdjustmentPanel extends Panel {
      */
     protected void showConveyorInfo(Conveyor conveyor, int speed) {
         hideButtons();
-        caption.setText("Conveyor");
+        upperCaption.setText("Conveyor");
         centerButton.setVisible(true);
         centerButton.setText(speed + "x");
         centerButton.setBackground(null);
@@ -384,6 +396,10 @@ public class AdjustmentPanel extends Panel {
         rightButton.setVisible(true);
         changeoverButton.setVisible(true);
         hideInputsOutputs();
+        middleCaption.setVisible(true);
+        float processingTime = (conveyor.getDeliveryCycles() * production.getCycleMilliseconds()) / 1000.0f;
+        FormatUtils.formatFloat(processingTime, timeBuffer);
+        middleCaption.setText("Delivery time: " + timeBuffer + "s\n\n" + conveyor.getStateDescription());
     }
 
 
@@ -398,7 +414,7 @@ public class AdjustmentPanel extends Panel {
         hideButtons();
         hideInputsOutputs();
 
-        caption.setText("Importer");
+        upperCaption.setText("Importer");
         centerButton.setVisible(true);
         centerButton.setText("");
         centerButton.setBackground(material != null ? material.getImage() : null);
@@ -409,9 +425,9 @@ public class AdjustmentPanel extends Panel {
 
         long balance = production.getInventory().getBalance(material);
         String name = material != null ? material.getName() : "";
-        String balanceStr = name + "\n" + "Balance: " + balance + " items";
-        inputsCaption.setText(balanceStr);
-        inputsCaption.setVisible(true);
+        String balanceStr = name + "\n\n" + "Balance: " + balance + " items";
+        middleCaption.setText(balanceStr);
+        middleCaption.setVisible(true);
     }
 
 
@@ -420,7 +436,7 @@ public class AdjustmentPanel extends Panel {
      * @param exportBuffer
      */
     private void showExporterInfo(ExportBuffer exportBuffer) {
-        caption.setText("Exporter");
+        upperCaption.setText("Exporter");
         hideButtons();
         hideInputsOutputs();
     }
@@ -432,7 +448,7 @@ public class AdjustmentPanel extends Panel {
         hideButtons();
         hideInputsOutputs();
 
-        caption.setText("Inserter");
+        upperCaption.setText("Inserter");
         centerButton.setVisible(true);
         centerButton.setText("");
         centerButton.setLocalBounds( 140, 500, 100, 100);
@@ -442,6 +458,12 @@ public class AdjustmentPanel extends Panel {
         leftButton.setVisible(true);
         rightButton.setVisible(true);
         changeoverButton.setVisible(true);
+
+        middleCaption.setVisible(true);
+        float throughputTime = (inserter.getDeliveryCycles() * production.getCycleMilliseconds()) / 1000.0f;
+        FormatUtils.formatFloat(throughputTime, timeBuffer);
+        String materialName = (materialID==-1) ? "Any material" : material.getName();
+        middleCaption.setText(materialName + "\n\nDelivery time: " + timeBuffer + "s\n\n" + inserter.getStateDescription());
     }
 
 

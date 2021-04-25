@@ -17,6 +17,9 @@ import org.json.JSONObject;
  */
 public class Conveyor extends Block implements JSONSerializable {
 
+    public static final String MSG_READY = "Ready";
+    public static final String MSG_BUSY = "Output is busy";
+
     public static final double CYCLE_COST = 0.02f;
     public static final int SPEED_1 = 5;
     public static final int SPEED_2 = 4;
@@ -75,7 +78,7 @@ public class Conveyor extends Block implements JSONSerializable {
     public boolean push(Item item) {
         // Если на конвейере уже максимальное количество предметов
         if (getItemsAmount() >= MAX_CAPACITY) {
-            setState(BUSY);
+            setState(BUSY, MSG_BUSY);
             return false;
         }
 
@@ -93,9 +96,9 @@ public class Conveyor extends Block implements JSONSerializable {
 
         // Если еще можем забрать предмет, забираем с входящего направления
         if (getItemsAmount() < MAX_CAPACITY) {
-            setState(IDLE);
+            setState(IDLE, MSG_READY);
             grabItemsFromInput();
-        } else setState(BUSY);
+        } else setState(BUSY, MSG_BUSY);
 
         // Перемещаем на вывод все предметы время доставки которых подошло
         for (int i=0; i<input.size(); i++) {
@@ -104,9 +107,9 @@ public class Conveyor extends Block implements JSONSerializable {
 
             long cyclesPassed = production.getCurrentCycle() - item.getCycleOwned();
             if (cyclesPassed >= deliveryCycles && output.size()==0) {
-                item = input.poll();  // Удалаем из входящей очереди
-                output.add(item);     // Добавляем в выходящую очередь
-                setState(IDLE);       // Состояние - IDLE (можем брать еще)
+                item = input.poll();         // Удалаем из входящей очереди
+                output.add(item);            // Добавляем в выходящую очередь
+                setState(IDLE, MSG_READY);   // Состояние - IDLE (можем брать еще)
             }
         }
 
