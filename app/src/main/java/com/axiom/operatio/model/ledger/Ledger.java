@@ -16,18 +16,20 @@ public class Ledger implements JSONSerializable {
     //---------------------------------------------------------------------------------------------
     public static final int OPERATIONAL_DAY_CYCLES = 60;         // Длительность периода в циклах
     //---------------------------------------------------------------------------------------------
-    public static final int EXPENSE_UNKNOWN = 0x0000;    // Неизвестный расход
+    public static final int EXPENSE_UNKNOWN = 0x0000;            // Неизвестный расход
     public static final int EXPENSE_BLOCK_BOUGHT    = 0x0001;    // Расходы на покупку блока
     public static final int EXPENSE_BLOCK_OPERATION = 0x0002;    // Расходы на операцию блока
     public static final int EXPENSE_MATERIAL_BOUGHT = 0x0003;    // Расходы на покупку материала
-    public static final int EXPENSE_TILE_BOUGHT = 0x0004;    // Расходы на покупку земли
+    public static final int EXPENSE_TILE_BOUGHT = 0x0004;        // Расходы на покупку земли
     public static final int EXPENSE_RECIPE_BOUGHT   = 0x0005;    // Расходы на покупку технологии
+    public static final int EXPENSE_DIVIDENDS       = 0x000F;    // Выплаты дивидендов
 
     public static final int REVENUE_UNKNOWN         = 0x0000;    // Неизвестный доход
     public static final int REVENUE_BLOCK_SOLD      = 0x1001;    // Выручка от продажи блока
     public static final int REVENUE_MATERIAL_SOLD   = 0x1002;    // Выручка от продажи материала
     //---------------------------------------------------------------------------------------------
     private Production production;                               // Производство
+    private double dividendsPayed;                               // Выплачено дивидендов
     private double cashBalance;                                  // Текущий остаток денег
     private long startingCycle = 0;                              // Цикл производства - начала учёта
     //---------------------------------------------------------------------------------------------
@@ -49,6 +51,7 @@ public class Ledger implements JSONSerializable {
             materialRecords[i] = new MaterialRecord();
         }
         cashBalance = 0;
+        dividendsPayed = 0;
         total = new LedgerPeriod();
         currentPeriod = new LedgerPeriod();
         lastPeriod = new LedgerPeriod();
@@ -64,6 +67,12 @@ public class Ledger implements JSONSerializable {
         try {
             startingCycle = jsonObject.getLong("startingCycle");
             cashBalance = jsonObject.getDouble("cashBalance");
+            try {
+                dividendsPayed = jsonObject.getDouble("dividendsPayed");
+            } catch (JSONException e) {
+                dividendsPayed = 0;
+            }
+
             total = new LedgerPeriod(jsonObject.getJSONObject("total"));
             currentPeriod = new LedgerPeriod(jsonObject.getJSONObject("currentPeriod"));
             lastPeriod = new LedgerPeriod(jsonObject.getJSONObject("lastPeriod"));
@@ -90,6 +99,7 @@ public class Ledger implements JSONSerializable {
             jsonObject.put("class", "Ledger");
             jsonObject.put("startingCycle", startingCycle);
             jsonObject.put("cashBalance", cashBalance);
+            jsonObject.put("dividendsPayed", dividendsPayed);
             jsonObject.put("total", total.toJSON());
             jsonObject.put("currentPeriod", currentPeriod.toJSON());
             jsonObject.put("lastPeriod", lastPeriod.toJSON());
@@ -312,10 +322,21 @@ public class Ledger implements JSONSerializable {
     }
 
 
+    public boolean payDividends(float percent) {
+        if (percent <=0 || percent > 100) return false;
+        double dividendsSum = cashBalance * (percent / 100.0f);
+        cashBalance -= dividendsSum;
+        dividendsPayed += dividendsSum;
+        return true;
+    }
+
     public double getCashBalance() {
         return cashBalance;
     }
 
+    public double getDividendsPayed() {
+        return dividendsPayed;
+    }
 
     public boolean creditCashBalance(int type, double value) {
         double result = cashBalance - value;

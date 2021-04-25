@@ -1,15 +1,19 @@
 package com.axiom.operatio.scenes.report;
 
 import android.graphics.Color;
+import android.util.Log;
 
+import com.axiom.atom.R;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.graphics.renderers.Text;
+import com.axiom.atom.engine.sound.SoundRenderer;
+import com.axiom.atom.engine.ui.listeners.ClickListener;
+import com.axiom.atom.engine.ui.widgets.Button;
 import com.axiom.atom.engine.ui.widgets.Caption;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.ProgressBar;
-import com.axiom.operatio.model.gameplay.MissionManager;
-import com.axiom.operatio.model.gameplay.GameMission;
+import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.common.FormatUtils;
 import com.axiom.operatio.model.ledger.LedgerPeriod;
@@ -26,6 +30,8 @@ import static android.graphics.Color.WHITE;
 public class ReportPanel extends Panel {
 
     public static final float TARGET_VALUATION = 10_000_000f;
+    public static final float TARGET_DIVIDENDS = 10_000_000f;
+
     public static final int ITEM_BACKGROUND = 0x80000000;
 
     private Production production;
@@ -38,8 +44,10 @@ public class ReportPanel extends Panel {
     private ItemWidget[] boughtMaterials;
     private ItemWidget[] manufacturedMaterials;
     private ItemWidget[] soldMaterials;
+    private ProgressBar dividendsBar;
     private ProgressBar valuationBar;
     private ProgressBar technologyBar;
+    private Button payDividends;
     private StringBuffer summary;
 
     private double[] revenueData = new double[Ledger.HISTORY_LENGTH];
@@ -49,11 +57,14 @@ public class ReportPanel extends Panel {
     private StringBuffer purchaseText;
     private StringBuffer manufacturedText;
 
+    private int paySound;
+
 
     public ReportPanel(Production production) {
         super();
         this.production = production;
 
+        paySound = SoundRenderer.loadSound(R.raw.cash_snd);
         setLocalBounds(24,50, 1872, 880);
         setColor(0xCC505050);
 
@@ -62,27 +73,31 @@ public class ReportPanel extends Panel {
         purchaseText = new StringBuffer(32);
         manufacturedText = new StringBuffer(32);
 
-        buildCaption("Valuation ($10M)", 25, 710, 300, 60, 1.4f, WHITE);
-        valuationBar = buildProgressBar(25, 630);
-        buildCaption("Technology", 25, 505, 300, 60, 1.4f, WHITE);
+        buildCaption("Dividends ($10M)", 25, 745, 300, 60, 1.3f, WHITE);
+        dividendsBar = buildProgressBar(25, 685);
+        buildCaption("Valuation ($10M)", 25, 620, 300, 60, 1.3f, WHITE);
+        valuationBar = buildProgressBar(25, 565);
+        buildCaption("Technology researched", 25, 490, 300, 60, 1.3f, WHITE);
         technologyBar = buildProgressBar(25, 435);
 
         chart = new LineChart(2);
-        chart.setLocalBounds(350,435, 1100, 330);
+        chart.setLocalBounds(350,435, 1100, 420);
         Ledger ledger = production.getLedger();
         updateChartData(ledger);
         addChild(chart);
 
-        panelCaption = buildCaption("Daily report", 30, getHeight() - 100, 600, 100, 1.5f, WHITE);
+        panelCaption = buildCaption("Game progress", 25, getHeight() - 100, 250, 100, 1.5f, WHITE);
         purchaseCaption = buildCaption("Purchase", 25, 330,300, 100, 1.3f, 0xFFFF7F7F);
         boughtMaterials = buildItemsGrid(25, 270, 545, 32);
-        manufacturedCaption = buildCaption("Manufactured",650, 330,300, 100, 1.3f, WHITE);
+        manufacturedCaption = buildCaption("Manufactured",650, 330,400, 100, 1.3f, WHITE);
         manufacturedMaterials = buildItemsGrid(650, 270, 500, 32);
         salesCaption = buildCaption("Sales", 1270, 330, 300, 100, 1.3f, GREEN);
         soldMaterials = buildItemsGrid(1270, 270, 500, 32);
 
-        reportCaption = buildCaption("Summary", 1480, 435, 400, 330, 1.3f, WHITE);
+        reportCaption = buildCaption("Summary", 1475, 520, 380, 330, 1.3f, WHITE);
         reportCaption.setVerticalAlignment(Text.ALIGN_TOP);
+
+        payDividends = buildDividendsButton("Pay dividends - 25%", 1475, 440, 380, 70);
 
     }
 
@@ -126,12 +141,22 @@ public class ReportPanel extends Panel {
 
     private ProgressBar buildProgressBar(float posX, float posY) {
         ProgressBar pb = new ProgressBar();
-        pb.setLocalBounds(posX, posY, 300, 60);
+        pb.setLocalBounds(posX, posY, 300, 50);
         pb.setProgress(0);
         addChild(pb);
         return pb;
     }
 
+    private Button buildDividendsButton(String caption, float x, float y, float width, float height) {
+        Button button = new Button(caption);
+        button.setTag(caption);
+        button.setLocalBounds(x, y, width, height);
+        button.setTextScale(1.3f);
+        button.setTextColor(WHITE);
+        button.setClickListener(payDividendsListener);
+        addChild(button);
+        return button;
+    }
 
     /**
      * Обновляет данные
@@ -141,9 +166,9 @@ public class ReportPanel extends Panel {
         double salesSum = ledger.getLastPeriod().getRevenue();
         double manufactureCost = ledger.getLastPeriod().getMaintenanceCost();
         double purchaseSum = ledger.getLastPeriod().getExpenses() - manufactureCost;
-        updateStringBuffer(salesText, "Sold: ", salesSum);
+        updateStringBuffer(salesText, "Sold today: ", salesSum);
         updateStringBuffer(manufacturedText, "Manufacturing costs: ", manufactureCost);
-        updateStringBuffer(purchaseText, "Purchased: ", purchaseSum);
+        updateStringBuffer(purchaseText, "Purchased today: ", purchaseSum);
 
         synchronized (this) {
             // Обновить график
@@ -254,6 +279,10 @@ public class ReportPanel extends Panel {
         double averageMargin = ledger.getHistoryAverageMargin();
         double averageRevenue = ledger.getHistoryAverageRevenue();
         double averageMarginPercent = averageRevenue > 0 ? Math.round(averageMargin / averageRevenue * 100d) : 0;
+
+        int dividendsProgress = (int) (ledger.getDividendsPayed() / TARGET_DIVIDENDS * 100.0F);
+
+        dividendsBar.setProgress(dividendsProgress);
         valuationBar.setProgress(valuationProgress);
         technologyBar.setProgress(technologyProgress);
 
@@ -290,4 +319,16 @@ public class ReportPanel extends Panel {
             super.draw(camera);
         }
     }
+
+
+    protected ClickListener payDividendsListener = new ClickListener() {
+        @Override
+        public void onClick(Widget w) {
+            SoundRenderer.playSound(paySound);
+            Ledger ledger = production.getLedger();
+            ledger.payDividends(25.0f);
+            updateSummary(ledger);
+        }
+    };
+
 }

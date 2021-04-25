@@ -166,8 +166,8 @@
   },
   {
     "ID" : 11,
-    "name" : "Free play",
-    "description" : "Do everything you want",
+    "name" : "Valuation",
+    "description" : "Reach target valuation",
     "prerequisiteIDs" : [10],
     "winConditions" : [ ],
     "permissionsReward" : {
