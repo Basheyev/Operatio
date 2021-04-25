@@ -12,6 +12,7 @@ import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.production.block.BlockBuilder;
+import com.axiom.operatio.model.production.machine.Machine;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +25,8 @@ import java.util.ArrayList;
  * Модель производства
  */
 public class Production implements JSONSerializable {
+
+    public static final String MSG_LOW_ENERGY = "Low energy!";
 
     public static final int MAP_WIDTH = 64;
     public static final int MAP_HEIGHT = 48;
@@ -191,7 +194,7 @@ public class Production implements JSONSerializable {
                     energyPayed = ledger.creditCashBalance(expenseType, block.getCycleCost());
                     if (energyPayed) block.process();  // Если энергия оплачена отрабатываем
                     else {
-                        block.setState(Block.FAULT);
+                        block.setState(Block.FAULT, MSG_LOW_ENERGY);
                     }
                 }
                 // Выполнить симуляцию склада
