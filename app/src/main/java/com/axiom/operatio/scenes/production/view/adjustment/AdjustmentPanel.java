@@ -51,7 +51,8 @@ public class AdjustmentPanel extends Panel {
     private ItemWidget centerItemWidget;
     private Button changeoverButton;
     private Block chosenBlock = null;
-    private StringBuffer timeBuffer = new StringBuffer(256);
+    private StringBuffer timeBuffer = new StringBuffer(16);
+    private StringBuffer costBuffer = new StringBuffer(16);
 
     private OutputChooser outputChooser;
 
@@ -339,9 +340,13 @@ public class AdjustmentPanel extends Panel {
 
 
         lowerCaption.setVisible(true);
-        float processingTime = ((machine.getOperation().getCycles() * production.getCycleMilliseconds()) / 1000.0f);
+        long cycles = machine.getOperation().getCycles();
+        float processingTime = ((cycles * production.getCycleMilliseconds()) / 1000.0f);
         FormatUtils.formatFloat(processingTime, timeBuffer);
-        lowerCaption.setText("Processing time: " + timeBuffer + "s" + "\n\n" + machine.getStateDescription());
+        double oneSecondCost = (1000.0f / production.getCycleMilliseconds()) * machine.getCycleCost();
+        FormatUtils.formatMoney(oneSecondCost, costBuffer);
+        lowerCaption.setText("Operation time: " + timeBuffer + "s\n" +
+                "Operation cost: " + costBuffer + "/s\n\n" + machine.getStateDescription());
 
         GamePermissions permissions = production.getPermissions();
         changeoverButton.setVisible(permissions.isAvailable(currentOperation));
@@ -377,6 +382,11 @@ public class AdjustmentPanel extends Panel {
             outBtn[i].setVisible(false);
         }
 
+        lowerCaption.setVisible(true);
+        double oneSecondCost = (1000.0f / production.getCycleMilliseconds()) * buffer.getCycleCost();
+        FormatUtils.formatMoney(oneSecondCost, costBuffer);
+        lowerCaption.setText("Storage cost: " + costBuffer + "/s\n\n" + buffer.getStateDescription());
+
         changeoverButton.setVisible(true);
     }
 
@@ -387,7 +397,7 @@ public class AdjustmentPanel extends Panel {
      */
     protected void showConveyorInfo(Conveyor conveyor, int speed) {
         hideButtons();
-        upperCaption.setText("Conveyor");
+        upperCaption.setText("Conveyor speed");
         centerButton.setVisible(true);
         centerButton.setText(speed + "x");
         centerButton.setBackground(null);
@@ -399,7 +409,10 @@ public class AdjustmentPanel extends Panel {
         middleCaption.setVisible(true);
         float processingTime = (conveyor.getDeliveryCycles() * production.getCycleMilliseconds()) / 1000.0f;
         FormatUtils.formatFloat(processingTime, timeBuffer);
-        middleCaption.setText("Delivery time: " + timeBuffer + "s\n\n" + conveyor.getStateDescription());
+        double oneSecondCost = (1000.0f / production.getCycleMilliseconds()) * conveyor.getCycleCost();
+        FormatUtils.formatMoney(oneSecondCost, costBuffer);
+        middleCaption.setText("Delivery time: " + timeBuffer + "s\n" +
+                "Delivery cost: " + costBuffer + "/s\n\n" + conveyor.getStateDescription());
     }
 
 
@@ -414,7 +427,7 @@ public class AdjustmentPanel extends Panel {
         hideButtons();
         hideInputsOutputs();
 
-        upperCaption.setText("Importer");
+        upperCaption.setText("Import from warehouse");
         centerButton.setVisible(true);
         centerButton.setText("");
         centerButton.setBackground(material != null ? material.getImage() : null);
@@ -436,7 +449,7 @@ public class AdjustmentPanel extends Panel {
      * @param exportBuffer
      */
     private void showExporterInfo(ExportBuffer exportBuffer) {
-        upperCaption.setText("Exporter");
+        upperCaption.setText("Export to warehouse");
         hideButtons();
         hideInputsOutputs();
 
@@ -477,8 +490,11 @@ public class AdjustmentPanel extends Panel {
         middleCaption.setVisible(true);
         float throughputTime = (inserter.getDeliveryCycles() * production.getCycleMilliseconds()) / 1000.0f;
         FormatUtils.formatFloat(throughputTime, timeBuffer);
+        double oneSecondCost = (1000.0f / production.getCycleMilliseconds()) * inserter.getCycleCost();
+        FormatUtils.formatMoney(oneSecondCost, costBuffer);
         String materialName = (materialID==-1) ? "Any material" : material.getName();
-        middleCaption.setText(materialName + "\n\nDelivery time: " + timeBuffer + "s\n\n" + inserter.getStateDescription());
+        middleCaption.setText(materialName + "\n\nDelivery time: " + timeBuffer + "s\n" +
+                "Delivery cost: " + costBuffer + "/s\n\n" + inserter.getStateDescription());
     }
 
 

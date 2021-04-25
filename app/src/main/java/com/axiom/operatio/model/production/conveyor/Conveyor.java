@@ -219,7 +219,12 @@ public class Conveyor extends Block implements JSONSerializable {
 
     @Override
     public double getCycleCost() {
-        return CYCLE_COST * ((double) SPEED_1 / deliveryCycles);
+        switch (deliveryCycles) {
+            case SPEED_1: return CYCLE_COST;
+            case SPEED_2: return CYCLE_COST * 1.5;
+            case SPEED_3: return CYCLE_COST * 3;
+        }
+        return CYCLE_COST;
     }
 
     public JSONObject toJSON() {
