@@ -3,7 +3,7 @@
     "ID": 0,
     "name": "Press",
     "description": "The press compresses the input material\nto obtain output material",
-    "operationsCount": 7,
+    "operationsCount": 8,
     "price": 2000,
     "cycleCost": 0.3,
     "operations": [
@@ -187,7 +187,7 @@
     "ID": 3,
     "name": "Extruder",
     "description": "The extruder pushes the input material\nthrough the form to obtain new material",
-    "operationsCount": 5,
+    "operationsCount": 6,
     "price": 4000,
     "cycleCost": 0.3,
     "operations":[
@@ -263,7 +263,7 @@
     "ID": 4,
     "name": "Assembly",
     "description": "The machine assembles output material\nfrom two or more input materials",
-    "operationsCount": 33,
+    "operationsCount": 36,
     "price": 7000,
     "cycleCost": 0.4,
     "operations":[
@@ -649,7 +649,7 @@
         "outputIDs": [58],
         "inputIDs": [37, 39],
         "outputQuantities": [1],
-        "inputQuantities": [1,1],
+        "inputQuantities": [2,1],
         "recipeCost": 15000
       },
       {
