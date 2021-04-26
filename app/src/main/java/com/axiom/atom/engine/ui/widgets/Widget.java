@@ -337,4 +337,12 @@ public abstract class Widget {
     public void setOpaque(boolean opaque) {
         this.opaque = opaque;
     }
+
+    public boolean isScissorsEnabled() {
+        return scissorsEnabled;
+    }
+
+    public void setScissorsEnabled(boolean scissorsEnabled) {
+        this.scissorsEnabled = scissorsEnabled;
+    }
 }
