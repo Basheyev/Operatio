@@ -6,8 +6,6 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.graphics.renderers.Text;
 
-import static android.graphics.Color.RED;
-
 public class Button extends Widget {
 
     protected Text textRenderer;
@@ -44,7 +42,7 @@ public class Button extends Widget {
     public void draw(Camera camera) {
         if (parent==null || !visible) return;
         AABB bounds = getWorldBounds();
-        AABB parentScissor = parent.getScissors();
+        AABB parentScissor = scissorsEnabled ? parent.getScissors() : null;
         float spaceWidth = textRenderer.getCharWidth(' ', textScale);
 
         if (opaque) {

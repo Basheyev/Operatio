@@ -25,6 +25,7 @@ public class BatchRender {
     //------------------------------------------------------------------------------------------
     public static final int MAX_SPRITES = 8192;   // Максимальное количество спрайтов на экране
     protected static int drawCallsCounter = 0;    // Счётчик вызовов отрисовки (меньше лучше)
+    protected static int scissorCounter = 0;      // Счётчик обрезания областей
     //------------------------------------------------------------------------------------------
     protected static Quad[] quads;                // Буфер всех элементов на отрисовку
     protected static Quad.Comparator comparator;  // Класс для сравнения элементов буфера
@@ -34,6 +35,7 @@ public class BatchRender {
 
     protected static int quadsProcessed = 0;
     protected static int drawCallsMade = 0;
+    protected static int scissorsApplied = 0;
 
     //-------------------------------------------------------------------------------------------
     // Методы для пакетирования
@@ -119,6 +121,7 @@ public class BatchRender {
         copyQuad(quad, previous);
 
         drawCallsCounter = 0;
+        scissorCounter = 0;
         boolean equals, lastEntry;
 
         for (int i=0; i<entriesCounter; i++) {
@@ -141,6 +144,7 @@ public class BatchRender {
         }
 
         drawCallsMade = drawCallsCounter;
+        scissorsApplied = scissorCounter;
     }
 
 
@@ -189,7 +193,7 @@ public class BatchRender {
         drawCallsCounter++;
     }
 
-
+    public static int getScissorsApplied() { return scissorsApplied; }
 
     public static int getEntriesCount() {
         return quadsProcessed;
@@ -207,6 +211,7 @@ public class BatchRender {
                 Math.round(clip.width),
                 Math.round(clip.height)
         );
+        scissorCounter++;
     }
 
     protected static void disableScissor() {

@@ -17,6 +17,7 @@ public abstract class Widget {
 
     protected boolean visible = true;        // Виден ли виджет (отображается/обрабатывает события)
     protected boolean opaque = true;         // Является ли виджет непрозрачным
+    protected boolean scissorsEnabled = false;      // Обрезать ли область виджета на уровне рендера
     protected float[] color = new float[4];  // Цвет виджета (если непрозрачный)
     protected int zOrder = 1000;             // Слой виджета при отрисовке рендером
 

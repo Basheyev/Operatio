@@ -31,7 +31,7 @@ public class ProgressBar extends Widget {
         if (parent==null || !visible) return;
 
         AABB bounds = getWorldBounds();
-        AABB parentScissor = parent.getScissors();
+        AABB parentScissor = scissorsEnabled ? parent.getScissors() : null;
 
         // Нарисовать фон
         GraphicsRender.setZOrder(zOrder);

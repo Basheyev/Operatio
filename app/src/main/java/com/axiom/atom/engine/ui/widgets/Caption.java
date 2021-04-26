@@ -31,12 +31,12 @@ public class Caption extends Widget {
         if (parent==null || !visible) return;
 
         AABB bounds = getWorldBounds();
-        AABB scissors = parent.getScissors();
+        AABB parentScissor = scissorsEnabled ? parent.getScissors() : null;
 
         if (opaque) {
             GraphicsRender.setZOrder(zOrder);
             GraphicsRender.setColor(color[0], color[1], color[2], color[3]);
-            GraphicsRender.drawRectangle(bounds, scissors);
+            GraphicsRender.drawRectangle(bounds, parentScissor);
         }
 
         if (caption != null) {
@@ -53,7 +53,7 @@ public class Caption extends Widget {
 
             textRenderer.setZOrder(zOrder + 2);
             textRenderer.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
-            textRenderer.draw(camera, caption, xpos, ypos, scale, scissors);
+            textRenderer.draw(camera, caption, xpos, ypos, scale, parentScissor);
         }
 
         super.draw(camera);

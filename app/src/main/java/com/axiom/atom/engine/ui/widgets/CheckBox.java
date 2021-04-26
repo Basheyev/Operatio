@@ -24,7 +24,7 @@ public class CheckBox extends Widget {
     public void draw(Camera camera) {
         if (parent==null || !visible) return;
         AABB bounds = getWorldBounds();
-        AABB parentScissor = parent.getScissors();
+        AABB parentScissor = scissorsEnabled ? parent.getScissors() : null;
 
         GraphicsRender.setZOrder(zOrder);
         GraphicsRender.setColor(Color.BLACK);
