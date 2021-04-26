@@ -11,6 +11,8 @@ import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
 import com.axiom.operatio.model.production.inserter.Inserter;
 
+import static com.axiom.operatio.model.production.ProductionRenderer.Z_ORDER_JOINTS;
+import static com.axiom.operatio.model.production.ProductionRenderer.Z_ORDER_MACHINES;
 import static com.axiom.operatio.model.production.block.Block.DOWN;
 import static com.axiom.operatio.model.production.block.Block.LEFT;
 import static com.axiom.operatio.model.production.block.Block.RIGHT;
@@ -31,9 +33,9 @@ public class ImportBufferRenderer extends BlockRenderer {
             buffersFrames = new Sprite(resources, R.drawable.blocks, 8, 16);
         }
         sprite = buffersFrames.getAsSprite(65);
-        sprite.setZOrder(7);
+        sprite.setZOrder(Z_ORDER_MACHINES);
         halfConveyor = buffersFrames.getAsSprite(64);
-        halfConveyor.setZOrder(6);
+        halfConveyor.setZOrder(Z_ORDER_JOINTS);
     }
 
     public void draw(Camera camera, float x, float y, float width, float height) {

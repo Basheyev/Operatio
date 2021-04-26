@@ -10,6 +10,9 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.BlockRenderer;
 import com.axiom.operatio.model.production.conveyor.ConveyorRenderer;
 
+import static com.axiom.operatio.model.production.ProductionRenderer.Z_ORDER_EXCLAMATION;
+import static com.axiom.operatio.model.production.ProductionRenderer.Z_ORDER_MACHINES;
+
 /**
  * Рендер машины
  */
@@ -36,12 +39,12 @@ public class MachineRenderer extends BlockRenderer {
         }
 
         sprite = allMachines.getAsSprite(ID * 8, ID * 8 + 7);
-        sprite.setZOrder(7);
+        sprite.setZOrder(Z_ORDER_MACHINES);
         idleAnimation = sprite.addAnimation(0, 0, 8, true);
         busyAnimation = sprite.addAnimation(0, 7, 8, true);
         sprite.setActiveAnimation(idleAnimation);
         fault = allMachines.getAsSprite(71);
-        fault.setZOrder(8);
+        fault.setZOrder(Z_ORDER_EXCLAMATION);
 
         conveyorRenderer = new ConveyorRenderer(machine);
     }

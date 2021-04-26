@@ -8,6 +8,7 @@ import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.machine.Machine;
 
+import static com.axiom.operatio.model.production.ProductionRenderer.Z_ORDER_ITEMS;
 import static com.axiom.operatio.model.production.block.Block.DOWN;
 import static com.axiom.operatio.model.production.block.Block.LEFT;
 import static com.axiom.operatio.model.production.block.Block.NONE;
@@ -100,7 +101,7 @@ public class ItemsRenderer {
         float miny = y + coordBuffer.y * height + height * 0.25f;
 
         Sprite materialSprite = item.getMaterial().getImage();
-        materialSprite.setZOrder(sprite.getZOrder() + 1);
+        materialSprite.setZOrder(Z_ORDER_ITEMS);
         materialSprite.draw(camera, minx, miny,width * 0.5f, height * 0.5f);
 
     }

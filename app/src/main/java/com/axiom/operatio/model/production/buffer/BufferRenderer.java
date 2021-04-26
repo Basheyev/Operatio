@@ -8,6 +8,8 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.production.block.BlockRenderer;
 
+import static com.axiom.operatio.model.production.ProductionRenderer.Z_ORDER_JOINTS;
+
 public class BufferRenderer extends BlockRenderer {
 
     protected static Sprite buffersFrames = null;
@@ -22,7 +24,7 @@ public class BufferRenderer extends BlockRenderer {
             buffersFrames = new Sprite(resources, R.drawable.blocks, 8, 16);
         }
         sprite = buffersFrames.getAsSprite(72, 79);
-        sprite.setZOrder(5);
+        sprite.setZOrder(Z_ORDER_JOINTS);
     }
 
     public void draw(Camera camera, float x, float y, float width, float height) {

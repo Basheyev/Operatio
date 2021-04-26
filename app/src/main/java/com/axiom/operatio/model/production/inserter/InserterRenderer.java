@@ -11,6 +11,7 @@ import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.BlockRenderer;
 
+import static com.axiom.operatio.model.production.ProductionRenderer.Z_ORDER_MACHINES;
 import static com.axiom.operatio.model.production.block.Block.DOWN;
 import static com.axiom.operatio.model.production.block.Block.LEFT;
 import static com.axiom.operatio.model.production.block.Block.RIGHT;
@@ -33,10 +34,10 @@ public class InserterRenderer extends BlockRenderer {
             allBlocks = new Sprite(resources, R.drawable.blocks, 8, 16);
         }
         baseSprite = allBlocks.getAsSprite(96);
-        baseSprite.setZOrder(7);
+        baseSprite.setZOrder(Z_ORDER_MACHINES);
         handSprite = allBlocks.getAsSprite(97);
         handSprite.setRotationPoint(-0.45f, 0);
-        handSprite.setZOrder(8);
+        handSprite.setZOrder(Z_ORDER_MACHINES + 1);
     }
 
     @Override
@@ -110,7 +111,7 @@ public class InserterRenderer extends BlockRenderer {
         float ax = (float) (Math.cos(handSprite.getRotation()) * width) + x + halfWidth;
         float ay = (float) (Math.sin(handSprite.getRotation()) * height) + y + halfHeight;
         Sprite itemSprite = item.getMaterial().getImage();
-        itemSprite.setZOrder(9);
+        itemSprite.setZOrder(handSprite.getZOrder() + 1);
         itemSprite.draw(camera, ax - halfWidth * 0.5f, ay - halfHeight * 0.5f, halfWidth, halfHeight);
     }
 

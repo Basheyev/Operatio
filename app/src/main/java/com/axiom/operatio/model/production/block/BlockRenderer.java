@@ -2,10 +2,10 @@ package com.axiom.operatio.model.production.block;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
-import com.axiom.operatio.model.production.Production;
+
+import static com.axiom.operatio.model.production.ProductionRenderer.Z_ORDER_DIRECTIONS;
 
 /**
  * Рендер блока
@@ -30,12 +30,12 @@ public abstract class BlockRenderer {
         float outputRotation = directionToRadians(outDir);
 
         directions.setAlpha(0.625f);
-        directions.setZOrder(zOrder + 5);
+        directions.setZOrder(Z_ORDER_DIRECTIONS);
         directions.setActiveFrame(INPUT_SPRITE_INDEX);
         directions.setRotation(inputRotation);
         directions.draw(camera, x, y, width, height, null);
 
-        directions.setZOrder(zOrder + 5);
+        directions.setZOrder(Z_ORDER_DIRECTIONS);
         directions.setActiveFrame(OUTPUT_SPRITE_INDEX);
         directions.setRotation(outputRotation);
         directions.draw(camera, x, y, width, height, null);

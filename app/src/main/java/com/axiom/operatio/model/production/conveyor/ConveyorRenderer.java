@@ -10,6 +10,9 @@ import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
 
+import static com.axiom.operatio.model.production.ProductionRenderer.Z_ORDER_CONVEYORS;
+import static com.axiom.operatio.model.production.ProductionRenderer.Z_ORDER_EXCLAMATION;
+import static com.axiom.operatio.model.production.ProductionRenderer.Z_ORDER_JOINTS;
 import static com.axiom.operatio.model.production.block.Block.BUSY;
 import static com.axiom.operatio.model.production.block.Block.DOWN;
 import static com.axiom.operatio.model.production.block.Block.FAULT;
@@ -42,15 +45,15 @@ public class ConveyorRenderer extends BlockRenderer {
         }
 
         sprite = allConveyors.getAsSprite(40, 63);
-        sprite.setZOrder(5);
+        sprite.setZOrder(Z_ORDER_CONVEYORS);
 
         leftJointSprite = allConveyors.getAsSprite(48, 63);
-        leftJointSprite.setZOrder(4);
+        leftJointSprite.setZOrder(Z_ORDER_JOINTS);
         rightJointSprite = allConveyors.getAsSprite(48, 63);
-        leftJointSprite.setZOrder(4);
+        leftJointSprite.setZOrder(Z_ORDER_JOINTS);
 
         fault = allConveyors.getAsSprite(71);
-        fault.setZOrder(8);
+        fault.setZOrder(Z_ORDER_EXCLAMATION);
 
         createAnimations();
         adjustAnimation(block.getInputDirection(), block.getOutputDirection());

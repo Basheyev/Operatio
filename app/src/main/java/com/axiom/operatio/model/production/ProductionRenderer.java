@@ -16,6 +16,20 @@ import com.axiom.operatio.model.production.block.BlockRenderer;
  */
 public class ProductionRenderer {
 
+    public static final int Z_ORDER_FLOOR = 0;
+    public static final int Z_ORDER_SHADOWS = 1;
+
+    public static final int Z_ORDER_PARTICLES = 10;
+    public static final int Z_ORDER_JOINTS = 11;
+    public static final int Z_ORDER_CONVEYORS = 12;
+    public static final int Z_ORDER_ITEMS = 13;
+    public static final int Z_ORDER_MACHINES = 14;
+
+    public static final int Z_ORDER_DIRECTIONS = 20;
+    public static final int Z_ORDER_EXCLAMATION = 21;
+    public static final int Z_ORDER_SELECTION = 22;
+
+
     public static int MIN_CELL_SIZE = 48;
     public static final int MAX_CELL_SIZE = 384;
     public static final int INITIAL_CELL_WIDTH = (MAX_CELL_SIZE + MIN_CELL_SIZE) / 2;
@@ -44,17 +58,17 @@ public class ProductionRenderer {
             tiles = new Sprite(texture, 8, 16, true);
         }
         tile = tiles.getAsSprite(68);
-        tile.setZOrder(0);
+        tile.setZOrder(Z_ORDER_FLOOR);
         tileBlocked = tiles.getAsSprite(70);
-        tileBlocked.setZOrder(0);
+        tileBlocked.setZOrder(Z_ORDER_FLOOR);
         outsideTile = tiles.getAsSprite(87);
-        outsideTile.setZOrder(0);
+        outsideTile.setZOrder(Z_ORDER_FLOOR);
         selection = tiles.getAsSprite(67);
-        selection.setZOrder(500);
+        selection.setZOrder(Z_ORDER_SELECTION);
 
         Sprite particleSprite = tiles.getAsSprite(86);
         particles = new Particles(particleSprite,16, 1000, 100);
-        particles.zOrder = 8;
+        particles.zOrder = Z_ORDER_PARTICLES;
 
         this.production = production;
         this.cellWidth = INITIAL_CELL_WIDTH;
