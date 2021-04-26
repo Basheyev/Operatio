@@ -142,7 +142,7 @@
   {
     "ID": 28,
     "name": "Propeller",
-    "price": 2
+    "price": 3
   },
   {
     "ID": 29,
@@ -197,7 +197,7 @@
   {
     "ID": 39,
     "name": "Power Supply Unit",
-    "price": 21
+    "price": 23
   },
   {
     "ID": 40,
@@ -242,32 +242,32 @@
   {
     "ID": 48,
     "name": "Electric Stove",
-    "price": 114
+    "price": 118
   },
   {
     "ID": 49,
     "name": "Refrigerator",
-    "price": 220
+    "price": 223
   },
   {
     "ID": 50,
     "name": "Washing Machine",
-    "price": 237
+    "price": 240
   },
   {
     "ID": 51,
     "name": "Microwave Oven",
-    "price": 170
+    "price": 173
   },
   {
     "ID": 52,
     "name": "Robot Vacuum",
-    "price": 245
+    "price": 250
   },
   {
     "ID": 53,
     "name": "TV Parts",
-    "price": 138
+    "price": 140
   },
   {
     "ID": 54,
@@ -317,6 +317,6 @@
   {
     "ID": 63,
     "name": "Quadcopter",
-    "price": 199
+    "price": 205
   }
 ]
