@@ -471,7 +471,7 @@
         "outputs": 1,
         "inputs": 4,
         "outputIDs": [42],
-        "inputIDs": [8, 18, 12, 13],
+        "inputIDs": [8, 19, 12, 13],
         "outputQuantities": [1],
         "inputQuantities": [2,4,1,2],
         "recipeCost": 2500
