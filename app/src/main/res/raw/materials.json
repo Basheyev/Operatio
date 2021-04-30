@@ -122,7 +122,7 @@
   {
     "ID": 24,
     "name": "Heater",
-    "price": 20
+    "price": 31
   },
   {
     "ID": 25,
@@ -157,12 +157,12 @@
   {
     "ID": 31,
     "name": "Lithium Ion Battery",
-    "price": 15
+    "price": 12
   },
   {
     "ID": 32,
     "name": "Electric Stove Parts",
-    "price": 41
+    "price": 57
   },
   {
     "ID": 33,
@@ -172,7 +172,7 @@
   {
     "ID": 34,
     "name": "Washing Machine Parts",
-    "price": 70
+    "price": 61
   },
   {
     "ID": 35,
@@ -182,7 +182,7 @@
   {
     "ID": 36,
     "name": "Robot Vacuum Parts",
-    "price": 142
+    "price": 127
   },
   {
     "ID": 37,
@@ -212,17 +212,17 @@
   {
     "ID": 42,
     "name": "Washing Machine Body",
-    "price": 77
+    "price": 61
   },
   {
     "ID": 43,
     "name": "Microwave Oven Body",
-    "price": 44
+    "price": 33
   },
   {
     "ID": 44,
     "name": "Robot Vacuum Body",
-    "price": 12
+    "price": 44
   },
   {
     "ID": 45,
@@ -242,7 +242,7 @@
   {
     "ID": 48,
     "name": "Electric Stove",
-    "price": 118
+    "price": 110
   },
   {
     "ID": 49,
@@ -252,17 +252,17 @@
   {
     "ID": 50,
     "name": "Washing Machine",
-    "price": 240
+    "price": 184
   },
   {
     "ID": 51,
     "name": "Microwave Oven",
-    "price": 173
+    "price": 158
   },
   {
     "ID": 52,
     "name": "Robot Vacuum",
-    "price": 250
+    "price": 275
   },
   {
     "ID": 53,
@@ -272,12 +272,12 @@
   {
     "ID": 54,
     "name": "Mobile Parts",
-    "price": 104
+    "price": 100
   },
   {
     "ID": 55,
     "name": "Quadcopter Parts",
-    "price": 133
+    "price": 113
   },
   {
     "ID": 56,
@@ -307,16 +307,16 @@
   {
     "ID": 61,
     "name": "TV",
-    "price": 374
+    "price": 378
   },
   {
     "ID": 62,
     "name": "Mobile",
-    "price": 192
+    "price": 187
   },
   {
     "ID": 63,
     "name": "Quadcopter",
-    "price": 205
+    "price": 195
   }
 ]
