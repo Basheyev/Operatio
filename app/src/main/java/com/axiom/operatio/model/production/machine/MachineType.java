@@ -145,7 +145,9 @@ public class MachineType {
 
 
     public Operation getOperation(int ID) {
-        if (ID < 0 || ID >= operations.length) return null;
+        if (ID < 0 || ID >= operations.length) {
+            return null;
+        }
         return operations[ID];
     }
 

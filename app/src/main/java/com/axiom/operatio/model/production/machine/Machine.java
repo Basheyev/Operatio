@@ -48,6 +48,7 @@ public class Machine extends Block implements JSONSerializable {
             type = MachineType.getMachineType(jsonObject.getInt("machineType"));
             price = type.price;
             operation = type.getOperation(jsonObject.getInt("operation"));
+            if (type==null || operation==null) throw new JSONException("Data corrupt - no such MachineType or Operation");
             matCounter = new int[4];
             cyclesLeft = jsonObject.getInt("cyclesLeft");
             renderer = new MachineRenderer(this);
@@ -70,13 +71,15 @@ public class Machine extends Block implements JSONSerializable {
             return false;
         }
         // Если все материалы собраны уходим
-        if (operationInputVerified(matCounter)) return  false;
+        if (operationInputVerified(matCounter)) return false;
 
         // Если материала Item Уже собрано достаточно уходим
         Material[] inputMaterials = operation.getInputs();
         for (int i=0; i < inputMaterials.length; i++)
         if (inputMaterials[i]==item.getMaterial()) {
-            if (matCounter[i] <= 0) return false;
+            if (matCounter[i] <= 0) {
+                return false;
+            }
         }
 
         return super.push(item);
@@ -146,12 +149,12 @@ public class Machine extends Block implements JSONSerializable {
             // Пытаемся взять материалы по списку входящих материалов
             for (int i = 0; i<operation.getInputs().length; i++) {
                 Material material = operation.getInputs()[i];
-                for (int j=0; j<matCounter[i]; j++) {       // По количеству недостающих
+                for (int j=0; j<matCounter[i]; j++) {            // По количеству недостающих
                     if (inputBlock instanceof Buffer) {
                         Buffer inputBuffer = (Buffer) inputBlock;
                         Item item = inputBuffer.peek(material);  // Пытаемся взять предмет из блока входа
                         if (item == null) {                      // Если ничего нет пробуем взять
-                            setState(IDLE, MSG_READY);   // Устанавливаем состояние IDLE
+                            setState(IDLE, MSG_READY);           // Устанавливаем состояние IDLE
                             continue;
                         }
                         if (!push(item)) continue;           // Если не получилось добавить к себе
