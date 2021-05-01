@@ -1,7 +1,6 @@
 package com.axiom.operatio.scenes.technology;
 
 import android.graphics.Color;
-import android.os.Debug;
 import android.view.MotionEvent;
 
 import com.axiom.atom.R;
@@ -10,18 +9,15 @@ import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.data.events.GameEvent;
 import com.axiom.atom.engine.data.events.GameEventSubscriber;
-import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.gameplay.OperatioEvents;
-import com.axiom.operatio.model.market.Market;
+import com.axiom.operatio.model.inventory.Market;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.DebugInfo;
 import com.axiom.operatio.scenes.common.ScenesPanel;
-import com.axiom.operatio.scenes.production.ProductionSceneUI;
 
 public class TechnologyScene extends GameScene implements GameEventSubscriber {
 

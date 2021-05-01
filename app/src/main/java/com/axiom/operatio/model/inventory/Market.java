@@ -1,4 +1,4 @@
-package com.axiom.operatio.model.market;
+package com.axiom.operatio.model.inventory;
 
 import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.ledger.Ledger;

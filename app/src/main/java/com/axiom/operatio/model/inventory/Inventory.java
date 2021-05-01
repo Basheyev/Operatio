@@ -2,7 +2,6 @@ package com.axiom.operatio.model.inventory;
 
 import com.axiom.atom.engine.data.structures.Channel;
 import com.axiom.operatio.model.common.JSONSerializable;
-import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
@@ -20,7 +19,7 @@ import java.util.Arrays;
 public class Inventory implements JSONSerializable {
 
     public static final int MAX_SKU_CAPACITY = 999;
-    public static final int BATCH_SIZE = 20;
+    public static final int DEFAULT_BATCH_SIZE = 20;
 
     public static final int AUTO_NONE = 0;          //     0000
     public static final int AUTO_BUY = 1;           //     0001
@@ -158,12 +157,12 @@ public class Inventory implements JSONSerializable {
 
         for (int i = 0; i<Material.COUNT; i++) {
             if (isAutoBuy(i)) {
-                if (stockKeepingUnit.get(i).size() <= BATCH_SIZE) {
-                    market.buyOrder(this, i, BATCH_SIZE);
+                if (stockKeepingUnit.get(i).size() <= DEFAULT_BATCH_SIZE) {
+                    market.buyOrder(this, i, DEFAULT_BATCH_SIZE);
                 }
             } else if (isAutoSell(i)) {
-                if (stockKeepingUnit.get(i).size() > BATCH_SIZE) {
-                    market.sellOrder(this, i, BATCH_SIZE);
+                if (stockKeepingUnit.get(i).size() > DEFAULT_BATCH_SIZE) {
+                    market.sellOrder(this, i, DEFAULT_BATCH_SIZE);
                 }
             }
         }

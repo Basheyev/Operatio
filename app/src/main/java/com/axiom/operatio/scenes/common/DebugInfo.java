@@ -8,7 +8,7 @@ public class DebugInfo {
 
     protected static StringBuffer fps = new StringBuffer(128);
 
-    public static boolean showFPSInfo = false;
+    public static boolean showFPSInfo = true;
 
     public static void drawDebugInfo(Camera camera, int color) {
         if (!showFPSInfo) return;

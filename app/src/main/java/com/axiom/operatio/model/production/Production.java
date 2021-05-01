@@ -1,18 +1,15 @@
 package com.axiom.operatio.model.production;
 
-import com.axiom.atom.R;
 import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.gameplay.MissionManager;
 import com.axiom.operatio.model.gameplay.GameMission;
 import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.ledger.Ledger;
-import com.axiom.operatio.model.market.Market;
+import com.axiom.operatio.model.inventory.Market;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.production.block.BlockBuilder;
-import com.axiom.operatio.model.production.machine.Machine;
 
 import org.json.JSONArray;
 import org.json.JSONException;
