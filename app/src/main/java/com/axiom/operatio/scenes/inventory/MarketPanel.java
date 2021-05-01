@@ -144,8 +144,8 @@ public class MarketPanel extends Panel {
             if (currentCommodity!=previousCommodity) {
                 Material currentMaterial = Material.getMaterial(currentCommodity);
                 commodityName = currentMaterial!=null ? currentMaterial.getName() : "";
-                autoBuyCB.setChecked(inventory.isAutoBuy(currentCommodity));
-                autoSellCB.setChecked(inventory.isAutoSell(currentCommodity));
+                autoBuyCB.setChecked(inventory.isPurchaseContract(currentCommodity));
+                autoSellCB.setChecked(inventory.isSalesContract(currentCommodity));
                 if (currentCommodity<8) {
                     autoBuyCB.setVisible(true);
                     autoSellCB.setVisible(false);
@@ -153,6 +153,8 @@ public class MarketPanel extends Panel {
                     autoBuyCB.setVisible(false);
                     autoSellCB.setVisible(true);
                 }
+                quantity = inventory.getContractQuantity(currentCommodity);
+                quantityButton.setText("" + quantity);
                 previousCommodity = currentCommodity;
             }
             maxValue = market.getHistoryMaxValue(currentCommodity);
@@ -209,6 +211,7 @@ public class MarketPanel extends Panel {
     }
 
 
+
     private ClickListener clickListener = new ClickListener() {
         @Override
         public void onClick(Widget w) {
@@ -221,16 +224,17 @@ public class MarketPanel extends Panel {
                     SoundRenderer.playSound(tickSound);
                 }
                 quantityButton.setText("" + quantity);
-
+                inventory.setContractQuantity(currentCommodity, quantity);
             } else if (w.getTag().equals(">")) {
                 quantity++;
-                if (quantity > 100) {
-                    quantity = 100;
+                if (quantity > 2000) {
+                    quantity = 2000;
                     SoundRenderer.playSound(denySound);
                 } else {
                     SoundRenderer.playSound(tickSound);
                 }
                 quantityButton.setText("" + quantity);
+                inventory.setContractQuantity(currentCommodity, quantity);
             } else if (w.getTag().equals(BUY)) {
                 market.buyOrder(inventory, currentCommodity, quantity);
                 materialsPanel.updateData();
@@ -240,13 +244,13 @@ public class MarketPanel extends Panel {
                 materialsPanel.updateData();
                 SoundRenderer.playSound(tickSound);
             } else if (w.getTag().equals(PURCHASE_CONTRACT)) {
-                inventory.setAutoBuy(currentCommodity, autoBuyCB.isChecked());
+                inventory.signPurchaseContract(currentCommodity, autoBuyCB.isChecked());
                 autoSellCB.setChecked(false);
-                inventory.setAutoSell(currentCommodity, autoSellCB.isChecked());
+                inventory.signSalesContract(currentCommodity, autoSellCB.isChecked());
             } else if (w.getTag().equals(SALES_CONTRACT)) {
-                inventory.setAutoSell(currentCommodity, autoSellCB.isChecked());
+                inventory.signSalesContract(currentCommodity, autoSellCB.isChecked());
                 autoBuyCB.setChecked(false);
-                inventory.setAutoBuy(currentCommodity, autoBuyCB.isChecked());
+                inventory.signPurchaseContract(currentCommodity, autoBuyCB.isChecked());
             }
         }
 

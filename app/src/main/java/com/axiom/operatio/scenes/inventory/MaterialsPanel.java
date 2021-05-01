@@ -21,8 +21,8 @@ public class MaterialsPanel extends Panel {
 
     public static final int ITEM_BACKGROUND = 0x80000000;
     public static final int ITEM_SELECTED = 0xFFd5c01f;
-    public static final int ITEM_AUTO_BUY = MarketPanel.BUY_COLOR;
-    public static final int ITEM_AUTO_SELL = MarketPanel.SELL_COLOR;
+    public static final int ITEM_PURCHASE_CONTRACT = MarketPanel.BUY_COLOR;
+    public static final int ITEM_SALES_CONTRACT = MarketPanel.SELL_COLOR;
 
     private InventoryScene inventoryScene;
     private Production production;
@@ -51,10 +51,10 @@ public class MaterialsPanel extends Panel {
             }
             // Подстветка режима - автопокупка и автопродажа
             if (selectedMaterial != material) {
-                if (inventory.isAutoBuy(i)) {
-                    itemWidget[i].setColor(ITEM_AUTO_BUY);
-                } else if (inventory.isAutoSell(i)) {
-                    itemWidget[i].setColor(ITEM_AUTO_SELL);
+                if (inventory.isPurchaseContract(i)) {
+                    itemWidget[i].setColor(ITEM_PURCHASE_CONTRACT);
+                } else if (inventory.isSalesContract(i)) {
+                    itemWidget[i].setColor(ITEM_SALES_CONTRACT);
                 }
             }
         }
@@ -149,10 +149,10 @@ public class MaterialsPanel extends Panel {
         public void unselectPreviousButton(Widget w) {
             Inventory inventory = production.getInventory();
             if (selectedItemWidget != null) {
-                boolean autoBuy = inventory.isAutoBuy(selectedMaterial.getID());
-                boolean autoSell = inventory.isAutoSell(selectedMaterial.getID());
-                if (autoBuy) selectedItemWidget.setColor(ITEM_AUTO_BUY); else
-                if (autoSell) selectedItemWidget.setColor(ITEM_AUTO_SELL); else {
+                boolean autoBuy = inventory.isPurchaseContract(selectedMaterial.getID());
+                boolean autoSell = inventory.isSalesContract(selectedMaterial.getID());
+                if (autoBuy) selectedItemWidget.setColor(ITEM_PURCHASE_CONTRACT); else
+                if (autoSell) selectedItemWidget.setColor(ITEM_SALES_CONTRACT); else {
                     selectedItemWidget.setColor(ITEM_BACKGROUND);
                 }
                 selectedItemWidget = null;
