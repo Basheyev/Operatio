@@ -24,6 +24,12 @@ import com.axiom.operatio.model.production.Production;
  */
 public class MarketPanel extends Panel {
 
+    public static final String MARKET = "Market";
+    public static final String PURCHASE_CONTRACT = "Long-term purchase contract";
+    public static final String SALES_CONTRACT = "Long-term sales contract";
+    public static final String BUY = "BUY";
+    public static final String SELL = "SELL";
+
     public static final int GRAPH_BACKGROUND = 0x80000000;
     public static final int PANEL_COLOR = 0xCC505050;
     public static final int BUY_COLOR = 0xFF9d3e4d;
@@ -78,7 +84,7 @@ public class MarketPanel extends Panel {
         setColor(PANEL_COLOR);
 
 
-        caption = new Caption("Market");
+        caption = new Caption(MARKET);
         caption.setTextScale(1.5f);
         caption.setTextColor(Color.WHITE);
         caption.setLocalBounds(30, 780, 300, 100);
@@ -90,8 +96,8 @@ public class MarketPanel extends Panel {
         materialCaption.setLocalBounds(50, 480, 300, 100);
         addChild(materialCaption);
 
-        buyButton = buildButton("BUY", 25, 365, 150, 80, BUY_COLOR, 1.5f,true);
-        sellButton = buildButton("SELL", 800, 365, 180, 80, SELL_COLOR, 1.5f, true);
+        buyButton = buildButton(BUY, 25, 365, 150, 80, BUY_COLOR, 1.5f,true);
+        sellButton = buildButton(SELL, 800, 365, 180, 80, SELL_COLOR, 1.5f, true);
 
         leftButton = buildButton("<", 200, 365, 75, 80, Color.GRAY, 1.5f,true);
         quantityButton = buildButton("" + quantity, 275, 365, 150, 80, Color.BLACK, 1.5f, false);
@@ -100,8 +106,8 @@ public class MarketPanel extends Panel {
         sumText = FormatUtils.formatMoney(production.getLedger().getCashBalance(), sumText);
         dealSum = buildButton(sumText, 525, 365, 250, 80, Color.BLACK, 1.5f,false);
 
-        autoBuyCB = buildCheckBox("Auto-buy", 550, 805, 200, 100);
-        autoSellCB = buildCheckBox("Auto-sell", 800, 805, 200, 100);
+        autoBuyCB = buildCheckBox(PURCHASE_CONTRACT, 160, 805, 250, 100);
+        autoSellCB = buildCheckBox(SALES_CONTRACT, 160, 805, 250, 100);
     }
 
 
@@ -136,9 +142,17 @@ public class MarketPanel extends Panel {
             if (materialsPanel!=null) material = materialsPanel.getSelectedMaterial();
             if (material!=null) currentCommodity = material.getID(); else currentCommodity = 0;
             if (currentCommodity!=previousCommodity) {
-                commodityName = Material.getMaterial(currentCommodity).getName();
+                Material currentMaterial = Material.getMaterial(currentCommodity);
+                commodityName = currentMaterial!=null ? currentMaterial.getName() : "";
                 autoBuyCB.setChecked(inventory.isAutoBuy(currentCommodity));
                 autoSellCB.setChecked(inventory.isAutoSell(currentCommodity));
+                if (currentCommodity<8) {
+                    autoBuyCB.setVisible(true);
+                    autoSellCB.setVisible(false);
+                } else {
+                    autoBuyCB.setVisible(false);
+                    autoSellCB.setVisible(true);
+                }
                 previousCommodity = currentCommodity;
             }
             maxValue = market.getHistoryMaxValue(currentCommodity);
@@ -217,19 +231,19 @@ public class MarketPanel extends Panel {
                     SoundRenderer.playSound(tickSound);
                 }
                 quantityButton.setText("" + quantity);
-            } else if (w.getTag().equals("BUY")) {
+            } else if (w.getTag().equals(BUY)) {
                 market.buyOrder(inventory, currentCommodity, quantity);
                 materialsPanel.updateData();
                 SoundRenderer.playSound(tickSound);
-            } else if (w.getTag().equals("SELL")) {
+            } else if (w.getTag().equals(SELL)) {
                 market.sellOrder(inventory, currentCommodity, quantity);
                 materialsPanel.updateData();
                 SoundRenderer.playSound(tickSound);
-            } else if (w.getTag().equals("Auto-buy")) {
+            } else if (w.getTag().equals(PURCHASE_CONTRACT)) {
                 inventory.setAutoBuy(currentCommodity, autoBuyCB.isChecked());
                 autoSellCB.setChecked(false);
                 inventory.setAutoSell(currentCommodity, autoSellCB.isChecked());
-            } else if (w.getTag().equals("Auto-sell")) {
+            } else if (w.getTag().equals(SALES_CONTRACT)) {
                 inventory.setAutoSell(currentCommodity, autoSellCB.isChecked());
                 autoBuyCB.setChecked(false);
                 inventory.setAutoBuy(currentCommodity, autoBuyCB.isChecked());

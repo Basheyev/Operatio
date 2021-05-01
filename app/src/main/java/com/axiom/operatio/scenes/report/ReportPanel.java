@@ -87,12 +87,15 @@ public class ReportPanel extends Panel {
         addChild(chart);
 
         panelCaption = buildCaption("Game progress", 25, getHeight() - 100, 250, 100, 1.5f, WHITE);
-        purchaseCaption = buildCaption("Purchase", 25, 330,300, 100, 1.3f, 0xFFFF7F7F);
-        boughtMaterials = buildItemsGrid(25, 270, 545, 32);
-        manufacturedCaption = buildCaption("Manufactured",650, 330,400, 100, 1.3f, WHITE);
-        manufacturedMaterials = buildItemsGrid(650, 270, 500, 32);
-        salesCaption = buildCaption("Sales", 1270, 330, 300, 100, 1.3f, GREEN);
-        soldMaterials = buildItemsGrid(1270, 270, 500, 32);
+
+        purchaseCaption = buildCaption("Purchase", 25, 10,300, 100, 1.3f, 0xFFFF7F7F);
+        boughtMaterials = buildItemsGrid(25, 320, 280, 16);
+
+        manufacturedCaption = buildCaption("Manufactured",345, 10,400, 100, 1.3f, WHITE);
+        manufacturedMaterials = buildItemsGrid(345, 320, 840, 48);
+
+        salesCaption = buildCaption("Sales", 1230, 10, 300, 100, 1.3f, GREEN);
+        soldMaterials = buildItemsGrid(1230, 320, 650, 36);
 
         reportCaption = buildCaption("Summary", 1475, 520, 380, 330, 1.3f, WHITE);
         reportCaption.setVerticalAlignment(Text.ALIGN_TOP);
@@ -120,7 +123,7 @@ public class ReportPanel extends Panel {
             itemGrid[i] = buildItemWidget(bx, by);
             addChild(itemGrid[i]);
             bx += cellWidth;
-            if (bx > (posX + width)) {
+            if (bx + cellWidth > (posX + width)) {
                 bx = posX;
                 by -= cellWidth;
             }
@@ -167,8 +170,8 @@ public class ReportPanel extends Panel {
         double manufactureCost = ledger.getLastPeriod().getMaintenanceCost();
         double purchaseSum = ledger.getLastPeriod().getExpenses() - manufactureCost;
         updateStringBuffer(salesText, "Sold today: ", salesSum);
-        updateStringBuffer(manufacturedText, "Manufacturing costs: ", manufactureCost);
-        updateStringBuffer(purchaseText, "Purchased today: ", purchaseSum);
+        updateStringBuffer(manufacturedText, "Manufacturing costs today: ", manufactureCost);
+        updateStringBuffer(purchaseText, "Purchased: ", purchaseSum);
 
         synchronized (this) {
             // Обновить график
@@ -190,11 +193,14 @@ public class ReportPanel extends Panel {
      * @param ledger главная книга производства
      */
     private void updateItemGridsData(Ledger ledger) {
+
+        // fixme какое количество пробегать?
         for (int i = 0; i < manufacturedMaterials.length; i++) {
-            boughtMaterials[i].setActive(false);
-            manufacturedMaterials[i].setActive(false);
-            soldMaterials[i].setActive(false);
+            if (i < boughtMaterials.length) boughtMaterials[i].setActive(false);
+            if (i < manufacturedMaterials.length) manufacturedMaterials[i].setActive(false);
+            if (i < soldMaterials.length) soldMaterials[i].setActive(false);
         }
+
         int manufacturedCounter = 0;
         int soldCounter = 0;
         int boughtCounter = 0;
@@ -275,7 +281,7 @@ public class ReportPanel extends Panel {
         double valuation = Math.round(ledger.getValuation());
         int valuationProgress = (int) Math.round(valuation / TARGET_VALUATION * 100.0f);
         float availableMaterials = production.getPermissions().availableMaterialsAmount();
-        int technologyProgress = Math.round((availableMaterials-8) / Material.getMaterialsAmount() * 100f);
+        int technologyProgress = Math.round(availableMaterials / Material.getMaterialsAmount() * 100f);
         double averageMargin = ledger.getHistoryAverageMargin();
         double averageRevenue = ledger.getHistoryAverageRevenue();
         double averageMarginPercent = averageRevenue > 0 ? Math.round(averageMargin / averageRevenue * 100d) : 0;
@@ -288,7 +294,9 @@ public class ReportPanel extends Panel {
 
         if (operRevenue > 0) operMargin = Math.round(ledger.getLastPeriod().getMargin() / operRevenue * 100);
         summary.delete(0, summary.length());
-        summary.append("Daily operations:\n");
+        summary.append("Valuation: ");
+        FormatUtils.formatMoneyAppend(valuation, summary);
+        summary.append("\n\nDaily operations:\n");
         summary.append("- income: ");
         FormatUtils.formatMoneyAppend(Math.round(ledger.getLastPeriod().getRevenue()), summary);
         summary.append("\n- expenses: ");
@@ -308,8 +316,6 @@ public class ReportPanel extends Panel {
         double totalInventory = production.getWorkInProgressValuation() + production.getInventory().getValuation();
         summary.append("\nTotal inventory: ");
         FormatUtils.formatMoneyAppend(Math.round(totalInventory), summary);
-        summary.append("\n\nValuation: ");
-        FormatUtils.formatMoneyAppend(valuation, summary);
     }
 
 
