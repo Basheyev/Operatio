@@ -61,7 +61,9 @@ public class Inventory implements JSONSerializable {
         int materialsAmount = Material.getMaterialsAmount();
         stockKeepingUnit = new ArrayList<>();
         for (int i=0; i<materialsAmount; i++) {
-            stockKeepingUnit.add(new StockKeepingUnit(i));
+            StockKeepingUnit sku = new StockKeepingUnit(i);
+            sku.setContractQuantity(DEFAULT_QUANTITY);
+            stockKeepingUnit.add(sku);
         }
     }
 
