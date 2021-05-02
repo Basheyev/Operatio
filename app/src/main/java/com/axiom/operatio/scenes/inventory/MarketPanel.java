@@ -163,17 +163,19 @@ public class MarketPanel extends Panel {
                 commodityName = currentMaterial!=null ? currentMaterial.getName() : "";
                 autoBuyCB.setChecked(inventory.hasPurchaseContract(currentCommodity));
                 autoSellCB.setChecked(inventory.hasSalesContract(currentCommodity));
-                if (currentCommodity < 8) {
-                    autoBuyCB.setVisible(true);
-                    autoSellCB.setVisible(false);
-                } else {
-                    autoBuyCB.setVisible(false);
-                    autoSellCB.setVisible(true);
-                }
                 quantity = inventory.getContractQuantity(currentCommodity);
                 quantityButton.setText("" + quantity);
                 previousCommodity = currentCommodity;
             }
+
+            if (currentCommodity < 8) {
+                autoBuyCB.setVisible(true);
+                autoSellCB.setVisible(false);
+            } else {
+                autoBuyCB.setVisible(false);
+                autoSellCB.setVisible(true);
+            }
+
             maxValue = market.getHistoryMaxValue(currentCommodity);
             counter = market.getHistoryLength(currentCommodity);
             market.getHistoryValues(currentCommodity, values);
