@@ -31,9 +31,9 @@ public class MaterialsPanel extends Panel {
     private ItemWidget selectedItemWidget;
 
 
-    public MaterialsPanel(Production production, InventoryScene scene) {
+    public MaterialsPanel(InventoryScene scene) {
         super();
-        this.production = production;
+        this.production = scene.getProduction();
         inventoryScene = scene;
         buildUI();
     }
@@ -141,7 +141,8 @@ public class MaterialsPanel extends Panel {
                 materialsPanel.selectedMaterial = null;
                 selectedItemWidget = null;
             }
-            materialsPanel.inventoryScene.getMarketPanel().updateValues();
+            inventoryScene.getMarketPanel().updateValues();
+            inventoryScene.getStockKeepingUnitPanel().updateData();
             updateData();
         }
 

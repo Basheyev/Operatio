@@ -2,7 +2,6 @@ package com.axiom.operatio.model.inventory;
 
 import com.axiom.atom.engine.data.structures.Channel;
 import com.axiom.operatio.model.materials.Item;
-import com.axiom.operatio.model.materials.Material;
 
 /**
  * Складская карточка
@@ -12,17 +11,19 @@ public class StockKeepingUnit {
     public static final int MAX_SKU_CAPACITY = 999;
     public static final int DEFAULT_QUANTITY = 20;
 
-    public static final int AUTO_NONE = 0;          //     0000
-    public static final int AUTO_BUY = 1;           //     0001
-    public static final int AUTO_SELL = 2;          //     0010
-    public static final int AMOUNT_BIT_SHIFT = 16;  //     Смещение битов где хранится объем
+    public static final int AUTO_NONE = 0;          //  0000
+    public static final int AUTO_BUY = 1;           //  0001
+    public static final int AUTO_SELL = 2;          //  0010
+    public static final int AMOUNT_BIT_SHIFT = 16;  //  Смещение битов где хранится объем контракта
 
     private int materialID;                   // Код материала
     private Channel<Item> items;              // Хранимые предметы
     private int contractParameters;           // Тип контракта и его параметры
 
-    private int warehouseBalance = 0;         // Остаток на складе
-    private int dailyOutOfStocks = 0;         // Дефицит материалов за день
+    private int dailyBalance = 0;             // Ежедневный баланс материала
+    private int dailyOutOfStock = 0;          // Ежедневный дефицит материала
+    private int balanceCounter = 0;           // Счетчик баланса материала
+    private int outOfStockCounter = 0;        // Счетчик дефицита материала
 
     public StockKeepingUnit(int materialID) {
         this.materialID = materialID;
@@ -78,19 +79,40 @@ public class StockKeepingUnit {
 
 
     public boolean push(Item item) {
+        balanceCounter++;
         return items.push(item);
     }
 
     public Item peek() {
-        return items.peek();
+        Item item = items.peek();
+        if (item==null) outOfStockCounter++;
+        return item;
     }
 
     public Item poll() {
+        balanceCounter--;
         return items.poll();
     }
 
     public int getBalance() {
         return items.size();
     }
+
+
+    public int getDailyBalance() {
+        return dailyBalance;
+    }
+
+    public int getDailyOutOfStock() {
+        return dailyOutOfStock;
+    }
+
+    public void closeDailyStatistics() {
+        dailyBalance = balanceCounter;
+        dailyOutOfStock = outOfStockCounter;
+        balanceCounter = 0;
+        outOfStockCounter = 0;
+    }
+
 
 }

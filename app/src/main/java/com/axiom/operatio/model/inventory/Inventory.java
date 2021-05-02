@@ -47,15 +47,13 @@ public class Inventory implements JSONSerializable {
                 for (int i = autoState.length() - 1; i >= 0; i--) {
                     StockKeepingUnit sku = stockKeepingUnit.get(i);
                     sku.setContractParameters(autoState.getInt(i));
-                    if (sku.getContractQuantity()==0) {
-                        sku.setContractQuantity(DEFAULT_QUANTITY);
-                    }
+                    if (sku.getContractQuantity()==0) sku.setContractQuantity(DEFAULT_QUANTITY);
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        previousDay = production.getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES;
+        previousDay = production.getCurrentDay();
     }
 
 
@@ -76,8 +74,7 @@ public class Inventory implements JSONSerializable {
     public boolean push(Item item) {
         if (item==null) return false;
         int ID = item.getMaterial().getID();
-        boolean stored = stockKeepingUnit.get(ID).push(item);
-        return stored;
+        return stockKeepingUnit.get(ID).push(item);
     }
 
     /**
@@ -99,8 +96,7 @@ public class Inventory implements JSONSerializable {
     public Item poll(Material material) {
         if (material==null) return null;
         int ID = material.getID();
-        Item item = stockKeepingUnit.get(ID).poll();
-        return item;
+        return stockKeepingUnit.get(ID).poll();
     }
 
 
@@ -148,6 +144,15 @@ public class Inventory implements JSONSerializable {
         return sku.hasSalesContract();
     }
 
+    public int getDailyBalance(int materialID) {
+        StockKeepingUnit sku = stockKeepingUnit.get(materialID);
+        return sku.getDailyBalance();
+    }
+
+    public int getDailyOutOfStock(int materialID) {
+        StockKeepingUnit sku = stockKeepingUnit.get(materialID);
+        return sku.getDailyOutOfStock();
+    }
 
     public void process() {
         Market market = production.getMarket();
@@ -165,6 +170,8 @@ public class Inventory implements JSONSerializable {
                 market.sellOrder(this, i, contractQuantity);
                 // todo если не хватает, то неисполнение контракта
             }
+
+            sku.closeDailyStatistics();
         }
 
         previousDay = currentDay;

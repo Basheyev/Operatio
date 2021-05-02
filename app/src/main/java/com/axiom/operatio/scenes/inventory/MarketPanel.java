@@ -35,6 +35,7 @@ public class MarketPanel extends Panel {
     public static final int BUY_COLOR = 0xFF9d3e4d;
     public static final int SELL_COLOR = 0xFF80B380;
 
+    private InventoryScene scene;
     private Production production;
     private Inventory inventory;
 
@@ -58,12 +59,13 @@ public class MarketPanel extends Panel {
     private final int tickSound, denySound;
 
 
-    public MarketPanel(MaterialsPanel materialsPanel, Market market, Production production, Inventory inventory) {
+    public MarketPanel(InventoryScene scene) {
         super();
-        this.market = market;
-        this.production = production;
-        this.inventory = inventory;
-        this.materialsPanel = materialsPanel;
+        this.scene = scene;
+        this.market = scene.getMarket();
+        this.production = scene.getProduction();
+        this.inventory = scene.getInventory();
+        this.materialsPanel = scene.getMaterialsPanel();
 
         values = new double[Market.HISTORY_LENGTH];
         counter = 0;

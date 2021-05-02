@@ -14,7 +14,9 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.gameplay.OperatioEvents;
+import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.inventory.Market;
+import com.axiom.operatio.model.inventory.StockKeepingUnit;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.DebugInfo;
 import com.axiom.operatio.scenes.common.ScenesPanel;
@@ -32,6 +34,7 @@ public class InventoryScene extends GameScene implements GameEventSubscriber {
     private ScenesPanel scenesPanel;
     private MaterialsPanel materialsPanel;
     private MarketPanel marketPanel;
+    private StockKeepingUnitPanel stockKeepingUnitPanel;
     private static Sprite background;
     private static int tickSound;
     private long lastTime;
@@ -78,6 +81,7 @@ public class InventoryScene extends GameScene implements GameEventSubscriber {
         if (now - lastTime > UPDATE_TIME) {
             materialsPanel.updateData();
             marketPanel.updateValues();
+            stockKeepingUnitPanel.updateData();
             lastTime = now;
         }
 
@@ -121,14 +125,16 @@ public class InventoryScene extends GameScene implements GameEventSubscriber {
 
         Widget widget = getSceneWidget();
 
-        materialsPanel = new MaterialsPanel(production,this);
+        materialsPanel = new MaterialsPanel(this);
         widget.addChild(materialsPanel);
 
 
-        marketPanel = new MarketPanel(
-                materialsPanel, production.getMarket(),
-                production, production.getInventory());
+        marketPanel = new MarketPanel(this);
         widget.addChild(marketPanel);
+
+
+        stockKeepingUnitPanel = new StockKeepingUnitPanel(this);
+        widget.addChild(stockKeepingUnitPanel);
 
         scenesPanel = new ScenesPanel(production);
         widget.addChild(scenesPanel);
@@ -144,5 +150,20 @@ public class InventoryScene extends GameScene implements GameEventSubscriber {
 
     public MarketPanel getMarketPanel() {
         return marketPanel;
+    }
+
+    public StockKeepingUnitPanel getStockKeepingUnitPanel() { return stockKeepingUnitPanel; }
+
+
+    public Market getMarket() {
+        return production.getMarket();
+    }
+
+    public Inventory getInventory() {
+        return production.getInventory();
+    }
+
+    public Production getProduction() {
+        return production;
     }
 }
