@@ -57,6 +57,10 @@ public class MaterialsPanel extends Panel {
                     itemWidget[i].setColor(ITEM_SALES_CONTRACT);
                 }
             }
+            int dailyNonPerformance = inventory.getDailyNonPerformance(i);
+            int dailyOutOfStock = inventory.getDailyOutOfStock(i);
+            boolean exclamation = (dailyNonPerformance != 0) || (dailyOutOfStock != 0);
+            itemWidget[i].setExclamation(exclamation);
         }
     }
 
