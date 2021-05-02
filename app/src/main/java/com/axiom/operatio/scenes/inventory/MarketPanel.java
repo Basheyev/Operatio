@@ -25,8 +25,8 @@ import com.axiom.operatio.model.production.Production;
 public class MarketPanel extends Panel {
 
     public static final String MARKET = "Market";
-    public static final String PURCHASE_CONTRACT = "Long-term purchase contract";
-    public static final String SALES_CONTRACT = "Long-term sales contract";
+    public static final String PURCHASE_CONTRACT = "Purchase contract (daily acceptance)";
+    public static final String SALES_CONTRACT = "Sales contract (daily shipment)";
     public static final String BUY = "BUY";
     public static final String SELL = "SELL";
 
@@ -44,6 +44,7 @@ public class MarketPanel extends Panel {
     private final double[] values;
     private double maxValue;
     private int counter = 0;
+    private float graphBottomY;
     private String commodityName = "";
     private int currentCommodity = 0;
     private int previousCommodity = -1;
@@ -80,34 +81,36 @@ public class MarketPanel extends Panel {
 
 
     private void buildUI() {
-        setLocalBounds(874, 50, 1022, 880);
+        setLocalBounds(874, 370, 1022, 560);
         setColor(PANEL_COLOR);
 
 
         caption = new Caption(MARKET);
         caption.setTextScale(1.5f);
         caption.setTextColor(Color.WHITE);
-        caption.setLocalBounds(30, 780, 300, 100);
+        caption.setLocalBounds(30, 460, 300, 100);
         addChild(caption);
 
         materialCaption = new Caption("Material price");
         materialCaption.setTextScale(1.3f);
         materialCaption.setTextColor(Color.WHITE);
-        materialCaption.setLocalBounds(50, 480, 300, 100);
+        materialCaption.setLocalBounds(50, 160, 300, 100);
         addChild(materialCaption);
 
-        buyButton = buildButton(BUY, 25, 365, 150, 80, BUY_COLOR, 1.5f,true);
-        sellButton = buildButton(SELL, 800, 365, 180, 80, SELL_COLOR, 1.5f, true);
+        buyButton = buildButton(BUY, 25, 45, 150, 80, BUY_COLOR, 1.5f,true);
+        sellButton = buildButton(SELL, 800, 45, 180, 80, SELL_COLOR, 1.5f, true);
 
-        leftButton = buildButton("<", 200, 365, 75, 80, Color.GRAY, 1.5f,true);
-        quantityButton = buildButton("" + quantity, 275, 365, 150, 80, Color.BLACK, 1.5f, false);
-        rightButton = buildButton(">",425, 365, 75, 80,  Color.GRAY, 1.5f,true);
+        leftButton = buildButton("<", 200, 45, 75, 80, Color.GRAY, 1.5f,true);
+        quantityButton = buildButton("" + quantity, 275, 45, 150, 80, Color.BLACK, 1.5f, false);
+        rightButton = buildButton(">",425, 45, 75, 80,  Color.GRAY, 1.5f,true);
 
         sumText = FormatUtils.formatMoney(production.getLedger().getCashBalance(), sumText);
-        dealSum = buildButton(sumText, 525, 365, 250, 80, Color.BLACK, 1.5f,false);
+        dealSum = buildButton(sumText, 525, 45, 250, 80, Color.BLACK, 1.5f,false);
 
-        autoBuyCB = buildCheckBox(PURCHASE_CONTRACT, 160, 805, 250, 100);
-        autoSellCB = buildCheckBox(SALES_CONTRACT, 160, 805, 250, 100);
+        autoBuyCB = buildCheckBox(PURCHASE_CONTRACT, 160, 485, 250, 100);
+        autoSellCB = buildCheckBox(SALES_CONTRACT, 160, 485, 250, 100);
+
+        graphBottomY = 160;
     }
 
 
@@ -167,6 +170,8 @@ public class MarketPanel extends Panel {
             FormatUtils.formatMoneyAppend(market.getValue(currentCommodity), materialText);
             materialCaption.setText(materialText);
 
+
+
         }
     }
 
@@ -182,9 +187,8 @@ public class MarketPanel extends Panel {
         synchronized (values) {
             float graphWidth = 960;
             float graphHeight = 300;
-            float floor = 480;
             float x = wBounds.minX + 25;
-            float y = wBounds.minY + floor;
+            float y = wBounds.minY + graphBottomY;
             float oldX = x;
             float oldY;
             GraphicsRender.setColor(GRAPH_BACKGROUND);
@@ -199,7 +203,7 @@ public class MarketPanel extends Panel {
             oldY = y;
             for (int i = 0; i < counter; i++) {
                 x = wBounds.minX + i * 10 + 25;
-                y = wBounds.minY + floor + (int) (values[i] / maxValue * graphHeight * 0.8f);
+                y = wBounds.minY + graphBottomY + (int) (values[i] / maxValue * graphHeight * 0.8f);
                 if (oldY > y) GraphicsRender.setColor(Color.RED);
                 else GraphicsRender.setColor(Color.GREEN);
                 GraphicsRender.drawLine(oldX, oldY, x, y);
