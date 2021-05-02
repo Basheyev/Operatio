@@ -27,7 +27,7 @@ public class GameEventQueue {
     }
 
     public boolean push(GameEvent event) {
-        return events.add(event);
+        return events.push(event);
     }
 
     public void addSubscriber(GameEventSubscriber subscriber) {

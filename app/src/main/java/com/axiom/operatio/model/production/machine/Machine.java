@@ -221,7 +221,7 @@ public class Machine extends Block implements JSONSerializable {
             for (int j=0; j<operation.getOutputAmount()[i]; j++) {
                 item = new Item(material);
                 item.setOwner(production,this);
-                output.add(item);
+                output.push(item);
             }
         }
     }

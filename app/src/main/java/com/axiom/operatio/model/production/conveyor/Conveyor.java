@@ -108,7 +108,7 @@ public class Conveyor extends Block implements JSONSerializable {
             long cyclesPassed = production.getCurrentCycle() - item.getCycleOwned();
             if (cyclesPassed >= deliveryCycles && output.size()==0) {
                 item = input.poll();         // Удалаем из входящей очереди
-                output.add(item);            // Добавляем в выходящую очередь
+                output.push(item);            // Добавляем в выходящую очередь
                 setState(IDLE, MSG_READY);   // Состояние - IDLE (можем брать еще)
             }
         }

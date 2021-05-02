@@ -1,7 +1,6 @@
 package com.axiom.atom.engine.input;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -35,7 +34,7 @@ public class TouchListener implements View.OnTouchListener {
         // Так как event используется как единственный экземпляр
         if (!scaling) {
             GameLoop gameLoop = GameLoop.getInstance();
-            if (gameLoop != null) gameLoop.getInputEventQueue().add(MotionEvent.obtain(event));
+            if (gameLoop != null) gameLoop.getInputEventQueue().push(MotionEvent.obtain(event));
         }
         return true;
     }
@@ -47,7 +46,7 @@ public class TouchListener implements View.OnTouchListener {
         public boolean onScale(ScaleGestureDetector detector) {
             GameLoop gameLoop = GameLoop.getInstance();
             if (gameLoop==null) return false;
-            gameLoop.getInputEventQueue().add(new ScaleEvent(detector, true));
+            gameLoop.getInputEventQueue().push(new ScaleEvent(detector, true));
             return true;
         }
 
@@ -55,7 +54,7 @@ public class TouchListener implements View.OnTouchListener {
         public boolean onScaleBegin(ScaleGestureDetector detector) {
             GameLoop gameLoop = GameLoop.getInstance();
             if (gameLoop==null) return false;
-            gameLoop.getInputEventQueue().add(new ScaleEvent(detector, true));
+            gameLoop.getInputEventQueue().push(new ScaleEvent(detector, true));
             scaling = true;
             return true;
         }
@@ -64,7 +63,7 @@ public class TouchListener implements View.OnTouchListener {
         public void onScaleEnd(ScaleGestureDetector detector) {
             GameLoop gameLoop = GameLoop.getInstance();
             if (gameLoop==null) return;
-            gameLoop.getInputEventQueue().add(new ScaleEvent(detector, false));
+            gameLoop.getInputEventQueue().push(new ScaleEvent(detector, false));
             scaling = false;
         }
     }

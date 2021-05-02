@@ -25,7 +25,7 @@ public class Channel<T> implements Serializable {
         queue = new Object[capacity];
     }
 
-    public synchronized boolean add(T element) {
+    public synchronized boolean push(T element) {
         if (rear==capacity || element==null) return false;
         queue[rear] = element;
         rear++;

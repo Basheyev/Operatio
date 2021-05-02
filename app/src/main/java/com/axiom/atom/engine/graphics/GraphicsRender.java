@@ -106,7 +106,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
      * @param obj программа, шейдер или текстура
      */
     public static void addToLoadQueue(GLESObject obj) {
-        if (loadQueue!=null) GraphicsRender.loadQueue.add(obj);
+        if (loadQueue!=null) GraphicsRender.loadQueue.push(obj);
     }
 
     /**
@@ -120,7 +120,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
                 long startTime = System.currentTimeMillis();
                 // Загружаем объект в видео память
                 glObject.loadToGPU();
-                loadedObjects.add(glObject);
+                loadedObjects.push(glObject);
                 // Если загрузка объекта продилась больше LOAD_TIME_PER_FRAME
                 // остальное загрузим на следующем кадре
                 long elapsedTime = System.currentTimeMillis() - startTime;

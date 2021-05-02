@@ -1,6 +1,5 @@
 package com.axiom.operatio.model.inventory;
 
-import com.axiom.atom.engine.data.structures.Channel;
 import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.materials.Item;
@@ -12,71 +11,60 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+
+import static com.axiom.operatio.model.inventory.StockKeepingUnit.DEFAULT_QUANTITY;
 
 /**
  * Модель склада материалов
  */
 public class Inventory implements JSONSerializable {
 
-    public static final int MAX_SKU_CAPACITY = 999;
-    public static final int DEFAULT_QUANTITY = 20;
-
-    public static final int AMOUNT_BIT_SHIFT = 16;
-
-    public static final int AUTO_NONE = 0;          //     0000
-    public static final int AUTO_BUY = 1;           //     0001
-    public static final int AUTO_SELL = 2;          //     0010
-
     protected Production production;
-    protected ArrayList<Channel<Item>> stockKeepingUnit;
-    private int[] contractParameters;
+    protected ArrayList<StockKeepingUnit> stockKeepingUnit;
     private long previousDay;
 
     public Inventory(Production production) {
         this.production = production;
-        int materialsAmount = Material.getMaterialsAmount();
-        stockKeepingUnit = new ArrayList<>(Material.COUNT);
-        for (int i=0; i<materialsAmount; i++) {
-            Channel<Item> sku = new Channel<Item>(MAX_SKU_CAPACITY);
-            stockKeepingUnit.add(sku);
-        }
-        contractParameters = new int[Material.COUNT];
-        Arrays.fill(contractParameters, AUTO_NONE);
-        previousDay = production.getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES;
+        createStockKeepingUnits();
+        previousDay = production.getCurrentDay();
     }
 
     public Inventory(Production production, JSONObject jsonObject) {
         try {
             this.production = production;
-            int materialsAmount = Material.getMaterialsAmount();
-            stockKeepingUnit = new ArrayList<>();
-            for (int i=0; i<materialsAmount; i++) {
-                Channel<Item> sku = new Channel<Item>(MAX_SKU_CAPACITY);
-                stockKeepingUnit.add(sku);
-            }
+            createStockKeepingUnits();
             JSONArray jsonArray = jsonObject.getJSONArray("stockKeepingUnit");
             Material[] materials = Material.getMaterials();
             for (int i = jsonArray.length() - 1; i >= 0; i--) {
-                Channel<Item> sku = stockKeepingUnit.get(i);
+                StockKeepingUnit sku = stockKeepingUnit.get(i);
                 int skuBalance = jsonArray.getInt(i);
                 for (int j=0; j<skuBalance; j++) {
-                    sku.add(new Item(materials[i]));
+                    sku.push(new Item(materials[i]));
                 }
             }
             JSONArray autoState = jsonObject.optJSONArray("autoAction");
-            contractParameters = new int[Material.COUNT];
-            Arrays.fill(contractParameters, AUTO_NONE);
             if (autoState!=null) {
                 for (int i = autoState.length() - 1; i >= 0; i--) {
-                    contractParameters[i] = autoState.getInt(i);
-                    if (getContractQuantity(i)==0) setContractQuantity(i, DEFAULT_QUANTITY);
+                    StockKeepingUnit sku = stockKeepingUnit.get(i);
+                    sku.setContractParameters(autoState.getInt(i));
+                    if (sku.getContractQuantity()==0) {
+                        sku.setContractQuantity(DEFAULT_QUANTITY);
+                    }
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         previousDay = production.getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES;
+    }
+
+
+    private void createStockKeepingUnits() {
+        int materialsAmount = Material.getMaterialsAmount();
+        stockKeepingUnit = new ArrayList<>();
+        for (int i=0; i<materialsAmount; i++) {
+            stockKeepingUnit.add(new StockKeepingUnit(i));
+        }
     }
 
 
@@ -88,7 +76,7 @@ public class Inventory implements JSONSerializable {
     public boolean push(Item item) {
         if (item==null) return false;
         int ID = item.getMaterial().getID();
-        boolean stored = stockKeepingUnit.get(ID).add(item);
+        boolean stored = stockKeepingUnit.get(ID).push(item);
         return stored;
     }
 
@@ -124,43 +112,40 @@ public class Inventory implements JSONSerializable {
     public int getBalance(Material material) {
         if (material==null) return 0;
         int ID = material.getID();
-        return stockKeepingUnit.get(ID).size();
+        return stockKeepingUnit.get(ID).getBalance();
     }
 
-    public void signPurchaseContract(int materialID, boolean signed) {
-        if (signed) {
-            contractParameters[materialID] |= AUTO_BUY;
-        } else {
-            contractParameters[materialID] &= ~AUTO_BUY;
-        }
-    }
-
-    public boolean isPurchaseContract(int materialID) {
-        return (contractParameters[materialID] & AUTO_BUY) > 0;
-    }
-
-    public void signSalesContract(int materialID, boolean signed) {
-        if (signed) {
-            contractParameters[materialID] |= AUTO_SELL;
-        } else {
-            contractParameters[materialID] &= ~AUTO_SELL;
-        }
-    }
-
-    public boolean isSalesContract(int sku) {
-        return (contractParameters[sku] & AUTO_SELL) > 0;
-    }
 
     public int setContractQuantity(int materialID, int quantity) {
-        int current = contractParameters[materialID] & 0x0F;     // Очистим параметры от количества
-        int amount = (quantity & 0xFFFF) << AMOUNT_BIT_SHIFT;    // Запишем количество в верхние биты
-        contractParameters[materialID] = amount | current;       // Записываем итоговое значение
-        return getContractQuantity(materialID);
+        StockKeepingUnit sku = stockKeepingUnit.get(materialID);
+        return sku.setContractQuantity(quantity);
     }
 
 
     public int getContractQuantity(int materialID) {
-        return (contractParameters[materialID] >> AMOUNT_BIT_SHIFT) & 0xFFFF;
+        StockKeepingUnit sku = stockKeepingUnit.get(materialID);
+        return sku.getContractQuantity();
+    }
+
+
+    public void signPurchaseContract(int materialID, boolean signed) {
+        StockKeepingUnit sku = stockKeepingUnit.get(materialID);
+        sku.signPurchaseContract(signed);
+    }
+
+    public boolean hasPurchaseContract(int materialID) {
+        StockKeepingUnit sku = stockKeepingUnit.get(materialID);
+        return sku.hasPurchaseContract();
+    }
+
+    public void signSalesContract(int materialID, boolean signed) {
+        StockKeepingUnit sku = stockKeepingUnit.get(materialID);
+        sku.signSalesContract(signed);
+    }
+
+    public boolean hasSalesContract(int materialID) {
+        StockKeepingUnit sku = stockKeepingUnit.get(materialID);
+        return sku.hasSalesContract();
     }
 
 
@@ -172,10 +157,11 @@ public class Inventory implements JSONSerializable {
         if (currentDay <= previousDay) return;
 
         for (int i = 0; i<Material.COUNT; i++) {
-            int contractQuantity = getContractQuantity(i);
-            if (isPurchaseContract(i)) {
+            StockKeepingUnit sku = stockKeepingUnit.get(i);
+            int contractQuantity = sku.getContractQuantity();
+            if (sku.hasPurchaseContract()) {
                 market.buyOrder(this, i, contractQuantity);
-            } else if (isSalesContract(i)) {
+            } else if (sku.hasSalesContract()) {
                 market.sellOrder(this, i, contractQuantity);
                 // todo если не хватает, то неисполнение контракта
             }
@@ -192,7 +178,7 @@ public class Inventory implements JSONSerializable {
     public double getValuation() {
         double sum = 0;
         for (int i=0; i<stockKeepingUnit.size(); i++) {
-            sum += stockKeepingUnit.get(i).size() * production.getMarket().getValue(i);
+            sum += stockKeepingUnit.get(i).getBalance() * production.getMarket().getValue(i);
         }
         return sum;
     }
@@ -204,8 +190,9 @@ public class Inventory implements JSONSerializable {
             JSONArray skuBalanceJson = new JSONArray();
             JSONArray skuAutoState = new JSONArray();
             for (int i=0; i<stockKeepingUnit.size(); i++) {
-                skuBalanceJson.put(stockKeepingUnit.get(i).size());
-                skuAutoState.put(contractParameters[i]);
+                StockKeepingUnit sku = stockKeepingUnit.get(i);
+                skuBalanceJson.put(sku.getBalance());
+                skuAutoState.put(sku.getContractParameters());
             }
             jsonObject.put("class", "Inventory");
             jsonObject.put("stockKeepingUnit", skuBalanceJson);

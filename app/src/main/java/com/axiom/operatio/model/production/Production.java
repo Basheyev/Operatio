@@ -367,6 +367,9 @@ public class Production implements JSONSerializable {
         return cycle;
     }
 
+    public long getCurrentDay() {
+        return getCurrentCycle() / Ledger.OPERATIONAL_DAY_CYCLES;
+    }
 
     public int getColumns() {
         return columns;

@@ -51,9 +51,9 @@ public class MaterialsPanel extends Panel {
             }
             // Подстветка режима - автопокупка и автопродажа
             if (selectedMaterial != material) {
-                if (inventory.isPurchaseContract(i)) {
+                if (inventory.hasPurchaseContract(i)) {
                     itemWidget[i].setColor(ITEM_PURCHASE_CONTRACT);
-                } else if (inventory.isSalesContract(i)) {
+                } else if (inventory.hasSalesContract(i)) {
                     itemWidget[i].setColor(ITEM_SALES_CONTRACT);
                 }
             }
@@ -149,8 +149,8 @@ public class MaterialsPanel extends Panel {
         public void unselectPreviousButton(Widget w) {
             Inventory inventory = production.getInventory();
             if (selectedItemWidget != null) {
-                boolean autoBuy = inventory.isPurchaseContract(selectedMaterial.getID());
-                boolean autoSell = inventory.isSalesContract(selectedMaterial.getID());
+                boolean autoBuy = inventory.hasPurchaseContract(selectedMaterial.getID());
+                boolean autoSell = inventory.hasSalesContract(selectedMaterial.getID());
                 if (autoBuy) selectedItemWidget.setColor(ITEM_PURCHASE_CONTRACT); else
                 if (autoSell) selectedItemWidget.setColor(ITEM_SALES_CONTRACT); else {
                     selectedItemWidget.setColor(ITEM_BACKGROUND);

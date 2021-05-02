@@ -65,14 +65,14 @@ public class BlockBuilder {
             for (int i = 0; i < jsonInputArray.length(); i++) {
                 JSONObject jsonItem = (JSONObject) jsonInputArray.get(i);
                 Item item = Item.deserialize(jsonItem, block);
-                block.input.add(item);
+                block.input.push(item);
             }
 
             JSONArray jsonOutputArray = jsonObject.getJSONArray("output");
             for (int i = 0; i < jsonOutputArray.length(); i++) {
                 JSONObject jsonItem = (JSONObject) jsonOutputArray.get(i);
                 Item item = Item.deserialize(jsonItem, block);
-                block.output.add(item);
+                block.output.push(item);
             }
         } catch (JSONException e) {
             e.printStackTrace();

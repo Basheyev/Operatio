@@ -93,7 +93,7 @@ public abstract class Block implements JSONSerializable {
         if (getState() == BUSY) return false;
         if (input.size() >= inputCapacity) return false;
         item.setOwner(production, this);
-        input.add(item);
+        input.push(item);
         return true;
     }
 

@@ -86,7 +86,7 @@ public class Buffer extends Block implements JSONSerializable {
 
         bku.total++;
         item.setOwner(production, this);
-        input.add(item);
+        input.push(item);
         return true;
     }
 

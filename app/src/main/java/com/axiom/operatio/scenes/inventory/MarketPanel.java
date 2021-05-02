@@ -147,8 +147,8 @@ public class MarketPanel extends Panel {
             if (currentCommodity!=previousCommodity) {
                 Material currentMaterial = Material.getMaterial(currentCommodity);
                 commodityName = currentMaterial!=null ? currentMaterial.getName() : "";
-                autoBuyCB.setChecked(inventory.isPurchaseContract(currentCommodity));
-                autoSellCB.setChecked(inventory.isSalesContract(currentCommodity));
+                autoBuyCB.setChecked(inventory.hasPurchaseContract(currentCommodity));
+                autoSellCB.setChecked(inventory.hasSalesContract(currentCommodity));
                 if (currentCommodity<8) {
                     autoBuyCB.setVisible(true);
                     autoSellCB.setVisible(false);
