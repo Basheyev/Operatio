@@ -154,6 +154,11 @@ public class Inventory implements JSONSerializable {
         return sku.getDailyOutOfStock();
     }
 
+    public int getDailyNonPerformance(int materialID) {
+        StockKeepingUnit sku = stockKeepingUnit.get(materialID);
+        return sku.getDailyNonPerformance();
+    }
+
     public void process() {
         Market market = production.getMarket();
 
@@ -167,8 +172,13 @@ public class Inventory implements JSONSerializable {
             if (sku.hasPurchaseContract()) {
                 market.buyOrder(this, i, contractQuantity);
             } else if (sku.hasSalesContract()) {
-                market.sellOrder(this, i, contractQuantity);
-                // todo если не хватает, то неисполнение контракта
+                // Если остатков не хватает для исполнения контракта
+                int soldAmount = market.sellOrder(this, i, contractQuantity);
+                int deficit = contractQuantity - soldAmount;
+                if (deficit > 0) {
+                    sku.registerContractNonPerformance(deficit);
+                    // todo Штрафы или расторжение?
+                }
             }
 
             sku.closeDailyStatistics();

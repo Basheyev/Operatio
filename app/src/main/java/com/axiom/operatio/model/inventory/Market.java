@@ -137,20 +137,24 @@ public class Market implements JSONSerializable {
         }
     }
 
-    public synchronized void sellOrder(Inventory inventory, int commodity, int amount) {
+    public synchronized int sellOrder(Inventory inventory, int commodity, int amount) {
         Item item;
         double commodityPrice = getValue(commodity);
         int quantity = 0;
         int incomeType = Ledger.REVENUE_MATERIAL_SOLD;
+        Material material = Material.getMaterial(commodity);
+        if (inventory.getBalance(material)==0) return 0;
         for (int i=0; i < amount; i++) {
-            item = inventory.poll(Material.getMaterial(commodity));
+            item = inventory.peek(material);
             if (item==null) break;
+            inventory.poll(material);
             production.getLedger().debitCashBalance(incomeType, commodityPrice);
             quantity++;
         }
         if (quantity > 0) {
             production.getLedger().materialSold(commodity, quantity, commodityPrice);
         }
+        return quantity;
     }
 
     public synchronized int getHistoryLength(int commodity) {

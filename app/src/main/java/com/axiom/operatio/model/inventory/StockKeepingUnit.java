@@ -22,8 +22,10 @@ public class StockKeepingUnit {
 
     private int dailyBalance = 0;             // Ежедневный баланс материала
     private int dailyOutOfStock = 0;          // Ежедневный дефицит материала
+    private int dailyNonPerformance = 0;      // Ежедневное неисполнение контракта
     private int balanceCounter = 0;           // Счетчик баланса материала
     private int outOfStockCounter = 0;        // Счетчик дефицита материала
+    private int nonPerformanceCounter = 0;    // Счетчик неисполнения конракта
 
     public StockKeepingUnit(int materialID) {
         this.materialID = materialID;
@@ -94,10 +96,13 @@ public class StockKeepingUnit {
         return items.poll();
     }
 
+    public void registerContractNonPerformance(int quantity) {
+        nonPerformanceCounter += quantity;
+    }
+
     public int getBalance() {
         return items.size();
     }
-
 
     public int getDailyBalance() {
         return dailyBalance;
@@ -107,11 +112,17 @@ public class StockKeepingUnit {
         return dailyOutOfStock;
     }
 
+    public int getDailyNonPerformance() {
+        return dailyNonPerformance;
+    }
+
     public void closeDailyStatistics() {
         dailyBalance = balanceCounter;
         dailyOutOfStock = outOfStockCounter;
+        dailyNonPerformance = nonPerformanceCounter;
         balanceCounter = 0;
         outOfStockCounter = 0;
+        nonPerformanceCounter = 0;
     }
 
 

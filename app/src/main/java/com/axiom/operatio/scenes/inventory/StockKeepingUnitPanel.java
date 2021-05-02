@@ -47,10 +47,16 @@ public class StockKeepingUnitPanel extends Panel {
         Material material = materialsPanel.getSelectedMaterial();
         if (material==null) return;
         int materialID = material.getID();
+        captionText.append("SKU #");
+        captionText.append(materialID);
+        captionText.append(": ");
         captionText.append(material.getName());
         captionText.append("\n\n");
-        captionText.append("- Daily hyper stock quantity: ");
+        captionText.append("- Daily balance: ");
         captionText.append(inventory.getDailyBalance(materialID));
+        captionText.append("\n");
+        captionText.append("- Daily contract non-performance quantity: ");
+        captionText.append(inventory.getDailyNonPerformance(materialID));
         captionText.append("\n");
         captionText.append("- Daily out of stock quantity: ");
         captionText.append(inventory.getDailyOutOfStock(materialID));
