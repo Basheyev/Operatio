@@ -25,10 +25,12 @@ import com.axiom.operatio.model.production.Production;
 public class MarketPanel extends Panel {
 
     public static final String MARKET = "Market";
-    public static final String PURCHASE_CONTRACT = "Purchase contract (daily acceptance)";
-    public static final String SALES_CONTRACT = "Sales contract (daily shipment)";
+    public static final String PURCHASE_CONTRACT = "Sign purchase contract (daily acceptance)";
+    public static final String SALES_CONTRACT = "Sign sales contract (daily shipment)";
     public static final String BUY = "BUY";
     public static final String SELL = "SELL";
+
+    public static final int NOT_SELECTED = -1;
 
     public static final int GRAPH_BACKGROUND = 0x80000000;
     public static final int PANEL_COLOR = 0xCC505050;
@@ -145,13 +147,23 @@ public class MarketPanel extends Panel {
         synchronized (values) {
             Material material = null;
             if (materialsPanel!=null) material = materialsPanel.getSelectedMaterial();
-            if (material!=null) currentCommodity = material.getID(); else currentCommodity = 0;
-            if (currentCommodity!=previousCommodity) {
+            if (material!=null) {
+                currentCommodity = material.getID();
+            } else {
+                currentCommodity = NOT_SELECTED;
+                autoSellCB.setVisible(false);
+                autoBuyCB.setVisible(false);
+                quantityButton.setText("");
+                dealSum.setText("");
+                materialText.setLength(0);
+                return;
+            }
+            if (currentCommodity != previousCommodity) {
                 Material currentMaterial = Material.getMaterial(currentCommodity);
                 commodityName = currentMaterial!=null ? currentMaterial.getName() : "";
                 autoBuyCB.setChecked(inventory.hasPurchaseContract(currentCommodity));
                 autoSellCB.setChecked(inventory.hasSalesContract(currentCommodity));
-                if (currentCommodity<8) {
+                if (currentCommodity < 8) {
                     autoBuyCB.setVisible(true);
                     autoSellCB.setVisible(false);
                 } else {
@@ -185,19 +197,20 @@ public class MarketPanel extends Panel {
         AABB wBounds = getWorldBounds();
 
         GraphicsRender.setZOrder(zOrder + 1);
+        float graphWidth = 960;
+        float graphHeight = 300;
+        float x = wBounds.minX + 25;
+        float y = wBounds.minY + graphBottomY;
+        float oldX = x;
+        float oldY;
+        GraphicsRender.setColor(GRAPH_BACKGROUND);
+        GraphicsRender.drawRectangle(x, y, graphWidth,  graphHeight);
 
+        int matID = currentCommodity;
+        if (matID != NOT_SELECTED)
         synchronized (values) {
-            float graphWidth = 960;
-            float graphHeight = 300;
-            float x = wBounds.minX + 25;
-            float y = wBounds.minY + graphBottomY;
-            float oldX = x;
-            float oldY;
-            GraphicsRender.setColor(GRAPH_BACKGROUND);
-            GraphicsRender.setZOrder(zOrder + 1);
-            GraphicsRender.drawRectangle(x, y, graphWidth,  graphHeight);
             GraphicsRender.setZOrder(zOrder + 2);
-            float faceValueY = (float) (y + market.getFaceValue(currentCommodity) / maxValue * graphHeight * 0.8f);
+            float faceValueY = (float) (y + market.getFaceValue(matID) / maxValue * graphHeight * 0.8f);
             GraphicsRender.setColor(Color.DKGRAY);
             GraphicsRender.drawLine(x, faceValueY, x + graphWidth, faceValueY);
             GraphicsRender.setZOrder(zOrder + 3);
@@ -221,6 +234,7 @@ public class MarketPanel extends Panel {
     private ClickListener clickListener = new ClickListener() {
         @Override
         public void onClick(Widget w) {
+            if (materialsPanel.getSelectedMaterial()==null) return;
             if (w.getTag().equals("<")) {
                 quantity--;
                 if (quantity < 1) {
