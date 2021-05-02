@@ -1,5 +1,9 @@
 package com.axiom.operatio.scenes.common;
 
+import android.content.res.Resources;
+
+import com.axiom.atom.R;
+import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
@@ -12,13 +16,23 @@ import com.axiom.atom.engine.ui.widgets.Button;
  */
 public class ItemWidget extends Button {
 
+    protected static Sprite allMachines = null;            // Спрайт всех блоков
+    protected Sprite exclamationSprite;                                // Значек сбоя
+
     private boolean active = true;
+    private boolean exclamation = false;
     private float alpha = 1;
+
 
     public ItemWidget(String text) {
         super(text);
         textRenderer.setHorizontalAlignment(Text.ALIGN_RIGHT);
         textRenderer.setVerticalAlignment(Text.ALIGN_BOTTOM);
+        if (allMachines==null) {
+            Resources resources = SceneManager.getResources();
+            allMachines = new Sprite(resources, R.drawable.blocks, 8, 16);
+        }
+        exclamationSprite = allMachines.getAsSprite(71);
     }
 
     @Override
@@ -50,6 +64,13 @@ public class ItemWidget extends Button {
                 textRenderer.draw(camera, text, bounds.maxX - 2, bounds.minY + 2, textScale, parentScissor);
             }
         }
+
+        if (exclamation) {
+            float fw = bounds.width;
+            float fh = bounds.height;
+            exclamationSprite.setZOrder(zOrder + 3);
+            exclamationSprite.draw(camera, bounds.minX, bounds.maxY - fh, fw, fh);
+        }
     }
 
     @Override
@@ -64,6 +85,10 @@ public class ItemWidget extends Button {
         synchronized (this) {
             super.setBackground(background);
         }
+    }
+
+    public void setExclamation(boolean state) {
+        exclamation = state;
     }
 
     public boolean isActive() {
