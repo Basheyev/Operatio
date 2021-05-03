@@ -293,7 +293,7 @@ public class ReportPanel extends Panel {
         technologyBar.setProgress(technologyProgress);
 
         if (operRevenue > 0) operMargin = Math.round(ledger.getLastPeriod().getMargin() / operRevenue * 100);
-        summary.delete(0, summary.length());
+        summary.setLength(0);
         summary.append("Valuation: ");
         FormatUtils.formatMoneyAppend(valuation, summary);
         summary.append("\n\nDaily operations:\n");

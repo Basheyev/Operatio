@@ -4,15 +4,17 @@ import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Text;
+import com.axiom.operatio.model.common.FormatUtils;
+
+import java.text.Normalizer;
 
 import static android.graphics.Color.BLACK;
-import static android.graphics.Color.DKGRAY;
-import static android.graphics.Color.RED;
 
 public class Caption extends Widget {
 
     private Text textRenderer;
-    private CharSequence caption;
+    private CharSequence captionText;
+    private final StringBuffer textBuffer;
     private float[] textColor = {0,0,0,1};
     private float scale = 1.0f;
 
@@ -21,7 +23,9 @@ public class Caption extends Widget {
         textRenderer = new Text("sans-serif");
         textRenderer.setHorizontalAlignment(Text.ALIGN_LEFT);
         textRenderer.setVerticalAlignment(Text.ALIGN_CENTER);
-        caption = text;
+        captionText = text;
+        textBuffer = new StringBuffer();
+        copyToInternalBuffer(captionText);
         setColor(BLACK);
         opaque = false;
     }
@@ -39,9 +43,7 @@ public class Caption extends Widget {
             GraphicsRender.drawRectangle(bounds, parentScissor);
         }
 
-        if (caption != null) {
-
-            if (caption.length()==0) return;
+        if (textBuffer != null) {
 
             float xpos = bounds.minX; // ALIGN_LEFT
             if (getHorzinontalAlignment()==Text.ALIGN_RIGHT) xpos = bounds.maxX;
@@ -53,7 +55,13 @@ public class Caption extends Widget {
 
             textRenderer.setZOrder(zOrder + 2);
             textRenderer.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
-            textRenderer.draw(camera, caption, xpos, ypos, scale, parentScissor);
+
+            if (!FormatUtils.isEqual(textBuffer, captionText)) copyToInternalBuffer(captionText);
+
+            synchronized (textBuffer) {
+                if (textBuffer.length()==0) return;
+                textRenderer.draw(camera, textBuffer, xpos, ypos, scale, parentScissor);
+            }
         }
 
         super.draw(camera);
@@ -75,7 +83,10 @@ public class Caption extends Widget {
     }
 
     public void setText(CharSequence caption) {
-        if (caption!=null) this.caption = caption;
+        if (caption!=null) {
+            captionText = caption;
+            copyToInternalBuffer(caption);
+        }
     }
 
     public void setTextScale(float scale) {
@@ -98,5 +109,12 @@ public class Caption extends Widget {
         return textRenderer.getVerticalAlignment();
     }
 
+
+    private void copyToInternalBuffer(CharSequence text) {
+        synchronized (textBuffer) {
+            textBuffer.setLength(0);
+            textBuffer.append(text);
+        }
+    }
 
 }
