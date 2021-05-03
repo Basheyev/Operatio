@@ -26,6 +26,10 @@ public class StockKeepingUnit {
     private int balanceCounter = 0;           // Счетчик баланса материала
     private int outOfStockCounter = 0;        // Счетчик дефицита материала
     private int nonPerformanceCounter = 0;    // Счетчик неисполнения конракта
+    private int dailyPush = 0;
+    private int dailyPoll = 0;
+    private int pushCounter = 0;
+    private int pollCounter = 0;
 
     public StockKeepingUnit(int materialID) {
         this.materialID = materialID;
@@ -82,6 +86,7 @@ public class StockKeepingUnit {
 
     public boolean push(Item item) {
         balanceCounter++;
+        pushCounter++;
         return items.push(item);
     }
 
@@ -93,6 +98,7 @@ public class StockKeepingUnit {
 
     public Item poll() {
         balanceCounter--;
+        pollCounter++;
         return items.poll();
     }
 
@@ -116,13 +122,25 @@ public class StockKeepingUnit {
         return dailyNonPerformance;
     }
 
+    public int getDailyPush() {
+        return dailyPush;
+    }
+
+    public int getDailyPoll() {
+        return dailyPoll;
+    }
+
     public void closeDailyStatistics() {
         dailyBalance = balanceCounter;
         dailyOutOfStock = outOfStockCounter;
         dailyNonPerformance = nonPerformanceCounter;
+        dailyPush = pushCounter;
+        dailyPoll = pollCounter;
         balanceCounter = 0;
         outOfStockCounter = 0;
         nonPerformanceCounter = 0;
+        pushCounter = 0;
+        pollCounter = 0;
     }
 
 

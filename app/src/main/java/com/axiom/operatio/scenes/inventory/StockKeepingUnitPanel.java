@@ -82,7 +82,7 @@ public class StockKeepingUnitPanel extends Panel {
         headerText.setLength(0);
         headerText.append("Stock Keeping Unit daily report: ");
         balanceText.setLength(0);
-        balanceText.append("Daily balance:\n\n");
+        balanceText.append("Daily balance: ");
         contractText.setLength(0);
         contractText.append("Nonperformance:\n\n");
         outOfStockText.setLength(0);
@@ -94,9 +94,18 @@ public class StockKeepingUnitPanel extends Panel {
 
         int materialID = material.getID();
         headerText.append(material.getName());
+
+        int dailyPush = inventory.getDailyPush(materialID);
+        int dailyPoll = inventory.getDailyPoll(materialID);
         int dailyBalance = inventory.getDailyBalance(materialID);
         if (dailyBalance > 0) balanceText.append('+');
         balanceText.append(dailyBalance);
+        balanceText.append("\n\n");
+        balanceText.append("IN:");
+        balanceText.append(dailyPush);
+        balanceText.append(" / OUT:");
+        balanceText.append(dailyPoll);
+
 
         int nonPerformance = inventory.getDailyNonPerformance(materialID);
         contractText.append(nonPerformance);

@@ -161,6 +161,16 @@ public class Inventory implements JSONSerializable {
         return sku.getDailyNonPerformance();
     }
 
+    public int getDailyPush(int materialID) {
+        StockKeepingUnit sku = stockKeepingUnit.get(materialID);
+        return sku.getDailyPush();
+    }
+
+    public int getDailyPoll(int materialID) {
+        StockKeepingUnit sku = stockKeepingUnit.get(materialID);
+        return sku.getDailyPoll();
+    }
+
     public void process() {
         Market market = production.getMarket();
 
