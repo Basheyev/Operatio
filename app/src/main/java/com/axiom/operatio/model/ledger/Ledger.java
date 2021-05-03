@@ -93,7 +93,7 @@ public class Ledger implements JSONSerializable {
 
 
     @Override
-    public JSONObject toJSON() {
+    public synchronized JSONObject toJSON() {
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("class", "Ledger");
@@ -123,7 +123,7 @@ public class Ledger implements JSONSerializable {
     /**
      * Вычисляет отчёт по периоду
      */
-    public void process() {
+    public synchronized void process() {
 
         currentPeriod.cashBalance = getCashBalance();
 
@@ -137,7 +137,7 @@ public class Ledger implements JSONSerializable {
 
 
 
-    private void calculateMaterialsPeriod() {
+    private synchronized void calculateMaterialsPeriod() {
         for (int i = 0; i< materialRecords.length; i++) {
             MaterialRecord materialRecord = materialRecords[i];
             materialRecord.productivity = materialRecord.manufacturedByPeriod;
@@ -151,7 +151,7 @@ public class Ledger implements JSONSerializable {
     }
 
 
-    private void calculateHistory() {
+    private synchronized void calculateHistory() {
         lastPeriod.copy(currentPeriod);
         history[historyCounter].copy(lastPeriod);
         historyCounter++;
@@ -164,21 +164,21 @@ public class Ledger implements JSONSerializable {
 
 
 
-    public int getHistoryCounter() {
+    public synchronized int getHistoryCounter() {
         return historyCounter;
     }
 
-    public LedgerPeriod[] getHistory() {
+    public synchronized LedgerPeriod[] getHistory() {
         return history;
     }
 
-    public double getHistoryAverageRevenue() {
+    public synchronized double getHistoryAverageRevenue() {
         double revenueSum = 0;
         for (int i=0; i<historyCounter; i++) revenueSum += history[i].revenue;
         return historyCounter > 0 ? revenueSum / historyCounter : 0;
     }
 
-    public double getHistoryAverageMargin() {
+    public synchronized double getHistoryAverageMargin() {
         double marginSum = 0;
         for (int i=0; i<historyCounter; i++) marginSum += history[i].margin;
         return historyCounter > 0 ? marginSum / historyCounter : 0;
@@ -188,7 +188,7 @@ public class Ledger implements JSONSerializable {
      * Капитализация компании
      * @return
      */
-    public double getValuation() {
+    public synchronized double getValuation() {
         // Посчитать средний денежный поток за прошлый период
         double T = 12;                                                         // Период 12 мес
         double WACC = 0.10;                                                    // Стоимость капитала 10%
@@ -205,7 +205,7 @@ public class Ledger implements JSONSerializable {
     }
 
 
-    private double getHistoryCashFlow() {
+    private synchronized double getHistoryCashFlow() {
         double historyCashFlow = 0;
         for (int i=0; i<historyCounter; i++) {
             historyCashFlow += history[i].margin;
@@ -214,24 +214,24 @@ public class Ledger implements JSONSerializable {
     }
 
 
-    public double getCurrentCashBalance() {
+    public synchronized double getCurrentCashBalance() {
         return currentPeriod.cashBalance;
     }
 
-    public LedgerPeriod getCurrentPeriod() {
+    public synchronized LedgerPeriod getCurrentPeriod() {
         return currentPeriod;
     }
 
-    public LedgerPeriod getLastPeriod() {
+    public synchronized LedgerPeriod getLastPeriod() {
         return lastPeriod;
     }
 
 
-    public LedgerPeriod getTotal() {
+    public synchronized LedgerPeriod getTotal() {
         return total;
     }
 
-    public MaterialRecord getMaterialRecord(int materialID) {
+    public synchronized MaterialRecord getMaterialRecord(int materialID) {
         if (materialID < 0 || materialID >= materialRecords.length) return null;
         return materialRecords[materialID];
     }
@@ -243,7 +243,7 @@ public class Ledger implements JSONSerializable {
      * @param type
      * @param sum
      */
-    private void registerExpense(int type, double sum) {
+    private synchronized void registerExpense(int type, double sum) {
         if (type==EXPENSE_BLOCK_BOUGHT || type== EXPENSE_TILE_BOUGHT || type==EXPENSE_RECIPE_BOUGHT) {
             currentPeriod.assetsBought += sum;
             total.assetsBought += sum;
@@ -268,7 +268,7 @@ public class Ledger implements JSONSerializable {
      * @param type
      * @param sum
      */
-    private void registerRevenue(int type, double sum) {
+    private synchronized void registerRevenue(int type, double sum) {
         if (type==REVENUE_UNKNOWN) return;
 
         if (type==REVENUE_BLOCK_SOLD) {
@@ -292,7 +292,7 @@ public class Ledger implements JSONSerializable {
      * @param materialID
      * @param quantity
      */
-    public void materialManufactured(int materialID, int quantity) {
+    public synchronized void materialManufactured(int materialID, int quantity) {
         materialRecords[materialID].manufacturedTotal += quantity;
         materialRecords[materialID].manufacturedByPeriod += quantity;
     }
@@ -303,7 +303,7 @@ public class Ledger implements JSONSerializable {
      * @param quantity
      * @param price
      */
-    public void materialSold(int materialID, int quantity, double price) {
+    public synchronized void materialSold(int materialID, int quantity, double price) {
         materialRecords[materialID].soldSumTotal += quantity * price;
         materialRecords[materialID].soldAmountTotal += quantity;
         materialRecords[materialID].soldAmountCounter += quantity;
@@ -315,14 +315,14 @@ public class Ledger implements JSONSerializable {
      * @param quantity
      * @param price
      */
-    public void materialBought(int materialID, int quantity, double price) {
+    public synchronized void materialBought(int materialID, int quantity, double price) {
         materialRecords[materialID].boughtSumTotal += quantity * price;
         materialRecords[materialID].boughtAmountTotal += quantity;
         materialRecords[materialID].boughtAmountCounter += quantity;
     }
 
 
-    public boolean payDividends(float percent) {
+    public synchronized boolean payDividends(float percent) {
         if (percent <=0 || percent > 100) return false;
         double dividendsSum = cashBalance * (percent / 100.0f);
         cashBalance -= dividendsSum;
@@ -330,15 +330,15 @@ public class Ledger implements JSONSerializable {
         return true;
     }
 
-    public double getCashBalance() {
+    public synchronized double getCashBalance() {
         return cashBalance;
     }
 
-    public double getDividendsPayed() {
+    public synchronized double getDividendsPayed() {
         return dividendsPayed;
     }
 
-    public boolean creditCashBalance(int type, double value) {
+    public synchronized boolean creditCashBalance(int type, double value) {
         double result = cashBalance - value;
         if (result < 0) return false;
         registerExpense(type, value);
@@ -346,7 +346,7 @@ public class Ledger implements JSONSerializable {
         return true;
     }
 
-    public double debitCashBalance(int type, double value) {
+    public synchronized double debitCashBalance(int type, double value) {
         cashBalance += value;
         registerRevenue(type, value);
         return cashBalance;
