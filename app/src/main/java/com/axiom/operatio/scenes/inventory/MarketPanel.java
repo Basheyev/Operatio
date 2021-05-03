@@ -156,6 +156,7 @@ public class MarketPanel extends Panel {
                 quantityButton.setText("");
                 dealSum.setText("");
                 materialText.setLength(0);
+                previousCommodity = currentCommodity;
                 return;
             }
             if (currentCommodity != previousCommodity) {
