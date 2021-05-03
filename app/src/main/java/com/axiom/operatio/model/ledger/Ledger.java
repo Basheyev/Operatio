@@ -152,9 +152,12 @@ public class Ledger implements JSONSerializable {
 
 
     private synchronized void calculateHistory() {
-        lastPeriod.copy(currentPeriod);
+
         history[historyCounter].copy(lastPeriod);
         historyCounter++;
+
+        lastPeriod.copy(currentPeriod);
+
         if (historyCounter >= HISTORY_LENGTH) {
             for (int i=1; i< HISTORY_LENGTH; i++) history[i-1].copy(history[i]);
             historyCounter--;
