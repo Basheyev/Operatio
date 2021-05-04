@@ -5,18 +5,21 @@ import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.graphics.renderers.Text;
+import com.axiom.operatio.model.common.FormatUtils;
 
 public class Button extends Widget {
 
     protected Text textRenderer;
     protected Sprite background;
     protected CharSequence text;
+    private final StringBuffer textBuffer;
     protected float[] textColor = {0,0,0,1};
     protected float textScale = 2.0f;
 
     public Button() {
         super();
         text = "";
+        textBuffer = new StringBuffer();
         textRenderer = new Text("sans-serif");
         textRenderer.setHorizontalAlignment(Text.ALIGN_CENTER);
         textRenderer.setVerticalAlignment(Text.ALIGN_CENTER);
@@ -28,6 +31,7 @@ public class Button extends Widget {
         this();
         this.background = background;
         this.text = text;
+        copyToInternalBuffer(text);
     }
 
     public Button(CharSequence text) {
@@ -64,7 +68,12 @@ public class Button extends Widget {
 
             textRenderer.setZOrder(zOrder + 2);
             textRenderer.setColor(textColor[0], textColor[1], textColor[2], textColor[3]);
-            textRenderer.draw(camera, text, x, y, textScale, parentScissor);
+
+            if (!FormatUtils.isEqual(textBuffer, text)) copyToInternalBuffer(text);
+            synchronized (textBuffer) {
+                if (textBuffer.length()==0) return;
+                textRenderer.draw(camera, text, x, y, textScale, parentScissor);
+            }
         }
 
         super.draw(camera);
@@ -106,4 +115,10 @@ public class Button extends Widget {
         return textRenderer.getHorizontalAlignment();
     }
 
+    private void copyToInternalBuffer(CharSequence txt) {
+        synchronized (textBuffer) {
+            textBuffer.setLength(0);
+            textBuffer.append(txt);
+        }
+    }
 }
