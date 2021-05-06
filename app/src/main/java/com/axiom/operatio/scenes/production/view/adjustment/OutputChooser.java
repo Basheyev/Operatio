@@ -163,11 +163,7 @@ public class OutputChooser extends Panel implements GameEventSubscriber {
         clearAll();
 
         GamePermissions permissions = scene.getProduction().getPermissions();
-
         int index = 0;
-        itemWidget[index].setTag("" + -1);
-        if (inserter.getTargetMaterial()==null) itemWidget[index].setColor(ITEM_SELECTED);
-        index++;
 
         for (int i=0; i < Material.getMaterialsAmount(); i++) {
             Material material = Material.getMaterial(i);
@@ -195,25 +191,29 @@ public class OutputChooser extends Panel implements GameEventSubscriber {
     private ClickListener clickListener = new ClickListener() {
         @Override
         public void onClick(Widget w) {
-            ItemWidget itemWidget = (ItemWidget) w;
+            ItemWidget selectedIW = (ItemWidget) w;
             if (blockType==MACHINE && machine != null) {
-                int opIndex = Integer.parseInt(itemWidget.getTag());
+                int opIndex = Integer.parseInt(selectedIW.getTag());
                 adjustmentPanel.showMachineInfo(machine, opIndex);
                 adjustmentPanel.selectMachineOperation(machine, opIndex);
                 unselectAll();
-                itemWidget.setColor(ITEM_SELECTED);
+                selectedIW.setColor(ITEM_SELECTED);
             } else if (blockType==IMPORTER) {
-                int matID = Integer.parseInt(itemWidget.getTag());
+                int matID = Integer.parseInt(selectedIW.getTag());
+                if (itemWidget[matID].getColor()==ITEM_SELECTED) matID = -1;
                 adjustmentPanel.showImporterInfo(importer, matID);
                 adjustmentPanel.selectImporterMaterial(importer, matID);
                 unselectAll();
-                itemWidget.setColor(ITEM_SELECTED);
+                if (matID==-1) selectedIW.setColor(ITEM_BACKGROUND);
+                else selectedIW.setColor(ITEM_SELECTED);
             } else if (blockType==INSERTER) {
-                int matID = Integer.parseInt(itemWidget.getTag());
+                int matID = Integer.parseInt(selectedIW.getTag());
+                if (itemWidget[matID].getColor()==ITEM_SELECTED) matID = -1;
                 adjustmentPanel.showInserterInfo(inserter, matID);
                 adjustmentPanel.selectInserterMaterial(inserter, matID);
                 unselectAll();
-                itemWidget.setColor(ITEM_SELECTED);
+                if (matID==-1) selectedIW.setColor(ITEM_BACKGROUND);
+                else selectedIW.setColor(ITEM_SELECTED);
             }
 
         }
