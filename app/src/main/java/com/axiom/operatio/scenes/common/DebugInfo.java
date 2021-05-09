@@ -12,13 +12,13 @@ public class DebugInfo {
 
     public static void drawDebugInfo(Camera camera, int color) {
         if (!showFPSInfo) return;
-        fps.delete(0, fps.length());
+        fps.setLength(0);
         fps.append("FPS:").append(GraphicsRender.getFPS())
-                .append(" Quads:").append(BatchRender.getEntriesCount())
-                .append(" Calls:").append(BatchRender.getDrawCallsCount())
-                .append(" Scissors:").append(BatchRender.getScissorsApplied())
-                .append(" Time:").append(GraphicsRender.getRenderTime())
-                .append("ms");
+            .append(" Quads:").append(BatchRender.getEntriesCount())
+            .append(" Calls:").append(BatchRender.getDrawCallsCount())
+            .append(" Scissors:").append(BatchRender.getScissorsApplied())
+            .append(" Time:").append(GraphicsRender.getRenderTime())
+            .append("ms");
         float x = camera.getMinX();
         float y = camera.getMinY();
         GraphicsRender.setZOrder(Integer.MAX_VALUE);
