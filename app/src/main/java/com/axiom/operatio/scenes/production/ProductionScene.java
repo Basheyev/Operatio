@@ -7,9 +7,7 @@ import com.axiom.atom.engine.core.GameLoop;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.data.events.GameEvent;
 import com.axiom.atom.engine.data.events.GameEventSubscriber;
-import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
-import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.input.ScaleEvent;
 import com.axiom.operatio.model.gameplay.GameMission;
 import com.axiom.operatio.model.gameplay.MissionManager;
@@ -17,6 +15,7 @@ import com.axiom.operatio.model.gameplay.OperatioEvents;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.DebugInfo;
+import com.axiom.operatio.scenes.winlose.WinScene;
 import com.axiom.operatio.scenes.production.view.HelperPanel;
 import com.axiom.operatio.scenes.report.ReportScene;
 import com.axiom.operatio.scenes.production.view.BlocksPanel;
@@ -74,6 +73,7 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
             sceneManager.addGameScene(new InventoryScene(production));
             sceneManager.addGameScene(new TechnologyScene(production));
             sceneManager.addGameScene(new ReportScene(production));
+            sceneManager.addGameScene(new WinScene(production));
 
             productionRenderer = production.getRenderer();
             inputHandler = new InputHandler(this, production, productionRenderer);
