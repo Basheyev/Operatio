@@ -71,7 +71,7 @@ public abstract class Widget {
         // Добавляем в дочерние
         children.add(widget);
         widget.parent = this;
-        widget.adjustChildZOrder(this);
+        adjustChildZOrder();
         return true;
     }
 
@@ -83,15 +83,15 @@ public abstract class Widget {
 
     public void setZOrder(int zOrder) {
         this.zOrder = zOrder;
-        adjustChildZOrder(this);
+        adjustChildZOrder();
     }
 
-    protected void adjustChildZOrder(Widget parent) {
+    protected void adjustChildZOrder() {
         Widget child;
         for (int i=0; i<children.size(); i++) {
             child = children.get(i);
             child.zOrder = zOrder + 100;
-            child.adjustChildZOrder(this);
+            child.adjustChildZOrder();
         }
     }
 
