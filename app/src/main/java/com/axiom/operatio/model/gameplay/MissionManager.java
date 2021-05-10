@@ -23,7 +23,7 @@ public class MissionManager implements GameEventSubscriber {
     private static MissionManager missionManager;
 
     private GameMission[] missions = null;
-    private int levelCompletedSound = -1;
+
 
 
     public static MissionManager getInstance() {
@@ -40,7 +40,6 @@ public class MissionManager implements GameEventSubscriber {
 
 
     private void loadMissions() {
-        levelCompletedSound = SoundRenderer.loadSound(R.raw.yes_snd);
         JSONArray jsonMissions = JSONFile.loadArray(SceneManager.getResources(), R.raw.missions);
         missions = new GameMission[jsonMissions.length()];
         try {
@@ -67,7 +66,6 @@ public class MissionManager implements GameEventSubscriber {
         GameMission mission = getMission(currentMissionID);
         if (mission==null) return;
         if (mission.checkWinConditions(production)) {
-            SoundRenderer.playSound(levelCompletedSound);
             mission.earnReward(production);
             if (currentMissionID + 1 <= getMissionCount() - 1) {
                 currentMissionID++;
