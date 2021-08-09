@@ -38,7 +38,7 @@ public class ProductionRenderer {
     private static Sprite tiles = null;
 
     private Production production;
-    private Sprite tile, tileBlocked, outsideTile, selection;
+    private Sprite tile, tileBlocked, outsideTile, selection, wrongSelection;
 
     private Particles particles;
 
@@ -65,6 +65,8 @@ public class ProductionRenderer {
         outsideTile.setZOrder(Z_ORDER_FLOOR);
         selection = tiles.getAsSprite(67);
         selection.setZOrder(Z_ORDER_SELECTION);
+        wrongSelection = tiles.getAsSprite(69);
+        wrongSelection.setZOrder(Z_ORDER_SELECTION);
 
         Sprite particleSprite = tiles.getAsSprite(86);
         particles = new Particles(particleSprite,16, 1000, 100);
@@ -142,15 +144,16 @@ public class ProductionRenderer {
 
     private void drawSelection(Camera camera, int col, int row) {
         Block underlyingBlock = production.getBlockAt(col,row);
+        Sprite requiredSelection;
 
         if (underlyingBlock==null || movingBlock==null) {
-            selection.setActiveFrame(67);
+            requiredSelection = selection;
         } else {
-            selection.setActiveFrame(69);
+            requiredSelection = wrongSelection;
         }
 
         float fluctuation = (float) (Math.cos(System.currentTimeMillis() / 100.0d) + 1f) / 20f;
-        selection.draw(camera,
+        requiredSelection.draw(camera,
                 col * cellWidth - (cellWidth * fluctuation),
                 row * cellHeight - (cellHeight * fluctuation),
                 cellWidth * (1.0f + fluctuation * 2),
