@@ -77,12 +77,14 @@ public class Program implements GLESObject {
     }
 
     public int setUniformVec4Value(String name, float[] value) {
+        // todo возможно handler можно брать один раз и потом использовать
         int handler = GLES20.glGetUniformLocation(programID, name);
         GLES20.glUniform4fv(handler, 1, value, 0);
         return handler;
     }
 
     public int setUniformMat4Value(String name, float[] value) {
+        // todo возможно handler можно брать один раз и потом использовать
         int handler = GLES20.glGetUniformLocation(programID, name);
         GLES20.glUniformMatrix4fv(handler, 1, false, value, 0);
         return handler;

@@ -13,53 +13,76 @@ import com.axiom.atom.engine.graphics.gles2d.VertexBuffer;
 import java.util.Arrays;
 
 /**
- * Многократно оптимизирует производительность рендерига графики
- * путём группировки очереди отрисовываемых спрайтов и прямоугольников
- * по z-order, текстуре спрайтов и цвету прямогульников в пакеты
- * для минимизации количества вызовов отрисовки (draw calls).
- * <br><br>
- * (С) Atom Engine, Bolat Basheyev 2020
+ * <b>Пакетный рендер</b><br>
+ * Многократно повышает производительность отрисовки 2D-графики
+ * путём минимизации количества вызовов отрисовки (draw calls).
+ * Группирует список отрисовываемых элементов (quads) в однородные
+ * партии по слою (z-order), текстуре, шейдеру и цвету. Отрисовывает
+ * партию одним вызовом. <br><br>
+ * (С) Atom Engine, Bolat Basheyev 2020-2022
  */
 public class BatchRender {
 
     //------------------------------------------------------------------------------------------
-    public static final int MAX_SPRITES = 8192;   // Максимальное количество спрайтов на экране
+    public static final int MAX_QUADS = 8192;     // Максимальное количество элементов на экране
     protected static int drawCallsCounter = 0;    // Счётчик вызовов отрисовки (меньше лучше)
-    protected static int scissorCounter = 0;      // Счётчик обрезания областей
+    protected static int scissorCounter = 0;      // Счётчик случаев обрезки экранных областей
     //------------------------------------------------------------------------------------------
     protected static Quad[] quads;                // Буфер всех элементов на отрисовку
     protected static Quad.Comparator comparator;  // Класс для сравнения элементов буфера
     protected static int entriesCounter = 0;      // Количество элементов на отрисовку
-    protected static VertexBuffer verticesBatch;  // Вершинные координаты спрайтов пакета
-    protected static VertexBuffer texCoordBatch;  // Текстурные координаты спрайтов пакета
-
-    protected static int quadsProcessed = 0;
-    protected static int drawCallsMade = 0;
-    protected static int scissorsApplied = 0;
-
+    protected static VertexBuffer verticesBatch;  // Буфер вершинных координат партии элементов
+    protected static VertexBuffer texCoordBatch;  // Буфер текстурных координат партии элементов
+    private static boolean batchRendered;         // Флаг отрисовки партии
+    private static Quad previous = new Quad();    // Последний обработанный элемент
+    //------------------------------------------------------------------------------------------
+    protected static int quadsProcessed = 0;      // Обработано элементов за один кадр
+    protected static int drawCallsMade = 0;       // Количество вызовов отрисовки за один кадр
+    protected static int scissorsApplied = 0;     // Количество случаев обрезки экранной области
     //-------------------------------------------------------------------------------------------
     // Методы для пакетирования
     //-------------------------------------------------------------------------------------------
 
-    public static synchronized void beginBatching() {
-        // Если ещё не инициализировались
-        if (quads == null) {
-            quads = new Quad[MAX_SPRITES];
-            for (int i = 0; i< quads.length; i++) quads[i] = new Quad();
-            verticesBatch = new VertexBuffer(MAX_SPRITES * 6, 3);
-            texCoordBatch = new VertexBuffer(MAX_SPRITES * 6, 2);
-            comparator = new Quad.Comparator();
-        }
-        quadsProcessed = entriesCounter;
-        entriesCounter = 0;
+    /**
+     * Инициализация пакетного рендера <br>
+     * Единовременное выделение памяти под массив элементов отрисовки (quads),
+     * а также буфера вершин и текстурных координат для сгруппированной партии
+     */
+    private static void initialize() {
+        quads = new Quad[MAX_QUADS];
+        for (int i = 0; i< quads.length; i++) quads[i] = new Quad();
+        verticesBatch = new VertexBuffer(MAX_QUADS * 6, 3);
+        texCoordBatch = new VertexBuffer(MAX_QUADS * 6, 2);
+        comparator = new Quad.Comparator();
     }
 
     //-------------------------------------------------------------------------------------------
+
+    /**
+     * Начать упаковки партий элементов на отрисовку <br>
+     * Инциализация при необходимости и обнуление счётчика отрисованных элементов
+     */
+    public static synchronized void beginBatching() {
+        if (quads == null) initialize();      // Если вызывается впервые, то инициализируемся
+        quadsProcessed = entriesCounter;      // Количество отрисованных quads на прошлом кадре
+        entriesCounter = 0;                   // Обнуляем счётчик
+    }
+
+    //-------------------------------------------------------------------------------------------
+
+    /**
+     * Добавить в список новый элемент на отрисовку
+     * @param program шейдер элемента
+     * @param vert координаты вершин элемента
+     * @param color цвет элемента
+     * @param zOrder слой отрисовки
+     * @param scissor экранная область обрезки
+     */
     public static synchronized void addQuad(Program program,
                                             float[] vert, float[] color, int zOrder, AABB scissor) {
         // Проверяем есть ли ещё место
         if (entriesCounter + 1 >= quads.length) {
-            Log.e("BATCH RENDERER", "Max sprites count reached " + MAX_SPRITES);
+            Log.e("BATCH RENDERER", "Max sprites count reached " + MAX_QUADS);
             return;
         }
         // Копируем данные в соответствующую запись
@@ -77,12 +100,23 @@ public class BatchRender {
     }
 
     //-------------------------------------------------------------------------------------------
+
+    /**
+     * Добавить в список новый текстурированный элемент на отрисовку
+     * @param program шейдер элемента
+     * @param texture текстура элемента
+     * @param vert координаты вершин элемента
+     * @param texcoord текстурные координаты
+     * @param color цвет элемента
+     * @param zOrder слой отрисовки
+     * @param scissor экранная область обрезки
+     */
     public static synchronized void addTexturedQuad (Program program,
                                                      Texture texture, float[] vert, float[] texcoord,
                                                      float[] color, int zOrder, AABB scissor) {
         // Проверяем есть ли ещё место
         if (entriesCounter + 1 >= quads.length) {
-            Log.w("WARNING", "Max sprites count reached " + MAX_SPRITES);
+            Log.w("WARNING", "Max sprites count reached " + MAX_QUADS);
             return;
         }
         // Копируем данные в соответствующую запись
@@ -101,48 +135,48 @@ public class BatchRender {
     }
 
     //-------------------------------------------------------------------------------------------
-    private static Quad previous = new Quad();
 
     /**
-     * Сортирует список всех прямоугольников в очереди на отрисовку (текстуре, слою, цвету и т.д)
+     * Сортирует список всех элементов в списке на отрисовку (текстуре, слою, цвету и т.д)
      * и генерирует меш из однородных прямоугольников для минимизации количества вызовов OpenGL
      * @param camera камера
      */
     public static synchronized void finishBatching(Camera camera) {
         if (entriesCounter==0) return;
 
-        // Сортируем всё, чтобы подготовить к группировке в пакеты
+        // Сортируем список, чтобы подготовить к группировке в партии
         Arrays.sort(quads,0, entriesCounter, comparator);
-
-        // Начинаем новый пакет
-        clearBatch();
-        Quad quad = quads[0];
-        addQuadToBatch(quad);
-        copyQuad(quad, previous);
+        clearBatch();                  // Начинаем новую партию элементов на отрисовку
+        Quad quad = quads[0];          // Берём первый элемент в отсортированном списке отрисовки
+        addQuadToBatch(quad);          // Добавляем в партию на отрисовку
+        copyQuad(quad, previous);      // Сохраняем элемент как предыдущий обработанный
 
         drawCallsCounter = 0;
         scissorCounter = 0;
         boolean equals, lastEntry;
 
-        for (int i=0; i<entriesCounter; i++) {
+        // Последовательно проходим по отсортированному списку элементов на отрисовку
+        for (int i=1; i<entriesCounter; i++) {
             quad = quads[i];
-            // Сравниваем текстуру, z order, цвет и ножницы с предыдущей
+            // Сравниваем текстуру, z order, цвет и область обрезки с предыдущим элементом
             equals = comparator.compare(quad, previous) == 0 && quad.scissor == previous.scissor;
-            // Если текущий и предыдущий элемент равны добавляем в один пакет
+            // Если текущий и предыдущий элемент равны добавляем в одну партию элментов
             if (equals) {
                 addQuadToBatch(quad);
                 copyQuad(quad, previous);
             } else {
+                // Если предыдущий элекмент отличается, отрисовываем партию элементов
                 renderBatch(camera.getCameraMatrix(), previous);
-                // начинаем новый пакет
+                // Начинаем новую партию элементов на отрисовку
                 clearBatch();
                 addQuadToBatch(quad);
                 copyQuad(quad, previous);
             }
-            lastEntry = (i == entriesCounter - 1);
-            if (lastEntry) renderBatch(camera.getCameraMatrix(), previous);
         }
 
+        // Если последняя партия элементов не была отрисована, то отрисовываем
+        if (!batchRendered) renderBatch(camera.getCameraMatrix(), previous);
+        // Сохраняем статистику из счётчиков
         drawCallsMade = drawCallsCounter;
         scissorsApplied = scissorCounter;
     }
@@ -154,6 +188,7 @@ public class BatchRender {
      * @param quad свойства для отрисовки меша берем из этой записи
      */
     private static void renderBatch(float[] cameraMatrix, Quad quad) {
+        batchRendered = true;
 
         loadBatchToBuffer();
 
@@ -225,6 +260,7 @@ public class BatchRender {
     private static void clearBatch() {
         verticesBatch.clear();
         texCoordBatch.clear();
+        batchRendered = false;
     }
 
     private static void addQuadToBatch(Quad quad) {

@@ -16,8 +16,6 @@ public class VertexBuffer
     protected int vertexCoordCount;          // Количество вершин
     protected int coordinatesPerVertex;      // Количество координат на одну вершину
 
-    private boolean resizable = false;       // Может ли буфер динамическим
-
     /**
      * Конструктор, который загружает вершины буфер из готового float-массива (Java to Native Heap)
      * @param vertexCoord float массив содержащий данные о вершинах
@@ -42,15 +40,14 @@ public class VertexBuffer
         this.vertexCoord = new float[maxVertexCount * coordinatesPerVertex];
         // Создаём буфера в Native heap
         buffer = allocateNativeMemory(vertexCoord.length * 4);
-        this.resizable = true;
         // Фактическое количество вершин
         this.vertexCoordCount = 0;
     }
 
 
     private FloatBuffer allocateNativeMemory(int bytes) {
-        ByteBuffer factory = ByteBuffer.allocateDirect (bytes);
-        factory.order (ByteOrder.nativeOrder ());
+        ByteBuffer factory = ByteBuffer.allocateDirect(bytes);
+        factory.order (ByteOrder.nativeOrder());
         // Возвращает выделенную память как FloatBuffer
         return factory.asFloatBuffer();
     }
@@ -62,9 +59,9 @@ public class VertexBuffer
     public void prepare ()
     {
         // Копирует данные из массива вершин (float) в выделенный буфер нативной памяти
-        buffer.put (vertexCoord);
+        buffer.put(vertexCoord);
         // Устанавливает курсор на начало буфера
-        buffer.position (0);
+        buffer.position(0);
     }
 
     public FloatBuffer getBuffer() {

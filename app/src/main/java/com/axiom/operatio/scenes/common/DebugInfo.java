@@ -1,5 +1,6 @@
 package com.axiom.operatio.scenes.common;
 
+import com.axiom.atom.BuildConfig;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
@@ -13,7 +14,8 @@ public class DebugInfo {
     public static void drawDebugInfo(Camera camera, int color) {
         if (!showFPSInfo) return;
         fps.setLength(0);
-        fps.append("FPS:").append(GraphicsRender.getFPS())
+        fps.append("v").append(BuildConfig.VERSION_NAME);
+        fps.append("  FPS:").append(GraphicsRender.getFPS())
             .append(" Quads:").append(BatchRender.getEntriesCount())
             .append(" Calls:").append(BatchRender.getDrawCallsCount())
             .append(" Scissors:").append(BatchRender.getScissorsApplied())
