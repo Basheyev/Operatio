@@ -186,6 +186,7 @@ public class Machine extends Block implements JSONSerializable {
         System.arraycopy(operation.getInputAmount(), 0, matCounter,0, operation.getInputAmount().length);
         // Алгоритм построен с учтом того, что все входящие материалы входят в рецепт операции
         for (int k=0; k<input.size(); k++) {
+            //
             Item item = input.get(k);
             if (item==null) continue;
             // Берем код очередного материала из входящей очереди

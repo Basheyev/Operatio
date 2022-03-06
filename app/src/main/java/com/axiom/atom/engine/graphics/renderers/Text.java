@@ -141,8 +141,8 @@ public class Text {
                 cursorX = x;
                 // Вычисляем X координату начала следующей строки с учётом вырванивания
                 firstLineWidth = getTextLineWidth(text, i + 1, scale);
-                if (horizontalAlignment ==ALIGN_RIGHT) cursorX = x - firstLineWidth;
-                if (horizontalAlignment ==ALIGN_CENTER) cursorX = x - (firstLineWidth / 2);
+                if (horizontalAlignment == ALIGN_RIGHT) cursorX = x - firstLineWidth;
+                if (horizontalAlignment == ALIGN_CENTER) cursorX = x - (firstLineWidth / 2);
                 lastSymbol = symbol;
                 continue;                                     // Переходим к следующему символу
             }

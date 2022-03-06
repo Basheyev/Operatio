@@ -313,6 +313,7 @@ public abstract class Block implements JSONSerializable {
     public double getItemsPrice() {
         double sum = 0;
         Item item;
+        // fixme foreach is threadsafe - cycle is not
         for (int i=0; i<input.size(); i++) {
             item = input.get(i);
             sum += item.getMaterial().getPrice();

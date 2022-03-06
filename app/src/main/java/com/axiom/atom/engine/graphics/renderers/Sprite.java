@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * поддержка листов спрайтов и атласов, покадровая анимации спрайтов с,
  * разным FPS, быстрый рендеринг спрайта и анимации и многое другое.
  * <br><br>
- * (С) Atom Engine, Bolat Basheyev 2020
+ * (С) Atom Engine, Bolat Basheyev 2020-2022
  */
 public class Sprite extends Quad {
 
@@ -553,13 +553,13 @@ public class Sprite extends Quad {
     // Код вершинного шейдера спрайта
     //-----------------------------------------------------------------------------------
     private final String vertexShaderCode =
-                    "uniform mat4 u_MVPMatrix; " +
-                    "attribute vec4 vPosition;" +
-                    "attribute vec2 TexCoordIn;" +
+                    "uniform mat4 " + Program.MATRIX + "; " +
+                    "attribute vec4 " + Program.VERTICES + "; " +
+                    "attribute vec2 " + Program.TEXCOORD + ";" +
                     "varying vec2 TexCoordOut;" +
                     "void main() { " +
-                    "    gl_Position = u_MVPMatrix * vPosition; " +
-                    "    TexCoordOut = TexCoordIn; " +
+                    "    gl_Position = " + Program.MATRIX + " * " + Program.VERTICES + "; " +
+                    "    TexCoordOut = " + Program.TEXCOORD + "; " +
                     "}";
 
     //-----------------------------------------------------------------------------------
@@ -567,12 +567,12 @@ public class Sprite extends Quad {
     //-----------------------------------------------------------------------------------
     private final String fragmentShaderCode =
                     "precision mediump float; " +
-                    "uniform vec4 vColor;" +
-                    "uniform sampler2D TexCoordIn; " +
+                    "uniform vec4 " + Program.COLOR + ";" +
+                    "uniform sampler2D " + Program.TEXCOORD + "; " +
                     "varying vec2 TexCoordOut;" +
                     "void main() {" +
-                    "  vec4 col = texture2D(TexCoordIn, TexCoordOut);" +
-                    "  col.a *= vColor.a;" +
+                    "  vec4 col = texture2D(" + Program.TEXCOORD + ", TexCoordOut);" +
+                    "  col.a *= " + Program.COLOR + ".a;" +
                     "  gl_FragColor = col; " +
                     "}";
 
@@ -581,15 +581,15 @@ public class Sprite extends Quad {
     //-----------------------------------------------------------------------------------
     private final String fragmentShaderColoredCode =
                     "precision mediump float; " +
-                    "uniform vec4 vColor;" +
-                    "uniform sampler2D TexCoordIn; " +
+                    "uniform vec4 " + Program.COLOR + ";" +
+                    "uniform sampler2D " + Program.TEXCOORD + "; " +
                     "varying vec2 TexCoordOut;" +
                     "void main() {" +
-                    "  vec4 col = texture2D(TexCoordIn, TexCoordOut);" +
-                    "  col.r = vColor.r;" +
-                    "  col.g = vColor.g;" +
-                    "  col.b = vColor.b;" +
-                    "  col.a *= vColor.a;" +
+                    "  vec4 col = texture2D(" + Program.TEXCOORD + ", TexCoordOut);" +
+                    "  col.r = " + Program.COLOR + ".r;" +
+                    "  col.g = " + Program.COLOR + ".g;" +
+                    "  col.b = " + Program.COLOR + ".b;" +
+                    "  col.a *= " + Program.COLOR + ".a;" +
                     "  gl_FragColor = col; " +
                     "}";
 

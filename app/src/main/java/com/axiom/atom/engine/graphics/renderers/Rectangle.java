@@ -11,18 +11,17 @@ import com.axiom.atom.engine.core.geometry.AABB;
 
 /**
  * Отрисовывает прямоугольник
- * (С) Atom Engine, Bolat Basheyev 2020
+ * (С) Atom Engine, Bolat Basheyev 2020-2022
  */
 public class Rectangle extends Quad {
 
-    //public int zOrder;
     protected static Program program = null;
 
     private final String vertexShaderCode =
-            "uniform mat4 u_MVPMatrix; " +
-            "attribute vec4 vPosition;" +
+            "uniform mat4 " + Program.MATRIX + "; " +
+            "attribute vec4 " + Program.VERTICES + "; " +
             "void main() { " +
-            "    gl_Position = u_MVPMatrix * vPosition; " +
+            "    gl_Position = " + Program.MATRIX + " * " + Program.VERTICES + "; " +
             "}";
 
     public Rectangle() {

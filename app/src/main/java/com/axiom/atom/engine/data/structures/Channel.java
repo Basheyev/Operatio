@@ -1,18 +1,18 @@
 package com.axiom.atom.engine.data.structures;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 
 /**
- * Очередь для многопоточной работы
- * Эта очередь реализована чтобы решить проблему доступа к элементам очереди
- * при многопоточном доступе и при том чтобы работать на API 16 (без forEach)
+ * Очередь для многопоточной работы и доступа к элементам по индексу
  * @param <T>
  */
 public class Channel<T> implements Serializable {
 
     public static final int MIN_CAPACITY = 64;
-    private int front, rear, capacity;
-    private Object[] queue;
+    private final Object[] queue;
+    private final int front, capacity;
+    private int rear;
 
     public Channel() {
         this(MIN_CAPACITY);
@@ -32,7 +32,7 @@ public class Channel<T> implements Serializable {
         return true;
     }
 
-
+    @SuppressWarnings("unchecked")
     public synchronized T poll() {
         if (front==rear) return null;
         Object element = queue[front];
@@ -41,12 +41,15 @@ public class Channel<T> implements Serializable {
         return (T) element;
     }
 
+    // fixme по идее доступ по индексу - это плохой дизайн так как количество может меняться
+    @SuppressWarnings("unchecked")
     public synchronized T get(int index) {
         if (front==rear) return null;
         if (index<0 || index>=rear) return null;
         return (T) queue[index];
     }
 
+    @SuppressWarnings("unchecked")
     public synchronized T peek() {
         if (front==rear) return null;
         Object element = queue[front];
@@ -71,9 +74,7 @@ public class Channel<T> implements Serializable {
     }
 
     public synchronized int remainingCapacity() {
-        synchronized (this) {
-            return capacity - rear;
-        }
+        return capacity - rear;
     }
 
     public synchronized int size() {

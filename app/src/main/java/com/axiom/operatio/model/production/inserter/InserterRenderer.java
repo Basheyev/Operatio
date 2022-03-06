@@ -57,6 +57,8 @@ public class InserterRenderer extends BlockRenderer {
         // Рассчитываем прогресс движения
         long now = production.getClock();
         float progress = 0;
+
+        // fixme maybe its better to use poll method?
         Item item = inputQueue.get(0);
 
         if (item != null) {
@@ -104,6 +106,7 @@ public class InserterRenderer extends BlockRenderer {
 
     private void drawItem(Camera camera, float x, float y, float width, float height) {
         Channel<Item> inputQueue = inserter.getInputQueue();
+        // fixme maybe its better to use poll method?
         Item item = inputQueue.get(0);
         if (item==null) return;
         float halfWidth = width * 0.5f;

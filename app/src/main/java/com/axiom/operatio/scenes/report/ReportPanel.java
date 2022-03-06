@@ -261,6 +261,7 @@ public class ReportPanel extends Panel {
      * @param ledger главная книга производства
      */
     private void updateChartData(Ledger ledger) {
+        // todo по-моему тут нет синхронизации при доступе к history который может меняться
         LedgerPeriod[] history = ledger.getHistory();
         for (int i=0; i<ledger.getHistoryCounter(); i++) {
             revenueData[i] = history[i].getRevenue();

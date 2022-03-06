@@ -14,11 +14,11 @@ public class Line extends Quad {
     protected static Program program = null;
 
     private final String vertexShaderCode =
-            "uniform mat4 u_MVPMatrix; " +
-                    "attribute vec4 vPosition;" +
-                    "void main() { " +
-                    "    gl_Position = u_MVPMatrix * vPosition; " +
-                    "}";
+            "uniform mat4 " + Program.MATRIX + "; " +
+            "attribute vec4 " + Program.VERTICES + "; " +
+            "void main() { " +
+            "    gl_Position = " + Program.MATRIX + " * " + Program.VERTICES + "; " +
+            "}";
 
     public Line() {
         if (program==null) program = new Program(
