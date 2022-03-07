@@ -77,7 +77,6 @@ public class SceneManager {
         if (scene==null) return;
         if (scene==activeGameScene) activeGameScene = null;
         scene.disposeScene();
-        scene.getSceneObjects().clear();
         scenes.remove(name);
     }
 

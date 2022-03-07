@@ -28,8 +28,6 @@ public class TouchListener implements View.OnTouchListener {
         scaleDetector.onTouchEvent(event);
         // Потому что warning
         if (event.getActionMasked()==MotionEvent.ACTION_UP) v.performClick();
-        // Вызываем обработчик Touch Joystick если включен
-        if (Input.enabled) Input.handleVirtualJoystick(event);
         // Добавляем копию события в очередь событий игрового цикла
         // Так как event используется как единственный экземпляр
         if (!scaling) {

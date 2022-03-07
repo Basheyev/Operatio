@@ -7,7 +7,6 @@ import android.opengl.GLSurfaceView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.axiom.atom.engine.graphics.GraphicsRender;
-import com.axiom.atom.engine.input.Input;
 import com.axiom.atom.engine.input.TouchListener;
 import com.axiom.atom.engine.sound.SoundRenderer;
 
@@ -53,7 +52,6 @@ public class GameView extends GLSurfaceView {
         // Инициализация подсистемы ввода
         //------------------------------------------------------------------------------------
         setOnTouchListener(new TouchListener(context));  // Добавляем обработчик событий ввода
-        Input.initialize(getContext());                  // Инициализируем обработчик джойстика
         //------------------------------------------------------------------------------------
         // Инициализация звуковой подсистемы
         //------------------------------------------------------------------------------------

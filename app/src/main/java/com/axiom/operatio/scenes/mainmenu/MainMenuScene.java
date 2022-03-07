@@ -81,8 +81,10 @@ public class MainMenuScene extends GameScene {
         if (scrollerX<=0) scrollerX=Camera.WIDTH;
     }
 
+
+
     @Override
-    public void preRender(Camera camera) {
+    public void render(Camera camera) {
         float cx = camera.getMinX();
         float cy = camera.getMinY();
         background.setZOrder(0);
@@ -90,11 +92,6 @@ public class MainMenuScene extends GameScene {
         background.draw(camera, cx + scrollerX - Camera.WIDTH, cy, Camera.WIDTH,Camera.HEIGHT);
         logo.setZOrder(3);
         logo.draw(camera, cx + 50, cy + Camera.HEIGHT - logo.getHeight() - 25, logo.getWidth(), logo.getHeight());
-    }
-
-
-    @Override
-    public void postRender(Camera camera) {
         DebugInfo.drawDebugInfo(camera, Color.WHITE);
     }
 

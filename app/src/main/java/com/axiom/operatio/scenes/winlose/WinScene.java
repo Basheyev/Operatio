@@ -121,14 +121,11 @@ public class WinScene extends GameScene implements GameEventSubscriber {
 
     }
 
-    @Override
-    public void preRender(Camera camera) {
-        background.setZOrder(0);
-        background.drawExact(camera, camera.getMinX(), camera.getMinY(), camera.getMaxX(), camera.getMaxY());
-    }
 
     @Override
-    public void postRender(Camera camera) {
+    public void render(Camera camera) {
+        background.setZOrder(0);
+        background.drawExact(camera, camera.getMinX(), camera.getMinY(), camera.getMaxX(), camera.getMaxY());
         DebugInfo.drawDebugInfo(camera, WHITE);
     }
 

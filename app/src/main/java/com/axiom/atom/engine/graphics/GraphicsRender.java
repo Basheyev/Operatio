@@ -4,7 +4,6 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
 import com.axiom.atom.engine.core.GameView;
-import com.axiom.atom.engine.core.GameObject;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.data.structures.Channel;
@@ -15,8 +14,6 @@ import com.axiom.atom.engine.graphics.renderers.Rectangle;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.atom.engine.core.geometry.AABB;
-
-import java.util.ArrayList;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -190,34 +187,14 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
         // удостоверимся, что MVP матрица (камера) не меняется во время отрисовки кадра
         // чтобы избежать отрисовки объектов на одном кадре под разными позициями камеры
         if (scene!=null) synchronized (camera.getCameraMatrix()) {
-
             // Начинаем пакетирование спрайтов
             BatchRender.beginBatching();
-
-            // Вызывается до отрисовки сцены
-            scene.preRender(camera);
-
-            // Отрисовка сцены
-            // Берём объекты игровой сцены
-            ArrayList<GameObject> objects = scene.getSceneObjects();
-            GameObject obj;
-            for (int i=0; i < objects.size(); i++) {
-                obj = objects.get(i);
-                if (obj.active) {
-                    obj.draw(camera);
-                }
-            }
-
-            // Вызывается после отрисовки сцены
-            scene.postRender(camera);
-
+            // Вызывается отрисовка сцены
+            scene.render(camera);
             // Отрисовка пользователского интерфейса
-            // Вызывается после всего рендеринга сцены
             scene.getSceneWidget().draw(camera);
-
             // Завершаем и отрисовываем собранные пакеты спрайтов
             BatchRender.finishBatching(camera);
-
         }
 
         //-------------------------------------------------------------------------------

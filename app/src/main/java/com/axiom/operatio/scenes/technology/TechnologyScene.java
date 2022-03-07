@@ -98,14 +98,11 @@ public class TechnologyScene extends GameScene implements GameEventSubscriber {
         return false;
     }
 
-    @Override
-    public void preRender(Camera camera) {
-        background.setZOrder(0);
-        background.draw(camera,camera.getMinX(),camera.getMinY(), Camera.WIDTH,Camera.HEIGHT);
-    }
 
     @Override
-    public void postRender(Camera camera) {
+    public void render(Camera camera) {
+        background.setZOrder(0);
+        background.draw(camera,camera.getMinX(),camera.getMinY(), Camera.WIDTH,Camera.HEIGHT);
         DebugInfo.drawDebugInfo(camera, Color.WHITE);
     }
 

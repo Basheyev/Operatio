@@ -135,13 +135,8 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
 
 
     @Override
-    public void preRender(Camera camera) {
+    public void render(Camera camera) {
         productionRenderer.draw(camera);
-    }
-
-
-    @Override
-    public void postRender(Camera camera) {
         DebugInfo.drawDebugInfo(camera, Color.WHITE);
     }
 

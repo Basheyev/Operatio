@@ -100,14 +100,9 @@ public class InventoryScene extends GameScene implements GameEventSubscriber {
     }
 
     @Override
-    public void preRender(Camera camera) {
+    public void render(Camera camera) {
         background.setZOrder(0);
         background.draw(camera,camera.getMinX(),camera.getMinY(), Camera.WIDTH,Camera.HEIGHT);
-    }
-
-
-    @Override
-    public void postRender(Camera camera) {
         DebugInfo.drawDebugInfo(camera, Color.WHITE);
     }
 
