@@ -14,7 +14,7 @@ import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.gameplay.OperatioEvents;
-import com.axiom.operatio.model.inventory.Market;
+import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.DebugInfo;
 import com.axiom.operatio.scenes.common.ScenesPanel;

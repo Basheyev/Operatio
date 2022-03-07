@@ -15,7 +15,7 @@ import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.common.FormatUtils;
 import com.axiom.operatio.model.inventory.Inventory;
-import com.axiom.operatio.model.inventory.Market;
+import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 

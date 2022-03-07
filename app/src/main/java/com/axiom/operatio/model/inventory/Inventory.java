@@ -2,6 +2,7 @@ package com.axiom.operatio.model.inventory;
 
 import com.axiom.operatio.model.common.JSONSerializable;
 import com.axiom.operatio.model.ledger.Ledger;
+import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.materials.Item;
 import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;

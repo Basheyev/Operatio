@@ -6,7 +6,7 @@ import com.axiom.operatio.model.gameplay.MissionManager;
 import com.axiom.operatio.model.gameplay.GameMission;
 import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.ledger.Ledger;
-import com.axiom.operatio.model.inventory.Market;
+import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.production.block.BlockBuilder;
