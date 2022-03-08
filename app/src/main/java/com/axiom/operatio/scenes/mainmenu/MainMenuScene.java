@@ -13,6 +13,7 @@ import com.axiom.atom.engine.graphics.gles2d.Texture;
 import com.axiom.atom.engine.graphics.renderers.BatchRender;
 import com.axiom.atom.engine.graphics.renderers.Line;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
+import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.widgets.Panel;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.MainActivity;
@@ -33,6 +34,7 @@ public class MainMenuScene extends GameScene {
     private SlotsPanel slotsPanel;
     private StoryPanel storyPanel;
     private float scrollerX;
+    private int musicID;
 
     @Override
     public String getSceneName() {
@@ -60,19 +62,24 @@ public class MainMenuScene extends GameScene {
             slotsPanel.setZOrder(storyPanel.getZOrder() + 100);
             slotsPanel.setVisible(false);
             widget.addChild(slotsPanel);
+
+            musicID = SoundRenderer.loadMusic(R.raw.music00);
         }
         scrollerX = Camera.WIDTH;
         menuPanel.updateUI();
+
+        // start music
+        SoundRenderer.playMusic(musicID,true);
     }
 
     @Override
     public void changeScene() {
-
+         SoundRenderer.pauseMusic(musicID);
     }
 
     @Override
     public void disposeScene() {
-
+        SoundRenderer.unloadMusic(musicID);
     }
 
     @Override

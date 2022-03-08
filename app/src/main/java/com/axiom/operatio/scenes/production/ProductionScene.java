@@ -3,12 +3,14 @@ package com.axiom.operatio.scenes.production;
 import android.graphics.Color;
 import android.view.MotionEvent;
 
+import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameLoop;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.data.events.GameEvent;
 import com.axiom.atom.engine.data.events.GameEventSubscriber;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.input.ScaleEvent;
+import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.operatio.model.gameplay.GameMission;
 import com.axiom.operatio.model.gameplay.MissionManager;
 import com.axiom.operatio.model.gameplay.OperatioEvents;
@@ -42,6 +44,7 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
     private ModePanel modePanel;
     private HelperPanel helperPanel;
     private AdjustmentPanel adjustmentPanel;
+    private int musicID;
 
     private boolean initialized = false;
 
@@ -86,6 +89,7 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
             if (production.isBlockSelected()) {
                 adjustmentPanel.showBlockInfo(production.getSelectedBlock());
             }
+            musicID = SoundRenderer.loadMusic(R.raw.music01);
             initialized = true;
         }
 
@@ -95,12 +99,14 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
         production.unselectBlock();
         setHelperMissionText();
         ProductionSceneUI.getScenesPanel().updatePlayButtonState();
+
+        SoundRenderer.playMusic(musicID, true);
     }
 
 
     @Override
     public void changeScene() {
-
+        SoundRenderer.pauseMusic(musicID);
     }
 
     @Override
@@ -110,6 +116,7 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
         sceneManager.removeGameScene(TechnologyScene.SCENE_NAME);
         sceneManager.removeGameScene(InventoryScene.SCENE_NAME);
         production.clearBlocks();
+        SoundRenderer.unloadMusic(musicID);
     }
 
     @Override
