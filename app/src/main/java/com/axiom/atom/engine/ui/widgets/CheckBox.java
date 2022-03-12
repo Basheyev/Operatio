@@ -24,7 +24,7 @@ public class CheckBox extends Widget {
     public void draw(Camera camera) {
         if (parent==null || !visible) return;
         AABB bounds = getWorldBounds();
-        AABB parentScissor = scissorsEnabled ? parent.getScissors() : null;
+        AABB parentScissor = scissors ? parent.getScissors() : null;
 
         GraphicsRender.setZOrder(zOrder);
         GraphicsRender.setColor(Color.BLACK);
@@ -62,10 +62,7 @@ public class CheckBox extends Widget {
     }
 
     public void setTextColor(int rgba) {
-        setTextColor(((rgba >> 16) & 0xff) / 255.0f,
-                ((rgba >>  8) & 0xff) / 255.0f,
-                ((rgba      ) & 0xff) / 255.0f,
-                ((rgba >> 24) & 0xff) / 255.0f);
+        GraphicsRender.colorIntToFloat(rgba, textColor);
     }
 
     public void setTextScale(float scale) {

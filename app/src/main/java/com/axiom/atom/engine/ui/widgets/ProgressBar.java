@@ -31,7 +31,7 @@ public class ProgressBar extends Widget {
         if (parent==null || !visible) return;
 
         AABB bounds = getWorldBounds();
-        AABB parentScissor = scissorsEnabled ? parent.getScissors() : null;
+        AABB parentScissor = scissors ? parent.getScissors() : null;
 
         // Нарисовать фон
         GraphicsRender.setZOrder(zOrder);
@@ -77,10 +77,7 @@ public class ProgressBar extends Widget {
 
 
     public void setTextColor(int rgba) {
-        setTextColor(((rgba >> 16) & 0xff) / 255.0f,
-                ((rgba >>  8) & 0xff) / 255.0f,
-                ((rgba      ) & 0xff) / 255.0f,
-                ((rgba >> 24) & 0xff) / 255.0f);
+        GraphicsRender.colorIntToFloat(rgba, textColor);
     }
 
 
@@ -93,10 +90,7 @@ public class ProgressBar extends Widget {
 
 
     public void setBackgroundColor(int rgba) {
-        setBackgroundColor(((rgba >> 16) & 0xff) / 255.0f,
-                ((rgba >>  8) & 0xff) / 255.0f,
-                ((rgba      ) & 0xff) / 255.0f,
-                ((rgba >> 24) & 0xff) / 255.0f);
+        GraphicsRender.colorIntToFloat(rgba, backgroundColor);
     }
 
 }

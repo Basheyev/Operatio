@@ -4,6 +4,7 @@ import android.view.MotionEvent;
 
 import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.geometry.AABB;
+import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.input.ScaleEvent;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
@@ -11,26 +12,30 @@ import com.axiom.atom.engine.ui.listeners.ClickListener;
 import java.util.ArrayList;
 
 /**
- * Реализует базовый элемент UI - виджет пользовательского интерфейса (контейнер)
+ * Виджет пользовательского интерфейса
  */
 public abstract class Widget {
 
+    public static final int DEFAULT_BACKGROUND = 0xCCE6E6E6;     // Стандартный цвет фона
+    public static final int UI_LAYER = Integer.MAX_VALUE / 2;    // с какого слоя начиается UI
+    public static final int UI_LAYER_STRIDE = 16;                // шаг в слоях между виджетами
+    //---------------------------------------------------------------------------------------------
     protected boolean visible = true;        // Виден ли виджет (отображается/обрабатывает события)
     protected boolean opaque = true;         // Является ли виджет непрозрачным
-    protected boolean scissorsEnabled = false;      // Обрезать ли область виджета на уровне рендера
+    protected boolean scissors = false;      // Обрезать ли область виджета на уровне рендера
     protected float[] color = new float[4];  // Цвет виджета (если непрозрачный)
-    protected int zOrder = 1000;             // Слой виджета при отрисовке рендером
-
+    protected int zOrder = UI_LAYER;         // Слой учитываемый при отрисовке рендером
+    //---------------------------------------------------------------------------------------------
     protected Widget parent;                 // Родительский виджет (null для корневых)
     protected ArrayList<Widget> children;    // Дочерние виджеты (вложенные)
     protected AABB localBounds;              // Границы виджета в координатах родительского виджета
     protected AABB worldBounds;              // Границы виджета в мировых координатах
     protected AABB scissorBounds;            // Границы отсечения в экранных координатах
     protected String tag = "";               // Метка виджета
-
+    //---------------------------------------------------------------------------------------------
     protected ClickListener clickListener;   // Обработчик нажатия на виджет
     protected boolean pressed = false;       // Есть ли сейчас нажатие на виджет
-
+    //---------------------------------------------------------------------------------------------
 
     /**
      * Создает корневой виджет сцены на весь экран
@@ -40,22 +45,39 @@ public abstract class Widget {
     }
 
 
+    /**
+     * Создает виджет с заданными координатами
+     * @param x левая координата
+     * @param y нижняя координата
+     * @param width ширина
+     * @param height высота
+     */
     public Widget(float x, float y, float width, float height) {
         this.children = new ArrayList<Widget>();
         this.localBounds = new AABB(x,y, x + width, y + height);
         this.worldBounds = new AABB(x,y, x + width, y + height);
         this.scissorBounds = new AABB(0,0, 0, 0);
+        GraphicsRender.colorIntToFloat(DEFAULT_BACKGROUND, color);
     }
 
+    //-------------------------------------------------------------------------------------------
+    // Методы управления дочерними виджетами
+    //-------------------------------------------------------------------------------------------
 
+    /**
+     * Получить родительский виджет
+     * @return родительский виджет или null если виджет корневой
+     */
     public Widget getParent() {
         return parent;
     }
 
-    public ArrayList<Widget> getChildren() {
-        return children;
-    }
 
+    /**
+     * Добавить дочерний виджет
+     * @param widget добавляемый дочерний виджет
+     * @return true - если добавлен, false - добавить нельзя
+     */
     public boolean addChild(Widget widget) {
         // Уходим если добавляют null
         if (widget==null) return false;
@@ -71,30 +93,59 @@ public abstract class Widget {
         // Добавляем в дочерние
         children.add(widget);
         widget.parent = this;
+        // Перерасчитать порядок отрисовки дочерних элементов
         adjustChildZOrder();
         return true;
     }
 
 
+    /**
+     * Получить список дочерних виджетов
+     * @return список дочерних виджетов
+     */
+    public ArrayList<Widget> getChildren() {
+        return children;
+    }
+
+
+    /**
+     * Получить порядок отрисовки (Z-Order)
+     * @return порядок отрисовки
+     */
     public int getZOrder() {
         return zOrder;
     }
 
 
+    /**
+     * Установить Z-Order виджета - порядок отрисовки
+     * @param zOrder номер слоя
+     */
     public void setZOrder(int zOrder) {
+        // Установит порядок отрисовки
         this.zOrder = zOrder;
+        // Перерасчитать порядок отрисовки дочерних элементов
         adjustChildZOrder();
     }
 
+
+    /**
+     * При изменении Z-Order виджета пересчитывает Z-Order дочерних компонентов
+     */
     protected void adjustChildZOrder() {
         Widget child;
         for (int i=0; i<children.size(); i++) {
             child = children.get(i);
-            child.zOrder = zOrder + 100;
+            child.zOrder = zOrder + UI_LAYER_STRIDE;
             child.adjustChildZOrder();
         }
     }
 
+
+    /**
+     * Удаляет дочерний виджет
+     * @param widget дочерний виджет который необходимо удалить
+     */
     public void removeChild(Widget widget) {
         if (widget!=null) {
             children.remove(widget);
@@ -102,37 +153,9 @@ public abstract class Widget {
         }
     }
 
-    //--------------------------------------------------------------------------------------------
-
-    public void setColor(float r, float g, float b, float alpha) {
-        color[0] = r;
-        color[1] = g;
-        color[2] = b;
-        color[3] = alpha;
-    }
-
-    public void setColor(int rgba) {
-        color[3] = ((rgba >> 24) & 0xff) / 255.0f;
-        color[0] = ((rgba >> 16) & 0xff) / 255.0f;
-        color[1] = ((rgba >>  8) & 0xff) / 255.0f;
-        color[2] = ((rgba      ) & 0xff) / 255.0f;
-    }
-
-    public void getColor(float[] color) {
-        color[0] = this.color[0];
-        color[1] = this.color[1];
-        color[2] = this.color[2];
-        color[3] = this.color[3];
-    }
-
-    public int getColor() {
-        return ((int)(color[3]  * 255.0f) & 0xff) << 24 |
-                ((int)(color[0] * 255.0f) & 0xff) << 16 |
-                ((int)(color[1] * 255.0f) & 0xff) << 8 |
-                ((int)(color[2] * 255.0f) & 0xff);
-    }
-
-    //--------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------
+    // Управление размерами и границами
+    //-------------------------------------------------------------------------------------------
 
     /**
      * Устанавливает границы виджета в координатах родительского виджета
@@ -145,32 +168,27 @@ public abstract class Widget {
         localBounds.setBounds(x, y, x + width, y + height);
     }
 
-
+    /**
+     * Установить положение виджета
+     * @param x левая координата
+     * @param y нижняя координата
+     */
     public void setLocation(float x, float y) {
         setLocalBounds(x, y, localBounds.width, localBounds.height);
     }
 
+
+    /**
+     * Установить ширину и высоту виджета
+     * @param width ширина
+     * @param height высота
+     */
     public void setSize(float width, float height) {
         if (width < 1) width = 1;
         if (height < 1) height = 1;
         setLocalBounds(localBounds.minX, localBounds.minY, width, height);
     }
 
-    public float getX() {
-        return localBounds.minX;
-    }
-
-    public float getY() {
-        return localBounds.minY;
-    }
-
-    public float getWidth() {
-        return localBounds.width;
-    }
-
-    public float getHeight() {
-        return localBounds.height;
-    }
 
     /**
      * Возвращает границы объекта в координатах родительского виджета
@@ -179,9 +197,6 @@ public abstract class Widget {
     public AABB getLocalBounds() {
         return localBounds;
     }
-
-    //--------------------------------------------------------------------------------------------
-
 
     /**
      * Возвращает границы виджета в мировых координатах (без учёта границ родительского виджета)
@@ -227,12 +242,50 @@ public abstract class Widget {
         return scissorBounds;
     }
 
+    public float getX() {
+        return localBounds.minX;
+    }
+
+    public float getY() {
+        return localBounds.minY;
+    }
+
+    public float getWidth() {
+        return localBounds.width;
+    }
+
+    public float getHeight() {
+        return localBounds.height;
+    }
+
+    //--------------------------------------------------------------------------------------------
+    // Управление цветом
     //--------------------------------------------------------------------------------------------
 
+    public void setColor(float r, float g, float b, float alpha) {
+        color[0] = r;
+        color[1] = g;
+        color[2] = b;
+        color[3] = alpha;
+    }
+
+    public void setColor(int rgba) {
+        GraphicsRender.colorIntToFloat(rgba, color);
+    }
+
+
+    public int getColor() {
+        return GraphicsRender.colorFloatToInt(color);
+    }
+
+
+    //--------------------------------------------------------------------------------------------
+    // Отрисовка виджета и его дочерних виджетов
+    //--------------------------------------------------------------------------------------------
 
     /**
      * Отрисовывает виджет и дочерние виджеты
-     * @param camera
+     * @param camera активная камера
      */
     public void draw(Camera camera) {
         // Если нет родителя двигать за камерой
@@ -242,16 +295,44 @@ public abstract class Widget {
             int size = children.size();
             for (int i = 0; i < size; i++) {
                 child = children.get(i);
-                if (child!=null) child.draw(camera);
+                if (child != null) child.draw(camera);
             }
         }
     }
 
-    //---------------------------------------------------------------------------------------------
 
-    public void setClickListener(ClickListener listener) {
-        this.clickListener = listener;
+    public boolean isVisible() {
+        return visible;
     }
+
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+
+    public boolean isOpaque() {
+        return opaque;
+    }
+
+
+    public void setOpaque(boolean opaque) {
+        this.opaque = opaque;
+    }
+
+
+    public boolean isScissorsEnabled() {
+        return scissors;
+    }
+
+
+    public void setScissorsEnabled(boolean scissorsEnabled) {
+        this.scissors = scissorsEnabled;
+    }
+
+    //--------------------------------------------------------------------------------------------
+    // Обработка пользовательского ввода
+    //--------------------------------------------------------------------------------------------
 
     /**
      * Обработчик событий ввода виджета
@@ -263,27 +344,27 @@ public abstract class Widget {
     public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
         if (!visible) return false;
         boolean eventHandeled = false;
+
+        // Берём разрешение экрана в физических координатах
+        GameView view = GameView.getInstance();
+        int viewHeight = view.getHeight();
+
         // Доставляем события дочерним виджетам
         Widget widget;
         int size = children.size();
         for (int i=0; i<size; i++) {
             widget = children.get(i);
-            // Если widget не null
-            if (widget!=null) {
-                if (widget.visible) {
-                    // Взять экранную область дочернего виджета в физических координатах экрана
-                    AABB box = widget.getScissors();
-                    if (box==null) continue;
-                    // Берём разрешение экрана
-                    GameView view = GameView.getInstance();
-                    // Если нажатие попадает в область дочернего виджета в физических координатах
-                    // Переворачиваем Y координату так как система отсчёта GLES идёт снизу
-                    if (box.collides(event.getX(), view.getHeight() - event.getY())) {
-                        eventHandeled = widget.onMotionEvent(event, worldX, worldY);
-                        // Если событие обработано уходим
-                        if (eventHandeled) return true;
-                    }
-                }
+            if (widget==null) continue;
+            if (!widget.visible) continue;
+            // Взять экранную область дочернего виджета в физических координатах экрана
+            AABB box = widget.getScissors();
+            if (box==null) continue;
+            // Если нажатие попадает в область дочернего виджета в физических координатах
+            // Переворачиваем Y координату так как система отсчёта OpenGL идёт снизу
+            if (box.collides(event.getX(), viewHeight - event.getY())) {
+                eventHandeled = widget.onMotionEvent(event, worldX, worldY);
+                // Если событие обработано уходим
+                if (eventHandeled) return true;
             }
         }
         //-------------------------------------------------------------------
@@ -292,8 +373,7 @@ public abstract class Widget {
         int action = event.getActionMasked();
         if (action == MotionEvent.ACTION_DOWN) {
             pressed = true;
-        } else
-        if (action == MotionEvent.ACTION_UP) {
+        } else if (action == MotionEvent.ACTION_UP) {
             // И у виджета есть обработчик клика
             if (pressed && clickListener != null) {
                 // Вызвать обработчик
@@ -306,10 +386,17 @@ public abstract class Widget {
         return eventHandeled;
     }
 
+
+    public void setClickListener(ClickListener listener) {
+        this.clickListener = listener;
+    }
+
     public boolean onScaleEvent(ScaleEvent event, float worldX, float worldY) {
         return false;
     }
 
+    //---------------------------------------------------------------------------------------------
+    // Выставление метки виджета для обработчиков ввода
     //---------------------------------------------------------------------------------------------
 
     public void setTag(String tag) {
@@ -321,28 +408,4 @@ public abstract class Widget {
         return tag;
     }
 
-
-    public boolean isVisible() {
-        return visible;
-    }
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
-    public boolean isOpaque() {
-        return opaque;
-    }
-
-    public void setOpaque(boolean opaque) {
-        this.opaque = opaque;
-    }
-
-    public boolean isScissorsEnabled() {
-        return scissorsEnabled;
-    }
-
-    public void setScissorsEnabled(boolean scissorsEnabled) {
-        this.scissorsEnabled = scissorsEnabled;
-    }
 }

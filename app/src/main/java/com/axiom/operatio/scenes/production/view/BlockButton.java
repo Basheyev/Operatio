@@ -191,7 +191,7 @@ public class BlockButton extends Button {
     public void draw(Camera camera) {
         if (parent==null || !visible) return;
         AABB bounds = getWorldBounds();
-        AABB parentScissor = scissorsEnabled ? parent.getScissors() : null;
+        AABB parentScissor = scissors ? parent.getScissors() : null;
 
         if (opaque) {
             GraphicsRender.setZOrder(zOrder);

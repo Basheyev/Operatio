@@ -6,8 +6,6 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.operatio.model.common.FormatUtils;
 
-import java.text.Normalizer;
-
 import static android.graphics.Color.BLACK;
 
 public class Caption extends Widget {
@@ -35,7 +33,7 @@ public class Caption extends Widget {
         if (parent==null || !visible) return;
 
         AABB bounds = getWorldBounds();
-        AABB parentScissor = scissorsEnabled ? parent.getScissors() : null;
+        AABB parentScissor = scissors ? parent.getScissors() : null;
 
         if (opaque) {
             GraphicsRender.setZOrder(zOrder);
@@ -76,10 +74,7 @@ public class Caption extends Widget {
     }
 
     public void setTextColor(int rgba) {
-        setTextColor(((rgba >> 16) & 0xff) / 255.0f,
-                ((rgba >>  8) & 0xff) / 255.0f,
-                ((rgba      ) & 0xff) / 255.0f,
-                ((rgba >> 24) & 0xff) / 255.0f);
+        GraphicsRender.colorIntToFloat(rgba, textColor);
     }
 
     public void setText(CharSequence caption) {

@@ -335,4 +335,24 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
         render.rectangleRender.draw(camera,rect,scissor);
     }
 
+
+    //-------------------------------------------------------------------------------------------
+    // Конвертация цветов
+    //-------------------------------------------------------------------------------------------
+
+    public static void colorIntToFloat(int rgba, float[] color) {
+        color[3] = ((rgba >> 24) & 0xff) / 255.0f;
+        color[0] = ((rgba >> 16) & 0xff) / 255.0f;
+        color[1] = ((rgba >>  8) & 0xff) / 255.0f;
+        color[2] = ((rgba      ) & 0xff) / 255.0f;
+    }
+
+
+    public static int colorFloatToInt(float[] color) {
+        return  ((int)(color[3] * 255.0f) & 0xff) << 24 |
+                ((int)(color[0] * 255.0f) & 0xff) << 16 |
+                ((int)(color[1] * 255.0f) & 0xff) << 8 |
+                ((int)(color[2] * 255.0f) & 0xff);
+    }
+
 }

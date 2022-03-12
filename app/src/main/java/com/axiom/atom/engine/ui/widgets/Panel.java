@@ -9,7 +9,6 @@ public class Panel extends Widget {
 
     public Panel() {
         super();
-        setColor(0.9f, 0.9f, 0.9f, 0.8f);
     }
 
     @Override
@@ -20,7 +19,7 @@ public class Panel extends Widget {
             GraphicsRender.setZOrder(zOrder);
             GraphicsRender.setColor(color[0], color[1], color[2], color[3]);
             AABB bnds = getWorldBounds();
-            GraphicsRender.drawRectangle(bnds, scissorsEnabled ? parent.getScissors() : null);
+            GraphicsRender.drawRectangle(bnds, scissors ? parent.getScissors() : null);
         }
 
         super.draw(camera);
