@@ -46,9 +46,9 @@ public class Line extends Quad {
         float length = lineLength(x1, y1, x2, y2);              // Считаем длину линии
         float theta = (float) Math.atan((y2 - y1)/(x2 - x1));   // Считаем угол к оси X
 
-        initializeVertices();                                   // Загружаем вершини
+        initializeVertices();                                   // Загружаем вершины
         evaluateOffset(0.5f, 0.0f);                        // Смещаем квадрат вправо
-        evaluateScale(length, lineThickness);                   // Масштабируем на длину и тольщину
+        evaluateScale(length, lineThickness);                   // Масштабируем на длину и толщину
         evaluateRotation(theta);                                // Поворачаем на вычисленный угол
         evaluateOffset(x1, y1);                                 // Смещаем в координату x1, y1
 

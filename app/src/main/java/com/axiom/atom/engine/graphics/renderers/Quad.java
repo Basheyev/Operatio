@@ -1,6 +1,7 @@
 package com.axiom.atom.engine.graphics.renderers;
 
 import com.axiom.atom.engine.core.geometry.AABB;
+import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Program;
 import com.axiom.atom.engine.graphics.gles2d.Texture;
 
@@ -120,10 +121,7 @@ public class Quad {
      * @param rgba цвет в виде целого числа
      */
     public void setColor(int rgba) {
-        setColor(((rgba >> 16 ) & 0xff) / 255.0f,
-                ((rgba >>  8  ) & 0xff) / 255.0f,
-                ((rgba        ) & 0xff) / 255.0f,
-                ((rgba >> 24) & 0xff) / 255.0f);
+        GraphicsRender.colorIntToFloat(rgba, color);
     }
 
     /**
@@ -131,11 +129,7 @@ public class Quad {
      * @return цвет в виде целого числа
      */
     public int getColor() {
-        int r = (int) (color[0] * 255.0f) & 0xff;
-        int g = (int) (color[1] * 255.0f) & 0xff;
-        int b = (int) (color[2] * 255.0f) & 0xff;
-        int a = (int) (color[3] * 255.0f) & 0xff;
-        return (a << 24 | r << 16 | g << 8 | b);
+        return GraphicsRender.colorFloatToInt(color);
     }
 
     /**
@@ -282,5 +276,13 @@ public class Quad {
 
     public void setZOrder(int zOrder) {
         this.zOrder = zOrder;
+    }
+
+    public void copyFrom(Quad src) {
+        this.program = src.program;
+        this.texture = src.texture;
+        this.zOrder = src.zOrder;
+        this.scissor = src.scissor;
+        System.arraycopy(src.color, 0, this.color, 0, 4);
     }
 }

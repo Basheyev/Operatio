@@ -82,7 +82,7 @@ public class BatchRender {
                                             float[] vert, float[] color, int zOrder, AABB scissor) {
         // Проверяем есть ли ещё место
         if (entriesCounter + 1 >= quads.length) {
-            Log.e("BATCH RENDERER", "Max sprites count reached " + MAX_QUADS);
+            Log.e("BATCH RENDERER", "Max quad count reached " + MAX_QUADS);
             return;
         }
         // Копируем данные в соответствующую запись
@@ -149,11 +149,11 @@ public class BatchRender {
         clearBatch();                  // Начинаем новую партию элементов на отрисовку
         Quad quad = quads[0];          // Берём первый элемент в отсортированном списке отрисовки
         addQuadToBatch(quad);          // Добавляем в партию на отрисовку
-        copyQuad(quad, previous);      // Сохраняем элемент как предыдущий обработанный
+        previous.copyFrom(quad);       // Сохраняем элемент как предыдущий обработанный
 
         drawCallsCounter = 0;
         scissorCounter = 0;
-        boolean equals, lastEntry;
+        boolean equals;
 
         // Последовательно проходим по отсортированному списку элементов на отрисовку
         for (int i=1; i<entriesCounter; i++) {
@@ -163,14 +163,14 @@ public class BatchRender {
             // Если текущий и предыдущий элемент одинаковы, то добавляем в одну партию элментов
             if (equals) {
                 addQuadToBatch(quad);
-                copyQuad(quad, previous);
+                previous.copyFrom(quad);
             } else {
                 // Если предыдущий элекмент отличается, отрисовываем партию элементов
                 renderBatch(camera.getCameraMatrix(), previous);
                 // Начинаем новую партию элементов на отрисовку
                 clearBatch();
                 addQuadToBatch(quad);
-                copyQuad(quad, previous);
+                previous.copyFrom(quad);
             }
         }
 
@@ -189,20 +189,23 @@ public class BatchRender {
      */
     private static void renderBatch(float[] cameraMatrix, Quad quad) {
         batchRendered = true;
-
+        // Копируем вершинные и текстурные координаты в нативную память
         loadBatchToBuffer();
-
+        // если нечего отрисовывать, то уходим
         if (verticesBatch.getVertexCount()==0) return;
-
+        // если применяются область отсечения, включам ножницы
         if (quad.scissor!=null) enableScissors(quad.scissor);
 
+        // Используем шейдер
         Program program = quad.program;
         if (program==null) return;
         program.use();
 
+        // Включаем функцию смешивания цветов для прозрачности
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
+        // Если не текстурирован, сразу отрисовываем передавая ццвет
         if (quad.texture==null) {
             int vertexHandler = program.setAttribVertexArray(Program.VERTICES, verticesBatch);
             program.setUniformVec4Value(Program.COLOR, quad.color);
@@ -210,6 +213,7 @@ public class BatchRender {
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, verticesBatch.getVertexCount());
             program.disableVertexArray(vertexHandler);
         } else {
+            // Если текстурирован, передаем текстурные координаты и отрисовываем
             quad.texture.bind();
             int vertexHandler = program.setAttribVertexArray(Program.VERTICES, verticesBatch);
             int textureHandler = program.setAttribVertexArray(Program.TEXCOORD, texCoordBatch);
@@ -220,22 +224,25 @@ public class BatchRender {
             program.disableVertexArray(vertexHandler);
         }
 
+        // Отключаем смешивание цветов
         GLES20.glDisable(GLES20.GL_BLEND);
 
+        // Отключаем ножницы если они были включены
         if (quad.scissor!=null) disableScissor();
 
+        // Увеличиваем счетчик вызовов отрисовки
         drawCallsCounter++;
-    }
-
-    public static int getScissorsApplied() { return scissorsApplied; }
-
-    public static int getEntriesCount() {
-        return quadsProcessed;
     }
 
     public static int getDrawCallsCount() {
         return drawCallsMade;
     }
+
+    public static int getEntriesCount() {
+        return quadsProcessed;
+    }
+
+    public static int getScissorsApplied() { return scissorsApplied; }
 
     protected static void enableScissors(AABB clip) {
         GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
@@ -253,7 +260,7 @@ public class BatchRender {
     }
 
     //-------------------------------------------------------------------------------------------
-    // Вспомогательные методы для пакетирования
+    // Вспомогательные методы для формирования партий отрисовки
     //-------------------------------------------------------------------------------------------
 
     private static void clearBatch() {
@@ -270,14 +277,6 @@ public class BatchRender {
     private static void loadBatchToBuffer() {
         verticesBatch.prepare();
         texCoordBatch.prepare();
-    }
-
-    private static void copyQuad(Quad src, Quad dst) {
-        dst.program = src.program;
-        dst.texture = src.texture;
-        dst.zOrder = src.zOrder;
-        dst.scissor = src.scissor;
-        System.arraycopy(src.color, 0, dst.color, 0, 4);
     }
 
 }
