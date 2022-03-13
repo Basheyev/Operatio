@@ -1,8 +1,12 @@
 package com.axiom.atom.engine.graphics;
 
+import android.graphics.Typeface;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
+import androidx.core.content.res.ResourcesCompat;
+
+import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.SceneManager;
@@ -82,7 +86,7 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
 
 
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        textRender = new Text("sans-serif");
+        textRender = new Text();
         lineRender = new Line();
         rectangleRender = new Rectangle();
     }
@@ -272,6 +276,17 @@ public class GraphicsRender implements GLSurfaceView.Renderer {
     public static void drawText(CharSequence text, float x, float y, float scale, AABB scissor) {
         if (render==null) return;
         render.textRender.draw(camera, text, x, y, scale, scissor);
+    }
+
+
+    public static void setTypeface(Typeface typeface) {
+        if (render==null) return;
+        render.textRender.setTypeface(typeface);
+    }
+
+    public static void setTypeface(String fontName) {
+        if (render==null) return;
+        render.textRender.setTypeface(fontName);
     }
 
     public static float getTextWidth(CharSequence text, float scale) {

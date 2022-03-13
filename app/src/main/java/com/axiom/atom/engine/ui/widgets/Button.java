@@ -1,5 +1,11 @@
 package com.axiom.atom.engine.ui.widgets;
 
+import android.graphics.Typeface;
+
+import androidx.core.content.res.ResourcesCompat;
+
+import com.axiom.atom.R;
+import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
@@ -20,7 +26,7 @@ public class Button extends Widget {
         super();
         text = "";
         textBuffer = new StringBuffer();
-        textRenderer = new Text("sans-serif");
+        textRenderer = new Text();
         textRenderer.setHorizontalAlignment(Text.ALIGN_CENTER);
         textRenderer.setVerticalAlignment(Text.ALIGN_CENTER);
         setSize(64, 64);
@@ -77,6 +83,15 @@ public class Button extends Widget {
         }
 
         super.draw(camera);
+    }
+
+
+    public void setTypeface(Typeface typeface) {
+        textRenderer.setTypeface(typeface);
+    }
+
+    public void setTypeface(String fontName) {
+        textRenderer.setTypeface(fontName);
     }
 
     public void setBackground(Sprite background) {

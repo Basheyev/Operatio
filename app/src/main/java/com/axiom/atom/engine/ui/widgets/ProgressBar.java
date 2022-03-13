@@ -1,6 +1,7 @@
 package com.axiom.atom.engine.ui.widgets;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
@@ -19,7 +20,7 @@ public class ProgressBar extends Widget {
     public ProgressBar() {
         super();
         setColor(Color.YELLOW);
-        textRenderer = new Text("sans-serif");
+        textRenderer = new Text();
         textRenderer.setHorizontalAlignment(Text.ALIGN_CENTER);
         textRenderer.setVerticalAlignment(Text.ALIGN_CENTER);
         setSize(180, 60);
@@ -57,6 +58,14 @@ public class ProgressBar extends Widget {
         return progress;
     }
 
+
+    public void setTypeface(Typeface typeface) {
+        textRenderer.setTypeface(typeface);
+    }
+
+    public void setTypeface(String fontName) {
+        textRenderer.setTypeface(fontName);
+    }
 
     public void setProgress(int progress) {
         if (progress < 0) progress = 0;

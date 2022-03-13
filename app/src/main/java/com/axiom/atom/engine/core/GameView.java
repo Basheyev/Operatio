@@ -35,6 +35,7 @@ public class GameView extends GLSurfaceView {
 
     private GameView(Context context, GameScene gameScene) {
         super(context);
+        gameView = this;
         initializeGameEngine(gameScene, context);
     }
 

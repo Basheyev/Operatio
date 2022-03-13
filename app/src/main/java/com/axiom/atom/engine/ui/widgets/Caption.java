@@ -1,5 +1,7 @@
 package com.axiom.atom.engine.ui.widgets;
 
+import com.axiom.atom.R;
+import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
@@ -8,17 +10,36 @@ import com.axiom.operatio.model.common.FormatUtils;
 
 import static android.graphics.Color.BLACK;
 
+import android.graphics.Typeface;
+
+import androidx.core.content.res.ResourcesCompat;
+
 public class Caption extends Widget {
 
     private Text textRenderer;
     private CharSequence captionText;
-    private final StringBuffer textBuffer;
+    private StringBuffer textBuffer;
     private float[] textColor = {0,0,0,1};
     private float scale = 1.0f;
 
     public Caption(CharSequence text) {
+        this(text,Text.DEFAULT_FONT);
+    }
+
+    public Caption(CharSequence text, String fontname) {
         super();
-        textRenderer = new Text("sans-serif");
+        textRenderer = new Text(fontname);
+        initialize(text);
+    }
+
+    public Caption(CharSequence text, Typeface font) {
+        super();
+        textRenderer = new Text(font);
+        initialize(text);
+    }
+
+
+    private void initialize(CharSequence text) {
         textRenderer.setHorizontalAlignment(Text.ALIGN_LEFT);
         textRenderer.setVerticalAlignment(Text.ALIGN_CENTER);
         captionText = text;
@@ -27,6 +48,8 @@ public class Caption extends Widget {
         setColor(BLACK);
         opaque = false;
     }
+
+
 
     @Override
     public void draw(Camera camera) {
@@ -65,6 +88,14 @@ public class Caption extends Widget {
         super.draw(camera);
     }
 
+
+    public void setTypeface(Typeface typeface) {
+        textRenderer.setTypeface(typeface);
+    }
+
+    public void setTypeface(String fontName) {
+        textRenderer.setTypeface(fontName);
+    }
 
     public void setTextColor(float r, float g, float b, float a) {
         textColor[0] = r;

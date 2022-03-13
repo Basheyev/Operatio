@@ -9,6 +9,8 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.Log;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
@@ -25,6 +27,8 @@ import java.util.HashMap;
  */
 public class Text {
 
+    public static final String DEFAULT_FONT = "sans-serif";
+
     public static final int ALIGN_NONE = 0;
     public static final int ALIGN_LEFT = 1;
     public static final int ALIGN_RIGHT = 2;
@@ -32,7 +36,7 @@ public class Text {
     public static final int ALIGN_TOP = 4;
     public static final int ALIGN_BOTTOM = 5;
 
-    protected static HashMap<String, RasterizedFont> fonts = new HashMap<>();
+    protected static HashMap<Typeface, RasterizedFont> fonts = new HashMap<>();
     protected static int fontSize = 24;     // Размер генерируемого шрифта в пикселях
 
     public static class RasterizedFont {
@@ -46,29 +50,45 @@ public class Text {
 
     private int zOrder = 0;
     private RasterizedFont font;
-    private float[] color = { 1, 1, 1, 1};
+    private final float[] color = { 1, 1, 1, 1};
     private int horizontalAlignment = ALIGN_NONE;
     private int verticalAlignment = ALIGN_NONE;
     private ArrayList<TextureRegion> charRegions;
 
 
     /**
-     * Конструктор чтобы сформировать шрифт по названию
+     * Конструктор чтобы сформировать рендер со стандартным шрифтом
+     */
+    public Text() {
+        this(DEFAULT_FONT);
+    }
+
+
+    /**
+     * Конструктор чтобы сформировать рендер по шрифту
+     * @param typeface шрифт
+     */
+    public Text(Typeface typeface) {
+        setTypeface(typeface);
+    }
+
+
+    /**
+     * Конструктор чтобы сформировать рендер по названию шрифта
      * @param fontName название шрифта
      */
     public Text(String fontName) {
-        this.font = rasterizeFont(fontName, fontSize);
-        // Получаем все кадры (символы) спрайта
-        charRegions = font.fontSprite.getAtlas().getRegions();
+        setTypeface(fontName);
     }
 
     /**
-     * Конструктор чтобы сформировать шрифт из спрайта
+     * Конструктор чтобы сформировать рендер по шрифту из спрайта
      * @param fontSprite спрайт который содержит шрифт
      */
     public Text(Sprite fontSprite) {
         this(fontSprite, 1);
     }
+
 
     /**
      * Конструктор чтобы сформировать шрифт из спрайта с отсутпами
@@ -87,6 +107,24 @@ public class Text {
         charRegions = font.fontSprite.getAtlas().getRegions();
         this.font = fnt;
     }
+
+
+    public void setTypeface(Typeface typeface) {
+        // Создаем шрифт которым будем рисовать
+        this.font = rasterizeFont(typeface, fontSize);
+        // Получаем все кадры (символы) спрайта
+        charRegions = font.fontSprite.getAtlas().getRegions();
+    }
+
+
+    public void setTypeface(String fontName) {
+        // Создаем шрифт которым будем рисовать
+        Typeface typeface = Typeface.create(fontName, Typeface.NORMAL);
+        this.font = rasterizeFont(typeface, fontSize);
+        // Получаем все кадры (символы) спрайта
+        charRegions = font.fontSprite.getAtlas().getRegions();
+    }
+
 
     /**
      * Отрисовывает текст без экранной области отсечения
@@ -258,10 +296,7 @@ public class Text {
 
 
     public void setColor(int rgba) {
-        setColor(((rgba >> 24) & 0xff) / 255.0f,
-                ((rgba >> 16) & 0xff) / 255.0f,
-                ((rgba >>  8) & 0xff) / 255.0f,
-                ((rgba      ) & 0xff) / 255.0f);
+        GraphicsRender.colorIntToFloat(rgba, color);
     }
 
 
@@ -303,14 +338,14 @@ public class Text {
 
     /**
      * Генерирует текстуру шрифта на базе указанного
-     * @param fontName названией шрифта
+     * @param typeface шрифт
      * @param size размер шрифта в пикселях
      * @return спрайт где каждому региону соответствует символ
      */
-    protected RasterizedFont rasterizeFont(String fontName, int size) {
+    protected RasterizedFont rasterizeFont(Typeface typeface, int size) {
 
         // Если уже растеризовали этот шрифт то просто его возвращаем
-        RasterizedFont rasterizedFont = fonts.get(fontName);
+        RasterizedFont rasterizedFont = fonts.get(typeface);
         if (rasterizedFont!=null) return rasterizedFont;
 
         // Если такого не делали, начинаем создавать растеризованный шрифт
@@ -336,14 +371,11 @@ public class Text {
         // Берем канвас, чтобы мы могли рисовать символы
         Canvas canvas = new Canvas(bitmap);
 
-        // Создаем шрифт которым будем рисовать
-        Typeface font = Typeface.create(fontName, Typeface.NORMAL);
-
         // Создаем стиль, которым будем рисовать
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setSubpixelText(true);
-        paint.setTypeface(font);
+        paint.setTypeface(typeface);
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.WHITE);
         paint.setTextSize(size);
@@ -401,7 +433,7 @@ public class Text {
         rasterizedFont.spacing = 1;
 
         // Добавляем в общий список растеризованых шрифтов
-        fonts.put(fontName, rasterizedFont);
+        fonts.put(typeface, rasterizedFont);
 
         // Возвращаем растеризованый шрифт
         return rasterizedFont;

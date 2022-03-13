@@ -1,8 +1,10 @@
 package com.axiom.operatio.scenes.mainmenu;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 
 import com.axiom.atom.R;
+import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
@@ -15,6 +17,8 @@ import com.axiom.operatio.scenes.production.ProductionScene;
 
 import static com.axiom.operatio.scenes.mainmenu.SlotsPanel.MODE_LOAD_GAME;
 import static com.axiom.operatio.scenes.mainmenu.SlotsPanel.MODE_SAVE_GAME;
+
+import androidx.core.content.res.ResourcesCompat;
 
 /**
  * Кнопки главного меню
@@ -29,6 +33,7 @@ public class MenuPanel extends Panel {
     protected GameSaveLoad gameSaveLoad;
     protected int tickSound;
     protected Button[] buttons;
+    protected Typeface menuFont;
 
     protected ClickListener listener = new ClickListener() {
         @Override
@@ -61,6 +66,8 @@ public class MenuPanel extends Panel {
         Button button;
         String caption;
 
+        menuFont = ResourcesCompat.getFont(GameView.getInstance().getContext(), R.font.game_robot);
+
         buttons = new Button[5];
         for (int i = 0; i < 5; i++) {
             if (i==0) caption = "Resume game"; else
@@ -74,6 +81,7 @@ public class MenuPanel extends Panel {
             button.setTextColor(1,1,1,1);
             button.setTextScale(1.8f);
             button.setClickListener(listener);
+            button.setTypeface(menuFont);
             this.addChild(button);
             buttons[i] = button;
         }
