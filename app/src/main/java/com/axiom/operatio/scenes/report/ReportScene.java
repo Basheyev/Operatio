@@ -54,7 +54,7 @@ public class ReportScene extends GameScene {
     }
 
     @Override
-    public void changeScene() {
+    public void changeScene(String nextScene) {
 
     }
 

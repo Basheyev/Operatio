@@ -97,7 +97,7 @@ public class SceneManager {
         gameScene.resources = resources;
         gameScene.startScene();
         gameScene.started = true;
-        if (activeGameScene!=null) activeGameScene.changeScene();
+        if (activeGameScene!=null) activeGameScene.changeScene(name);
         activeGameScene = gameScene;
         return true;
     }

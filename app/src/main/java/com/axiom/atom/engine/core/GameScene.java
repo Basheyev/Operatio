@@ -22,12 +22,12 @@ public abstract class GameScene {
     protected Resources resources;
     public boolean started = false;
 
-    protected Widget sceneWidget = new Widget() { };  // Корневой виджет сцены
+    protected Widget sceneWidget = new Widget() { };    // Корневой виджет сцены
 
     public abstract String getSceneName();
-    public abstract void startScene();                // Вызывается при запуске сцены
-    public abstract void disposeScene();              // Вызывается из потока GameLoop
-    public abstract void changeScene();               // Вызывается при смене сцены на другую
+    public abstract void startScene();                  // Вызывается при запуске сцены
+    public abstract void disposeScene();                // Вызывается из потока GameLoop
+    public abstract void changeScene(String nextScene); // Вызывается при смене сцены на другую
 
     //----------------------------------------------------------------------------------------
     // Важно: избегайте создание объектов в этих методах, так они вызываются 60 раз в секунду

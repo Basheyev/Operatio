@@ -52,7 +52,7 @@ public class TechnologyScene extends GameScene implements GameEventSubscriber {
     }
 
     @Override
-    public void changeScene() {
+    public void changeScene(String nextScene) {
 
     }
 

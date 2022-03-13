@@ -55,13 +55,14 @@ public class MainMenuScene extends GameScene {
             widget.addChild(menuPanel);
 
             storyPanel = new StoryPanel();
+            storyPanel.setZOrder(menuPanel.getZOrder());
             storyPanel.setLocalBounds(menuPanel.getX() + menuPanel.getWidth() + 50, 290, 980, 560);
             widget.addChild(storyPanel);
 
             slotsPanel = new SlotsPanel(this);
-            slotsPanel.setZOrder(storyPanel.getZOrder() + 100);
             slotsPanel.setVisible(false);
             widget.addChild(slotsPanel);
+            slotsPanel.setZOrder(storyPanel.getZOrder() + 100);
 
             musicID = SoundRenderer.loadMusic(R.raw.music00);
         }
@@ -73,7 +74,7 @@ public class MainMenuScene extends GameScene {
     }
 
     @Override
-    public void changeScene() {
+    public void changeScene(String nextScene) {
          SoundRenderer.pauseMusic(musicID);
     }
 
@@ -99,7 +100,7 @@ public class MainMenuScene extends GameScene {
         background.draw(camera, cx + scrollerX - Camera.WIDTH, cy, Camera.WIDTH,Camera.HEIGHT);
         logo.setZOrder(3);
         logo.draw(camera, cx + 50, cy + Camera.HEIGHT - logo.getHeight() - 25, logo.getWidth(), logo.getHeight());
-        DebugInfo.drawDebugInfo(camera, Color.WHITE);
+        //DebugInfo.drawDebugInfo(camera, Color.WHITE);
     }
 
     @Override

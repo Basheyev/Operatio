@@ -27,7 +27,7 @@ public class SlotsPanel extends Panel {
     private static final String LOAD_GAME = "LOAD GAME";
     private static final String SAVE_GAME = "SAVE GAME";
 
-    public static final int PANEL_COLOR = 0xCC505050;
+    public static final int PANEL_COLOR = 0xD0405060;
     public static final int LOAD_GAME_BACKGROUND = 0xBC2fe682;
     public static final int SAVE_GAME_BACKGROUND = 0xBCe6bb2f;
 

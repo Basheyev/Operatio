@@ -17,6 +17,7 @@ import com.axiom.operatio.model.gameplay.OperatioEvents;
 import com.axiom.operatio.model.production.ProductionRenderer;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.DebugInfo;
+import com.axiom.operatio.scenes.mainmenu.MainMenuScene;
 import com.axiom.operatio.scenes.winlose.WinScene;
 import com.axiom.operatio.scenes.production.view.HelperPanel;
 import com.axiom.operatio.scenes.report.ReportScene;
@@ -89,7 +90,14 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
             if (production.isBlockSelected()) {
                 adjustmentPanel.showBlockInfo(production.getSelectedBlock());
             }
-            musicID = SoundRenderer.loadMusic(R.raw.music01);
+
+            int randomize = (int) (1 + Math.round(Math.random() * 2));
+            switch (randomize) {
+                case 1: musicID = SoundRenderer.loadMusic(R.raw.music01); break;
+                case 2: musicID = SoundRenderer.loadMusic(R.raw.music02); break;
+                default: musicID = SoundRenderer.loadMusic(R.raw.music03); break;
+            }
+
             initialized = true;
         }
 
@@ -100,13 +108,17 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
         setHelperMissionText();
         ProductionSceneUI.getScenesPanel().updatePlayButtonState();
 
-        SoundRenderer.playMusic(musicID, true);
+        if (!SoundRenderer.isMusicPlaying(musicID)) {
+            SoundRenderer.playMusic(musicID, true);
+        }
     }
 
 
     @Override
-    public void changeScene() {
-        SoundRenderer.pauseMusic(musicID);
+    public void changeScene(String nextScene) {
+        if (nextScene.equals(MainMenuScene.SCENE_NAME)) {
+            SoundRenderer.pauseMusic(musicID);
+        }
     }
 
     @Override

@@ -1,12 +1,10 @@
 package com.axiom.operatio.scenes.mainmenu;
 
-import android.graphics.Color;
 import android.graphics.Typeface;
 
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameView;
 import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 import com.axiom.atom.engine.ui.widgets.Button;
@@ -25,7 +23,8 @@ import androidx.core.content.res.ResourcesCompat;
  */
 public class MenuPanel extends Panel {
 
-    public final int panelColor = 0xCC505050;
+    public static final int BUTTON_COLOR   = 0xC0122063;
+    public static final int PANEL_COLOR    = 0xD0405060;
     public static final int AUTO_SAVE_SLOT = 0;
 
     protected MainMenuScene mainMenuScene;
@@ -56,7 +55,7 @@ public class MenuPanel extends Panel {
         mainMenuScene = menuScene;
         gameSaveLoad = menuScene.getGameSaveLoad();
         setLocalBounds(50,50,600,800);
-        setColor(panelColor);
+        setColor(PANEL_COLOR);
         buildUI();
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
     }
@@ -77,7 +76,7 @@ public class MenuPanel extends Panel {
             button = new Button(caption);
             button.setTag("" + i);
             button.setLocalBounds(50, 610 - ( i * 140), 500, 100);
-            button.setColor(Color.GRAY);
+            button.setColor(BUTTON_COLOR);
             button.setTextColor(1,1,1,1);
             button.setTextScale(1.8f);
             button.setClickListener(listener);
