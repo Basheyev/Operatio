@@ -187,4 +187,11 @@ public class SoundRenderer {
     }
 
 
+    public static void setListener(int musicID, MediaPlayer.OnCompletionListener listener) {
+        MediaPlayer mediaPlayer = music.get(musicID);
+        if (mediaPlayer==null) return;
+        mediaPlayer.setOnCompletionListener(listener);
+    }
+
+
 }

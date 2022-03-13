@@ -19,6 +19,7 @@ import com.axiom.operatio.model.market.Market;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.scenes.common.DebugInfo;
 import com.axiom.operatio.scenes.common.ScenesPanel;
+import com.axiom.operatio.scenes.production.ProductionScene;
 
 /**
  * Сцена склада
@@ -59,7 +60,7 @@ public class InventoryScene extends GameScene implements GameEventSubscriber {
 
     @Override
     public void changeScene(String nextScene) {
-
+        SceneManager.getInstance().getScene(ProductionScene.SCENE_NAME).changeScene(nextScene);
     }
 
     @Override
