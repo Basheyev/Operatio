@@ -8,8 +8,8 @@ public class GameEvent {
 
     public static final int ALL_TOPICS = 0;
 
-    private int topic;
-    private Object payload;
+    private final int topic;
+    private final Object payload;
 
     public GameEvent(int topic, Object payload) {
         this.topic = topic;

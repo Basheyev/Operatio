@@ -290,6 +290,7 @@ public abstract class Widget {
     public void draw(Camera camera) {
         // Если нет родителя двигать за камерой
         if (parent==null) camera.getCameraBounds(localBounds);
+        // Если виджет видимый, то отрисовать дочерние виджеты
         if (visible) {
             Widget child;
             int size = children.size();
