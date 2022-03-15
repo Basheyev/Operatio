@@ -31,6 +31,7 @@ public class SoundRenderer {
 
 
     public static void initialize(GameView view) {
+
         gameView = view;
         createSoundPool();
         loadedSounds = new HashMap<>();
@@ -135,7 +136,6 @@ public class SoundRenderer {
     // Управление музыкой
     //-------------------------------------------------------------------------------------
     public static int loadMusic(int resourceID) {
-        if (!initialized) initialize(GameView.getInstance());
         MediaPlayer mediaPlayer = MediaPlayer.create(gameView.getContext(), resourceID);
         if (mediaPlayer==null) return -1;
         music.add(mediaPlayer);
@@ -184,7 +184,6 @@ public class SoundRenderer {
         MediaPlayer mediaPlayer = music.get(musicID);
         if (mediaPlayer==null) return;
         mediaPlayer.release();
-        music = null;
     }
 
 
