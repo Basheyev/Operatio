@@ -20,12 +20,12 @@ import java.util.Map;
 public class SoundRenderer {
 
     protected static HashMap<Integer, Integer> loadedSounds;
+    protected static ArrayList<MediaPlayer> music = null;
 
     public static final int MAX_STREAMS = 4;
     protected static boolean initialized = false;
     protected static GameView gameView;
     protected static SoundPool soundPool;
-    protected static ArrayList<MediaPlayer> music;
     protected static float soundLeftVolume = 1;
     protected static float soundRightVolume = 1;
 
@@ -34,7 +34,7 @@ public class SoundRenderer {
         gameView = view;
         createSoundPool();
         loadedSounds = new HashMap<>();
-        music = new ArrayList<MediaPlayer>();
+        music = new ArrayList<>();
         initialized = true;
     }
 
@@ -135,6 +135,7 @@ public class SoundRenderer {
     // Управление музыкой
     //-------------------------------------------------------------------------------------
     public static int loadMusic(int resourceID) {
+        if (!initialized) initialize(GameView.getInstance());
         MediaPlayer mediaPlayer = MediaPlayer.create(gameView.getContext(), resourceID);
         if (mediaPlayer==null) return -1;
         music.add(mediaPlayer);

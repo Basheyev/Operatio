@@ -6,6 +6,8 @@ import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
+import com.axiom.operatio.model.inventory.Inventory;
+import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
@@ -40,7 +42,23 @@ public class ImportBufferRenderer extends BlockRenderer {
 
     public void draw(Camera camera, float x, float y, float width, float height) {
         drawJoints(camera, x, y, width, height);
+        // нарисовать импортер
         sprite.draw(camera,x,y, width, height);
+
+        // нарисовать материал который он импортиурет
+
+        float quarterWidth = width / 4;
+        float quarterHeight = height / 4;
+        Material material = importBuffer.getImportMaterial();
+        boolean outOfStock = importBuffer.getProduction().getInventory().getBalance(material) == 0;
+        if (!outOfStock) {
+            Sprite materialImage = material.getImage();
+            float alpha = materialImage.getAlpha();
+            materialImage.setAlpha(0.8f);
+            materialImage.setZOrder(sprite.getZOrder() + 1);
+            materialImage.draw(camera, x + quarterWidth, y + quarterHeight * 1.45f, width - quarterWidth * 2, height - quarterHeight * 2);
+            materialImage.setAlpha(alpha);
+        }
     }
 
 

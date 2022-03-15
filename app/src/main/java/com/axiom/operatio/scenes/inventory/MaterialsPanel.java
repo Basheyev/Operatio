@@ -83,7 +83,7 @@ public class MaterialsPanel extends Panel {
         panel.setLocalBounds(24,50, 820, 880);
         panel.setColor(0xCC505050);
 
-        Caption caption = new Caption("Warehouse");
+        Caption caption = new Caption("Inventory");
         caption.setTextScale(1.5f);
         caption.setTextColor(WHITE);
         caption.setLocalBounds(30, panel.getHeight() - 100, 300, 100);

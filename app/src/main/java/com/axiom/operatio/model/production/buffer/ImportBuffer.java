@@ -111,6 +111,6 @@ public class ImportBuffer extends Block implements JSONSerializable {
 
     @Override
     public String getDescription() {
-        return "Retrieves items from the warehouse";
+        return "Retrieves material items from the inventory";
     }
 }

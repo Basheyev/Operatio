@@ -91,6 +91,8 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
                 adjustmentPanel.showBlockInfo(production.getSelectedBlock());
             }
 
+
+            // fixme при загрузке второй раз сцены NullPointerException
             int randomize = (int) (1 + Math.round(Math.random() * 2));
             switch (randomize) {
                 case 1: musicID = SoundRenderer.loadMusic(R.raw.music01); break;

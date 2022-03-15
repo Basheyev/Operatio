@@ -180,6 +180,14 @@ public class ConveyorRenderer extends BlockRenderer {
         // Нарисовать боковые конвейеры
         drawSideConveyors(camera, x, y, width, height);
 
+        // Рассчитать скорость анимации в соответствии со скоростью конвейера
+        if (block instanceof Conveyor) {
+            long cycleTime = production==null ? Production.CYCLE_TIME : production.getCycleMilliseconds();
+            float gameSpeedRatio = (float) (Production.CYCLE_TIME / cycleTime);
+            Conveyor conveyor = ((Conveyor) block);
+            Sprite.Animation conveyorAnimation = sprite.getAnimation(sprite.getActiveAnimation());
+            conveyorAnimation.speed = (1.0f + (conveyor.getSpeed() - 1) / 1.5f) * gameSpeedRatio;
+        }
         // Отрисовать сам конвейер
         sprite.draw(camera,x,y, width, height);
 
