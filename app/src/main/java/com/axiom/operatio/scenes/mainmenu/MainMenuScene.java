@@ -3,24 +3,16 @@ package com.axiom.operatio.scenes.mainmenu;
 import android.graphics.Color;
 import android.view.MotionEvent;
 
-import com.axiom.atom.BuildConfig;
 import com.axiom.atom.R;
 import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.SceneManager;
-import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.Texture;
-import com.axiom.atom.engine.graphics.renderers.BatchRender;
-import com.axiom.atom.engine.graphics.renderers.Line;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
-import com.axiom.atom.engine.ui.widgets.Panel;
+import com.axiom.atom.engine.ui.widgets.CheckBox;
 import com.axiom.atom.engine.ui.widgets.Widget;
-import com.axiom.operatio.MainActivity;
 import com.axiom.operatio.model.gameplay.GameSaveLoad;
-import com.axiom.operatio.scenes.common.DebugInfo;
-
-import static android.graphics.Color.BLACK;
 
 /**
  * Сцена главного меню
@@ -33,6 +25,7 @@ public class MainMenuScene extends GameScene {
     private MenuPanel menuPanel;
     private SlotsPanel slotsPanel;
     private StoryPanel storyPanel;
+    private CheckBox musicCheckbox;
     private float scrollerX;
     private int musicID;
 
@@ -54,6 +47,15 @@ public class MainMenuScene extends GameScene {
             menuPanel = new MenuPanel(this);
             widget.addChild(menuPanel);
 
+            musicCheckbox = new CheckBox("Enable music/sound", true);
+            musicCheckbox.setTextColor(Color.WHITE);
+            musicCheckbox.setLocalBounds(menuPanel.getX() + menuPanel.getWidth() + 50, 150, 600, 80);
+            musicCheckbox.setClickListener(e -> {
+                float level = musicCheckbox.isChecked() ? 1.0f : 0.0f;
+                SoundRenderer.setVolume(level);
+            });
+            widget.addChild(musicCheckbox);
+
             storyPanel = new StoryPanel();
             storyPanel.setZOrder(menuPanel.getZOrder());
             storyPanel.setLocalBounds(menuPanel.getX() + menuPanel.getWidth() + 50, 290, 980, 560);
@@ -64,23 +66,28 @@ public class MainMenuScene extends GameScene {
             widget.addChild(slotsPanel);
             slotsPanel.setZOrder(storyPanel.getZOrder() + 100);
 
-            musicID = SoundRenderer.loadMusic(R.raw.music00);
+            SoundRenderer.addTrack(R.raw.music00);
+            SoundRenderer.addTrack(R.raw.music01);
+            SoundRenderer.addTrack(R.raw.music02);
+            SoundRenderer.addTrack(R.raw.music03);
         }
         scrollerX = Camera.WIDTH;
         menuPanel.updateUI();
 
         // start music
-        SoundRenderer.playMusic(musicID,true);
+        if (!SoundRenderer.isTrackPlaying()) {
+            SoundRenderer.playNextTrack(true);
+        }
     }
 
     @Override
     public void changeScene(String nextScene) {
-         SoundRenderer.pauseMusic(musicID);
+
     }
 
     @Override
     public void disposeScene() {
-        SoundRenderer.unloadMusic(musicID);
+        SoundRenderer.stopTrack();
     }
 
     @Override

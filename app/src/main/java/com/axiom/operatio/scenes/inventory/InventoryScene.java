@@ -60,7 +60,7 @@ public class InventoryScene extends GameScene implements GameEventSubscriber {
 
     @Override
     public void changeScene(String nextScene) {
-        SceneManager.getInstance().getScene(ProductionScene.SCENE_NAME).changeScene(nextScene);
+
     }
 
     @Override

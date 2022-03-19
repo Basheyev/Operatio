@@ -91,15 +91,6 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
                 adjustmentPanel.showBlockInfo(production.getSelectedBlock());
             }
 
-
-            // fixme при загрузке второй раз сцены NullPointerException
-            int randomize = (int) (1 + Math.round(Math.random() * 2));
-            switch (randomize) {
-                case 1: musicID = SoundRenderer.loadMusic(R.raw.music01); break;
-                case 2: musicID = SoundRenderer.loadMusic(R.raw.music02); break;
-                default: musicID = SoundRenderer.loadMusic(R.raw.music03); break;
-            }
-
             initialized = true;
         }
 
@@ -110,17 +101,15 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
         setHelperMissionText();
         ProductionSceneUI.getScenesPanel().updatePlayButtonState();
 
-        if (!SoundRenderer.isMusicPlaying(musicID)) {
-            SoundRenderer.playMusic(musicID, true);
+        if (!SoundRenderer.isTrackPlaying()) {
+            SoundRenderer.playNextTrack(true);
         }
     }
 
 
     @Override
     public void changeScene(String nextScene) {
-        if (nextScene.equals(MainMenuScene.SCENE_NAME)) {
-            SoundRenderer.pauseMusic(musicID);
-        }
+
     }
 
     @Override
@@ -130,7 +119,7 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
         sceneManager.removeGameScene(TechnologyScene.SCENE_NAME);
         sceneManager.removeGameScene(InventoryScene.SCENE_NAME);
         production.clearBlocks();
-        SoundRenderer.unloadMusic(musicID);
+        SoundRenderer.stopTrack();
     }
 
     @Override
@@ -146,7 +135,7 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
                 blocksPanel.updatePermissions();
                 break;
             case OperatioEvents.MISSION_COMPLETED:
-                production.getCurrentMissionID();
+                production.getCurrentMissionID(); /// todo ???
                 blocksPanel.updatePermissions();
                 setHelperMissionText();
             default:
