@@ -74,7 +74,7 @@ public class ProductionRenderer {
         particles = new Particles(particleSprite,16, 1000, 100);
         particles.zOrder = Z_ORDER_PARTICLES;
 
-        moneyParticles = new MoneyParticles(32, 100);
+        moneyParticles = new MoneyParticles(production,32, 50);
 
         this.production = production;
         this.cellWidth = INITIAL_CELL_WIDTH;

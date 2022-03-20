@@ -9,8 +9,6 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.Log;
 
-import androidx.core.content.res.ResourcesCompat;
-
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
@@ -37,7 +35,7 @@ public class Text {
     public static final int ALIGN_BOTTOM = 5;
 
     protected static HashMap<Typeface, RasterizedFont> fonts = new HashMap<>();
-    protected static int fontSize = 24;     // Размер генерируемого шрифта в пикселях
+    public static final int FONT_SIZE = 24;     // Размер генерируемого шрифта в пикселях
 
     public static class RasterizedFont {
         protected int totalChars = 1296;    // Количество генерируемых символов (36x36)
@@ -111,7 +109,7 @@ public class Text {
 
     public void setTypeface(Typeface typeface) {
         // Создаем шрифт которым будем рисовать
-        this.font = rasterizeFont(typeface, fontSize);
+        this.font = rasterizeFont(typeface, FONT_SIZE);
         // Получаем все кадры (символы) спрайта
         charRegions = font.fontSprite.getAtlas().getRegions();
     }
@@ -120,7 +118,7 @@ public class Text {
     public void setTypeface(String fontName) {
         // Создаем шрифт которым будем рисовать
         Typeface typeface = Typeface.create(fontName, Typeface.NORMAL);
-        this.font = rasterizeFont(typeface, fontSize);
+        this.font = rasterizeFont(typeface, FONT_SIZE);
         // Получаем все кадры (символы) спрайта
         charRegions = font.fontSprite.getAtlas().getRegions();
     }

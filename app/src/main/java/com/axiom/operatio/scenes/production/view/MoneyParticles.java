@@ -2,7 +2,9 @@ package com.axiom.operatio.scenes.production.view;
 
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
+import com.axiom.atom.engine.graphics.renderers.Text;
 import com.axiom.operatio.model.common.FormatUtils;
+import com.axiom.operatio.model.production.Production;
 import com.axiom.operatio.model.production.ProductionRenderer;
 
 public class MoneyParticles {
@@ -24,9 +26,11 @@ public class MoneyParticles {
     private final MoneyParticle[] particles;
     private final float speed;
     private long lastTime;
+    private Production production;
 
 
-    public MoneyParticles(int maxParticles, float speed) {
+    public MoneyParticles(Production production, int maxParticles, float speed) {
+        this.production = production;
         this.speed = speed;
         particles = new MoneyParticle[maxParticles];
         for (int i=0; i<particles.length; i++) {
@@ -47,6 +51,7 @@ public class MoneyParticles {
                 particle.vy = speed;
                 particle.value = value;
                 particle.valueText.setLength(0);
+                if (value > 0) particle.valueText.append("+");
                 FormatUtils.formatMoneyAppend(Math.round(value), particle.valueText);
                 particle.birthTime = System.currentTimeMillis();
                 particle.zOrder = zOrder;
@@ -57,10 +62,9 @@ public class MoneyParticles {
     }
 
 
-    private boolean process(float speedScale) {
+    private void process(float speedScale) {
         MoneyParticle particle;
         long passedTime;
-        boolean visiblesLeft = false;
 
         long currentTime = System.currentTimeMillis();
         float delta = (currentTime - lastTime) / 1000.0f;         // Прошедшие доли секунды
@@ -73,33 +77,33 @@ public class MoneyParticles {
                 particle.alpha = 1.0f - ((float) passedTime) / ((float) TIME_TO_LIVE);
                 particle.x += (particle.vx * delta * speedScale);
                 particle.y += (particle.vy * delta * speedScale);
-                visiblesLeft = true;
             }
         }
         lastTime = currentTime;
-        return visiblesLeft;
     }
 
 
     public void draw(float scaleFactor) {
         MoneyParticle particle;
         float particleSize;
-        float r,g,b;
+        float r,g,b, scale;
+
+        scale = (production.getRenderer().getCellHeight() / Text.FONT_SIZE) / 2;
 
         // Переместить частицы денег
         process(scaleFactor / 16);
 
         for (int i = 0; i < particles.length; i++) {
             particle = particles[i];
-            r = g = b = 0.05f;
+            r = g = b = 0.075f;
             if (particle.visible) {
-                if (particle.value < 0) r = 0.3f; else g = 0.3f;
+                if (particle.value < 0) r = 0.35f; else g = 0.3f;
                 particleSize = scaleFactor * particle.scale;
                 GraphicsRender.setZOrder(particle.zOrder);
                 GraphicsRender.setColor(r, g, b, particle.alpha);
                 GraphicsRender.drawText(particle.valueText, particle.x,
                         particle.y + particleSize * 0.5f,
-                        2, null);
+                        scale, null);
 
             }
         }
