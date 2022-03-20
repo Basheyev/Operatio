@@ -37,6 +37,7 @@ public class ImportBufferRenderer extends BlockRenderer {
         sprite = buffersFrames.getAsSprite(65);
         sprite.setZOrder(Z_ORDER_MACHINES);
         halfConveyor = buffersFrames.getAsSprite(64);
+
         halfConveyor.setZOrder(Z_ORDER_JOINTS);
     }
 
@@ -68,20 +69,20 @@ public class ImportBufferRenderer extends BlockRenderer {
         boolean up = hasOutputTo(UP);
         boolean down = hasOutputTo(DOWN);
         if (left) {
-            halfConveyor.setRotation(0);
-            halfConveyor.draw(camera,x,y, width, height);
+            halfConveyor.setRotation((float)Math.PI);
+            halfConveyor.draw(camera,x-width/2,y, width, height);
         }
         if (right) {
-            halfConveyor.setRotation((float)Math.PI);
-            halfConveyor.draw(camera,x,y, width, height);
+            halfConveyor.setRotation(0);
+            halfConveyor.draw(camera,x+width/2,y, width, height);
         }
         if (up) {
-            halfConveyor.setRotation((float) -Math.PI/2);
-            halfConveyor.draw(camera,x,y, width, height);
+            halfConveyor.setRotation((float) Math.PI/2);
+            halfConveyor.draw(camera,x,y+height/2, width, height);
         }
         if (down) {
-            halfConveyor.setRotation((float) Math.PI/2);
-            halfConveyor.draw(camera,x,y, width, height);
+            halfConveyor.setRotation((float) -Math.PI/2);
+            halfConveyor.draw(camera,x,y-height/2, width, height);
         }
 
     }
