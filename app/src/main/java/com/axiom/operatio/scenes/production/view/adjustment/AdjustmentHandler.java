@@ -49,7 +49,7 @@ public class AdjustmentHandler implements ClickListener {
             } else if (chosenBlock instanceof ImportBuffer) {
                 importBufferAdjustmentClick(button, (ImportBuffer) chosenBlock);
             } else if (chosenBlock instanceof ExportBuffer) {
-                // todo
+                // todo handle ExportBuffer
             } else if (chosenBlock instanceof Inserter) {
                 inserterAdjustmentClick(button, (Inserter) chosenBlock);
             } else if (chosenBlock instanceof Conveyor) {

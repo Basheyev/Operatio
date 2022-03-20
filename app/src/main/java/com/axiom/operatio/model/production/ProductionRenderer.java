@@ -6,6 +6,7 @@ import com.axiom.atom.R;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.Texture;
+import com.axiom.operatio.scenes.production.view.MoneyParticles;
 import com.axiom.operatio.scenes.production.view.Particles;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.production.block.Block;
@@ -41,6 +42,7 @@ public class ProductionRenderer {
     private Sprite tile, tileBlocked, outsideTile, selection, wrongSelection;
 
     private Particles particles;
+    private MoneyParticles moneyParticles;
 
     private float cellWidth;                  // Ширина клетки
     private float cellHeight;                 // Высота клетки
@@ -71,6 +73,8 @@ public class ProductionRenderer {
         Sprite particleSprite = tiles.getAsSprite(86);
         particles = new Particles(particleSprite,16, 1000, 100);
         particles.zOrder = Z_ORDER_PARTICLES;
+
+        moneyParticles = new MoneyParticles(32, 100);
 
         this.production = production;
         this.cellWidth = INITIAL_CELL_WIDTH;
@@ -103,6 +107,9 @@ public class ProductionRenderer {
                 }
             }
         }
+
+        // Отрисовать частицы денег
+        moneyParticles.draw(cellWidth * 0.25f);
 
         // Отрисовываем передвигаемый блок поверх остальных
         if (movingBlock!=null) drawMovingBlock();
@@ -232,6 +239,10 @@ public class ProductionRenderer {
         return particles;
     }
 
+
+    public MoneyParticles getMoneyParticles() {
+        return moneyParticles;
+    }
 
     public void setParticles(Particles particles) {
         this.particles = particles;

@@ -71,6 +71,14 @@ public class BlockDeleteHandler {
                 opsPanel.hideBlockInfo();
                 GameLoop.getInstance().fireGameEvent(new GameEvent(OperatioEvents.BLOCK_DELETED, block));
                 SoundRenderer.playSound(blockRemoveSound);
+
+                // Запускаем эффект частиц денег
+                float w = productionRenderer.getCellWidth();
+                float h = productionRenderer.getCellHeight();
+                productionRenderer.getMoneyParticles().addParticle(
+                        block.getPrice(),
+                        column * w, row * h + h/2,
+                        ProductionRenderer.Z_ORDER_SELECTION + 1);
             }
             actionInProgress = false;
         }

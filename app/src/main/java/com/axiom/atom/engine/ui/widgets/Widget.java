@@ -10,6 +10,8 @@ import com.axiom.atom.engine.input.ScaleEvent;
 import com.axiom.atom.engine.ui.listeners.ClickListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * Виджет пользовательского интерфейса
@@ -36,6 +38,13 @@ public abstract class Widget {
     protected ClickListener clickListener;   // Обработчик нажатия на виджет
     protected boolean pressed = false;       // Есть ли сейчас нажатие на виджет
     //---------------------------------------------------------------------------------------------
+    protected Comparator<Widget> widgetComparator = new Comparator<Widget>() {
+        @Override
+        public int compare(Widget widget, Widget t1) {
+            return Integer.compare(widget.zOrder, t1.zOrder);
+        }
+    };
+
 
     /**
      * Создает корневой виджет сцены на весь экран
@@ -126,6 +135,7 @@ public abstract class Widget {
         this.zOrder = zOrder;
         // Перерасчитать порядок отрисовки дочерних элементов
         adjustChildZOrder();
+        // todo нужно ли пересчитывать родительский?
     }
 
 
@@ -136,9 +146,14 @@ public abstract class Widget {
         Widget child;
         for (int i=0; i<children.size(); i++) {
             child = children.get(i);
+
             child.zOrder = zOrder + UI_LAYER_STRIDE;
             child.adjustChildZOrder();
-        }
+        };
+
+        // fixme определить как определять шаг слоев между виджетами
+
+        // fixme надо сортировать по слоям чтобы события доставлялись правильно по z-order
     }
 
 
@@ -350,10 +365,10 @@ public abstract class Widget {
         GameView view = GameView.getInstance();
         int viewHeight = view.getHeight();
 
-        // Доставляем события дочерним виджетам
+        // Доставляем события дочерним виджетам в обратном порядке по (z-Order)
         Widget widget;
         int size = children.size();
-        for (int i=0; i<size; i++) {
+        for (int i=size-1; i>=0; i--) {
             widget = children.get(i);
             if (widget==null) continue;
             if (!widget.visible) continue;

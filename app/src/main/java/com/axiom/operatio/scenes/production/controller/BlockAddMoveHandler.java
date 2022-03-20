@@ -142,6 +142,13 @@ public class BlockAddMoveHandler {
         if (justCreatedBlock) {
             int expenseType = Ledger.EXPENSE_BLOCK_BOUGHT;
             production.getLedger().creditCashBalance(expenseType, dragBlock.getPrice());
+            // Запускаем эффект частиц денег
+            float w = productionRenderer.getCellWidth();
+            float h = productionRenderer.getCellHeight();
+            productionRenderer.getMoneyParticles().addParticle(
+                    dragBlock.getPrice() * -1.0f,
+                    column * w, row * h + h/2,
+                    ProductionRenderer.Z_ORDER_SELECTION + 1);
         }
         BlockAdjuster.adjustFlow(dragBlock);
         opsPanel.showBlockInfo(dragBlock);
@@ -149,8 +156,12 @@ public class BlockAddMoveHandler {
 
         GameLoop.getInstance().fireGameEvent(new GameEvent(OperatioEvents.BLOCK_ADDED, dragBlock));
 
+        ProductionRenderer productionRenderer = scene.getProductionRenderer();
         // Запускаем эффект частиц
-        scene.getProductionRenderer().getParticles().generateParticles();
+        productionRenderer.getParticles().generateParticles();
+
+
+
         // Проигрываем звук
         SoundRenderer.playSound(blockPlaced);
     }
