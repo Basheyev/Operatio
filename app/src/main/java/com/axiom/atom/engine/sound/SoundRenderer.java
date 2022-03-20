@@ -21,6 +21,7 @@ import java.util.Map;
 public class SoundRenderer {
 
     private static final int MAX_STREAMS = 4;
+    private static final int NO_TRACK    = -1;
 
     private static GameView gameView;                        // Компонент рендера
     private static AudioManager audioManager;                // Аудио менеджер
@@ -30,6 +31,7 @@ public class SoundRenderer {
     private static ArrayList<Integer> playlist = null;       // Список ресурсов музыки
     private static MusicCompleteListener completeListener;   // Обработчик при завершении трека
     private static int currentTrack;                         // Текущий трэк
+    private static boolean trackShuffling = false;           // Флаг перемешивания проигрывания
     private static boolean initialized = false;              // Флаг инициализации
 
     private static float soundLeftVolume = 1;                // Громкость левого канала
@@ -55,7 +57,7 @@ public class SoundRenderer {
         // Инициализация музыки
         playlist = new ArrayList<>();
         completeListener = new MusicCompleteListener();
-        currentTrack = -1;
+        currentTrack = NO_TRACK;
 
         initialized = true;
     }
@@ -198,6 +200,33 @@ public class SoundRenderer {
     //-------------------------------------------------------------------------------------
 
     /**
+     * Возвращает количество треков в плейлисте
+     * @return количество треков в плейлисте
+     */
+    public static int getTracksCount() {
+        return playlist.size();
+    }
+
+
+    /**
+     * Выставить режим проигрывания: последовательно или перемешивать треки
+     * @param shuffling true - перемешивать, false - последовательно
+     */
+    public static void setTrackShuffling(boolean shuffling) {
+        trackShuffling = shuffling;
+    }
+
+
+    /**
+     * Возвращает режим проигрывания: последовательно или перемешивать треки
+     * @return true - перемешивать, false - последовательно
+     */
+    public static boolean getTrackShuffling() {
+        return trackShuffling;
+    }
+
+
+    /**
      * Добавляет трек в список проигрывателя
      * @param resourceID ресурс с музыкой
      * @return ID трека
@@ -221,41 +250,96 @@ public class SoundRenderer {
 
 
     /**
-     * Начинает проигрывание трека
+     * Начинает проигрывание указанного трека в плейлисте
      * @param trackID номер трека
-     * @param looping зацикливать ли проигрывание
-     * @return ture если проигрывание трека началось
      */
-    public static boolean playTrack(int trackID, boolean looping) {
+    public static void playTrack(int trackID) {
         if (isTrackPlaying()) stopTrack();
         int resourceID = playlist.get(trackID);
         mediaPlayer = MediaPlayer.create(gameView.getContext(), resourceID);
-        if (mediaPlayer==null) return false;
+        if (mediaPlayer==null) return;
         mediaPlayer.start();
-        mediaPlayer.setLooping(looping);
         mediaPlayer.setOnCompletionListener(completeListener);
         currentTrack = trackID;
+    }
+
+
+    /**
+     * Начинает проигрывание следующего трека в плейлисте
+     */
+    public static void playNextTrack() {
+        if (playlist.size()==0) return;
+        int random = trackShuffling ? (int) (1 + Math.random() * playlist.size()) : 1;
+        int nextTrack = (currentTrack + random) % playlist.size();
+        playTrack(nextTrack);
+    }
+
+
+    /**
+     * Устанавливает режим повторения трека
+     * *@param looping зацикливать ли проигрывание
+     */
+    public static void setTrackLooping(boolean looping) {
+        if (mediaPlayer==null) return;
+        mediaPlayer.setLooping(looping);
+    }
+
+    /**
+     * Проигрывается ли сейчас трек
+     * @return true - да, false - нет
+     */
+    public static boolean isTrackPlaying() {
+        if (mediaPlayer==null) return false;
         return mediaPlayer.isPlaying();
     }
 
 
-    public static boolean playNextTrack(boolean random) {
-        if (playlist.size()==0) return false;
-        int bias = random ? (int) (1 + Math.random() * playlist.size()) : 1;
-        int nextTrack = (currentTrack + bias) % playlist.size();
-        return playTrack(nextTrack, false);
+    /**
+     * Возвращает номер текущего трека
+     * @return номер проигрываемого трека или NO_TRACK если нет текущего трека
+     */
+    public static int getCurrentTrack() {
+        return currentTrack;
     }
 
-    public static boolean playNextTrack() {
-        return playNextTrack(false);
-    }
 
     /**
-     * Ставит проигрывание трека на паузу
+     * Возвращает длительность трека в миллисекундах
+     * @return длительность трека в миллисекундах
      */
-    public static void pauseTrack() {
+    public static int getTrackDuration() {
+        if (mediaPlayer==null) return 0;
+        return mediaPlayer.getDuration();
+    }
+
+
+    /**
+     * Возвращает текущую позицию проигрываемого трека в миллисекундах
+     * @return позиция в миллисекундах
+     */
+    public static int getTrackPosition() {
+        if (mediaPlayer==null) return 0;
+        return mediaPlayer.getCurrentPosition();
+    }
+
+
+    /**
+     * Установить текущую позицию проигрываемого трека в миллисекундах
+     * @param milliseconds требуемая позиция в треке в миллисекундах
+     */
+    public static void setTrackPosition(int milliseconds) {
+        if (mediaPlayer==null || milliseconds < 0) return;
+        if (milliseconds >= mediaPlayer.getDuration()) return;
+        mediaPlayer.seekTo(milliseconds);
+    }
+
+
+    /**
+     * Ставит проигрывание трека на паузу или продолжает проигрывание
+     */
+    public static void pauseTrack(boolean pause) {
         if (mediaPlayer==null) return;
-        mediaPlayer.pause();
+        if (pause) mediaPlayer.pause(); else mediaPlayer.start();
     }
 
 
@@ -263,7 +347,7 @@ public class SoundRenderer {
      * Останавливает проигрывание трека и высвобождает ресурсы проигрывателя
      */
     public static void stopTrack() {
-        currentTrack = -1;
+        currentTrack = NO_TRACK;
         if (mediaPlayer==null) return;
         mediaPlayer.stop();
         mediaPlayer.release();
@@ -271,15 +355,14 @@ public class SoundRenderer {
     }
 
 
+    /**
+     * Устанавливает громкость проигрывателя
+     * @param leftVolume левый канал
+     * @param rightVolume правый канал
+     */
     public static void setMusicVolume(float leftVolume, float rightVolume) {
         if (mediaPlayer==null) return;
         mediaPlayer.setVolume(leftVolume, rightVolume);
-    }
-
-
-    public static boolean isTrackPlaying() {
-        if (mediaPlayer==null) return false;
-        return mediaPlayer.isPlaying();
     }
 
 

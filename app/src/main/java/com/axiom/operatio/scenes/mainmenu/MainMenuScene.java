@@ -27,7 +27,6 @@ public class MainMenuScene extends GameScene {
     private StoryPanel storyPanel;
     private CheckBox musicCheckbox;
     private float scrollerX;
-    private int musicID;
 
     @Override
     public String getSceneName() {
@@ -66,17 +65,20 @@ public class MainMenuScene extends GameScene {
             widget.addChild(slotsPanel);
             slotsPanel.setZOrder(storyPanel.getZOrder() + 100);
 
+            // сформировать лист проигрывания
             SoundRenderer.addTrack(R.raw.music00);
             SoundRenderer.addTrack(R.raw.music01);
             SoundRenderer.addTrack(R.raw.music02);
             SoundRenderer.addTrack(R.raw.music03);
+            SoundRenderer.addTrack(R.raw.music04);
         }
         scrollerX = Camera.WIDTH;
         menuPanel.updateUI();
 
         // start music
         if (!SoundRenderer.isTrackPlaying()) {
-            SoundRenderer.playNextTrack(true);
+            SoundRenderer.setTrackShuffling(true);
+            SoundRenderer.playNextTrack();
         }
     }
 

@@ -101,9 +101,8 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
         setHelperMissionText();
         ProductionSceneUI.getScenesPanel().updatePlayButtonState();
 
-        if (!SoundRenderer.isTrackPlaying()) {
-            SoundRenderer.playNextTrack(true);
-        }
+        if (!SoundRenderer.isTrackPlaying()) SoundRenderer.playNextTrack();
+
     }
 
 
