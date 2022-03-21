@@ -147,8 +147,7 @@ public class BlockAddMoveHandler {
             float h = productionRenderer.getCellHeight();
             productionRenderer.getMoneyParticles().addParticle(
                     dragBlock.getPrice() * -1.0f,
-                    column * w, row * h + h/2,
-                    ProductionRenderer.Z_ORDER_SELECTION + 1);
+                    column * w, row * h + h/2);
         }
         BlockAdjuster.adjustFlow(dragBlock);
         opsPanel.showBlockInfo(dragBlock);

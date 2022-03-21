@@ -77,8 +77,7 @@ public class BlockDeleteHandler {
                 float h = productionRenderer.getCellHeight();
                 productionRenderer.getMoneyParticles().addParticle(
                         block.getPrice(),
-                        column * w, row * h + h/2,
-                        ProductionRenderer.Z_ORDER_SELECTION + 1);
+                        column * w, row * h + h/2);
             }
             actionInProgress = false;
         }

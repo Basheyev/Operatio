@@ -7,7 +7,7 @@ import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.Texture;
 import com.axiom.operatio.scenes.production.view.MoneyParticles;
-import com.axiom.operatio.scenes.production.view.Particles;
+import com.axiom.operatio.scenes.production.view.DustParticles;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.production.block.BlockRenderer;
@@ -20,7 +20,7 @@ public class ProductionRenderer {
     public static final int Z_ORDER_FLOOR = 0;
     public static final int Z_ORDER_SHADOWS = 1;
 
-    public static final int Z_ORDER_PARTICLES = 10;
+    public static final int Z_ORDER_DUST_PARTICLES = 10;
     public static final int Z_ORDER_JOINTS = 11;
     public static final int Z_ORDER_CONVEYORS = 12;
     public static final int Z_ORDER_ITEMS = 13;
@@ -28,7 +28,9 @@ public class ProductionRenderer {
 
     public static final int Z_ORDER_DIRECTIONS = 20;
     public static final int Z_ORDER_EXCLAMATION = 21;
-    public static final int Z_ORDER_SELECTION = 22;
+    public static final int Z_ORDER_SELECTION = 21;
+
+    public static final int Z_ORDER_MONEY_PARTICLES = 23;
 
 
     public static int MIN_CELL_SIZE = 48;
@@ -38,11 +40,11 @@ public class ProductionRenderer {
 
     private static Sprite tiles = null;
 
-    private Production production;
-    private Sprite tile, tileBlocked, outsideTile, selection, wrongSelection;
+    private final Production production;
+    private final Sprite tile, tileBlocked, outsideTile, selection, wrongSelection;
 
-    private Particles particles;
-    private MoneyParticles moneyParticles;
+    private final DustParticles dustParticles;
+    private final MoneyParticles moneyParticles;
 
     private float cellWidth;                  // Ширина клетки
     private float cellHeight;                 // Высота клетки
@@ -71,10 +73,10 @@ public class ProductionRenderer {
         wrongSelection.setZOrder(Z_ORDER_SELECTION);
 
         Sprite particleSprite = tiles.getAsSprite(86);
-        particles = new Particles(particleSprite,16, 1000, 100);
-        particles.zOrder = Z_ORDER_PARTICLES;
+        dustParticles = new DustParticles(particleSprite,16, 1000, 100);
+        dustParticles.zOrder = Z_ORDER_DUST_PARTICLES;
 
-        moneyParticles = new MoneyParticles(production,32, 50);
+        moneyParticles = new MoneyParticles(production,32, 50, ProductionRenderer.Z_ORDER_MONEY_PARTICLES + 1);
 
         this.production = production;
         this.cellWidth = INITIAL_CELL_WIDTH;
@@ -169,7 +171,7 @@ public class ProductionRenderer {
 
 
     private void drawParticles(Camera camera, int col, int row) {
-        particles.draw(camera,
+        dustParticles.draw(camera,
                 col * cellWidth + cellWidth * 0.5f,
                 row * cellHeight + cellHeight * 0.5f,
                 cellWidth * 0.25f);
@@ -235,8 +237,8 @@ public class ProductionRenderer {
     }
 
 
-    public Particles getParticles() {
-        return particles;
+    public DustParticles getParticles() {
+        return dustParticles;
     }
 
 
@@ -244,8 +246,5 @@ public class ProductionRenderer {
         return moneyParticles;
     }
 
-    public void setParticles(Particles particles) {
-        this.particles = particles;
-    }
 
 }
