@@ -20,7 +20,7 @@ public abstract class Widget {
 
     public static final int DEFAULT_BACKGROUND = 0xCCE6E6E6;     // Стандартный цвет фона
     public static final int UI_LAYER = Integer.MAX_VALUE / 2;    // с какого слоя начиается UI
-    public static final int UI_LAYER_STRIDE = 16;                // шаг в слоях между виджетами
+
     //---------------------------------------------------------------------------------------------
     protected boolean visible = true;        // Виден ли виджет (отображается/обрабатывает события)
     protected boolean opaque = true;         // Является ли виджет непрозрачным
@@ -102,8 +102,11 @@ public abstract class Widget {
         // Добавляем в дочерние
         children.add(widget);
         widget.parent = this;
-        // Перерасчитать порядок отрисовки дочерних элементов
-        adjustChildZOrder();
+        // Перерасчитать порядок отрисовки нового дочернего элемента
+        int newZOrder = zOrder + getRenderLayersCount();
+        int difference = newZOrder - widget.zOrder;
+        widget.zOrder = newZOrder;
+        widget.adjustChildZOrder(difference);
         return true;
     }
 
@@ -131,29 +134,34 @@ public abstract class Widget {
      * @param zOrder номер слоя
      */
     public void setZOrder(int zOrder) {
+        // Посчитать разницу между текущем слоем и новым
+        int difference = zOrder - this.zOrder;
         // Установит порядок отрисовки
         this.zOrder = zOrder;
         // Перерасчитать порядок отрисовки дочерних элементов
-        adjustChildZOrder();
-        // todo нужно ли пересчитывать родительский?
+        adjustChildZOrder(difference);
     }
 
 
     /**
      * При изменении Z-Order виджета пересчитывает Z-Order дочерних компонентов
      */
-    protected void adjustChildZOrder() {
+    protected void adjustChildZOrder(int difference) {
         Widget child;
         for (int i=0; i<children.size(); i++) {
             child = children.get(i);
-
-            child.zOrder = zOrder + UI_LAYER_STRIDE;
-            child.adjustChildZOrder();
+            child.zOrder += difference;
+            child.adjustChildZOrder(difference);
         };
+    }
 
-        // fixme определить как определять шаг слоев между виджетами
 
-        // fixme надо сортировать по слоям чтобы события доставлялись правильно по z-order
+    /**
+     * Количество слоев необходимых для отрисовки компонента
+     * @return количество слоев необходимых для виджета
+     */
+    protected int getRenderLayersCount() {
+        return 4;
     }
 
 
@@ -365,7 +373,7 @@ public abstract class Widget {
         GameView view = GameView.getInstance();
         int viewHeight = view.getHeight();
 
-        // Доставляем события дочерним виджетам в обратном порядке по (z-Order)
+        // Доставляем события дочерним виджетам в обратном порядке добавления
         Widget widget;
         int size = children.size();
         for (int i=size-1; i>=0; i--) {

@@ -88,6 +88,10 @@ public class Caption extends Widget {
         super.draw(camera);
     }
 
+    @Override
+    protected int getRenderLayersCount() {
+        return 3;
+    }
 
     public void setTypeface(Typeface typeface) {
         textRenderer.setTypeface(typeface);

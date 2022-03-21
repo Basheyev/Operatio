@@ -50,6 +50,11 @@ public class CheckBox extends Widget {
 
     }
 
+    @Override
+    protected int getRenderLayersCount() {
+        return 3;
+    }
+
     public boolean isChecked() {
         return isChecked;
     }

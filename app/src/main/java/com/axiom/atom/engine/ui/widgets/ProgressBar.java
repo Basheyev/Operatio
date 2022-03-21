@@ -53,6 +53,10 @@ public class ProgressBar extends Widget {
 
     }
 
+    @Override
+    protected int getRenderLayersCount() {
+        return 3;
+    }
 
     public int getProgress() {
         return progress;

@@ -1,4 +1,4 @@
-package com.axiom.operatio.scenes.production.view;
+package com.axiom.operatio.scenes.production.view.particles;
 
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;

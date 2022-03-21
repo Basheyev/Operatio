@@ -1,5 +1,7 @@
 package com.axiom.atom.engine.ui.widgets;
 
+import android.view.MotionEvent;
+
 import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.GraphicsRender;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
@@ -10,10 +12,12 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
  */
 public class Panel extends Widget {
 
+    protected boolean passEventsToUnderlayingWidget = false;
 
     public Panel() {
         super();
     }
+
 
     @Override
     public void draw(Camera camera) {
@@ -29,4 +33,21 @@ public class Panel extends Widget {
         super.draw(camera);
     }
 
+
+    @Override
+    protected int getRenderLayersCount() {
+        return 1;
+    }
+
+
+    public void setInputTransparent(boolean pass) {
+        passEventsToUnderlayingWidget = pass;
+    }
+
+
+    @Override
+    public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
+        super.onMotionEvent(event, worldX, worldY);
+        return !passEventsToUnderlayingWidget;
+    }
 }

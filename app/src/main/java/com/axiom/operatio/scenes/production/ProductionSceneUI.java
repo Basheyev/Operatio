@@ -36,19 +36,24 @@ public class ProductionSceneUI {
         tickSound = SoundRenderer.loadSound(R.raw.tick_snd);
 
         blocksPanel = new BlocksPanel(productionScene);
+        blocksPanel.setInputTransparent(true);
         widget.addChild(blocksPanel);
 
         modePanel = new ModePanel(productionScene);
+        modePanel.setInputTransparent(true);
         widget.addChild(modePanel);
 
         adjustmentPanel = new AdjustmentPanel(production, productionScene);
+        adjustmentPanel.setInputTransparent(true);
         adjustmentPanel.hideBlockInfo();
         widget.addChild(adjustmentPanel);
 
         scenesPanel = new ScenesPanel(production);
+        scenesPanel.setInputTransparent(true);
         widget.addChild(scenesPanel);
 
         helperPanel = new HelperPanel(productionScene);
+        helperPanel.setInputTransparent(true);
         widget.addChild(helperPanel);
 
     }
