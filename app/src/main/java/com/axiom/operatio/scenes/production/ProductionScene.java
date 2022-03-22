@@ -134,7 +134,6 @@ public class ProductionScene extends GameScene implements GameEventSubscriber {
                 blocksPanel.updatePermissions();
                 break;
             case OperatioEvents.MISSION_COMPLETED:
-                production.getCurrentMissionID(); /// todo ???
                 blocksPanel.updatePermissions();
                 setHelperMissionText();
             default:
