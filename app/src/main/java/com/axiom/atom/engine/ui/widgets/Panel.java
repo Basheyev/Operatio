@@ -12,7 +12,7 @@ import com.axiom.atom.engine.graphics.gles2d.Camera;
  */
 public class Panel extends Widget {
 
-    protected boolean passEventsToUnderlayingWidget = false;
+    protected boolean passEventsToUnderlyingWidget = false;
 
     public Panel() {
         super();
@@ -39,15 +39,21 @@ public class Panel extends Widget {
         return 1;
     }
 
-
+    /**
+     * Флаг определяющий передавать ли события ввода нижележащим виджетам
+     * @param pass
+     */
     public void setInputTransparent(boolean pass) {
-        passEventsToUnderlayingWidget = pass;
+        passEventsToUnderlyingWidget = pass;
     }
 
 
     @Override
     public boolean onMotionEvent(MotionEvent event, float worldX, float worldY) {
-        super.onMotionEvent(event, worldX, worldY);
-        return !passEventsToUnderlayingWidget;
+        // Проверить обработали ли события дочерние виджеьы
+        boolean isHandled = super.onMotionEvent(event, worldX, worldY);
+        // Если дочерние виджеты не обработали и мы прозрачны для ввода - false
+        // Если же дочерний виджеты обработали или не прозрачны для ввода - true
+        return !passEventsToUnderlyingWidget | isHandled;
     }
 }
