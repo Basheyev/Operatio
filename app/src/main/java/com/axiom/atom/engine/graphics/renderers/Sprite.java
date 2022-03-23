@@ -555,11 +555,11 @@ public class Sprite extends Quad {
     private final String vertexShaderCode =
                     "uniform mat4 " + Program.MATRIX + "; " +
                     "attribute vec4 " + Program.VERTICES + "; " +
-                    "attribute vec2 " + Program.TEXCOORD + ";" +
+                    "attribute vec2 " + Program.TEXCOORDIN + ";" +
                     "varying vec2 TexCoordOut;" +
                     "void main() { " +
                     "    gl_Position = " + Program.MATRIX + " * " + Program.VERTICES + "; " +
-                    "    TexCoordOut = " + Program.TEXCOORD + "; " +
+                    "    TexCoordOut = " + Program.TEXCOORDIN + "; " +
                     "}";
 
     //-----------------------------------------------------------------------------------
@@ -568,10 +568,10 @@ public class Sprite extends Quad {
     private final String fragmentShaderCode =
                     "precision mediump float; " +
                     "uniform vec4 " + Program.COLOR + ";" +
-                    "uniform sampler2D " + Program.TEXCOORD + "; " +
+                    "uniform sampler2D " + Program.TEXCOORDIN + "; " +
                     "varying vec2 TexCoordOut;" +
                     "void main() {" +
-                    "  vec4 col = texture2D(" + Program.TEXCOORD + ", TexCoordOut);" +
+                    "  vec4 col = texture2D(" + Program.TEXCOORDIN + ", TexCoordOut);" +
                     "  col.a *= " + Program.COLOR + ".a;" +
                     "  gl_FragColor = col; " +
                     "}";
@@ -582,10 +582,10 @@ public class Sprite extends Quad {
     private final String fragmentShaderColoredCode =
                     "precision mediump float; " +
                     "uniform vec4 " + Program.COLOR + ";" +
-                    "uniform sampler2D " + Program.TEXCOORD + "; " +
+                    "uniform sampler2D " + Program.TEXCOORDIN + "; " +
                     "varying vec2 TexCoordOut;" +
                     "void main() {" +
-                    "  vec4 col = texture2D(" + Program.TEXCOORD + ", TexCoordOut);" +
+                    "  vec4 col = texture2D(" + Program.TEXCOORDIN + ", TexCoordOut);" +
                     "  col.r = " + Program.COLOR + ".r;" +
                     "  col.g = " + Program.COLOR + ".g;" +
                     "  col.b = " + Program.COLOR + ".b;" +

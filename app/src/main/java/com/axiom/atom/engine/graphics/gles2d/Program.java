@@ -1,6 +1,7 @@
 package com.axiom.atom.engine.graphics.gles2d;
 
 import android.opengl.GLES20;
+import android.util.Log;
 
 import com.axiom.atom.engine.graphics.GraphicsRender;
 
@@ -11,7 +12,8 @@ import com.axiom.atom.engine.graphics.GraphicsRender;
 public class Program implements GLESObject {
 
     public static final String VERTICES = "vPosition";
-    public static final String TEXCOORD = "TexCoordIn";
+    public static final String TEXCOORDIN = "TexCoordIn";
+    public static final String TEXCOORDOUT = "TexCoordOut";
     public static final String COLOR = "vColor";
     public static final String MATRIX = "u_MVPMatrix";
 
@@ -35,6 +37,13 @@ public class Program implements GLESObject {
         GLES20.glAttachShader(programID, vertexShader.getShaderID());
         GLES20.glAttachShader(programID, fragmentShader.getShaderID());
         GLES20.glLinkProgram(programID);
+        int[] linkStatus = new int[1];
+        GLES20.glGetProgramiv(programID, GLES20.GL_LINK_STATUS, linkStatus, 0);
+        if (linkStatus[0] != GLES20.GL_TRUE) {
+            GLES20.glDeleteProgram(programID);
+            Log.e("PROGRAM", "Could not link program: " + GLES20.glGetProgramInfoLog(programID));
+            programID = 0;
+        }
         initialized = true;
     }
 
@@ -60,6 +69,9 @@ public class Program implements GLESObject {
     public int setAttribVertexArray(String name, VertexBuffer vertexBuffer) {
         if (!initialized) return -1;
         int handler = GLES20.glGetAttribLocation(programID, name);
+        if (handler==-1) {
+            return -1;
+        }
         GLES20.glEnableVertexAttribArray(handler);
         GLES20.glVertexAttribPointer(handler,
                 vertexBuffer.coordinatesPerVertex,

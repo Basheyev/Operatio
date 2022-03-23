@@ -39,17 +39,19 @@ public class Shader implements GLESObject {
         if (shaderID==0) Log.e ("SHADER", "Failed to create shader.");
         GLES20.glShaderSource(shaderID, shaderCode);
         GLES20.glCompileShader(shaderID);
-        /*
+
         // Get the compilation status.
         final int[] compileStatus = new int[1];
-        GLES20.glGetShaderiv(vertexShaderHandle, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
-
+        GLES20.glGetShaderiv(shaderID, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
         // If the compilation failed, delete the shader.
         if (compileStatus[0] == 0)
         {
-            GLES20.glDeleteShader(vertexShaderHandle);
-            vertexShaderHandle = 0;
-        }*/
+            Log.e ("SHADER", "Failed to compile shader: " + shaderCode + "\n" +
+                    GLES20.glGetShaderInfoLog(shaderID));
+            GLES20.glDeleteShader(shaderID);
+            shaderID = 0;
+        }
+
     }
 
 

@@ -95,6 +95,7 @@ public class BatchRender {
         quad.texture = null;
         quad.zOrder = zOrder;
         quad.scissor = scissor;
+        quad.type = 0;
         System.arraycopy(vert, 0, quad.vertices, 0, 18);
         entriesCounter++;
     }
@@ -129,6 +130,7 @@ public class BatchRender {
         quad.texture = texture;
         quad.zOrder = zOrder;
         quad.scissor = scissor;
+        quad.type = 1;
         System.arraycopy(vert, 0, quad.vertices, 0, 18);
         System.arraycopy(texcoord, 0, quad.texCoords, 0, 12);
         entriesCounter++;
@@ -205,18 +207,23 @@ public class BatchRender {
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
-        // Если не текстурирован, сразу отрисовываем передавая ццвет
+        // Если не текстурирован, сразу отрисовываем передавая цвет ,
         if (quad.texture==null) {
             int vertexHandler = program.setAttribVertexArray(Program.VERTICES, verticesBatch);
+            int textureHandler = -1;
+            if (quad.type==Quad.TEXTURED) {
+                textureHandler = program.setAttribVertexArray(Program.TEXCOORDIN, texCoordBatch);
+            }
             program.setUniformVec4Value(Program.COLOR, quad.color);
             program.setUniformMat4Value(Program.MATRIX, cameraMatrix);
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, verticesBatch.getVertexCount());
+            if (quad.type==Quad.TEXTURED) program.disableVertexArray(textureHandler);
             program.disableVertexArray(vertexHandler);
         } else {
             // Если текстурирован, передаем текстурные координаты и отрисовываем
             quad.texture.bind();
             int vertexHandler = program.setAttribVertexArray(Program.VERTICES, verticesBatch);
-            int textureHandler = program.setAttribVertexArray(Program.TEXCOORD, texCoordBatch);
+            int textureHandler = program.setAttribVertexArray(Program.TEXCOORDIN, texCoordBatch);
             program.setUniformVec4Value(Program.COLOR, quad.color);
             program.setUniformMat4Value(Program.MATRIX, cameraMatrix);
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, verticesBatch.getVertexCount());

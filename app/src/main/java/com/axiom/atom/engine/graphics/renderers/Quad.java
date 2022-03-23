@@ -12,6 +12,9 @@ import com.axiom.atom.engine.graphics.gles2d.Texture;
  */
 public class Quad {
 
+    public static final int COLORED = 0;
+    public static final int TEXTURED = 1;
+
     protected int zOrder;                       // Слой отрисовки (Z-порядок)
     protected Program program;                  // Используемая программа шейдеров
     protected Texture texture;                  // Текстура прямоугольника (null если её нет)
@@ -44,6 +47,7 @@ public class Quad {
     protected float rotation = 0;               // Угол поворота в радианах
     protected float centerX = 0;                // Точка поворота по X = -0.5-0.5
     protected float centerY = 0;                // Точка поворота по Y = -0.5-0.5
+    protected int type = 0;                     // Тип Quad для различения в рендере
 
     //----------------------------------------------------------------------------------
     // Класс для сравнения элементов буфера при сортировке (по текстуре и z-order)
@@ -283,6 +287,7 @@ public class Quad {
         this.texture = src.texture;
         this.zOrder = src.zOrder;
         this.scissor = src.scissor;
+        this.type = src.type;
         System.arraycopy(src.color, 0, this.color, 0, 4);
     }
 }
