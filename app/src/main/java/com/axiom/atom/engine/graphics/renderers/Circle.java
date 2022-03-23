@@ -8,7 +8,6 @@ import com.axiom.atom.engine.graphics.gles2d.Program;
 import com.axiom.atom.engine.graphics.gles2d.Shader;
 
 
-// TODO
 public class Circle extends Quad {
 
     protected static Program program = null;
@@ -35,8 +34,7 @@ public class Circle extends Quad {
             "varying vec2 " + Program.TEXCOORDOUT + ";\n" +
             "void main() {\n" +
             "  float l = length(" + Program.TEXCOORDOUT + " - vec2(0.5,0.5));\n" +
-            "  if (l > 0.5) discard;\n" +
-            "  gl_FragColor = " + Program.COLOR + ";\n" +
+            "  gl_FragColor = " + Program.COLOR + " * (1.0 - step(0.5, l));\n" +
             "}";
 
     public Circle() {
@@ -46,7 +44,7 @@ public class Circle extends Quad {
     }
 
 
-    public void draw(Camera camera, float x, float y, float width, float height, AABB scissor) {
+    public void draw(Camera camera, float x, float y, float width, float height) {
         if (!camera.isVisible(x,y, x+width,y+height)) return;
         float sx = x + width * 0.5f;
         float sy = y + height * 0.5f;
@@ -54,18 +52,8 @@ public class Circle extends Quad {
         if (rotation!=0) evaluateRotation(rotation);
         evaluateScale(width, height);
         evaluateOffset(sx, sy);
-        BatchRender.addTexturedQuad(program, null, vertices, texCoords, color, zOrder, scissor);
+        BatchRender.addTexturedQuad(program, null, vertices, texCoords, color, zOrder, null);
     }
 
-    public void draw(Camera camera, float x, float y, float width, float height) {
-        draw(camera,x,y,width,height,null);
-    }
 
-    public void draw(Camera camera, AABB aabb, AABB scissor) {
-        draw(camera, aabb.minX, aabb.minY, aabb.width, aabb.height, scissor);
-    }
-
-    public void draw(Camera camera, AABB aabb) {
-        draw(camera, aabb.minX, aabb.minY, aabb.width, aabb.height, null);
-    }
 }

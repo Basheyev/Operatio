@@ -95,7 +95,7 @@ public class BatchRender {
         quad.texture = null;
         quad.zOrder = zOrder;
         quad.scissor = scissor;
-        quad.type = 0;
+        quad.type = Quad.VERTICES_ONLY;
         System.arraycopy(vert, 0, quad.vertices, 0, 18);
         entriesCounter++;
     }
@@ -130,7 +130,7 @@ public class BatchRender {
         quad.texture = texture;
         quad.zOrder = zOrder;
         quad.scissor = scissor;
-        quad.type = 1;
+        quad.type = Quad.VERTICES_AND_TEXCOORD;
         System.arraycopy(vert, 0, quad.vertices, 0, 18);
         System.arraycopy(texcoord, 0, quad.texCoords, 0, 12);
         entriesCounter++;
@@ -211,13 +211,13 @@ public class BatchRender {
         if (quad.texture==null) {
             int vertexHandler = program.setAttribVertexArray(Program.VERTICES, verticesBatch);
             int textureHandler = -1;
-            if (quad.type==Quad.TEXTURED) {
+            if (quad.type==Quad.VERTICES_AND_TEXCOORD) {
                 textureHandler = program.setAttribVertexArray(Program.TEXCOORDIN, texCoordBatch);
             }
             program.setUniformVec4Value(Program.COLOR, quad.color);
             program.setUniformMat4Value(Program.MATRIX, cameraMatrix);
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, verticesBatch.getVertexCount());
-            if (quad.type==Quad.TEXTURED) program.disableVertexArray(textureHandler);
+            if (quad.type==Quad.VERTICES_AND_TEXCOORD) program.disableVertexArray(textureHandler);
             program.disableVertexArray(vertexHandler);
         } else {
             // Если текстурирован, передаем текстурные координаты и отрисовываем

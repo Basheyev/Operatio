@@ -12,8 +12,8 @@ import com.axiom.atom.engine.graphics.gles2d.Texture;
  */
 public class Quad {
 
-    public static final int COLORED = 0;
-    public static final int TEXTURED = 1;
+    public static final int VERTICES_ONLY = 0;
+    public static final int VERTICES_AND_TEXCOORD = 1;
 
     protected int zOrder;                       // Слой отрисовки (Z-порядок)
     protected Program program;                  // Используемая программа шейдеров
