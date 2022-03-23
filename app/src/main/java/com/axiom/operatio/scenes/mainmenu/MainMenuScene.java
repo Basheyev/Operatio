@@ -8,11 +8,13 @@ import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.Texture;
+import com.axiom.atom.engine.graphics.renderers.Circle;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.widgets.CheckBox;
 import com.axiom.atom.engine.ui.widgets.Widget;
 import com.axiom.operatio.model.gameplay.GameSaveLoad;
+import com.axiom.operatio.scenes.common.DebugInfo;
 
 /**
  * Сцена главного меню
@@ -27,6 +29,8 @@ public class MainMenuScene extends GameScene {
     private StoryPanel storyPanel;
     private CheckBox musicCheckbox;
     private float scrollerX;
+
+    private Circle circle;   // fixme just Circle test
 
     @Override
     public String getSceneName() {
@@ -64,6 +68,10 @@ public class MainMenuScene extends GameScene {
             slotsPanel.setVisible(false);
             widget.addChild(slotsPanel);
             slotsPanel.setZOrder(storyPanel.getZOrder() + 100);
+
+            circle = new Circle();
+            circle.setZOrder(Widget.UI_LAYER + 1000);
+            circle.setColor(1,1,1,0.5f);
 
             // сформировать лист проигрывания
             SoundRenderer.addTrack(R.raw.music00);
@@ -109,7 +117,12 @@ public class MainMenuScene extends GameScene {
         background.draw(camera, cx + scrollerX - Camera.WIDTH, cy, Camera.WIDTH,Camera.HEIGHT);
         logo.setZOrder(3);
         logo.draw(camera, cx + 50, cy + Camera.HEIGHT - logo.getHeight() - 25, logo.getWidth(), logo.getHeight());
-        //DebugInfo.drawDebugInfo(camera, Color.WHITE);
+
+        for (int i=0; i<10; i++) {
+            circle.draw(camera, Camera.WIDTH - 120 * i, Camera.HEIGHT - 120, 100, 100);
+        }
+
+        DebugInfo.drawDebugInfo(camera, Color.WHITE);
     }
 
     @Override
