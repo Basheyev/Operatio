@@ -118,8 +118,8 @@ public class MainMenuScene extends GameScene {
         logo.setZOrder(3);
         logo.draw(camera, cx + 50, cy + Camera.HEIGHT - logo.getHeight() - 25, logo.getWidth(), logo.getHeight());
 
-        for (int i=0; i<10; i++) {
-            circle.draw(camera, Camera.WIDTH - 120 * i, Camera.HEIGHT - 120, 100, 100);
+        for (int i=1; i<10; i++) {
+            circle.draw(camera, cx +Camera.WIDTH - 120 * i, cy + Camera.HEIGHT - 120, 100, 100);
         }
 
         DebugInfo.drawDebugInfo(camera, Color.WHITE);
