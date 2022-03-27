@@ -38,6 +38,7 @@ public class AdjustmentHandler implements ClickListener {
     @Override
     public void onClick(Widget w) {
         SoundRenderer.playSound(tickSound);
+        if (!(w instanceof Button)) return;
         Button button = (Button) w;
         Block chosenBlock = adjustmentPanel.getChosenBlock();
 
