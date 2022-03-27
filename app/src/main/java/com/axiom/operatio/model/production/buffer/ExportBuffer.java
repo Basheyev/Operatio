@@ -53,6 +53,7 @@ public class ExportBuffer extends Block implements JSONSerializable {
         Inventory inventory = production.getInventory();
         boolean pushed = inventory.push(item);
         if (pushed) {
+            item.resetOwner();
             int bkuIndex = getMaterialKeepingUnit(item.getMaterial());
             if (bkuIndex==NO_KEEPING_UNIT) return true;
             currentStats[bkuIndex].total++;

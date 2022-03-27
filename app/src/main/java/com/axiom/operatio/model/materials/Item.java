@@ -46,6 +46,13 @@ public class Item implements JSONSerializable {
         this.sourceDirection = findSourceDirection(previousOwner);
     }
 
+    public void resetOwner() {
+        this.owner = null;
+        this.cycleOwned = 0;
+        this.timeOwned = 0;
+        this.sourceDirection = Block.NONE;
+    }
+
 
     private int findSourceDirection(Block sourceBlock) {
         if (sourceBlock == null || sourceBlock instanceof Inserter) return Block.NONE; else
