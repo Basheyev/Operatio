@@ -271,6 +271,7 @@ public class SoundRenderer {
         if (playlist.size()==0) return;
         int random = trackShuffling ? (int) (1 + Math.random() * playlist.size()) : 1;
         int nextTrack = (currentTrack + random) % playlist.size();
+        if (nextTrack==currentTrack) nextTrack = (currentTrack+1) % playlist.size();
         playTrack(nextTrack);
     }
 

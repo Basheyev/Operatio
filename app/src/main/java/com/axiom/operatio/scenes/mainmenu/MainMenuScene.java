@@ -8,7 +8,6 @@ import com.axiom.atom.engine.core.GameScene;
 import com.axiom.atom.engine.core.SceneManager;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.Texture;
-import com.axiom.atom.engine.graphics.renderers.Circle;
 import com.axiom.atom.engine.graphics.renderers.Sprite;
 import com.axiom.atom.engine.sound.SoundRenderer;
 import com.axiom.atom.engine.ui.widgets.CheckBox;
@@ -30,7 +29,7 @@ public class MainMenuScene extends GameScene {
     private CheckBox musicCheckbox;
     private float scrollerX;
 
-    private Circle circle;   // fixme just Circle test
+    private RoundedRectangle roundedRectangle;   // fixme just RoundedRectangle test
 
     @Override
     public String getSceneName() {
@@ -53,6 +52,8 @@ public class MainMenuScene extends GameScene {
             musicCheckbox = new CheckBox("Enable music/sound", true);
             musicCheckbox.setTextColor(Color.WHITE);
             musicCheckbox.setLocalBounds(menuPanel.getX() + menuPanel.getWidth() + 50, 150, 600, 80);
+            musicCheckbox.setChecked(SoundRenderer.getVolume() != 0.0);
+
             musicCheckbox.setClickListener(e -> {
                 float level = musicCheckbox.isChecked() ? 1.0f : 0.0f;
                 SoundRenderer.setVolume(level);
@@ -69,9 +70,9 @@ public class MainMenuScene extends GameScene {
             widget.addChild(slotsPanel);
             slotsPanel.setZOrder(storyPanel.getZOrder() + 100);
 
-            circle = new Circle();
-            circle.setZOrder(Widget.UI_LAYER + 1000);
-            circle.setColor(1,1,1,0.5f);
+            roundedRectangle = new RoundedRectangle();
+            roundedRectangle.setZOrder(Widget.UI_LAYER + 1000);
+            roundedRectangle.setColor(1,1,1,0.5f);
 
             // сформировать лист проигрывания
             SoundRenderer.addTrack(R.raw.music00);
@@ -117,11 +118,11 @@ public class MainMenuScene extends GameScene {
         background.draw(camera, cx + scrollerX - Camera.WIDTH, cy, Camera.WIDTH,Camera.HEIGHT);
         logo.setZOrder(3);
         logo.draw(camera, cx + 50, cy + Camera.HEIGHT - logo.getHeight() - 25, logo.getWidth(), logo.getHeight());
-
-        for (int i=1; i<10; i++) {
-            circle.draw(camera, cx +Camera.WIDTH - 120 * i, cy + Camera.HEIGHT - 120, 100, 100);
+/*
+        for (int i=1; i<5; i++) {
+            roundedRectangle.draw(camera, cx +Camera.WIDTH - 200 * i, cy + Camera.HEIGHT - 200, 160, 160);
         }
-
+*/
         DebugInfo.drawDebugInfo(camera, Color.WHITE);
     }
 

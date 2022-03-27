@@ -18,8 +18,8 @@ public class DebugInfo {
         fps.append("  FPS:").append(GraphicsRender.getFPS())
             .append(" Quads:").append(BatchRender.getEntriesCount())
             .append(" Calls:").append(BatchRender.getDrawCallsCount())
-            .append(" Scissors:").append(BatchRender.getScissorsApplied())
-            .append(" Time:").append(GraphicsRender.getRenderTime())
+            //.append(" Scissors:").append(BatchRender.getScissorsApplied())
+            .append(" Render:").append(GraphicsRender.getRenderTime())
             .append("ms");
         float x = camera.getMinX();
         float y = camera.getMinY();

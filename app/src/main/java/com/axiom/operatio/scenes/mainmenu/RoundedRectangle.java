@@ -1,14 +1,15 @@
-package com.axiom.atom.engine.graphics.renderers;
+package com.axiom.operatio.scenes.mainmenu;
 
 import android.opengl.GLES20;
 
-import com.axiom.atom.engine.core.geometry.AABB;
 import com.axiom.atom.engine.graphics.gles2d.Camera;
 import com.axiom.atom.engine.graphics.gles2d.Program;
 import com.axiom.atom.engine.graphics.gles2d.Shader;
+import com.axiom.atom.engine.graphics.renderers.BatchRender;
+import com.axiom.atom.engine.graphics.renderers.Quad;
 
+public class RoundedRectangle extends Quad {
 
-public class Circle extends Quad {
 
     protected static Program program = null;
 
@@ -26,18 +27,23 @@ public class Circle extends Quad {
             "}";
 
     //-----------------------------------------------------------------------------------
-    // Код пиксельного шейдера отрисовывающего окружность в текстурных координатах
+    // Код пиксельного шейдера отрисовывающего текстуру
     //-----------------------------------------------------------------------------------
     private final String fragmentShaderCode =
             "precision mediump float;\n" +
             "uniform vec4 " + Program.COLOR + ";\n" +
             "varying vec2 " + Program.TEXCOORDOUT + ";\n" +
+            "float roundedBox(vec2 point, vec2 Size, float Radius) {\n" +
+            "    return length(max(abs(point) - Size + Radius, 0.0)) - Radius;\n" +
+            "}\n\n" +
             "void main() {\n" +
-            "  float l = length(" + Program.TEXCOORDOUT + " - vec2(0.5,0.5));\n" +
-            "  gl_FragColor = " + Program.COLOR + " * (1.0 - step(0.5, l));\n" +
+            "  vec2 size = vec2(0.5,0.5);\n" +
+            "  float radius = 0.1;\n" +
+            "  float l = roundedBox(" + Program.TEXCOORDOUT + " - size, size, radius);\n" +
+            "  gl_FragColor = " + Program.COLOR + " * (1.0 - step(0.0, l));\n" +
             "}";
 
-    public Circle() {
+    public RoundedRectangle() {
         if (program==null) program = new Program(
                 new Shader(GLES20.GL_VERTEX_SHADER, vertexShaderCode),
                 new Shader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode));
@@ -54,6 +60,5 @@ public class Circle extends Quad {
         evaluateOffset(sx, sy);
         BatchRender.addTexturedQuad(program, null, vertices, texCoords, color, zOrder, null);
     }
-
 
 }
