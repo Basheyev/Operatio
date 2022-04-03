@@ -37,6 +37,10 @@ public class MarketPanel extends Panel {
     public static final int BUY_COLOR = 0xFF9d3e4d;
     public static final int SELL_COLOR = 0xFF80B380;
 
+    private static final float graphWidth = 960;
+    private static final float graphHeight = 280;
+    private static final float graphBottomY = 180;;
+
     private InventoryScene scene;
     private Production production;
     private Inventory inventory;
@@ -47,7 +51,9 @@ public class MarketPanel extends Panel {
     private final double[] values;
     private double maxValue;
     private int counter = 0;
-    private float graphBottomY;
+    private double demandVolume = 0;
+    private double supplyVolume = 0;
+
     private String commodityName = "";
     private int currentCommodity = 0;
     private int previousCommodity = -1;
@@ -98,7 +104,7 @@ public class MarketPanel extends Panel {
         materialCaption = new Caption("Material price");
         materialCaption.setTextScale(1.3f);
         materialCaption.setTextColor(Color.WHITE);
-        materialCaption.setLocalBounds(50, 160, 300, 100);
+        materialCaption.setLocalBounds(50, graphBottomY, 300, 100);
         addChild(materialCaption);
 
         buyButton = buildButton(BUY, 25, 45, 150, 80, BUY_COLOR, 1.5f,true);
@@ -114,7 +120,6 @@ public class MarketPanel extends Panel {
         autoBuyCB = buildCheckBox(PURCHASE_CONTRACT, 160, 485, 250, 100);
         autoSellCB = buildCheckBox(SALES_CONTRACT, 160, 485, 250, 100);
 
-        graphBottomY = 160;
     }
 
 
@@ -181,6 +186,8 @@ public class MarketPanel extends Panel {
             counter = market.getHistoryLength(currentCommodity);
             market.getHistoryValues(currentCommodity, values);
             dealSum.setText(FormatUtils.formatMoney(quantity * market.getValue(currentCommodity), sumText));
+            demandVolume = market.getDemand(currentCommodity);
+            supplyVolume = market.getSupply(currentCommodity);
 
             materialText.setLength(0);
             materialText.append(commodityName).append(" - ");
@@ -200,8 +207,6 @@ public class MarketPanel extends Panel {
         AABB wBounds = getWorldBounds();
 
         GraphicsRender.setZOrder(zOrder + 1);
-        float graphWidth = 960;
-        float graphHeight = 300;
         float x = wBounds.minX + 25;
         float y = wBounds.minY + graphBottomY;
         float oldX = x;
@@ -228,7 +233,18 @@ public class MarketPanel extends Panel {
                 oldX = x;
                 oldY = y;
             }
+
+            // draw demand/supply
+            double total = demandVolume + supplyVolume;
+            float demandWidth = (float) (demandVolume / total) * graphWidth;
+            float supplyWidth = (float) (supplyVolume / total) * graphWidth;
+            GraphicsRender.setColor(BUY_COLOR);
+            GraphicsRender.drawRectangle(wBounds.minX + 25, wBounds.minY+graphBottomY-20, demandWidth, 20);
+            GraphicsRender.setColor(SELL_COLOR);
+            GraphicsRender.drawRectangle(wBounds.minX+demandWidth+25, wBounds.minY+graphBottomY-20, supplyWidth, 20);
         }
+
+
 
     }
 

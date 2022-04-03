@@ -39,6 +39,13 @@ public class Market implements JSONSerializable {
         lastCycleTime = now;
     }
 
+    public synchronized double getDemand(int commodity) {
+        return commodityMarket[commodity].getDemand();
+    }
+
+    public synchronized double getSupply(int commodity) {
+        return commodityMarket[commodity].getSupply();
+    }
 
     public synchronized double getValue(int commodity) {
         return commodityMarket[commodity].getMarketValue();
