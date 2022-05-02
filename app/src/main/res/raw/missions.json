@@ -47,7 +47,7 @@
   {
     "ID" : 3,
     "name" : "Changeover basics",
-    "description" : "Manufacture 20 aluminium plates\n(changeover exporter & press)",
+    "description" : "Manufacture 20 aluminium plates\n(changeover importer & press)",
     "prerequisiteIDs" : [2],
     "winConditions" : [
       { "indicatorType" : 1, "materialID" : 9, "value" :  20}
@@ -167,7 +167,7 @@
   {
     "ID" : 11,
     "name" : "Valuation",
-    "description" : "Reach target valuation",
+    "description" : "Reach target valuation $10M",
     "prerequisiteIDs" : [10],
     "winConditions" : [ ],
     "permissionsReward" : {
