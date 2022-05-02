@@ -7,9 +7,14 @@ import com.axiom.operatio.model.gameplay.GameMission;
 import com.axiom.operatio.model.gameplay.GamePermissions;
 import com.axiom.operatio.model.ledger.Ledger;
 import com.axiom.operatio.model.market.Market;
+import com.axiom.operatio.model.materials.Item;
+import com.axiom.operatio.model.materials.Material;
 import com.axiom.operatio.model.production.block.Block;
 import com.axiom.operatio.model.inventory.Inventory;
 import com.axiom.operatio.model.production.block.BlockBuilder;
+import com.axiom.operatio.model.production.buffer.ExportBuffer;
+import com.axiom.operatio.model.production.buffer.ImportBuffer;
+import com.axiom.operatio.model.production.conveyor.Conveyor;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,17 +64,17 @@ public class Production implements JSONSerializable {
     private ProductionRenderer renderer = null;
 
 
-
+    /**
+     * Start new game
+     */
     public Production() {
 
         this.columns = MAP_WIDTH;
         this.rows = MAP_HEIGHT;
         grid = new Block[rows][columns];
+
         unlocked = new boolean[rows][columns];
         setAreaUnlocked(0,0, columns, rows, false);
-        int centerCol = (columns / 2) - (UNLOCKED_WIDTH / 2);
-        int centerRow = (rows / 2) - (UNLOCKED_HEIGHT / 2);
-        setAreaUnlocked(centerCol,centerRow,UNLOCKED_WIDTH, UNLOCKED_HEIGHT, true);
 
         blocks = new ArrayList<Block>(100);
         inventory = new Inventory(this);
@@ -77,8 +82,8 @@ public class Production implements JSONSerializable {
         ledger = new Ledger(this);
         renderer = new ProductionRenderer(this);
 
-        float cameraX = (columns / 2) * renderer.getCellWidth();
-        float cameraY = (rows / 2) * renderer.getCellHeight();
+        float cameraX = (columns / 2.0f) * renderer.getCellWidth();
+        float cameraY = (rows / 2.0f) * renderer.getCellHeight();
         Camera.getInstance().lookAt(cameraX, cameraY);
 
         permissions = new GamePermissions();
@@ -87,9 +92,43 @@ public class Production implements JSONSerializable {
             stub.earnReward(this);
             currentMissionID = 1;
         }
+
+        startNewGame();
     }
 
 
+    private void startNewGame() {
+        // unlock area
+        int centerCol = (columns / 2) - (UNLOCKED_WIDTH / 2);
+        int centerRow = (rows / 2) - (UNLOCKED_HEIGHT / 2);
+        setAreaUnlocked(centerCol,centerRow,UNLOCKED_WIDTH, UNLOCKED_HEIGHT, true);
+
+        // Place tutorial blocks for new game
+        int pressCol = centerCol+(UNLOCKED_WIDTH / 2) - 1;
+        int pressRow = centerRow+(UNLOCKED_HEIGHT / 2) - 1;
+        ImportBuffer importerBlock = new ImportBuffer(this, Material.getMaterial(0));
+        Conveyor conveyorLeft = new Conveyor(this, Block.LEFT, Block.RIGHT);
+        Conveyor conveyorRight = new Conveyor(this, Block.LEFT, Block.RIGHT);
+        ExportBuffer exporterBlock = new ExportBuffer(this);
+        setBlock(importerBlock, pressCol-2, pressRow);
+        setBlock(conveyorLeft, pressCol-1, pressRow);
+        setBlock(conveyorRight, pressCol+1, pressRow);
+        setBlock(exporterBlock, pressCol+2, pressRow);
+
+        // add materials
+        Item item;
+        for (int i=0; i<20; i++) {
+            item = new Item(Material.getMaterial(0));
+            inventory.push(item);
+        }
+    }
+
+
+    /**
+     * Load saved game from JSON object
+     * @param jsonObject saved game
+     * @throws JSONException saved game parsing exception
+     */
     public Production(JSONObject jsonObject) throws JSONException {
 
         int columns = jsonObject.getInt("columns");
