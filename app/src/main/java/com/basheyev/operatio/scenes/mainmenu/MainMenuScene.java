@@ -55,8 +55,7 @@ public class MainMenuScene extends GameScene {
             musicCheckbox.setChecked(SoundRenderer.getVolume() != 0.0);
 
             musicCheckbox.setClickListener(e -> {
-                float level = musicCheckbox.isChecked() ? 1.0f : 0.0f;
-                SoundRenderer.setVolume(level);
+                SoundRenderer.mute(!musicCheckbox.isChecked());
             });
             widget.addChild(musicCheckbox);
 

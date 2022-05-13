@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import com.basheyev.atom.engine.core.GameScene;
 import com.basheyev.atom.engine.core.GameView;
 import com.basheyev.atom.engine.core.SceneManager;
+import com.basheyev.atom.engine.sound.SoundRenderer;
 import com.basheyev.operatio.scenes.inventory.InventoryScene;
 import com.basheyev.operatio.scenes.mainmenu.MainMenuScene;
 import com.basheyev.operatio.scenes.production.ProductionScene;
@@ -68,12 +69,14 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onPause();
         gameView.onPause();
+        SoundRenderer.pauseTrack(true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         gameView.onResume();
+        SoundRenderer.pauseTrack(false);
     }
 
     @Override

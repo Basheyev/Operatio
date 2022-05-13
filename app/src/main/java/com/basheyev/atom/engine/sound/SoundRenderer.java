@@ -34,8 +34,10 @@ public class SoundRenderer {
     private static boolean trackShuffling = false;           // Флаг перемешивания проигрывания
     private static boolean initialized = false;              // Флаг инициализации
 
-    private static float soundLeftVolume = 1;                // Громкость левого канала
-    private static float soundRightVolume = 1;               // Громкость правого канала
+    private static float soundLeftVolume = 1;                // Громкость левого канала звуков
+    private static float soundRightVolume = 1;               // Громкость правого канала звуков
+
+    private static float volumeLevel;                        // Общий уровень громкости
 
     //-----------------------------------------------------------------------------------------
     // Инициализации и финализация рендера
@@ -109,7 +111,9 @@ public class SoundRenderer {
      */
     public static float getVolume() {
         if (!initialized) return 0.0f;
-        return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        float volume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        return maxVolume > 0 ? volume / maxVolume : 0;
     }
 
     /**
@@ -119,10 +123,22 @@ public class SoundRenderer {
     public static void setVolume(float level) {
         if (level < 0 || level > 1) return;
         int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        int seventyVolume = (int) (maxVolume * level);
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, seventyVolume, 0);
+        int volume = (int) (maxVolume * level);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
     }
 
+
+    /**
+     *
+     */
+    public static void mute(boolean mute) {
+        if (mute) {
+            volumeLevel = getVolume();
+            setVolume(0);
+        } else {
+            setVolume(volumeLevel);
+        }
+    }
 
     //-----------------------------------------------------------------------------------------
     // Инициализация звуками
